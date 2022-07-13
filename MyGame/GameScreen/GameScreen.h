@@ -11,6 +11,8 @@
 #include "FbxObject.h"
 #include "ParticleManager.h"
 
+class Player;
+
 // ゲームシーン
 class GameScene
 {
@@ -70,7 +72,7 @@ private: // メンバ変数
 
 	Object3d* objSkydome = nullptr;
 	Object3d* objGround = nullptr;
-	Object3d* objPlayer = nullptr;
+	Player* objPlayer = nullptr;
 
 	FbxObject3d* testobject = nullptr;
 

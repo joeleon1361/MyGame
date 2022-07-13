@@ -127,6 +127,9 @@
     <ClCompile Include="GameScreen\GameScreen.cpp">
       <Filter>GameScreen</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\FBX.hlsli">
@@ -235,5 +238,6 @@
     <ClInclude Include="GameScreen\GameScreen.h">
       <Filter>GameScreen</Filter>
     </ClInclude>
+    <ClInclude Include="Player.h" />
   </ItemGroup>
 </Project>

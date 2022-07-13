@@ -3,9 +3,10 @@
 #include <cassert>
 #include <sstream>
 #include <iomanip>
-#include"FbxLoader.h"
-#include"FbxObject.h"
-#include"Camera.h"
+#include "FbxLoader.h"
+#include "FbxObject.h"
+#include "Camera.h"
+#include "Player.h"
 #include <stdio.h>
 
 using namespace DirectX;
@@ -77,7 +78,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	// 3Dオブジェクト生成
 	objSkydome = Object3d::Create();
 	objGround = Object3d::Create();
-	objPlayer = Object3d::Create();
+	objPlayer = Player::Create(modelPlayer);
 
 	// テクスチャ2番に読み込み
 	Sprite::LoadTexture(2, L"Resources/Sprite/texture.png");
@@ -98,40 +99,12 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	testobject->SetModel(testmodel);
 
 	// 座標のセット
+	objPlayer->SetPosition({ 0,0,0 });
 	objPlayer->SetRotation({ 0, 90, 0 });
 }
 
 void GameScene::Update()
 {
-	// オブジェクト移動
-	if (input->PushKey(DIK_I) || input->PushKey(DIK_K) || input->PushKey(DIK_J) || input->PushKey(DIK_L))
-	{
-		// 現在の座標を取得
-		XMFLOAT3 PlayerPosition = objPlayer->GetPosition();
-
-		// 移動後の座標を計算
-		if (input->PushKey(DIK_I))
-		{
-			PlayerPosition.z += 1.0f;
-		}
-		else if (input->PushKey(DIK_K))
-		{
-			PlayerPosition.z -= 1.0f;
-		}
-		if (input->PushKey(DIK_L))
-		{
-			PlayerPosition.x += 1.0f;
-		}
-		else if (input->PushKey(DIK_J))
-		{
-			PlayerPosition.x -= 1.0f;
-		}
-
-		// 座標の変更を反映
-		objPlayer->SetPosition(PlayerPosition);
-	}
-
-
 	MoveCamera();
 	// パーティクル生成
 	CreateParticles();

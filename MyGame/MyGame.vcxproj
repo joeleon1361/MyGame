@@ -164,6 +164,7 @@
     <ClCompile Include="OBJ\ObjModel.cpp" />
     <ClCompile Include="OBJ\ObjObject.cpp" />
     <ClCompile Include="Particle\ParticleManager.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="PostEffect\PostEffect.cpp" />
     <ClCompile Include="Sound\Sound.cpp" />
     <ClCompile Include="Sprite\Sprite.cpp" />
@@ -259,6 +260,7 @@
     <ClInclude Include="OBJ\ObjModel.h" />
     <ClInclude Include="OBJ\ObjObject.h" />
     <ClInclude Include="Particle\ParticleManager.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="PostEffect\PostEffect.h" />
     <ClInclude Include="Sound\Sound.h" />
     <ClInclude Include="Sprite\Sprite.h" />
