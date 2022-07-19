@@ -79,6 +79,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	objSkydome = Object3d::Create();
 	objGround = Object3d::Create();
 	objPlayer = Player::Create(modelPlayer);
+	objBullet = Object3d::Create();
 
 	// テクスチャ2番に読み込み
 	Sprite::LoadTexture(2, L"Resources/Sprite/texture.png");
@@ -86,10 +87,12 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	modelSkydome = Model::CreateFromOBJ("skydome");
 	modelGround = Model::CreateFromOBJ("ground");
 	modelPlayer = Model::CreateFromOBJ("player2");
+	modelBullet = Model::CreateFromOBJ("bullet2");
 
 	objSkydome->SetModel(modelSkydome);
 	objGround->SetModel(modelGround);
 	objPlayer->SetModel(modelPlayer);
+	objBullet->SetModel(modelBullet);
 
 	testmodel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 
@@ -101,13 +104,47 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	// 座標のセット
 	objPlayer->SetPosition({ 0,0,0 });
 	objPlayer->SetRotation({ 0, 90, 0 });
+
+	ShotFlag = 0;
+	Shot = { 0 , -500.f, 0 };
+	objBullet->SetPosition(Shot);
+	objBullet->SetScale({ 0.5f, 0.5f, 0.5f });
 }
 
 void GameScene::Update()
 {
+	XMFLOAT3 playerPosition = objPlayer->GetPosition();
+
 	MoveCamera();
 	// パーティクル生成
 	CreateParticles();
+
+	if (input->PushKey(DIK_SPACE))
+	{
+		if (ShotFlag == 0)
+		{
+			ShotFlag = 1;
+		}
+	}
+
+	if (ShotFlag == 1)
+	{
+		Shot = playerPosition;
+		objBullet->SetPosition(Shot);
+		ShotFlag = 2;
+	}
+
+	if (ShotFlag == 2)
+	{
+		Shot.z += 2.0f;
+		objBullet->SetPosition(Shot);
+
+		if (Shot.z >= 50.0f)
+		{
+			Shot = { 0, -500.0f, 0 };
+			ShotFlag = 0;
+		}
+	}
 
 	camera->Update();
 	particleMan->Update();
@@ -115,6 +152,7 @@ void GameScene::Update()
 	objSkydome->Update();
 	objGround->Update();
 	objPlayer->Update();
+	objBullet->Update();
 
 	testobject->Update();
 
@@ -150,7 +188,7 @@ void GameScene::Draw()
 	objSkydome->Draw();
 	// objGround->Draw();
 	objPlayer->Draw();
-
+	
 	// testobject->Draw(cmdList);
 
 	// パーティクルの描画
@@ -192,10 +230,10 @@ void GameScene::MoveCamera()
 	}
 
 	// カメラ移動
-	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN))
+	if (input->PushKey(DIK_Q) || input->PushKey(DIK_C))
 	{
-		if (input->PushKey(DIK_UP)) { camera->MoveVector({ 0.0f,0.0f,+0.06f }); }
-		else if (input->PushKey(DIK_DOWN)) { camera->MoveVector({ 0.0f,0.0f,-0.06f }); }
+		if (input->PushKey(DIK_Q)) { camera->MoveVector({ 0.0f,0.0f,+0.06f }); }
+		else if (input->PushKey(DIK_C)) { camera->MoveVector({ 0.0f,0.0f,-0.06f }); }
 	}
 }
 

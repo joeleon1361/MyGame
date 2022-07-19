@@ -67,18 +67,18 @@ private: // メンバ変数
 	Model* modelSkydome = nullptr;
 	Model* modelGround = nullptr;
 	Model* modelPlayer = nullptr;
+	Model* modelBullet = nullptr;
 
 	FbxModel* testmodel = nullptr;
 
 	Object3d* objSkydome = nullptr;
 	Object3d* objGround = nullptr;
 	Player* objPlayer = nullptr;
+	Object3d* objBullet = nullptr;
 
 	FbxObject3d* testobject = nullptr;
 
-	const float g = -9.8 / 60.0f; // 重力加速度
-	float v = 0.0f; // 速度
-	float t; // 時間
-	float y = 100.0f; // 距離
+	int ShotFlag;
+	XMFLOAT3 Shot;
 };
 

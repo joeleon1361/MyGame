@@ -11,13 +11,13 @@ Player* Player::Create(Model* model)
 		return nullptr;
 	}
 
-	// 初期化 Initialize
+	// 初期化
 	if (!instance->Initialize()) {
 		delete instance;
 		assert(0);
 	}
 
-	// モデルのセット Set model
+	// モデルのセット
 	if (model) {
 		instance->SetModel(model);
 	}
@@ -37,6 +37,20 @@ bool Player::Initialize()
 
 void Player::Update()
 {
+	// 移動処理
+	Move();
+
+	// 移動制限
+	MoveLimit();
+
+	// 弾を発射
+	Shot();
+
+	Object3d::Update();
+}
+
+void Player::Move()
+{
 	Input* input = Input::GetInstance();
 
 	// オブジェクト移動
@@ -45,21 +59,52 @@ void Player::Update()
 		// 移動後の座標を計算
 		if (input->PushKey(DIK_I))
 		{
-			position.z += 1.0f;
+			position.y += 0.5f;
 		}
 		else if (input->PushKey(DIK_K))
 		{
-			position.z -= 1.0f;
+			position.y -= 0.5f;
 		}
 		if (input->PushKey(DIK_L))
 		{
-			position.x += 1.0f;
+			position.x += 0.5f;
 		}
 		else if (input->PushKey(DIK_J))
 		{
-			position.x -= 1.0f;
+			position.x -= 0.5f;
 		}
 	}
 
-	Object3d::Update();
+	if (input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
+	{
+		if (input->PushKey(DIK_LEFT))
+		{
+			rotation.y -= 1.0f;
+		}
+		else if (input->PushKey(DIK_RIGHT))
+		{
+			rotation.y += 1.0f;
+		}
+	}
+}
+
+void Player::MoveLimit()
+{
+	// X軸を制限
+	position.x = max(position.x, -MoveLimitX);
+	position.x = min(position.x, +MoveLimitX);
+
+	// Y軸を制限
+	position.y = max(position.y, -MoveLimitY);
+	position.y = min(position.y, +MoveLimitY);
+}
+
+void Player::Shot()
+{
+	Input* input = Input::GetInstance();
+
+	if (input->TriggerKey(DIK_SPACE))
+	{
+	
+	}
 }
