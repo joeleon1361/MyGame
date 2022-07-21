@@ -101,7 +101,7 @@ void Camera::UpdateViewMatrix()
 	matBillboard.r[1] = cameraAxisY;
 	matBillboard.r[2] = cameraAxisZ;
 	matBillboard.r[3] = XMVectorSet( 0, 0, 0, 1 );
-#pragma region
+#pragma endregion
 
 #pragma region Y軸回りビルボード行列の計算
 	// カメラX軸、Y軸、Z軸
