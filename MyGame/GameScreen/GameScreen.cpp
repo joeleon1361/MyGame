@@ -110,16 +110,31 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	Shot = { 0 , -500.f, 0 };
 	objBullet->SetPosition(Shot);
 	objBullet->SetScale({ 0.5f, 0.5f, 0.5f });
+
+	camera->SetTarget({ 0, 0, 0 });
+	camera->SetEye({ 0, 0, -10 });
+	camera->SetUp({ 0, 1, 0 });
 }
 
 void GameScene::Update()
 {
 	XMFLOAT3 playerPosition = objPlayer->GetPosition();
+	XMFLOAT3 routeCameraPosition = camera->GetEye();
+	XMFLOAT3 cameraTargetPosition = camera->GetTarget();
 
 	MoveCamera();
 	// パーティクル生成
 	CreateParticles();
 
+	routeCameraPosition.z += 0.05f;
+	playerPosition.z += 0.05f;
+	cameraTargetPosition.z += 0.05f;
+
+	camera->SetEye(routeCameraPosition);
+	camera->SetTarget(cameraTargetPosition);
+	objPlayer->SetPosition(playerPosition);
+
+#pragma region 球発射処理
 	if (input->PushKey(DIK_SPACE))
 	{
 		if (ShotFlag == 0)
@@ -146,6 +161,8 @@ void GameScene::Update()
 			ShotFlag = 0;
 		}
 	}
+	#pragma endregion
+
 
 	camera->Update();
 	particleMan->Update();
@@ -157,9 +174,27 @@ void GameScene::Update()
 
 	testobject->Update();
 
-	debugText.Print("AD: move camera LeftRight", 50, 50, 1.0f);
-	debugText.Print("WS: move camera UpDown", 50, 70, 1.0f);
-	debugText.Print("ARROW: move camera FrontBack", 50, 90, 1.0f);
+#pragma region デバックテキスト
+	// プレイヤーの座標を表示
+	std::ostringstream PlayerPos;
+	PlayerPos << "PlayerPos:("
+		<< std::fixed << std::setprecision(2)
+		<< playerPosition.x << "," // x
+		<< playerPosition.y << "," // y
+		<< playerPosition.z << ")"; // z
+	debugText.Print(PlayerPos.str(), 50, 50, 1.0f);
+
+	std::ostringstream CameraPos;
+	CameraPos << "CameraPos:("
+		<< std::fixed << std::setprecision(2)
+		<< routeCameraPosition.x << "," // x
+		<< routeCameraPosition.y << "," // y
+		<< routeCameraPosition.z << ")"; // z
+	debugText.Print(CameraPos.str(), 50, 70, 1.0f);
+
+	// 自機操作方法
+	debugText.Print("WASD:PlayerMove", 50, 30, 1.0f);
+#pragma endregion
 }
 
 void GameScene::Draw()
@@ -216,7 +251,7 @@ void GameScene::Draw()
 	//sprite2->Draw();
 
 	// デバッグテキストの描画
-	// debugText.DrawAll(cmdList);
+	debugText.DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
