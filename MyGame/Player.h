@@ -27,13 +27,19 @@ public: // ƒƒ“ƒoŠÖ”
 	// ˆÚ“®§ŒÀ
 	void MoveLimit();
 
+	void Rolling();
+
+	void DodgeRoll();
+
 	// ’e‚ğ‘Å‚Â
 	void Shot();
 	
 private: // ƒƒ“ƒo•Ï”
 	PlayerBullet* bullet = nullptr;
 
-	const float MoveLimitX = 10;
-	const float MoveLimitY = 5;
+	const float MoveLimitX = 8.5f;
+	const float MoveLimitY = 5.0f;
+
+	const float DodgeTime = 2.0f;
 };
 

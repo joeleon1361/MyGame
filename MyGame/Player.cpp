@@ -43,6 +43,12 @@ void Player::Update()
 	// 移動制限
 	MoveLimit();
 
+	// ロール
+	Rolling();
+
+	// 回避
+	// DodgeRoll();
+
 	// 弾を発射
 	Shot();
 
@@ -54,36 +60,24 @@ void Player::Move()
 	Input* input = Input::GetInstance();
 
 	// オブジェクト移動
-	if (input->PushKey(DIK_I) || input->PushKey(DIK_K) || input->PushKey(DIK_J) || input->PushKey(DIK_L))
+	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
 	{
 		// 移動後の座標を計算
-		if (input->PushKey(DIK_I))
+		if (input->PushKey(DIK_W))
 		{
-			position.y += 0.5f;
+			position.y += 0.3f;
 		}
-		else if (input->PushKey(DIK_K))
+		else if (input->PushKey(DIK_S))
 		{
-			position.y -= 0.5f;
+			position.y -= 0.3f;
 		}
-		if (input->PushKey(DIK_L))
+		if (input->PushKey(DIK_D))
 		{
-			position.x += 0.5f;
+			position.x += 0.3f;
 		}
-		else if (input->PushKey(DIK_J))
+		else if (input->PushKey(DIK_A))
 		{
-			position.x -= 0.5f;
-		}
-	}
-
-	if (input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
-	{
-		if (input->PushKey(DIK_LEFT))
-		{
-			rotation.y -= 1.0f;
-		}
-		else if (input->PushKey(DIK_RIGHT))
-		{
-			rotation.y += 1.0f;
+			position.x -= 0.3f;
 		}
 	}
 }
@@ -97,6 +91,79 @@ void Player::MoveLimit()
 	// Y軸を制限
 	position.y = max(position.y, -MoveLimitY);
 	position.y = min(position.y, +MoveLimitY);
+}
+
+void Player::Rolling()
+{
+	Input* input = Input::GetInstance();
+
+	// ロール(横)
+	if (input->PushKey(DIK_A) || input->PushKey(DIK_D))
+	{
+		if (input->PushKey(DIK_D) && rotation.x <= +40.0f)
+		{
+			rotation.x += 5.0f;
+		}
+
+		if (input->PushKey(DIK_A) && rotation.x >= -40.0f)
+		{
+			rotation.x -= 5.0f;
+		}
+	}
+
+	// ロール(縦)
+	/*if (input->PushKey(DIK_W) || input->PushKey(DIK_S))
+	{
+		if (input->PushKey(DIK_S) && rotation.z <= +15.0f)
+		{
+			rotation.z += 3.0f;
+		}
+
+		if (input->PushKey(DIK_W) && rotation.z >= -15.0f)
+		{
+			rotation.z -= 3.0f;
+		}
+	}*/
+
+	// 傾きを戻す
+	if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && rotation.x != 0.0f)
+	{
+		if (rotation.x >= 0.0f)
+		{
+			rotation.x -= 5.0f;
+		}
+
+		if (rotation.x <= 0.0f)
+		{
+			rotation.x += 5.0f;
+		}
+	}
+
+	/*if (input->PushKey(DIK_W) == 0 && input->PushKey(DIK_S) == 0 && rotation.z != 0.0f)
+	{
+		if (rotation.z >= 0.0f)
+		{
+			rotation.z -= 3.0f;
+		}
+
+		if (rotation.z <= 0.0f)
+		{
+			rotation.z += 3.0f;
+		}
+	}*/
+}
+
+void Player::DodgeRoll()
+{
+	Input* input = Input::GetInstance();
+
+	if (input->TriggerKey(DIK_E) && DodgeTime >= 0)
+	{
+		if (DodgeTime >= 0)
+		{
+			position.x += 1.0;
+		}
+	}
 }
 
 void Player::Shot()

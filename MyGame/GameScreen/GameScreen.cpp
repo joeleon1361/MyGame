@@ -104,6 +104,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	// 座標のセット
 	objPlayer->SetPosition({ 0,0,0 });
 	objPlayer->SetRotation({ 0, 90, 0 });
+	objPlayer->SetScale({ 0.5f, 0.5f, 0.5f });
 
 	ShotFlag = 0;
 	Shot = { 0 , -500.f, 0 };
@@ -188,6 +189,10 @@ void GameScene::Draw()
 	objSkydome->Draw();
 	// objGround->Draw();
 	objPlayer->Draw();
+	if (ShotFlag == 2)
+	{
+		objBullet->Draw();
+	}
 	
 	// testobject->Draw(cmdList);
 
@@ -221,19 +226,19 @@ void GameScene::Draw()
 void GameScene::MoveCamera()
 {
 	// カメラ移動
-	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_D) || input->PushKey(DIK_A))
+	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
 	{
-		if (input->PushKey(DIK_W)) { camera->MoveVector({ 0.0f,+0.06f,0.0f }); }
-		else if (input->PushKey(DIK_S)) { camera->MoveVector({ 0.0f,-0.06f,0.0f }); }
-		if (input->PushKey(DIK_D)) { camera->MoveVector({ +0.06f,0.0f,0.0f }); }
-		else if (input->PushKey(DIK_A)) { camera->MoveVector({ -0.06f,0.0f,0.0f }); }
+		if (input->PushKey(DIK_UP)) { camera->MoveVector({ 0.0f,+0.06f,0.0f }); }
+		else if (input->PushKey(DIK_DOWN)) { camera->MoveVector({ 0.0f,-0.06f,0.0f }); }
+		if (input->PushKey(DIK_RIGHT)) { camera->MoveVector({ +0.06f,0.0f,0.0f }); }
+		else if (input->PushKey(DIK_LEFT)) { camera->MoveVector({ -0.06f,0.0f,0.0f }); }
 	}
 
 	// カメラ移動
-	if (input->PushKey(DIK_Q) || input->PushKey(DIK_C))
+	if (input->PushKey(DIK_I) || input->PushKey(DIK_K))
 	{
-		if (input->PushKey(DIK_Q)) { camera->MoveVector({ 0.0f,0.0f,+0.06f }); }
-		else if (input->PushKey(DIK_C)) { camera->MoveVector({ 0.0f,0.0f,-0.06f }); }
+		if (input->PushKey(DIK_I)) { camera->MoveVector({ 0.0f,0.0f,+0.06f }); }
+		else if (input->PushKey(DIK_K)) { camera->MoveVector({ 0.0f,0.0f,-0.06f }); }
 	}
 }
 
