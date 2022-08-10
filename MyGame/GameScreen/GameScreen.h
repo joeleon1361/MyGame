@@ -10,6 +10,7 @@
 #include "Sound.h"
 #include "FbxObject.h"
 #include "ParticleManager.h"
+#include "Vector3.h"
 
 class Player;
 
@@ -80,5 +81,7 @@ private: // メンバ変数
 
 	int ShotFlag;
 	XMFLOAT3 Shot;
+
+	size_t startIndex = 1;
 };
 

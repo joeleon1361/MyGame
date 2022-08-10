@@ -114,6 +114,31 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 0, -10 });
 	camera->SetUp({ 0, 1, 0 });
+
+	Vector3 start(-100.0f, 0.0f, 0.0f);
+	Vector3 p2(-50.0f, 50.0f, 50.0f);
+	Vector3 p3(50.0f, -30.0f, 50.0f);
+	Vector3 end(100.0f, 0.0f, 0.0f);
+
+	std::vector<Vector3> checkPoint;
+	checkPoint = {
+		start,
+		p2,
+		p3,
+		end,
+		end
+	};
+
+	/*std::vector<Vector3> pointsDrawing;
+
+	const size_t segmentCount = 100;
+
+	for (size_t i = 0; i < segmentCount + 1; i++) {
+		float t = 1.0f / segmentCount * i;
+		Vector3 pos = 0.5 * (2 * p1 + (-p0 + p2) * t +
+			(2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t +
+			(-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t);
+	}*/
 }
 
 void GameScene::Update()
@@ -161,7 +186,7 @@ void GameScene::Update()
 			ShotFlag = 0;
 		}
 	}
-	#pragma endregion
+#pragma endregion
 
 
 	camera->Update();
@@ -228,7 +253,7 @@ void GameScene::Draw()
 	{
 		objBullet->Draw();
 	}
-	
+
 	// testobject->Draw(cmdList);
 
 	// パーティクルの描画
