@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "Player.h"
 #include <stdio.h>
+#include <DirectXMath.h>
 
 using namespace DirectX;
 
@@ -80,6 +81,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	objGround = Object3d::Create();
 	objPlayer = Player::Create(modelPlayer);
 	objBullet = Object3d::Create();
+	objCenter = Object3d::Create();
 
 	// テクスチャ2番に読み込み
 	Sprite::LoadTexture(2, L"Resources/Sprite/texture.png");
@@ -93,6 +95,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	objGround->SetModel(modelGround);
 	objPlayer->SetModel(modelPlayer);
 	objBullet->SetModel(modelBullet);
+	objCenter->SetModel(modelBullet);
 
 	testmodel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 
@@ -111,6 +114,9 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	objBullet->SetPosition(Shot);
 	objBullet->SetScale({ 0.5f, 0.5f, 0.5f });
 
+	objCenter->SetPosition({ 0,0,0 });
+	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
+
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 0, -10 });
 	camera->SetUp({ 0, 1, 0 });
@@ -120,7 +126,6 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	Vector3 p3(50.0f, -30.0f, 50.0f);
 	Vector3 end(100.0f, 0.0f, 0.0f);
 
-	std::vector<Vector3> checkPoint;
 	checkPoint = {
 		start,
 		p2,
@@ -147,7 +152,7 @@ void GameScene::Update()
 	XMFLOAT3 routeCameraPosition = camera->GetEye();
 	XMFLOAT3 cameraTargetPosition = camera->GetTarget();
 
-	MoveCamera();
+	// MoveCamera();
 	// パーティクル生成
 	CreateParticles();
 
@@ -158,6 +163,7 @@ void GameScene::Update()
 	camera->SetEye(routeCameraPosition);
 	camera->SetTarget(cameraTargetPosition);
 	objPlayer->SetPosition(playerPosition);
+	objCenter->SetPosition(cameraTargetPosition);
 
 #pragma region 球発射処理
 	if (input->PushKey(DIK_SPACE))
@@ -188,6 +194,33 @@ void GameScene::Update()
 	}
 #pragma endregion
 
+	XMVECTOR start{ -100.0f, 0.0f, 0.0f, 1.0f };
+	XMVECTOR p2{ -50.0f, 50.0f, +50.0f , 1.0f};
+	XMVECTOR p3{ +50.0f, -30.0f, -50.0f, 1.0f};
+	XMVECTOR end{ +100.0f, 0.0f, 0.0f, 1.0f};
+
+	std::vector<XMVECTOR> checkPoint{ start, start, p2, p3, end, end };
+
+	nowCount = nowCount + adoCount;
+
+	elapsedCount = nowCount - startCount;
+	float elapsedTime = static_cast<float> (elapsedCount) / 1'000'000.0f;
+
+	timeRate = elapsedCount / maxTime;
+
+	if (timeRate >= 1.0f)
+	{
+		if (startIndex < checkPoint.size() - 3)
+		{
+			startIndex += 1;
+			timeRate -= 1.0f;
+			startCount = nowCount;
+		}
+		else
+		{
+			timeRate = 1.0f;
+		}
+	}
 
 	camera->Update();
 	particleMan->Update();
@@ -196,6 +229,7 @@ void GameScene::Update()
 	objGround->Update();
 	objPlayer->Update();
 	objBullet->Update();
+	objCenter->Update();
 
 	testobject->Update();
 
@@ -216,6 +250,12 @@ void GameScene::Update()
 		<< routeCameraPosition.y << "," // y
 		<< routeCameraPosition.z << ")"; // z
 	debugText.Print(CameraPos.str(), 50, 70, 1.0f);
+
+	std::ostringstream nowCounter;
+	nowCounter << "nowCounter:("
+		<< std::fixed << std::setprecision(2)
+		<< nowCount << ")";
+	debugText.Print(nowCounter.str(), 50, 90, 1.0f);
 
 	// 自機操作方法
 	debugText.Print("WASD:PlayerMove", 50, 30, 1.0f);
@@ -255,6 +295,8 @@ void GameScene::Draw()
 	}
 
 	// testobject->Draw(cmdList);
+
+	objCenter->Draw();
 
 	// パーティクルの描画
 	//particleMan->Draw(cmdList);
@@ -325,4 +367,23 @@ void GameScene::CreateParticles()
 		// 追加
 		particleMan->Add(60, pos, vel, acc, 1.0f, 0.0f);
 	}
+}
+
+Vector3 splinePosition(const std::vector<Vector3>& points, size_t startIndex, float t)
+{
+	size_t n = points.size() - 2;
+
+	if (startIndex > n) return points[n];
+	if (startIndex < 1) return points[1];
+
+	Vector3 p0 = points[startIndex - 1];
+	Vector3 p1 = points[startIndex];
+	Vector3 p2 = points[startIndex + 1];
+	Vector3 p3 = points[startIndex + 2];
+
+	Vector3 position = 0.5 * (2 * p1 + (-p0 + p2) * t +
+		(2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t +
+		(-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t);
+
+	return position;
 }

@@ -76,12 +76,24 @@ private: // メンバ変数
 	Object3d* objGround = nullptr;
 	Player* objPlayer = nullptr;
 	Object3d* objBullet = nullptr;
+	Object3d* objCenter = nullptr;
 
 	FbxObject3d* testobject = nullptr;
 
 	int ShotFlag;
 	XMFLOAT3 Shot;
 
+	std::vector<Vector3> checkPoint;
+
 	size_t startIndex = 1;
+
+	// 時間計測に必要なデータ
+	int startCount = 0;
+	int adoCount = 1.0f;
+	int nowCount = 0;
+	int elapsedCount = 0;
+
+	float maxTime = 5.0f;
+	float timeRate;
 };
 
