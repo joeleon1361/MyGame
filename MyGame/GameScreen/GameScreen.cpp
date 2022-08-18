@@ -121,18 +121,6 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	camera->SetEye({ 0, 0, -10 });
 	camera->SetUp({ 0, 1, 0 });
 
-	Vector3 start(-100.0f, 0.0f, 0.0f);
-	Vector3 p2(-50.0f, 50.0f, 50.0f);
-	Vector3 p3(50.0f, -30.0f, 50.0f);
-	Vector3 end(100.0f, 0.0f, 0.0f);
-
-	checkPoint = {
-		start,
-		p2,
-		p3,
-		end,
-		end
-	};
 
 	/*std::vector<Vector3> pointsDrawing;
 
