@@ -10,7 +10,6 @@
 #include "Sound.h"
 #include "FbxObject.h"
 #include "ParticleManager.h"
-#include "Vector3.h"
 
 class Player;
 
@@ -52,6 +51,8 @@ public: // メンバ関数
 	// パーティクル生成
 	void CreateParticles();
 
+	void splinePosition(const std::vector<XMVECTOR>& points, size_t startIndex, float t);
+
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
 	Input* input = nullptr;
@@ -83,7 +84,7 @@ private: // メンバ変数
 	int ShotFlag;
 	XMFLOAT3 Shot;
 
-	std::vector<Vector3> checkPoint;
+	std::vector<XMVECTOR> checkPoint;
 
 	size_t startIndex = 1;
 
