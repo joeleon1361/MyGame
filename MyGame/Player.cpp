@@ -38,10 +38,10 @@ bool Player::Initialize()
 void Player::Update()
 {
 	// ˆÚ“®ˆ—
-	Move();
+	//Move();
 
 	// ˆÚ“®§ŒÀ
-	MoveLimit();
+	//MoveLimit();
 
 	// ƒ[ƒ‹
 	Rolling();

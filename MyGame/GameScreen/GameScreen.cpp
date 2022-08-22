@@ -112,10 +112,12 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	ShotFlag = 0;
 	Shot = { 0 , -500.f, 0 };
 	objBullet->SetPosition(Shot);
-	objBullet->SetScale({ 0.5f, 0.5f, 0.5f });
+	objBullet->SetScale({ 0.3f, 0.3f, 0.3f });
 
 	objCenter->SetPosition({ 0,0,0 });
 	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
+
+	objSkydome->SetPosition({ 0,0,50.0f });
 
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 0, -10 });
@@ -127,22 +129,302 @@ void GameScene::Update()
 	XMFLOAT3 playerPosition = objPlayer->GetPosition();
 	XMFLOAT3 routeCameraPosition = camera->GetEye();
 	XMFLOAT3 cameraTargetPosition = camera->GetTarget();
+	XMFLOAT3 SkydomPos = objSkydome->GetPosition();
 
 	// MoveCamera();
+	
+	// カメラ移動
+	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
+	{
+		if (input->PushKey(DIK_UP)) { routeCameraPosition.z += 0.06; }
+		else if (input->PushKey(DIK_DOWN)) { routeCameraPosition.z -= 0.06;; }
+		if (input->PushKey(DIK_RIGHT)) { routeCameraPosition.x += 0.06; }
+		else if (input->PushKey(DIK_LEFT)) { routeCameraPosition.x -= 0.06; }
+	}
+
 	// パーティクル生成
 	CreateParticles();
 
-	routeCameraPosition.z += 0.05f;
+	/*routeCameraPosition.z += 0.05f;
 	playerPosition.z += 0.05f;
-	cameraTargetPosition.z += 0.05f;
+	cameraTargetPosition.z += 0.05f;*/
+	SkydomPos.z -= 0.05f;
+
+	if (cameraMode == 0)
+	{
+		playerPosition.z = 0;
+
+		routeCameraPosition.x = 0;
+		routeCameraPosition.z = -10.0;
+
+		// オブジェクト移動
+		if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
+		{
+			// 移動後の座標を計算
+			if (input->PushKey(DIK_W))
+			{
+				playerPosition.y += 0.3f;
+			}
+			else if (input->PushKey(DIK_S))
+			{
+				playerPosition.y -= 0.3f;
+			}
+			if (input->PushKey(DIK_D))
+			{
+				playerPosition.x += 0.3f;
+			}
+			else if (input->PushKey(DIK_A))
+			{
+				playerPosition.x -= 0.3f;
+			}
+		}
+
+		// X軸を制限
+		playerPosition.x = max(playerPosition.x, -8.5f);
+		playerPosition.x = min(playerPosition.x, +8.5f);
+
+		// Y軸を制限
+		playerPosition.y = max(playerPosition.y, -5.0f);
+		playerPosition.y = min(playerPosition.y, +5.0f);
+
+		if (input->PushKey(DIK_SPACE))
+		{
+			if (ShotFlag == 0)
+			{
+				ShotFlag = 1;
+			}
+		}
+
+		if (ShotFlag == 1)
+		{
+			Shot = playerPosition;
+			objBullet->SetPosition(Shot);
+			ShotFlag = 2;
+		}
+
+		if (ShotFlag == 2)
+		{
+			Shot.z += 2.0f;
+			objBullet->SetPosition(Shot);
+
+			if (Shot.z >= 50.0f)
+			{
+				Shot = { 0, -500.0f, 0 };
+				ShotFlag = 0;
+			}
+		}
+	}
+
+	else if (cameraMode == 1)
+	{
+		routeCameraPosition.x = -10.0;
+		routeCameraPosition.z = 0;
+
+		playerPosition.x = 0;
+
+		// オブジェクト移動
+		if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
+		{
+			// 移動後の座標を計算
+			if (input->PushKey(DIK_W))
+			{
+				playerPosition.y += 0.3f;
+			}
+			else if (input->PushKey(DIK_S))
+			{
+				playerPosition.y -= 0.3f;
+			}
+			if (input->PushKey(DIK_D))
+			{
+				playerPosition.z -= 0.3f;
+			}
+			else if (input->PushKey(DIK_A))
+			{
+				playerPosition.z += 0.3f;
+			}
+		}
+
+		// X軸を制限
+		playerPosition.z = max(playerPosition.z, -8.5f);
+		playerPosition.z = min(playerPosition.z, +8.5f);
+
+		// Y軸を制限
+		playerPosition.y = max(playerPosition.y, -5.0f);
+		playerPosition.y = min(playerPosition.y, +5.0f);
+
+		if (input->PushKey(DIK_SPACE))
+		{
+			if (ShotFlag == 0)
+			{
+				ShotFlag = 1;
+			}
+		}
+
+		if (ShotFlag == 1)
+		{
+			Shot = playerPosition;
+			objBullet->SetPosition(Shot);
+			ShotFlag = 2;
+		}
+
+		if (ShotFlag == 2)
+		{
+			Shot.x += 2.0f;
+			objBullet->SetPosition(Shot);
+
+			if (Shot.x >= 50.0f)
+			{
+				Shot = { 0, -500.0f, 0 };
+				ShotFlag = 0;
+			}
+		}
+	}
+
+	else if (cameraMode == 2)
+	{
+		playerPosition.z = 0;
+
+		routeCameraPosition.x = 0;
+		routeCameraPosition.z = 10.0;
+
+		// オブジェクト移動
+		if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
+		{
+			// 移動後の座標を計算
+			if (input->PushKey(DIK_W))
+			{
+				playerPosition.y += 0.3f;
+			}
+			else if (input->PushKey(DIK_S))
+			{
+				playerPosition.y -= 0.3f;
+			}
+			if (input->PushKey(DIK_D))
+			{
+				playerPosition.x -= 0.3f;
+			}
+			else if (input->PushKey(DIK_A))
+			{
+				playerPosition.x += 0.3f;
+			}
+		}
+
+		// X軸を制限
+		playerPosition.x = max(playerPosition.x, -8.5f);
+		playerPosition.x = min(playerPosition.x, +8.5f);
+
+		// Y軸を制限
+		playerPosition.y = max(playerPosition.y, -5.0f);
+		playerPosition.y = min(playerPosition.y, +5.0f);
+
+		if (input->PushKey(DIK_SPACE))
+		{
+			if (ShotFlag == 0)
+			{
+				ShotFlag = 1;
+			}
+		}
+
+		if (ShotFlag == 1)
+		{
+			Shot = playerPosition;
+			objBullet->SetPosition(Shot);
+			ShotFlag = 2;
+		}
+
+		if (ShotFlag == 2)
+		{
+			Shot.z -= 2.0f;
+			objBullet->SetPosition(Shot);
+
+			if (Shot.z <= -50.0f)
+			{
+				Shot = { 0, -500.0f, 0 };
+				ShotFlag = 0;
+			}
+		}
+	}
+
+	else if (cameraMode == 3)
+	{
+		routeCameraPosition.x = 10.0;
+		routeCameraPosition.z = 0;
+
+		playerPosition.x = 0;
+
+		// オブジェクト移動
+		if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
+		{
+			// 移動後の座標を計算
+			if (input->PushKey(DIK_W))
+			{
+				playerPosition.y += 0.3f;
+			}
+			else if (input->PushKey(DIK_S))
+			{
+				playerPosition.y -= 0.3f;
+			}
+			if (input->PushKey(DIK_D))
+			{
+				playerPosition.z += 0.3f;
+			}
+			else if (input->PushKey(DIK_A))
+			{
+				playerPosition.z -= 0.3f;
+			}
+		}
+
+		// X軸を制限
+		playerPosition.z = max(playerPosition.z, -8.5f);
+		playerPosition.z = min(playerPosition.z, +8.5f);
+
+		// Y軸を制限
+		playerPosition.y = max(playerPosition.y, -5.0f);
+		playerPosition.y = min(playerPosition.y, +5.0f);
+
+		if (input->PushKey(DIK_SPACE))
+		{
+			if (ShotFlag == 0)
+			{
+				ShotFlag = 1;
+			}
+		}
+
+		if (ShotFlag == 1)
+		{
+			Shot = playerPosition;
+			objBullet->SetPosition(Shot);
+			ShotFlag = 2;
+		}
+
+		if (ShotFlag == 2)
+		{
+			Shot.x -= 2.0f;
+			objBullet->SetPosition(Shot);
+
+			if (Shot.x <= -50.0f)
+			{
+				Shot = { 0, -500.0f, 0 };
+				ShotFlag = 0;
+			}
+		}
+	}
+
+	else if (cameraMode >= 4)
+	{
+		cameraMode = 0;
+	}
+
+	if (input->TriggerKey(DIK_Y)) { cameraMode += 1; }
 
 	camera->SetEye(routeCameraPosition);
 	camera->SetTarget(cameraTargetPosition);
 	objPlayer->SetPosition(playerPosition);
 	objCenter->SetPosition(cameraTargetPosition);
+	objSkydome->SetPosition(SkydomPos);
 
 #pragma region 球発射処理
-	if (input->PushKey(DIK_SPACE))
+	/*if (input->PushKey(DIK_SPACE))
 	{
 		if (ShotFlag == 0)
 		{
@@ -167,9 +449,10 @@ void GameScene::Update()
 			Shot = { 0, -500.0f, 0 };
 			ShotFlag = 0;
 		}
-	}
+	}*/
 #pragma endregion
 
+#pragma region スプライン曲線関係
 	XMVECTOR start{ -100.0f, 0.0f, 0.0f, 1.0f };
 	XMVECTOR p2{ -50.0f, 50.0f, +50.0f , 1.0f};
 	XMVECTOR p3{ +50.0f, -30.0f, -50.0f, 1.0f};
@@ -197,6 +480,7 @@ void GameScene::Update()
 			timeRate = 1.0f;
 		}
 	}
+#pragma endregion
 
 	camera->Update();
 	particleMan->Update();
@@ -272,7 +556,7 @@ void GameScene::Draw()
 
 	// testobject->Draw(cmdList);
 
-	objCenter->Draw();
+	// objCenter->Draw();
 
 	// パーティクルの描画
 	//particleMan->Draw(cmdList);
@@ -294,7 +578,7 @@ void GameScene::Draw()
 	//sprite2->Draw();
 
 	// デバッグテキストの描画
-	debugText.DrawAll(cmdList);
+	// debugText.DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -345,21 +629,21 @@ void GameScene::CreateParticles()
 	}
 }
 
-void splinePosition(const std::vector<XMVECTOR>& points, size_t startIndex, float t)
-{
-	size_t n = points.size() - 2;
-
-	if (startIndex > n) return points[n];
-	if (startIndex < 1) return points[1];
-
-	XMVECTOR p0 = points[startIndex - 1];
-	XMVECTOR p1 = points[startIndex];
-	XMVECTOR p2 = points[startIndex + 1];
-	XMVECTOR p3 = points[startIndex + 2];
-
-	XMVECTOR position = 0.5 * (2 * p1 + (-p0 + p2) * t +
-		(2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t +
-		(-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t);
-
-	return position;
-}
+//void splinePosition(const std::vector<XMVECTOR>& points, size_t startIndex, float t)
+//{
+//	size_t n = points.size() - 2;
+//
+//	if (startIndex > n) return points[n];
+//	if (startIndex < 1) return points[1];
+//
+//	XMVECTOR p0 = points[startIndex - 1];
+//	XMVECTOR p1 = points[startIndex];
+//	XMVECTOR p2 = points[startIndex + 1];
+//	XMVECTOR p3 = points[startIndex + 2];
+//
+//	XMVECTOR position = 0.5 * (2 * p1 + (-p0 + p2) * t +
+//		(2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t +
+//		(-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t);
+//
+//	return position;
+//}

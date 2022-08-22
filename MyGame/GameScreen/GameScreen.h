@@ -51,7 +51,7 @@ public: // メンバ関数
 	// パーティクル生成
 	void CreateParticles();
 
-	void splinePosition(const std::vector<XMVECTOR>& points, size_t startIndex, float t);
+	// void splinePosition(const std::vector<XMVECTOR>& points, size_t startIndex, float t);
 
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
@@ -84,7 +84,9 @@ private: // メンバ変数
 	int ShotFlag;
 	XMFLOAT3 Shot;
 
-	std::vector<XMVECTOR> checkPoint;
+	int cameraMode = 0;
+
+	// std::vector<XMVECTOR> checkPoint;
 
 	size_t startIndex = 1;
 
