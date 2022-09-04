@@ -117,7 +117,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	objCenter->SetPosition({ 0,0,0 });
 	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
 
-	objSkydome->SetPosition({ 0,0,50.0f });
+	objSkydome->SetPosition({ -70,0,0 });
 
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 0, -10 });
@@ -127,12 +127,14 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 void GameScene::Update()
 {
 	XMFLOAT3 playerPosition = objPlayer->GetPosition();
+	XMFLOAT3 playerRotation = objPlayer->GetRotation();
 	XMFLOAT3 routeCameraPosition = camera->GetEye();
 	XMFLOAT3 cameraTargetPosition = camera->GetTarget();
 	XMFLOAT3 SkydomPos = objSkydome->GetPosition();
+	XMFLOAT3 SkydomRot = objSkydome->GetRotation();
 
 	// MoveCamera();
-	
+
 	// カメラ移動
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
 	{
@@ -148,8 +150,9 @@ void GameScene::Update()
 	/*routeCameraPosition.z += 0.05f;
 	playerPosition.z += 0.05f;
 	cameraTargetPosition.z += 0.05f;*/
-	SkydomPos.z -= 0.05f;
+	SkydomRot.y += 0.05f;
 
+#pragma region 四方向カメラ
 	if (cameraMode == 0)
 	{
 		playerPosition.z = 0;
@@ -186,6 +189,34 @@ void GameScene::Update()
 		// Y軸を制限
 		playerPosition.y = max(playerPosition.y, -5.0f);
 		playerPosition.y = min(playerPosition.y, +5.0f);
+
+		// ロール(横)
+		if (input->PushKey(DIK_A) || input->PushKey(DIK_D))
+		{
+			if (input->PushKey(DIK_D) && playerRotation.x <= +40.0f)
+			{
+				playerRotation.x += 5.0f;
+			}
+
+			if (input->PushKey(DIK_A) && playerRotation.x >= -40.0f)
+			{
+				playerRotation.x -= 5.0f;
+			}
+		}
+
+		// 傾きを戻す
+		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && playerRotation.x != 0.0f)
+		{
+			if (playerRotation.x >= 0.0f)
+			{
+				playerRotation.x -= 5.0f;
+			}
+
+			if (playerRotation.x <= 0.0f)
+			{
+				playerRotation.x += 5.0f;
+			}
+		}
 
 		if (input->PushKey(DIK_SPACE))
 		{
@@ -317,6 +348,34 @@ void GameScene::Update()
 		playerPosition.y = max(playerPosition.y, -5.0f);
 		playerPosition.y = min(playerPosition.y, +5.0f);
 
+		// ロール(横)
+		if (input->PushKey(DIK_A) || input->PushKey(DIK_D))
+		{
+			if (input->PushKey(DIK_D) && playerRotation.x >= -40.0f)
+			{
+				playerRotation.x -= 5.0f;
+			}
+
+			if (input->PushKey(DIK_A) && playerRotation.x <= +40.0f)
+			{
+				playerRotation.x += 5.0f;
+			}
+		}
+
+		// 傾きを戻す
+		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && playerRotation.x != 0.0f)
+		{
+			if (playerRotation.x >= 0.0f)
+			{
+				playerRotation.x -= 5.0f;
+			}
+
+			if (playerRotation.x <= 0.0f)
+			{
+				playerRotation.x += 5.0f;
+			}
+		}
+
 		if (input->PushKey(DIK_SPACE))
 		{
 			if (ShotFlag == 0)
@@ -416,12 +475,15 @@ void GameScene::Update()
 	}
 
 	if (input->TriggerKey(DIK_Y)) { cameraMode += 1; }
+#pragma endregion
 
 	camera->SetEye(routeCameraPosition);
 	camera->SetTarget(cameraTargetPosition);
 	objPlayer->SetPosition(playerPosition);
+	objPlayer->SetRotation(playerRotation);
 	objCenter->SetPosition(cameraTargetPosition);
 	objSkydome->SetPosition(SkydomPos);
+	objSkydome->SetRotation(SkydomRot);
 
 #pragma region 球発射処理
 	/*if (input->PushKey(DIK_SPACE))
@@ -454,9 +516,9 @@ void GameScene::Update()
 
 #pragma region スプライン曲線関係
 	XMVECTOR start{ -100.0f, 0.0f, 0.0f, 1.0f };
-	XMVECTOR p2{ -50.0f, 50.0f, +50.0f , 1.0f};
-	XMVECTOR p3{ +50.0f, -30.0f, -50.0f, 1.0f};
-	XMVECTOR end{ +100.0f, 0.0f, 0.0f, 1.0f};
+	XMVECTOR p2{ -50.0f, 50.0f, +50.0f , 1.0f };
+	XMVECTOR p3{ +50.0f, -30.0f, -50.0f, 1.0f };
+	XMVECTOR end{ +100.0f, 0.0f, 0.0f, 1.0f };
 
 	std::vector<XMVECTOR> checkPoint{ start, start, p2, p3, end, end };
 

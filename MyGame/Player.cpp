@@ -44,7 +44,7 @@ void Player::Update()
 	//MoveLimit();
 
 	// ƒ[ƒ‹
-	Rolling();
+	//Rolling();
 
 	// ‰ñ”ğ
 	// DodgeRoll();
