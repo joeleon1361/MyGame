@@ -51,7 +51,8 @@ public: // メンバ関数
 	// パーティクル生成
 	void CreateParticles();
 
-	// void splinePosition(const std::vector<XMVECTOR>& points, size_t startIndex, float t);
+private:
+	XMFLOAT3 SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t);
 
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
@@ -78,6 +79,7 @@ private: // メンバ変数
 	Player* objPlayer = nullptr;
 	Object3d* objBullet = nullptr;
 	Object3d* objCenter = nullptr;
+	Object3d* objTest = nullptr;
 
 	FbxObject3d* testobject = nullptr;
 
@@ -86,17 +88,22 @@ private: // メンバ変数
 
 	int cameraMode = 0;
 
-	// std::vector<XMVECTOR> checkPoint;
+	XMFLOAT3 start = { 0.0f, 0.0f, 0.0f};
+	XMFLOAT3 p2 = { -70.0f, 0.0f, -70.0f};
+	XMFLOAT3 p3 = { -140.0f, 0.0f, 0.0f};
+	XMFLOAT3 end = { -70.0f, 0.0f, 70.0f};
+
+	std::vector<XMFLOAT3> checkPoint{ start, start, p2, p3, end,start, start };
+
 
 	size_t startIndex = 1;
 
 	// 時間計測に必要なデータ
 	int startCount = 0;
-	int adoCount = 1.0f;
 	int nowCount = 0;
 	int elapsedCount = 0;
 
-	float maxTime = 5.0f;
+	float maxTime = 2000.0f;
 	float timeRate;
 };
 
