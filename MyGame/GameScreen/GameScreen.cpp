@@ -83,6 +83,11 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	objBullet = Object3d::Create();
 	objCenter = Object3d::Create();
 	objTest = Object3d::Create();
+	objtest1 = Object3d::Create();
+	objtest2 = Object3d::Create();
+	objtest3 = Object3d::Create();
+	objtest4 = Object3d::Create();
+	objC = Object3d::Create();
 
 	// テクスチャ2番に読み込み
 	Sprite::LoadTexture(2, L"Resources/Sprite/texture.png");
@@ -98,6 +103,18 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	objBullet->SetModel(modelBullet);
 	objCenter->SetModel(modelBullet);
 	objTest->SetModel(modelBullet);
+	objtest1->SetModel(modelBullet);
+	objtest2->SetModel(modelBullet);
+	objtest3->SetModel(modelBullet);
+	objtest4->SetModel(modelBullet);
+	objC->SetModel(modelPlayer);
+
+	objtest1->SetParent(objTest);
+	objtest2->SetParent(objTest);
+	objtest3->SetParent(objTest);
+	objtest4->SetParent(objTest);
+
+	objC->SetParent(objPlayer);
 
 	testmodel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 
@@ -122,6 +139,13 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	objSkydome->SetPosition({ -70,0,0 });
 
 	objTest->SetPosition({0,0,0});
+	objtest1->SetPosition({ 2,-2,2 });
+	objtest2->SetPosition({ 2,-2,-2 });
+	objtest3->SetPosition({ -2,-2,2 });
+	objtest4->SetPosition({ -2,-2,-2 });
+
+	objC->SetPosition({0,0,5});
+	objC->SetRotation({ 0,0,0 });
 
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 0, 10 });
@@ -140,6 +164,9 @@ void GameScene::Update()
 	XMFLOAT3 SkydomRot = objSkydome->GetRotation();
 
 	XMFLOAT3 TestPos = objTest->GetPosition();
+	XMFLOAT3 TestRot = objTest->GetRotation();
+
+	XMFLOAT3 CRot = objC->GetRotation();
 
 	// MoveCamera();
 
@@ -158,7 +185,9 @@ void GameScene::Update()
 	/*routeCameraPosition.z += 0.05f;
 	playerPosition.z += 0.05f;
 	cameraTargetPosition.z += 0.05f;*/
-	SkydomRot.y += 0.05f;
+	// SkydomRot.y += 0.05f;
+	CRot.x += 2;
+	TestRot.y += 2;
 
 #pragma region 四方向カメラ
 	if (cameraMode == 0)
@@ -487,11 +516,18 @@ void GameScene::Update()
 
 	camera->SetEye(routeCameraPosition);
 	camera->SetTarget(cameraTargetPosition);
+
 	objPlayer->SetPosition(playerPosition);
 	objPlayer->SetRotation(playerRotation);
+
 	objCenter->SetPosition(cameraTargetPosition);
+
 	objSkydome->SetPosition(SkydomPos);
 	objSkydome->SetRotation(SkydomRot);
+
+	objTest->SetRotation(TestRot);
+
+	objC->SetRotation(CRot);
 
 #pragma region 球発射処理
 	/*if (input->PushKey(DIK_SPACE))
@@ -563,8 +599,14 @@ void GameScene::Update()
 
 	testobject->Update();
 
+	objC->Update();
+
 	objTest->SetPosition(SplinePosition(checkPoint, startIndex, timeRate));
 	objTest->Update();
+	objtest1->Update();
+	objtest2->Update();
+	objtest3->Update();
+	objtest4->Update();
 
 #pragma region デバックテキスト
 	// プレイヤーの座標を表示
@@ -658,7 +700,13 @@ void GameScene::Draw()
 		objBullet->Draw();
 	}
 
+	objC->Draw();
+
 	objTest->Draw();
+	objtest1->Draw();
+	objtest2->Draw();
+	objtest3->Draw();
+	objtest4->Draw();
 
 	// testobject->Draw(cmdList);
 

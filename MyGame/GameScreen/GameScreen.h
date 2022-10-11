@@ -80,6 +80,11 @@ private: // メンバ変数
 	Object3d* objBullet = nullptr;
 	Object3d* objCenter = nullptr;
 	Object3d* objTest = nullptr;
+	Object3d* objC = nullptr;
+	Object3d* objtest1 = nullptr;
+	Object3d* objtest2 = nullptr;
+	Object3d* objtest3 = nullptr;
+	Object3d* objtest4 = nullptr;
 
 	FbxObject3d* testobject = nullptr;
 
@@ -88,7 +93,7 @@ private: // メンバ変数
 
 	int cameraMode = 0;
 
-	XMFLOAT3 start = { 0.0f, 0.0f, 0.0f};
+	XMFLOAT3 start = { 10.0f, 0.0f, 0.0f};
 	XMFLOAT3 p2 = { -70.0f, 0.0f, -70.0f};
 	XMFLOAT3 p3 = { -140.0f, 0.0f, 0.0f};
 	XMFLOAT3 end = { -70.0f, 0.0f, 70.0f};

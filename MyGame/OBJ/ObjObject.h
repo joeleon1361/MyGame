@@ -108,6 +108,8 @@ public: // メンバ関数
 	// モデルのセット
 	void SetModel(Model* model) { this->model = model; }
 
+	void SetParent(Object3d* parent) { this->parent = parent; }
+
 	void SetBillboard(bool isBillboard) { this->isBillboard = isBillboard; }
 
 protected: // メンバ変数
