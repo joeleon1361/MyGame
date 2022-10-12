@@ -2,7 +2,7 @@
 
 using namespace DirectX;
 
-PlayerBullet* PlayerBullet::Create(Model* model)
+PlayerBullet* PlayerBullet::Create(ObjModel* model)
 {
 	// 3Dオブジェクトのインスタンスを生成 Instantiate a 3D object
 	PlayerBullet* instance = new PlayerBullet();
@@ -26,7 +26,7 @@ PlayerBullet* PlayerBullet::Create(Model* model)
 
 bool PlayerBullet::Initialize()
 {
-	if (!Object3d::Initialize())
+	if (!ObjObject3d::Initialize())
 	{
 		return false;
 	}

@@ -69,28 +69,28 @@ private: // メンバ変数
 
 	ParticleManager* particleMan = nullptr;
 
-	Model* modelSkydome = nullptr;
-	Model* modelGround = nullptr;
-	Model* modelPlayer = nullptr;
-	Model* modelBullet = nullptr;
+	ObjModel* modelSkydome = nullptr;
+	ObjModel* modelGround = nullptr;
+	ObjModel* modelPlayer = nullptr;
+	ObjModel* modelBullet = nullptr;
 
 	FbxModel* testmodel = nullptr;
 
-	Object3d* objSkydome = nullptr;
-	Object3d* objGround = nullptr;
+	ObjObject3d* objSkydome = nullptr;
+	ObjObject3d* objGround = nullptr;
 	Player* objPlayer = nullptr;
-	Object3d* objBullet = nullptr;
+	ObjObject3d* objBullet = nullptr;
 
-	Object3d* objCenter = nullptr;
+	ObjObject3d* objCenter = nullptr;
 
-	Object3d* objC = nullptr;
+	ObjObject3d* objC = nullptr;
 
 	// ボス関連
-	Object3d* objBossBody = nullptr;
-	Object3d* objBossLeg1 = nullptr;
-	Object3d* objBossLeg2 = nullptr;
-	Object3d* objBossLeg3 = nullptr;
-	Object3d* objBossLeg4 = nullptr;
+	ObjObject3d* objBossBody = nullptr;
+	ObjObject3d* objBossLeg1 = nullptr;
+	ObjObject3d* objBossLeg2 = nullptr;
+	ObjObject3d* objBossLeg3 = nullptr;
+	ObjObject3d* objBossLeg4 = nullptr;
 
 	FbxObject3d* testobject = nullptr;
 

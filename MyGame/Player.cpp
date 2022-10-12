@@ -3,7 +3,7 @@
 
 using namespace DirectX;
 
-Player* Player::Create(Model* model)
+Player* Player::Create(ObjModel* model)
 {
 	// 3Dオブジェクトのインスタンスを生成 Instantiate a 3D object
 	Player* instance = new Player();
@@ -27,7 +27,7 @@ Player* Player::Create(Model* model)
 
 bool Player::Initialize()
 {
-	if (!Object3d::Initialize())
+	if (!ObjObject3d::Initialize())
 	{
 		return false;
 	}
@@ -52,7 +52,7 @@ void Player::Update()
 	// 弾を発射
 	Shot();
 
-	Object3d::Update();
+	ObjObject3d::Update();
 }
 
 void Player::Move()

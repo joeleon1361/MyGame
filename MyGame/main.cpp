@@ -53,7 +53,7 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 	postEffect->Initialize();
 
 	// 3Dオブジェクト静的初期化
-	Object3d::StaticInitialize( dxCommon->GetDevice() );
+	ObjObject3d::StaticInitialize( dxCommon->GetDevice() );
 
 	FbxLoader::GetInstance()->Initialize( dxCommon->GetDevice() );
 #pragma endregion

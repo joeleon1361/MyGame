@@ -284,10 +284,10 @@
     <ClInclude Include="Collider\CollisionTypes.h">
       <Filter>Collider</Filter>
     </ClInclude>
-    <ClInclude Include="Collider\SphereCollider.h">
+    <ClInclude Include="Collider\RaycastHit.h">
       <Filter>Collider</Filter>
     </ClInclude>
-    <ClInclude Include="Collider\RaycastHit.h">
+    <ClInclude Include="Collider\SphereCollider.h">
       <Filter>Collider</Filter>
     </ClInclude>
   </ItemGroup>

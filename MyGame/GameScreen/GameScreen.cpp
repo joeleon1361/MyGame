@@ -48,7 +48,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	camera = new Camera(WinApp::window_width, WinApp::window_height);
 
 	// カメラセット
-	Object3d::SetCamera(camera);
+	ObjObject3d::SetCamera(camera);
 	FbxObject3d::SetCamera(camera);
 
 	// デバイスをセット
@@ -83,24 +83,24 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
 
 	// 3Dオブジェクト生成
-	objSkydome = Object3d::Create();
-	objGround = Object3d::Create();
+	objSkydome = ObjObject3d::Create();
+	objGround = ObjObject3d::Create();
 	objPlayer = Player::Create(modelPlayer);
-	objBullet = Object3d::Create();
-	objCenter = Object3d::Create();
+	objBullet = ObjObject3d::Create();
+	objCenter = ObjObject3d::Create();
 
-	objBossBody = Object3d::Create();
-	objBossLeg1 = Object3d::Create();
-	objBossLeg2 = Object3d::Create();
-	objBossLeg3 = Object3d::Create();
-	objBossLeg4 = Object3d::Create();
+	objBossBody = ObjObject3d::Create();
+	objBossLeg1 = ObjObject3d::Create();
+	objBossLeg2 = ObjObject3d::Create();
+	objBossLeg3 = ObjObject3d::Create();
+	objBossLeg4 = ObjObject3d::Create();
 
-	objC = Object3d::Create();
+	objC = ObjObject3d::Create();
 
-	modelSkydome = Model::CreateFromOBJ("skydome");
-	modelGround = Model::CreateFromOBJ("ground");
-	modelPlayer = Model::CreateFromOBJ("player2");
-	modelBullet = Model::CreateFromOBJ("bullet2");
+	modelSkydome = ObjModel::CreateFromOBJ("skydome");
+	modelGround = ObjModel::CreateFromOBJ("ground");
+	modelPlayer = ObjModel::CreateFromOBJ("player2");
+	modelBullet = ObjModel::CreateFromOBJ("bullet2");
 
 	objSkydome->SetModel(modelSkydome);
 	objGround->SetModel(modelGround);
@@ -673,7 +673,7 @@ void GameScene::Draw()
 
 #pragma region 3Dオブジェクト描画
 	// 3Dオブジェクト描画前処理
-	Object3d::PreDraw(cmdList);
+	ObjObject3d::PreDraw(cmdList);
 
 	// 3Dオブクジェクトの描画
 	objSkydome->Draw();
@@ -702,7 +702,7 @@ void GameScene::Draw()
 	// ここに3Dオブジェクトの描画処理を追加できる
 
 	// 3Dオブジェクト描画後処理
-	Object3d::PostDraw();
+	ObjObject3d::PostDraw();
 #pragma endregion
 
 #pragma region 前景スプライト描画

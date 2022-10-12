@@ -7,7 +7,7 @@
 
 
 // モデルデータ
-class Model
+class ObjModel
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -34,12 +34,12 @@ public: // 静的メンバ関数
 	static void StaticInitialize(ID3D12Device* device);
 
 	// OBJファイルからメッシュ生成
-	static Model* CreateFromOBJ(const std::string& modelname);
+	static ObjModel* CreateFromOBJ(const std::string& modelname);
 
 public: // メンバ関数
 	
 	// デストラクタ
-	~Model();
+	~ObjModel();
 	
 	// 初期化
 	void Initialize(const std::string& modelname);

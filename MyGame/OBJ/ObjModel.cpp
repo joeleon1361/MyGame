@@ -6,28 +6,28 @@
 using namespace std;
 
 // 静的メンバ変数の実体
-const std::string Model::baseDirectory = "Resources/ObjModel/";
-ID3D12Device* Model::device = nullptr;
-UINT Model::descriptorHandleIncrementSize = 0;
+const std::string ObjModel::baseDirectory = "Resources/ObjModel/";
+ID3D12Device* ObjModel::device = nullptr;
+UINT ObjModel::descriptorHandleIncrementSize = 0;
 
-void Model::StaticInitialize(ID3D12Device * device)
+void ObjModel::StaticInitialize(ID3D12Device * device)
 {
-	Model::device = device;
+	ObjModel::device = device;
 
 	// メッシュの静的初期化
 	Mesh::StaticInitialize(device);
 }
 
-Model* Model::CreateFromOBJ(const std::string& modelname)
+ObjModel* ObjModel::CreateFromOBJ(const std::string& modelname)
 {
 	// メモリ確保
-	Model* instance = new Model;
+	ObjModel* instance = new ObjModel;
 	instance->Initialize(modelname);
 	
 	return instance;
 }
 
-Model::~Model()
+ObjModel::~ObjModel()
 {
 	for (auto m : meshes) {
 		delete m;
@@ -40,7 +40,7 @@ Model::~Model()
 	materials.clear();
 }
 
-void Model::Initialize(const std::string& modelname)
+void ObjModel::Initialize(const std::string& modelname)
 {
 	const string filename = modelname + ".obj";
 	const string directoryPath = baseDirectory + modelname + "/";
@@ -265,7 +265,7 @@ void Model::Initialize(const std::string& modelname)
 	LoadTextures();
 }
 
-void Model::LoadMaterial(const std::string & directoryPath, const std::string & filename)
+void ObjModel::LoadMaterial(const std::string & directoryPath, const std::string & filename)
 {
 	// ファイルストリーム
 	std::ifstream file;
@@ -353,13 +353,13 @@ void Model::LoadMaterial(const std::string & directoryPath, const std::string & 
 	}
 }
 
-void Model::AddMaterial(Material * material)
+void ObjModel::AddMaterial(Material * material)
 {
 	// コンテナに登録
 	materials.emplace(material->name, material);
 }
 
-void Model::CreateDescriptorHeap()
+void ObjModel::CreateDescriptorHeap()
 {
 	HRESULT result = S_FALSE;
 
@@ -382,7 +382,7 @@ void Model::CreateDescriptorHeap()
 	descriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 }
 
-void Model::LoadTextures()
+void ObjModel::LoadTextures()
 {
 	int textureIndex = 0;
 	string directoryPath = baseDirectory + name + "/";
@@ -411,7 +411,7 @@ void Model::LoadTextures()
 	}
 }
 
-void Model::Draw(ID3D12GraphicsCommandList * cmdList)
+void ObjModel::Draw(ID3D12GraphicsCommandList * cmdList)
 {
 	// デスクリプタヒープの配列
 	if (descHeap) {
