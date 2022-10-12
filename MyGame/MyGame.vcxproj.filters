@@ -142,6 +142,15 @@
     <ClCompile Include="Vector3.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Collider\Collision.cpp">
+      <Filter>Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider\CollisionManager.cpp">
+      <Filter>Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider\CollisionPrimitive.cpp">
+      <Filter>Collider</Filter>
+    </ClCompile>
     <ClCompile Include="Collider\SphereCollider.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
@@ -260,13 +269,25 @@
     <ClInclude Include="Collider\BaseCollider.h">
       <Filter>Collider</Filter>
     </ClInclude>
+    <ClInclude Include="Collider\Collision.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
     <ClInclude Include="Collider\CollisionInfo.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider\CollisionManager.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider\CollisionPrimitive.h">
       <Filter>Collider</Filter>
     </ClInclude>
     <ClInclude Include="Collider\CollisionTypes.h">
       <Filter>Collider</Filter>
     </ClInclude>
     <ClInclude Include="Collider\SphereCollider.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider\RaycastHit.h">
       <Filter>Collider</Filter>
     </ClInclude>
   </ItemGroup>

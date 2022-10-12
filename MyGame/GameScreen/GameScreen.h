@@ -11,6 +11,7 @@
 #include "FbxObject.h"
 #include "ParticleManager.h"
 
+class CollisionManager;
 class Player;
 
 // ゲームシーン
@@ -59,6 +60,7 @@ private: // メンバ変数
 	Input* input = nullptr;
 	Audio* audio = nullptr;
 	DebugText debugText;
+	CollisionManager* collisionManager = nullptr;
 
 	// ゲームシーン用
 	Camera* camera = nullptr;

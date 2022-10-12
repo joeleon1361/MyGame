@@ -1,12 +1,15 @@
 ﻿#include "GameScreen.h"
 #include "ObjModel.h"
-#include <cassert>
-#include <sstream>
-#include <iomanip>
 #include "FbxLoader.h"
 #include "FbxObject.h"
 #include "Camera.h"
 #include "Player.h"
+#include "Collider/SphereCollider.h"
+#include "Collider/CollisionManager.h"
+
+#include <cassert>
+#include <sstream>
+#include <iomanip>
 #include <stdio.h>
 #include <DirectXMath.h>
 
@@ -50,6 +53,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 
 	// デバイスをセット
 	FbxObject3d::SetDevice(dxCommon->GetDevice());
+
+	collisionManager = CollisionManager::GetInstance();
 
 	// グラフィックスパイプライン生成
 	FbxObject3d::CreateGraphicsPipeline();
@@ -108,6 +113,12 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	objBossLeg2->SetModel(modelBullet);
 	objBossLeg3->SetModel(modelBullet);
 	objBossLeg4->SetModel(modelBullet);
+
+	objBossBody->SetCollider(new SphereCollider);
+	objBossLeg1->SetCollider(new SphereCollider);
+	objBossLeg2->SetCollider(new SphereCollider);
+	objBossLeg3->SetCollider(new SphereCollider);
+	objBossLeg4->SetCollider(new SphereCollider);
 
 	objC->SetModel(modelPlayer);
 
@@ -541,6 +552,8 @@ void GameScene::Update()
 	objBossLeg2->Update();
 	objBossLeg3->Update();
 	objBossLeg4->Update();
+
+	collisionManager->CheckAllCollisions();
 
 #pragma region デバックテキスト
 	// プレイヤーの座標を表示

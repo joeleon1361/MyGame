@@ -9,6 +9,9 @@
 
 #include "ObjModel.h"
 #include "Camera.h"
+#include "Collider/CollisionInfo.h"
+
+class BaseCollider;
 
 // 3Dオブジェクト
 class Object3d
@@ -77,6 +80,11 @@ private: // 静的メンバ変数
 private:// 静的メンバ関数
 	
 public: // メンバ関数
+	// コンストラクタ
+	Object3d() = default;
+
+	// デストラクタ
+	virtual ~Object3d();
 
 	// 初期化
 	virtual bool Initialize();
@@ -112,6 +120,12 @@ public: // メンバ関数
 
 	void SetBillboard(bool isBillboard) { this->isBillboard = isBillboard; }
 
+	// コライダーのセット
+	void SetCollider(BaseCollider* collider);
+
+	// 衝突時コールバック関数
+	virtual void OnCollision(const CollisionInfo& info){}
+
 protected: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
 	// 色
@@ -130,5 +144,10 @@ protected: // メンバ変数
 	Model* model = nullptr;
 	// ビルボード
 	bool isBillboard = false;
+
+	// クラス名
+	const char* name = nullptr;
+	// コライダー
+	BaseCollider* collider = nullptr;
 };
 

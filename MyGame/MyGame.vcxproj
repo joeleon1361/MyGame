@@ -150,6 +150,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera\Camera.cpp" />
+    <ClCompile Include="Collider\Collision.cpp" />
+    <ClCompile Include="Collider\CollisionManager.cpp" />
+    <ClCompile Include="Collider\CollisionPrimitive.cpp" />
     <ClCompile Include="Collider\SphereCollider.cpp" />
     <ClCompile Include="DebugText\DebugText.cpp" />
     <ClCompile Include="EngineBase\DirectXCommon.cpp" />
@@ -251,8 +254,12 @@
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="Collider\BaseCollider.h" />
+    <ClInclude Include="Collider\Collision.h" />
     <ClInclude Include="Collider\CollisionInfo.h" />
+    <ClInclude Include="Collider\CollisionManager.h" />
+    <ClInclude Include="Collider\CollisionPrimitive.h" />
     <ClInclude Include="Collider\CollisionTypes.h" />
+    <ClInclude Include="Collider\RaycastHit.h" />
     <ClInclude Include="Collider\SphereCollider.h" />
     <ClInclude Include="DebugText\DebugText.h" />
     <ClInclude Include="EngineBase\DirectXCommon.h" />
