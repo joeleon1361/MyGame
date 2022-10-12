@@ -44,18 +44,15 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	// カメラ生成
 	camera = new Camera(WinApp::window_width, WinApp::window_height);
 
-
 	// カメラセット
 	Object3d::SetCamera(camera);
 	FbxObject3d::SetCamera(camera);
-
 
 	// デバイスをセット
 	FbxObject3d::SetDevice(dxCommon->GetDevice());
 
 	// グラフィックスパイプライン生成
 	FbxObject3d::CreateGraphicsPipeline();
-
 
 	// デバッグテキスト用テクスチャ読み込み
 	if (!Sprite::LoadTexture(debugTextTexNumber, L"Resources/debugfont.png")) {
@@ -70,6 +67,10 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 		assert(0);
 		return;
 	}
+
+	// テクスチャ2番に読み込み
+	Sprite::LoadTexture(2, L"Resources/Sprite/texture.png");
+
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 
@@ -82,15 +83,14 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	objPlayer = Player::Create(modelPlayer);
 	objBullet = Object3d::Create();
 	objCenter = Object3d::Create();
-	objTest = Object3d::Create();
-	objtest1 = Object3d::Create();
-	objtest2 = Object3d::Create();
-	objtest3 = Object3d::Create();
-	objtest4 = Object3d::Create();
-	objC = Object3d::Create();
 
-	// テクスチャ2番に読み込み
-	Sprite::LoadTexture(2, L"Resources/Sprite/texture.png");
+	objBossBody = Object3d::Create();
+	objBossLeg1 = Object3d::Create();
+	objBossLeg2 = Object3d::Create();
+	objBossLeg3 = Object3d::Create();
+	objBossLeg4 = Object3d::Create();
+
+	objC = Object3d::Create();
 
 	modelSkydome = Model::CreateFromOBJ("skydome");
 	modelGround = Model::CreateFromOBJ("ground");
@@ -102,17 +102,21 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	objPlayer->SetModel(modelPlayer);
 	objBullet->SetModel(modelBullet);
 	objCenter->SetModel(modelBullet);
-	objTest->SetModel(modelBullet);
-	objtest1->SetModel(modelBullet);
-	objtest2->SetModel(modelBullet);
-	objtest3->SetModel(modelBullet);
-	objtest4->SetModel(modelBullet);
+
+	objBossBody->SetModel(modelBullet);
+	objBossLeg1->SetModel(modelBullet);
+	objBossLeg2->SetModel(modelBullet);
+	objBossLeg3->SetModel(modelBullet);
+	objBossLeg4->SetModel(modelBullet);
+
 	objC->SetModel(modelPlayer);
 
-	objtest1->SetParent(objTest);
-	objtest2->SetParent(objTest);
-	objtest3->SetParent(objTest);
-	objtest4->SetParent(objTest);
+	objPlayer->SetParent(objCenter);
+
+	objBossLeg1->SetParent(objBossBody);
+	objBossLeg2->SetParent(objBossBody);
+	objBossLeg3->SetParent(objBossBody);
+	objBossLeg4->SetParent(objBossBody);
 
 	objC->SetParent(objPlayer);
 
@@ -138,13 +142,13 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 
 	objSkydome->SetPosition({ -70,0,0 });
 
-	objTest->SetPosition({0,0,0});
-	objtest1->SetPosition({ 2,-2,2 });
-	objtest2->SetPosition({ 2,-2,-2 });
-	objtest3->SetPosition({ -2,-2,2 });
-	objtest4->SetPosition({ -2,-2,-2 });
+	objBossBody->SetPosition({ 0,0,0 });
+	objBossLeg1->SetPosition({ 2,-2,2 });
+	objBossLeg2->SetPosition({ 2,-2,-2 });
+	objBossLeg3->SetPosition({ -2,-2,2 });
+	objBossLeg4->SetPosition({ -2,-2,-2 });
 
-	objC->SetPosition({0,0,5});
+	objC->SetPosition({ 0,0,5 });
 	objC->SetRotation({ 0,0,0 });
 
 	camera->SetTarget({ 0, 0, 0 });
@@ -158,45 +162,43 @@ void GameScene::Update()
 {
 	XMFLOAT3 playerPosition = objPlayer->GetPosition();
 	XMFLOAT3 playerRotation = objPlayer->GetRotation();
-	XMFLOAT3 routeCameraPosition = camera->GetEye();
-	XMFLOAT3 cameraTargetPosition = camera->GetTarget();
+
+	XMFLOAT3 CenterPos = SplinePosition(playerCheckPoint, startIndex, timeRate);
+
+	XMFLOAT3 CameraPos = { CenterPos.x, CenterPos.y, CenterPos.z - 10 };
+
 	XMFLOAT3 SkydomPos = objSkydome->GetPosition();
 	XMFLOAT3 SkydomRot = objSkydome->GetRotation();
 
-	XMFLOAT3 TestPos = objTest->GetPosition();
-	XMFLOAT3 TestRot = objTest->GetRotation();
+	XMFLOAT3 BossPos = SplinePosition(bossCheckPoint, startIndex, timeRate);
+	XMFLOAT3 BossRot = objBossBody->GetRotation();
 
 	XMFLOAT3 CRot = objC->GetRotation();
 
 	// MoveCamera();
 
 	// カメラ移動
-	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
+	/*if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
 	{
 		if (input->PushKey(DIK_UP)) { routeCameraPosition.z += 0.06; }
 		else if (input->PushKey(DIK_DOWN)) { routeCameraPosition.z -= 0.06;; }
 		if (input->PushKey(DIK_RIGHT)) { routeCameraPosition.x += 0.06; }
 		else if (input->PushKey(DIK_LEFT)) { routeCameraPosition.x -= 0.06; }
-	}
+	}*/
 
 	// パーティクル生成
 	CreateParticles();
 
-	/*routeCameraPosition.z += 0.05f;
-	playerPosition.z += 0.05f;
-	cameraTargetPosition.z += 0.05f;*/
-	// SkydomRot.y += 0.05f;
 	CRot.x += 2;
-	TestRot.y += 2;
+	BossRot.y += 2;
 
 #pragma region 四方向カメラ
 	if (cameraMode == 0)
 	{
 		playerPosition.z = 0;
 
-		routeCameraPosition.x = 0;
-		routeCameraPosition.z = -10.0;
-
+		CameraPos = { CenterPos.x, CenterPos.y, CenterPos.z - 10 };
+		
 		// オブジェクト移動
 		if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
 		{
@@ -263,7 +265,7 @@ void GameScene::Update()
 			}
 		}
 
-		if (ShotFlag == 1)
+		/*if (ShotFlag == 1)
 		{
 			Shot = playerPosition;
 			objBullet->SetPosition(Shot);
@@ -280,16 +282,15 @@ void GameScene::Update()
 				Shot = { 0, -500.0f, 0 };
 				ShotFlag = 0;
 			}
-		}
+		}*/
 	}
 
 	else if (cameraMode == 1)
 	{
-		routeCameraPosition.x = -10.0;
-		routeCameraPosition.z = 0;
-
 		playerPosition.x = 0;
 
+		CameraPos = { CenterPos.x - 10, CenterPos.y, CenterPos.z };
+		
 		// オブジェクト移動
 		if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
 		{
@@ -320,40 +321,13 @@ void GameScene::Update()
 		playerPosition.y = max(playerPosition.y, -5.0f);
 		playerPosition.y = min(playerPosition.y, +5.0f);
 
-		if (input->PushKey(DIK_SPACE))
-		{
-			if (ShotFlag == 0)
-			{
-				ShotFlag = 1;
-			}
-		}
-
-		if (ShotFlag == 1)
-		{
-			Shot = playerPosition;
-			objBullet->SetPosition(Shot);
-			ShotFlag = 2;
-		}
-
-		if (ShotFlag == 2)
-		{
-			Shot.x += 2.0f;
-			objBullet->SetPosition(Shot);
-
-			if (Shot.x >= 50.0f)
-			{
-				Shot = { 0, -500.0f, 0 };
-				ShotFlag = 0;
-			}
-		}
 	}
 
 	else if (cameraMode == 2)
 	{
 		playerPosition.z = 0;
 
-		routeCameraPosition.x = 0;
-		routeCameraPosition.z = 10.0;
+		CameraPos = { CenterPos.x, CenterPos.y, CenterPos.z + 10 };
 
 		// オブジェクト移動
 		if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
@@ -412,42 +386,14 @@ void GameScene::Update()
 				playerRotation.x += 5.0f;
 			}
 		}
-
-		if (input->PushKey(DIK_SPACE))
-		{
-			if (ShotFlag == 0)
-			{
-				ShotFlag = 1;
-			}
-		}
-
-		if (ShotFlag == 1)
-		{
-			Shot = playerPosition;
-			objBullet->SetPosition(Shot);
-			ShotFlag = 2;
-		}
-
-		if (ShotFlag == 2)
-		{
-			Shot.z -= 2.0f;
-			objBullet->SetPosition(Shot);
-
-			if (Shot.z <= -50.0f)
-			{
-				Shot = { 0, -500.0f, 0 };
-				ShotFlag = 0;
-			}
-		}
 	}
 
 	else if (cameraMode == 3)
 	{
-		routeCameraPosition.x = 10.0;
-		routeCameraPosition.z = 0;
-
 		playerPosition.x = 0;
 
+		CameraPos = { CenterPos.x + 10, CenterPos.y, CenterPos.z };
+		
 		// オブジェクト移動
 		if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
 		{
@@ -477,33 +423,6 @@ void GameScene::Update()
 		// Y軸を制限
 		playerPosition.y = max(playerPosition.y, -5.0f);
 		playerPosition.y = min(playerPosition.y, +5.0f);
-
-		if (input->PushKey(DIK_SPACE))
-		{
-			if (ShotFlag == 0)
-			{
-				ShotFlag = 1;
-			}
-		}
-
-		if (ShotFlag == 1)
-		{
-			Shot = playerPosition;
-			objBullet->SetPosition(Shot);
-			ShotFlag = 2;
-		}
-
-		if (ShotFlag == 2)
-		{
-			Shot.x -= 2.0f;
-			objBullet->SetPosition(Shot);
-
-			if (Shot.x <= -50.0f)
-			{
-				Shot = { 0, -500.0f, 0 };
-				ShotFlag = 0;
-			}
-		}
 	}
 
 	else if (cameraMode >= 4)
@@ -513,21 +432,6 @@ void GameScene::Update()
 
 	if (input->TriggerKey(DIK_Y)) { cameraMode += 1; }
 #pragma endregion
-
-	camera->SetEye(routeCameraPosition);
-	camera->SetTarget(cameraTargetPosition);
-
-	objPlayer->SetPosition(playerPosition);
-	objPlayer->SetRotation(playerRotation);
-
-	objCenter->SetPosition(cameraTargetPosition);
-
-	objSkydome->SetPosition(SkydomPos);
-	objSkydome->SetRotation(SkydomRot);
-
-	objTest->SetRotation(TestRot);
-
-	objC->SetRotation(CRot);
 
 #pragma region 球発射処理
 	/*if (input->PushKey(DIK_SPACE))
@@ -574,7 +478,7 @@ void GameScene::Update()
 
 	if (timeRate >= 1.0f)
 	{
-		if (startIndex < checkPoint.size() - 3)
+		if (startIndex < playerCheckPoint.size() - 3)
 		{
 			startIndex += 1;
 			timeRate -= 1.0f;
@@ -585,9 +489,40 @@ void GameScene::Update()
 			timeRate = 1.0f;
 		}
 	}
-	
+
+	if (timeRate >= 1.0f)
+	{
+		if (startIndex < bossCheckPoint.size() - 3)
+		{
+			startIndex += 1;
+			timeRate -= 1.0f;
+			startCount = GetTickCount();
+		}
+		else
+		{
+			timeRate = 1.0f;
+		}
+	}
+
 #pragma endregion
 
+	camera->SetEye(CameraPos);
+	camera->SetTarget(CenterPos);
+
+	objPlayer->SetPosition(playerPosition);
+	objPlayer->SetRotation(playerRotation);
+
+	objCenter->SetPosition(CenterPos);
+
+	objSkydome->SetPosition(SkydomPos);
+	objSkydome->SetRotation(SkydomRot);
+
+	objBossBody->SetPosition(BossPos);
+	objBossBody->SetRotation(BossRot);
+
+	objC->SetRotation(CRot);
+
+	// アップデート
 	camera->Update();
 	particleMan->Update();
 
@@ -601,70 +536,106 @@ void GameScene::Update()
 
 	objC->Update();
 
-	objTest->SetPosition(SplinePosition(checkPoint, startIndex, timeRate));
-	objTest->Update();
-	objtest1->Update();
-	objtest2->Update();
-	objtest3->Update();
-	objtest4->Update();
+	objBossBody->Update();
+	objBossLeg1->Update();
+	objBossLeg2->Update();
+	objBossLeg3->Update();
+	objBossLeg4->Update();
 
 #pragma region デバックテキスト
 	// プレイヤーの座標を表示
-	//std::ostringstream PlayerPos;
-	//PlayerPos << "PlayerPos:("
-	//	<< std::fixed << std::setprecision(2)
-	//	<< playerPosition.x << "," // x
-	//	<< playerPosition.y << "," // y
-	//	<< playerPosition.z << ")"; // z
-	//debugText.Print(PlayerPos.str(), 50, 50, 1.0f);
+	std::ostringstream PlayerPos;
+	PlayerPos << "PlayerPos:("
+		<< std::fixed << std::setprecision(2)
+		<< playerPosition.x << "," // x
+		<< playerPosition.y << "," // y
+		<< playerPosition.z << ") Local"; // z
+	debugText.Print(PlayerPos.str(), 50, 30, 1.0f);
 
-	//std::ostringstream CameraPos;
-	//CameraPos << "CameraPos:("
-	//	<< std::fixed << std::setprecision(2)
-	//	<< routeCameraPosition.x << "," // x
-	//	<< routeCameraPosition.y << "," // y
-	//	<< routeCameraPosition.z << ")"; // z
-	//debugText.Print(CameraPos.str(), 50, 70, 1.0f);
+	std::ostringstream bossPos;
+	bossPos << "BossPos:("
+		<< std::fixed << std::setprecision(2)
+		<< BossPos.x << "," // x
+		<< BossPos.y << "," // y
+		<< BossPos.z << ")"; // z
+	debugText.Print(bossPos.str(), 50, 50, 1.0f);
+
+	std::ostringstream cameraPos;
+	cameraPos << "CameraPos:("
+		<< std::fixed << std::setprecision(2)
+		<< CameraPos.x << "," // x
+		<< CameraPos.y << "," // y
+		<< CameraPos.z << ")"; // z
+	debugText.Print(cameraPos.str(), 50, 70, 1.0f);
 
 	std::ostringstream startCounter;
-	startCounter << "BossStartCounter:("
+	startCounter << "StartCounter:("
 		<< std::fixed << std::setprecision(2)
 		<< startCount << ")";
-	debugText.Print(startCounter.str(), 50, 70, 1.0f);
+	debugText.Print(startCounter.str(), 50, 110, 1.0f);
 
 	std::ostringstream nowCounter;
-	nowCounter << "BossNowCounter:("
+	nowCounter << "NowCounter:("
 		<< std::fixed << std::setprecision(2)
 		<< nowCount << ")";
-	debugText.Print(nowCounter.str(), 50, 90, 1.0f);
+	debugText.Print(nowCounter.str(), 50, 130, 1.0f);
 
 	std::ostringstream elapsedCounter;
-	elapsedCounter << "BossElapsedCounter:("
+	elapsedCounter << "ElapsedCounter:("
 		<< std::fixed << std::setprecision(2)
 		<< elapsedCount << ")";
-	debugText.Print(elapsedCounter.str(), 50, 110, 1.0f);
+	debugText.Print(elapsedCounter.str(), 50, 150, 1.0f);
 
 	std::ostringstream elapsedTimer;
-	elapsedTimer << "BossElapsedTimer:("
+	elapsedTimer << "ElapsedTimer:("
 		<< std::fixed << std::setprecision(2)
 		<< elapsedTime << "[s])";
-	debugText.Print(elapsedTimer.str(), 50, 150, 1.0f);
-
-	std::ostringstream StartIndex;
-	StartIndex << "BossStartIndex:("
-		<< std::fixed << std::setprecision(2)
-		<< startIndex << ")";
-	debugText.Print(StartIndex.str(), 50, 190, 1.0f);
+	debugText.Print(elapsedTimer.str(), 50, 170, 1.0f);
 
 	std::ostringstream TimeRate;
-	TimeRate << "BossTimeRate:("
+	TimeRate << "TimeRate:("
 		<< std::fixed << std::setprecision(2)
 		<< timeRate << "[%])";
-	debugText.Print(TimeRate.str(), 50, 170, 1.0f);
+	debugText.Print(TimeRate.str(), 50, 190, 1.0f);
 
+	std::ostringstream StartIndex;
+	StartIndex << "StartIndex:("
+		<< std::fixed << std::setprecision(2)
+		<< startIndex << ")";
+	debugText.Print(StartIndex.str(), 50, 210, 1.0f);
+
+	std::ostringstream BossHp;
+	BossHp << "BossHp:("
+		<< std::fixed << std::setprecision(2)
+		<< bossHp << ")";
+	debugText.Print(BossHp.str(), 50, 250, 1.0f);
+
+	std::ostringstream BossLegHp1;
+	BossLegHp1 << "BossLegHp1:("
+		<< std::fixed << std::setprecision(2)
+		<< bossLegHp1 << ")";
+	debugText.Print(BossLegHp1.str(), 50, 270, 1.0f);
+
+	std::ostringstream BossLegHp2;
+	BossLegHp2 << "BossLegHp2:("
+		<< std::fixed << std::setprecision(2)
+		<< bossLegHp2 << ")";
+	debugText.Print(BossLegHp2.str(), 50, 290, 1.0f);
+
+	std::ostringstream BossLegHp3;
+	BossLegHp3 << "BossLegHp3:("
+		<< std::fixed << std::setprecision(2)
+		<< bossLegHp3 << ")";
+	debugText.Print(BossLegHp3.str(), 50, 310, 1.0f);
+
+	std::ostringstream BossLegHp4;
+	BossLegHp4 << "BossLegHp4:("
+		<< std::fixed << std::setprecision(2)
+		<< bossLegHp4 << ")";
+	debugText.Print(BossLegHp4.str(), 50, 330, 1.0f);
 
 	// 自機操作方法
-	debugText.Print("WASD:PlayerMove", 50, 30, 1.0f);
+	debugText.Print("WASD:PlayerMove", 50, 10, 1.0f);
 #pragma endregion
 }
 
@@ -700,17 +671,17 @@ void GameScene::Draw()
 		objBullet->Draw();
 	}
 
-	objC->Draw();
+	// objC->Draw();
 
-	objTest->Draw();
-	objtest1->Draw();
-	objtest2->Draw();
-	objtest3->Draw();
-	objtest4->Draw();
+	objBossBody->Draw();
+	objBossLeg1->Draw();
+	objBossLeg2->Draw();
+	objBossLeg3->Draw();
+	objBossLeg4->Draw();
 
 	// testobject->Draw(cmdList);
 
-	// objCenter->Draw();
+	objCenter->Draw();
 
 	// パーティクルの描画
 	//particleMan->Draw(cmdList);

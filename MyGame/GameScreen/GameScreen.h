@@ -78,28 +78,47 @@ private: // メンバ変数
 	Object3d* objGround = nullptr;
 	Player* objPlayer = nullptr;
 	Object3d* objBullet = nullptr;
+
 	Object3d* objCenter = nullptr;
-	Object3d* objTest = nullptr;
+
 	Object3d* objC = nullptr;
-	Object3d* objtest1 = nullptr;
-	Object3d* objtest2 = nullptr;
-	Object3d* objtest3 = nullptr;
-	Object3d* objtest4 = nullptr;
+
+	// ボス関連
+	Object3d* objBossBody = nullptr;
+	Object3d* objBossLeg1 = nullptr;
+	Object3d* objBossLeg2 = nullptr;
+	Object3d* objBossLeg3 = nullptr;
+	Object3d* objBossLeg4 = nullptr;
 
 	FbxObject3d* testobject = nullptr;
 
 	int ShotFlag;
 	XMFLOAT3 Shot;
 
+	// ボス関連
+	int bossHp = 0;
+	int bossLegHp1 = 0;
+	int bossLegHp2 = 0;
+	int bossLegHp3 = 0;
+	int bossLegHp4 = 0;
+
+	// カメラ関連
 	int cameraMode = 0;
 
-	XMFLOAT3 start = { 10.0f, 0.0f, 0.0f};
-	XMFLOAT3 p2 = { -70.0f, 0.0f, -70.0f};
-	XMFLOAT3 p3 = { -140.0f, 0.0f, 0.0f};
-	XMFLOAT3 end = { -70.0f, 0.0f, 70.0f};
+	// スプライン曲線関連
+	// プレイヤー制御点
+	XMFLOAT3 start = { 10.0f, 0.0f, 0.0f };
+	XMFLOAT3 p2 = { -70.0f, 0.0f, -70.0f };
+	XMFLOAT3 p3 = { -140.0f, 0.0f, 0.0f };
+	XMFLOAT3 end = { -70.0f, 0.0f, 70.0f };
+	std::vector<XMFLOAT3> playerCheckPoint{ start, start, p2, p3, end,start, start };
 
-	std::vector<XMFLOAT3> checkPoint{ start, start, p2, p3, end,start, start };
-
+	// ボス制御点
+	XMFLOAT3 Bstart = { 20.0f, 0.0f, 20.0f };
+	XMFLOAT3 Bp2 = { -70.0f, 0.0f, -50.0f };
+	XMFLOAT3 Bp3 = { -150.0f, 0.0f, 20.0f };
+	XMFLOAT3 Bend = { -70.0f, 0.0f, 90.0f };
+	std::vector<XMFLOAT3> bossCheckPoint{ Bstart, Bstart, Bp2, Bp3, Bend,Bstart, Bstart };
 
 	size_t startIndex = 1;
 
@@ -108,7 +127,7 @@ private: // メンバ変数
 	int nowCount = 0;
 	int elapsedCount = 0;
 
-	float maxTime = 2000.0f;
+	float maxTime = 8000.0f;
 	float timeRate;
 };
 

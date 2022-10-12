@@ -71,6 +71,9 @@
     <Filter Include="GameScreen">
       <UniqueIdentifier>{752d52de-1177-4280-9561-bcaf4bc070a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Collider">
+      <UniqueIdentifier>{e536b6eb-ed67-40db-9f89-c38934df73f3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -138,6 +141,9 @@
     </ClCompile>
     <ClCompile Include="Vector3.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider\SphereCollider.cpp">
+      <Filter>Collider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -251,5 +257,17 @@
     <ClInclude Include="PlayerBullet.h" />
     <ClInclude Include="RouteCamera.h" />
     <ClInclude Include="Vector3.h" />
+    <ClInclude Include="Collider\BaseCollider.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider\CollisionInfo.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider\CollisionTypes.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider\SphereCollider.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
