@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Collider/SphereCollider.h"
 #include "Collider/CollisionManager.h"
+#include "Collider/Collision.h"
 
 #include <cassert>
 #include <sstream>
@@ -85,7 +86,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	// 3Dオブジェクト生成
 	objSkydome = ObjObject3d::Create();
 	objGround = ObjObject3d::Create();
-	objPlayer = Player::Create(modelPlayer);
+	objPlayer = Player::Create();
 	objBullet = ObjObject3d::Create();
 	objCenter = ObjObject3d::Create();
 
@@ -144,7 +145,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	objPlayer->SetScale({ 0.5f, 0.5f, 0.5f });
 
 	ShotFlag = 0;
-	Shot = { 0 , -500.f, 0 };
+	Shot;
 	objBullet->SetPosition(Shot);
 	objBullet->SetScale({ 0.3f, 0.3f, 0.3f });
 
@@ -173,6 +174,8 @@ void GameScene::Update()
 {
 	XMFLOAT3 playerPosition = objPlayer->GetPosition();
 	XMFLOAT3 playerRotation = objPlayer->GetRotation();
+
+	XMFLOAT3 bulletPos = objBullet->GetPosition();
 
 	XMFLOAT3 CenterPos = SplinePosition(playerCheckPoint, startIndex, timeRate);
 
@@ -268,7 +271,7 @@ void GameScene::Update()
 			}
 		}
 
-		if (input->PushKey(DIK_SPACE))
+		/*if (input->PushKey(DIK_SPACE))
 		{
 			if (ShotFlag == 0)
 			{
@@ -276,21 +279,21 @@ void GameScene::Update()
 			}
 		}
 
-		/*if (ShotFlag == 1)
+		if (ShotFlag == 1)
 		{
-			Shot = playerPosition;
-			objBullet->SetPosition(Shot);
+			bulletPos = playerPosition;
+			objBullet->SetPosition(bulletPos);
 			ShotFlag = 2;
 		}
 
 		if (ShotFlag == 2)
 		{
-			Shot.z += 2.0f;
-			objBullet->SetPosition(Shot);
+			bulletPos.z += 2.0f;
+			objBullet->SetPosition(bulletPos);
 
-			if (Shot.z >= 50.0f)
+			if (bulletPos.z >= 50.0f)
 			{
-				Shot = { 0, -500.0f, 0 };
+				bulletPos = playerPosition;
 				ShotFlag = 0;
 			}
 		}*/
@@ -684,7 +687,7 @@ void GameScene::Draw()
 		objBullet->Draw();
 	}
 
-	// objC->Draw();
+	objC->Draw();
 
 	objBossBody->Draw();
 	objBossLeg1->Draw();

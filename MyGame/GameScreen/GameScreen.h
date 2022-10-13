@@ -116,7 +116,7 @@ private: // メンバ変数
 	std::vector<XMFLOAT3> playerCheckPoint{ start, start, p2, p3, end,start, start };
 
 	// ボス制御点
-	XMFLOAT3 Bstart = { 20.0f, 0.0f, 20.0f };
+	XMFLOAT3 Bstart = { 10.0f, 0.0f, 20.0f };
 	XMFLOAT3 Bp2 = { -70.0f, 0.0f, -50.0f };
 	XMFLOAT3 Bp3 = { -150.0f, 0.0f, 20.0f };
 	XMFLOAT3 Bend = { -70.0f, 0.0f, 90.0f };
