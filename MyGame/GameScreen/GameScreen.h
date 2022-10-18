@@ -52,6 +52,27 @@ public: // メンバ関数
 	// パーティクル生成
 	void CreateParticles();
 
+	void CreateDebugText();
+
+	// 移動処理
+	void FrontMove();
+
+	void RightMove();
+
+
+	void BackMove();
+
+	void LeftMove();
+
+	// 移動制限
+	void MoveLimitXY();
+
+	void MoveLimitZY();
+
+	void FrontRolling();
+
+	void BackRolling();
+
 private:
 	XMFLOAT3 SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t);
 
@@ -128,8 +149,27 @@ private: // メンバ変数
 	int startCount = 0;
 	int nowCount = 0;
 	int elapsedCount = 0;
+	float elapsedTime;
 
 	float maxTime = 8000.0f;
 	float timeRate;
+
+	XMFLOAT3 playerPosition;
+	XMFLOAT3 playerRotation;
+
+	XMFLOAT3 bulletPos;
+
+	XMFLOAT3 CenterPos;
+
+	XMFLOAT3 CameraPos;
+
+	XMFLOAT3 SkydomPos;
+	XMFLOAT3 SkydomRot;
+
+	XMFLOAT3 BossPos;
+	XMFLOAT3 BossRot;
+
+	const float LimitXZ = 8.5f;
+	const float LimitY = 5.0f;
 };
 

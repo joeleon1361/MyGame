@@ -172,20 +172,21 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 
 void GameScene::Update()
 {
-	XMFLOAT3 playerPosition = objPlayer->GetPosition();
-	XMFLOAT3 playerRotation = objPlayer->GetRotation();
 
-	XMFLOAT3 bulletPos = objBullet->GetPosition();
+	objBullet->GetPosition();
 
-	XMFLOAT3 CenterPos = SplinePosition(playerCheckPoint, startIndex, timeRate);
+	CenterPos = SplinePosition(playerCheckPoint, startIndex, timeRate);
 
-	XMFLOAT3 CameraPos = { CenterPos.x, CenterPos.y, CenterPos.z - 10 };
+	CameraPos = { CenterPos.x, CenterPos.y, CenterPos.z - 10 };
 
-	XMFLOAT3 SkydomPos = objSkydome->GetPosition();
-	XMFLOAT3 SkydomRot = objSkydome->GetRotation();
+	playerPosition = objPlayer->GetPosition();
+	playerRotation = objPlayer->GetRotation();
 
-	XMFLOAT3 BossPos = SplinePosition(bossCheckPoint, startIndex, timeRate);
-	XMFLOAT3 BossRot = objBossBody->GetRotation();
+	SkydomPos = objSkydome->GetPosition();
+	SkydomRot = objSkydome->GetRotation();
+
+	BossPos = SplinePosition(bossCheckPoint, startIndex, timeRate);
+	BossRot = objBossBody->GetRotation();
 
 	XMFLOAT3 CRot = objC->GetRotation();
 
@@ -212,64 +213,15 @@ void GameScene::Update()
 		playerPosition.z = 0;
 
 		CameraPos = { CenterPos.x, CenterPos.y, CenterPos.z - 10 };
-		
+
 		// オブジェクト移動
-		if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
-		{
-			// 移動後の座標を計算
-			if (input->PushKey(DIK_W))
-			{
-				playerPosition.y += 0.3f;
-			}
-			else if (input->PushKey(DIK_S))
-			{
-				playerPosition.y -= 0.3f;
-			}
-			if (input->PushKey(DIK_D))
-			{
-				playerPosition.x += 0.3f;
-			}
-			else if (input->PushKey(DIK_A))
-			{
-				playerPosition.x -= 0.3f;
-			}
-		}
+		FrontMove();
 
-		// X軸を制限
-		playerPosition.x = max(playerPosition.x, -8.5f);
-		playerPosition.x = min(playerPosition.x, +8.5f);
+		// 移動制限
+		MoveLimitXY();
 
-		// Y軸を制限
-		playerPosition.y = max(playerPosition.y, -5.0f);
-		playerPosition.y = min(playerPosition.y, +5.0f);
-
-		// ロール(横)
-		if (input->PushKey(DIK_A) || input->PushKey(DIK_D))
-		{
-			if (input->PushKey(DIK_D) && playerRotation.x <= +40.0f)
-			{
-				playerRotation.x += 5.0f;
-			}
-
-			if (input->PushKey(DIK_A) && playerRotation.x >= -40.0f)
-			{
-				playerRotation.x -= 5.0f;
-			}
-		}
-
-		// 傾きを戻す
-		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && playerRotation.x != 0.0f)
-		{
-			if (playerRotation.x >= 0.0f)
-			{
-				playerRotation.x -= 5.0f;
-			}
-
-			if (playerRotation.x <= 0.0f)
-			{
-				playerRotation.x += 5.0f;
-			}
-		}
+		// ローリング
+		FrontRolling();
 
 		/*if (input->PushKey(DIK_SPACE))
 		{
@@ -304,36 +256,12 @@ void GameScene::Update()
 		playerPosition.x = 0;
 
 		CameraPos = { CenterPos.x - 10, CenterPos.y, CenterPos.z };
-		
+
 		// オブジェクト移動
-		if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
-		{
-			// 移動後の座標を計算
-			if (input->PushKey(DIK_W))
-			{
-				playerPosition.y += 0.3f;
-			}
-			else if (input->PushKey(DIK_S))
-			{
-				playerPosition.y -= 0.3f;
-			}
-			if (input->PushKey(DIK_D))
-			{
-				playerPosition.z -= 0.3f;
-			}
-			else if (input->PushKey(DIK_A))
-			{
-				playerPosition.z += 0.3f;
-			}
-		}
+		RightMove();
 
-		// X軸を制限
-		playerPosition.z = max(playerPosition.z, -8.5f);
-		playerPosition.z = min(playerPosition.z, +8.5f);
-
-		// Y軸を制限
-		playerPosition.y = max(playerPosition.y, -5.0f);
-		playerPosition.y = min(playerPosition.y, +5.0f);
+		// 移動制限
+		MoveLimitZY();
 
 	}
 
@@ -344,62 +272,13 @@ void GameScene::Update()
 		CameraPos = { CenterPos.x, CenterPos.y, CenterPos.z + 10 };
 
 		// オブジェクト移動
-		if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
-		{
-			// 移動後の座標を計算
-			if (input->PushKey(DIK_W))
-			{
-				playerPosition.y += 0.3f;
-			}
-			else if (input->PushKey(DIK_S))
-			{
-				playerPosition.y -= 0.3f;
-			}
-			if (input->PushKey(DIK_D))
-			{
-				playerPosition.x -= 0.3f;
-			}
-			else if (input->PushKey(DIK_A))
-			{
-				playerPosition.x += 0.3f;
-			}
-		}
+		BackMove();
 
-		// X軸を制限
-		playerPosition.x = max(playerPosition.x, -8.5f);
-		playerPosition.x = min(playerPosition.x, +8.5f);
+		// 移動制限
+		MoveLimitXY();
 
-		// Y軸を制限
-		playerPosition.y = max(playerPosition.y, -5.0f);
-		playerPosition.y = min(playerPosition.y, +5.0f);
-
-		// ロール(横)
-		if (input->PushKey(DIK_A) || input->PushKey(DIK_D))
-		{
-			if (input->PushKey(DIK_D) && playerRotation.x >= -40.0f)
-			{
-				playerRotation.x -= 5.0f;
-			}
-
-			if (input->PushKey(DIK_A) && playerRotation.x <= +40.0f)
-			{
-				playerRotation.x += 5.0f;
-			}
-		}
-
-		// 傾きを戻す
-		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && playerRotation.x != 0.0f)
-		{
-			if (playerRotation.x >= 0.0f)
-			{
-				playerRotation.x -= 5.0f;
-			}
-
-			if (playerRotation.x <= 0.0f)
-			{
-				playerRotation.x += 5.0f;
-			}
-		}
+		// ローリング
+		BackRolling();
 	}
 
 	else if (cameraMode == 3)
@@ -407,36 +286,12 @@ void GameScene::Update()
 		playerPosition.x = 0;
 
 		CameraPos = { CenterPos.x + 10, CenterPos.y, CenterPos.z };
-		
+
 		// オブジェクト移動
-		if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
-		{
-			// 移動後の座標を計算
-			if (input->PushKey(DIK_W))
-			{
-				playerPosition.y += 0.3f;
-			}
-			else if (input->PushKey(DIK_S))
-			{
-				playerPosition.y -= 0.3f;
-			}
-			if (input->PushKey(DIK_D))
-			{
-				playerPosition.z += 0.3f;
-			}
-			else if (input->PushKey(DIK_A))
-			{
-				playerPosition.z -= 0.3f;
-			}
-		}
+		LeftMove();
 
-		// X軸を制限
-		playerPosition.z = max(playerPosition.z, -8.5f);
-		playerPosition.z = min(playerPosition.z, +8.5f);
-
-		// Y軸を制限
-		playerPosition.y = max(playerPosition.y, -5.0f);
-		playerPosition.y = min(playerPosition.y, +5.0f);
+		// 移動制限
+		MoveLimitZY();
 	}
 
 	else if (cameraMode >= 4)
@@ -486,7 +341,7 @@ void GameScene::Update()
 	nowCount = GetTickCount();
 
 	elapsedCount = nowCount - startCount;
-	float elapsedTime = static_cast<float> (elapsedCount) / 1000.0f;
+	elapsedTime = static_cast<float> (elapsedCount) / 1000.0f;
 
 	timeRate = elapsedCount / maxTime;
 
@@ -558,7 +413,122 @@ void GameScene::Update()
 
 	collisionManager->CheckAllCollisions();
 
-#pragma region デバックテキスト
+	// デバックテキスト
+	CreateDebugText();
+}
+
+
+void GameScene::Draw()
+{
+	// コマンドリストの取得
+	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
+
+#pragma region 背景スプライト描画
+	// 背景スプライト描画前処理
+	Sprite::PreDraw(cmdList);
+	// 背景スプライト描画
+	spriteBG->Draw();
+
+	// スプライト描画後処理
+	Sprite::PostDraw();
+	// 深度バッファクリア
+	dxCommon->ClearDepthBuffer();
+#pragma endregion
+
+#pragma region 3Dオブジェクト描画
+	// 3Dオブジェクト描画前処理
+	ObjObject3d::PreDraw(cmdList);
+
+	// 3Dオブクジェクトの描画
+	objSkydome->Draw();
+	// objGround->Draw();
+	objPlayer->Draw();
+	if (ShotFlag == 2)
+	{
+		objBullet->Draw();
+	}
+
+	// objC->Draw();
+
+	objBossBody->Draw();
+	objBossLeg1->Draw();
+	objBossLeg2->Draw();
+	objBossLeg3->Draw();
+	objBossLeg4->Draw();
+
+	// testobject->Draw(cmdList);
+
+	objCenter->Draw();
+
+	// パーティクルの描画
+	//particleMan->Draw(cmdList);
+
+	// 3Dオブジェクト描画後処理
+	ObjObject3d::PostDraw();
+#pragma endregion
+
+#pragma region 前景スプライト描画
+	// 前景スプライト描画前処理
+	Sprite::PreDraw(cmdList);
+
+	// 描画
+	//sprite1->Draw();
+	//sprite2->Draw();
+
+	// デバッグテキストの描画
+	debugText.DrawAll(cmdList);
+
+	// スプライト描画後処理
+	Sprite::PostDraw();
+#pragma endregion
+}
+
+void GameScene::MoveCamera()
+{
+	// カメラ移動
+	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
+	{
+		if (input->PushKey(DIK_UP)) { camera->MoveVector({ 0.0f,+0.06f,0.0f }); }
+		else if (input->PushKey(DIK_DOWN)) { camera->MoveVector({ 0.0f,-0.06f,0.0f }); }
+		if (input->PushKey(DIK_RIGHT)) { camera->MoveVector({ +0.06f,0.0f,0.0f }); }
+		else if (input->PushKey(DIK_LEFT)) { camera->MoveVector({ -0.06f,0.0f,0.0f }); }
+	}
+
+	// カメラ移動
+	if (input->PushKey(DIK_I) || input->PushKey(DIK_K))
+	{
+		if (input->PushKey(DIK_I)) { camera->MoveVector({ 0.0f,0.0f,+0.06f }); }
+		else if (input->PushKey(DIK_K)) { camera->MoveVector({ 0.0f,0.0f,-0.06f }); }
+	}
+}
+
+void GameScene::CreateParticles()
+{
+	for (int i = 0; i < 10; i++) {
+		// X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
+		const float rnd_pos = 10.0f;
+		XMFLOAT3 pos{};
+		pos.x = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+		pos.y = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+		pos.z = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+
+		const float rnd_vel = 0.1f;
+		XMFLOAT3 vel{};
+		vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+		vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+		vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+
+		XMFLOAT3 acc{};
+		const float rnd_acc = 0.001f;
+		acc.y = -(float)rand() / RAND_MAX * rnd_acc;
+
+		// 追加
+		particleMan->Add(60, pos, vel, acc, 1.0f, 0.0f);
+	}
+}
+
+void GameScene::CreateDebugText()
+{
 	// プレイヤーの座標を表示
 	std::ostringstream PlayerPos;
 	PlayerPos << "PlayerPos:("
@@ -620,7 +590,7 @@ void GameScene::Update()
 		<< startIndex << ")";
 	debugText.Print(StartIndex.str(), 50, 210, 1.0f);
 
-	std::ostringstream BossHp;
+	/*std::ostringstream BossHp;
 	BossHp << "BossHp:("
 		<< std::fixed << std::setprecision(2)
 		<< bossHp << ")";
@@ -648,126 +618,189 @@ void GameScene::Update()
 	BossLegHp4 << "BossLegHp4:("
 		<< std::fixed << std::setprecision(2)
 		<< bossLegHp4 << ")";
-	debugText.Print(BossLegHp4.str(), 50, 330, 1.0f);
+	debugText.Print(BossLegHp4.str(), 50, 330, 1.0f);*/
 
 	// 自機操作方法
 	debugText.Print("WASD:PlayerMove", 50, 10, 1.0f);
-#pragma endregion
 }
 
-
-void GameScene::Draw()
+void GameScene::FrontMove()
 {
-	// コマンドリストの取得
-	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
-
-#pragma region 背景スプライト描画
-	// 背景スプライト描画前処理
-	Sprite::PreDraw(cmdList);
-	// 背景スプライト描画
-	spriteBG->Draw();
-
-	// ここに背景スプライトの描画処理を追加できる
-
-	// スプライト描画後処理
-	Sprite::PostDraw();
-	// 深度バッファクリア
-	dxCommon->ClearDepthBuffer();
-#pragma endregion
-
-#pragma region 3Dオブジェクト描画
-	// 3Dオブジェクト描画前処理
-	ObjObject3d::PreDraw(cmdList);
-
-	// 3Dオブクジェクトの描画
-	objSkydome->Draw();
-	// objGround->Draw();
-	objPlayer->Draw();
-	if (ShotFlag == 2)
+	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
 	{
-		objBullet->Draw();
-	}
-
-	objC->Draw();
-
-	objBossBody->Draw();
-	objBossLeg1->Draw();
-	objBossLeg2->Draw();
-	objBossLeg3->Draw();
-	objBossLeg4->Draw();
-
-	// testobject->Draw(cmdList);
-
-	objCenter->Draw();
-
-	// パーティクルの描画
-	//particleMan->Draw(cmdList);
-
-	// ここに3Dオブジェクトの描画処理を追加できる
-
-	// 3Dオブジェクト描画後処理
-	ObjObject3d::PostDraw();
-#pragma endregion
-
-#pragma region 前景スプライト描画
-	// 前景スプライト描画前処理
-	Sprite::PreDraw(cmdList);
-
-	// ここに前景スプライトの描画処理を追加できる
-
-	// 描画
-	//sprite1->Draw();
-	//sprite2->Draw();
-
-	// デバッグテキストの描画
-	debugText.DrawAll(cmdList);
-
-	// スプライト描画後処理
-	Sprite::PostDraw();
-#pragma endregion
-}
-
-void GameScene::MoveCamera()
-{
-	// カメラ移動
-	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
-	{
-		if (input->PushKey(DIK_UP)) { camera->MoveVector({ 0.0f,+0.06f,0.0f }); }
-		else if (input->PushKey(DIK_DOWN)) { camera->MoveVector({ 0.0f,-0.06f,0.0f }); }
-		if (input->PushKey(DIK_RIGHT)) { camera->MoveVector({ +0.06f,0.0f,0.0f }); }
-		else if (input->PushKey(DIK_LEFT)) { camera->MoveVector({ -0.06f,0.0f,0.0f }); }
-	}
-
-	// カメラ移動
-	if (input->PushKey(DIK_I) || input->PushKey(DIK_K))
-	{
-		if (input->PushKey(DIK_I)) { camera->MoveVector({ 0.0f,0.0f,+0.06f }); }
-		else if (input->PushKey(DIK_K)) { camera->MoveVector({ 0.0f,0.0f,-0.06f }); }
+		// 移動後の座標を計算
+		if (input->PushKey(DIK_W))
+		{
+			playerPosition.y += 0.3f;
+		}
+		else if (input->PushKey(DIK_S))
+		{
+			playerPosition.y -= 0.3f;
+		}
+		if (input->PushKey(DIK_D))
+		{
+			playerPosition.x += 0.3f;
+		}
+		else if (input->PushKey(DIK_A))
+		{
+			playerPosition.x -= 0.3f;
+		}
 	}
 }
 
-void GameScene::CreateParticles()
+void GameScene::RightMove()
 {
-	for (int i = 0; i < 10; i++) {
-		// X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
-		const float rnd_pos = 10.0f;
-		XMFLOAT3 pos{};
-		pos.x = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-		pos.y = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-		pos.z = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
+	{
+		// 移動後の座標を計算
+		if (input->PushKey(DIK_W))
+		{
+			playerPosition.y += 0.3f;
+		}
+		else if (input->PushKey(DIK_S))
+		{
+			playerPosition.y -= 0.3f;
+		}
+		if (input->PushKey(DIK_D))
+		{
+			playerPosition.z -= 0.3f;
+		}
+		else if (input->PushKey(DIK_A))
+		{
+			playerPosition.z += 0.3f;
+		}
+	}
+}
 
-		const float rnd_vel = 0.1f;
-		XMFLOAT3 vel{};
-		vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-		vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-		vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+void GameScene::BackMove()
+{
+	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
+	{
+		// 移動後の座標を計算
+		if (input->PushKey(DIK_W))
+		{
+			playerPosition.y += 0.3f;
+		}
+		else if (input->PushKey(DIK_S))
+		{
+			playerPosition.y -= 0.3f;
+		}
+		if (input->PushKey(DIK_D))
+		{
+			playerPosition.x -= 0.3f;
+		}
+		else if (input->PushKey(DIK_A))
+		{
+			playerPosition.x += 0.3f;
+		}
+	}
+}
 
-		XMFLOAT3 acc{};
-		const float rnd_acc = 0.001f;
-		acc.y = -(float)rand() / RAND_MAX * rnd_acc;
+void GameScene::LeftMove()
+{
+	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
+	{
+		// 移動後の座標を計算
+		if (input->PushKey(DIK_W))
+		{
+			playerPosition.y += 0.3f;
+		}
+		else if (input->PushKey(DIK_S))
+		{
+			playerPosition.y -= 0.3f;
+		}
+		if (input->PushKey(DIK_D))
+		{
+			playerPosition.z += 0.3f;
+		}
+		else if (input->PushKey(DIK_A))
+		{
+			playerPosition.z -= 0.3f;
+		}
+	}
+}
 
-		// 追加
-		particleMan->Add(60, pos, vel, acc, 1.0f, 0.0f);
+void GameScene::MoveLimitXY()
+{
+	// X軸を制限
+	playerPosition.x = max(playerPosition.x, -LimitXZ);
+	playerPosition.x = min(playerPosition.x, +LimitXZ);
+
+	// Y軸を制限
+	playerPosition.y = max(playerPosition.y, -LimitY);
+	playerPosition.y = min(playerPosition.y, +LimitY);
+}
+
+void GameScene::MoveLimitZY()
+{
+	// Z軸を制限
+	playerPosition.z = max(playerPosition.z, -LimitXZ);
+	playerPosition.z = min(playerPosition.z, +LimitXZ);
+
+	// Y軸を制限
+	playerPosition.y = max(playerPosition.y, -LimitY);
+	playerPosition.y = min(playerPosition.y, +LimitY);
+}
+
+void GameScene::FrontRolling()
+{
+	// ロール
+	if (input->PushKey(DIK_A) || input->PushKey(DIK_D))
+	{
+		if (input->PushKey(DIK_D) && playerRotation.x <= +40.0f)
+		{
+			playerRotation.x += 5.0f;
+		}
+
+		if (input->PushKey(DIK_A) && playerRotation.x >= -40.0f)
+		{
+			playerRotation.x -= 5.0f;
+		}
+	}
+
+	// 傾きを戻す
+	if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && playerRotation.x != 0.0f)
+	{
+		if (playerRotation.x >= 0.0f)
+		{
+			playerRotation.x -= 5.0f;
+		}
+
+		if (playerRotation.x <= 0.0f)
+		{
+			playerRotation.x += 5.0f;
+		}
+	}
+}
+
+void GameScene::BackRolling()
+{
+	// ロール
+	if (input->PushKey(DIK_A) || input->PushKey(DIK_D))
+	{
+		if (input->PushKey(DIK_D) && playerRotation.x >= -40.0f)
+		{
+			playerRotation.x -= 5.0f;
+		}
+
+		if (input->PushKey(DIK_A) && playerRotation.x <= +40.0f)
+		{
+			playerRotation.x += 5.0f;
+		}
+	}
+
+	// 傾きを戻す
+	if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && playerRotation.x != 0.0f)
+	{
+		if (playerRotation.x >= 0.0f)
+		{
+			playerRotation.x -= 5.0f;
+		}
+
+		if (playerRotation.x <= 0.0f)
+		{
+			playerRotation.x += 5.0f;
+		}
 	}
 }
 

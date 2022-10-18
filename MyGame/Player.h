@@ -22,7 +22,14 @@ public: // ƒƒ“ƒoŠÖ”
 	void Update() override;
 
 	// ˆÚ“®ˆ—
-	void Move();
+	void FrontMove();
+
+	void RightMove();
+
+
+	void BackMove();
+
+	void LeftMove();
 
 	// ˆÚ“®§ŒÀ
 	void MoveLimit();

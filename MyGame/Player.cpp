@@ -1,11 +1,12 @@
 #include "Player.h"
 #include "Input.h"
+#include "GameScreen.h"
 
 using namespace DirectX;
 
 Player* Player::Create(ObjModel* model)
 {
-	// 3Dオブジェクトのインスタンスを生成 Instantiate a 3D object
+	// 3Dオブジェクトのインスタンスを生成
 	Player* instance = new Player();
 	if (instance == nullptr) {
 		return nullptr;
@@ -50,12 +51,12 @@ void Player::Update()
 	// DodgeRoll();
 
 	// 弾を発射
-	Shot();
+	// Shot();
 
 	ObjObject3d::Update();
 }
 
-void Player::Move()
+void Player::FrontMove()
 {
 	Input* input = Input::GetInstance();
 
@@ -80,6 +81,95 @@ void Player::Move()
 			position.x -= 0.3f;
 		}
 	}
+
+	MoveLimit();
+}
+
+void Player::RightMove()
+{
+	Input* input = Input::GetInstance();
+
+	// オブジェクト移動
+	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
+	{
+		// 移動後の座標を計算
+		if (input->PushKey(DIK_W))
+		{
+			position.y += 0.3f;
+		}
+		else if (input->PushKey(DIK_S))
+		{
+			position.y -= 0.3f;
+		}
+		if (input->PushKey(DIK_D))
+		{
+			position.z -= 0.3f;
+		}
+		else if (input->PushKey(DIK_A))
+		{
+			position.z += 0.3f;
+		}
+	}
+
+	MoveLimit();
+}
+
+void Player::BackMove()
+{
+	Input* input = Input::GetInstance();
+
+	// オブジェクト移動
+	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
+	{
+		// 移動後の座標を計算
+		if (input->PushKey(DIK_W))
+		{
+			position.y += 0.3f;
+		}
+		else if (input->PushKey(DIK_S))
+		{
+			position.y -= 0.3f;
+		}
+		if (input->PushKey(DIK_D))
+		{
+			position.x -= 0.3f;
+		}
+		else if (input->PushKey(DIK_A))
+		{
+			position.x += 0.3f;
+		}
+	}
+
+	MoveLimit();
+}
+
+void Player::LeftMove()
+{
+	Input* input = Input::GetInstance();
+
+	// オブジェクト移動
+	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
+	{
+		// 移動後の座標を計算
+		if (input->PushKey(DIK_W))
+		{
+			position.y += 0.3f;
+		}
+		else if (input->PushKey(DIK_S))
+		{
+			position.y -= 0.3f;
+		}
+		if (input->PushKey(DIK_D))
+		{
+			position.z += 0.3f;
+		}
+		else if (input->PushKey(DIK_A))
+		{
+			position.z -= 0.3f;
+		}
+	}
+
+	MoveLimit();
 }
 
 void Player::MoveLimit()
