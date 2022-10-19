@@ -11,6 +11,8 @@
 #include "FbxObject.h"
 #include "ParticleManager.h"
 
+#include "PlayerBullet.h"
+
 class CollisionManager;
 class Player;
 
@@ -46,9 +48,6 @@ public: // メンバ関数
 	// 描画
 	void Draw();
 
-	// カメラ移動
-	void MoveCamera();
-
 	// パーティクル生成
 	void CreateParticles();
 
@@ -73,6 +72,10 @@ public: // メンバ関数
 
 	void BackRolling();
 
+	//
+	void CameraSwitching();
+
+	void Attack();
 private:
 	XMFLOAT3 SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t);
 
@@ -114,9 +117,6 @@ private: // メンバ変数
 	ObjObject3d* objBossLeg4 = nullptr;
 
 	FbxObject3d* testobject = nullptr;
-
-	int ShotFlag;
-	XMFLOAT3 Shot;
 
 	// ボス関連
 	int bossHp = 0;
@@ -171,5 +171,7 @@ private: // メンバ変数
 
 	const float LimitXZ = 8.5f;
 	const float LimitY = 5.0f;
+
+	PlayerBullet* Bullet = nullptr;
 };
 
