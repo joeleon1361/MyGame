@@ -6,29 +6,29 @@ using namespace DirectX;
 using namespace std;
 
 // 静的メンバ変数の実体
-ID3D12Device* Material::device = nullptr;
+ID3D12Device* ObjMaterial::device = nullptr;
 
-void Material::StaticInitialize(ID3D12Device * device)
+void ObjMaterial::StaticInitialize(ID3D12Device * device)
 {
-	Material::device = device;
+	ObjMaterial::device = device;
 }
 
-Material * Material::Create()
+ObjMaterial * ObjMaterial::Create()
 {
-	Material* instance = new Material;
+	ObjMaterial* instance = new ObjMaterial;
 
 	instance->Initialize();
 
 	return instance;
 }
 
-void Material::Initialize()
+void ObjMaterial::Initialize()
 {
 	// 定数バッファの生成
 	CreateConstantBuffer();
 }
 
-void Material::CreateConstantBuffer()
+void ObjMaterial::CreateConstantBuffer()
 {
 	HRESULT result;
 	// 定数バッファの生成
@@ -44,7 +44,7 @@ void Material::CreateConstantBuffer()
 	}	
 }
 
-void Material::LoadTexture(const std::string& directoryPath, CD3DX12_CPU_DESCRIPTOR_HANDLE cpuHandle, CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle)
+void ObjMaterial::LoadTexture(const std::string& directoryPath, CD3DX12_CPU_DESCRIPTOR_HANDLE cpuHandle, CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle)
 {
 	// テクスチャなし
 	if (textureFilename.size() == 0) {
@@ -124,7 +124,7 @@ void Material::LoadTexture(const std::string& directoryPath, CD3DX12_CPU_DESCRIP
 	);
 }
 
-void Material::Update()
+void ObjMaterial::Update()
 {
 	HRESULT result;
 	// 定数バッファへデータ転送

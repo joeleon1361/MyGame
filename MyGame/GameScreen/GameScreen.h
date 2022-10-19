@@ -17,7 +17,7 @@ class CollisionManager;
 class Player;
 
 // ゲームシーン
-class GameScene
+class GameScreen
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -34,13 +34,13 @@ private: // 静的メンバ変数
 public: // メンバ関数
 
 	// コンストクラタ
-	GameScene();
+	GameScreen();
 
 	// デストラクタ
-	~GameScene();
+	~GameScreen();
 
 	// 初期化
-	void Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio);
+	void Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio);
 
 	// 毎フレーム処理
 	void Update();
@@ -82,7 +82,7 @@ private:
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
 	Input* input = nullptr;
-	Audio* audio = nullptr;
+	Sound* audio = nullptr;
 	DebugText debugText;
 	CollisionManager* collisionManager = nullptr;
 
@@ -100,21 +100,21 @@ private: // メンバ変数
 
 	FbxModel* testmodel = nullptr;
 
-	ObjObject3d* objSkydome = nullptr;
-	ObjObject3d* objGround = nullptr;
+	ObjObject* objSkydome = nullptr;
+	ObjObject* objGround = nullptr;
 	Player* objPlayer = nullptr;
-	ObjObject3d* objBullet = nullptr;
+	ObjObject* objBullet = nullptr;
 
-	ObjObject3d* objCenter = nullptr;
+	ObjObject* objCenter = nullptr;
 
-	ObjObject3d* objC = nullptr;
+	ObjObject* objC = nullptr;
 
 	// ボス関連
-	ObjObject3d* objBossBody = nullptr;
-	ObjObject3d* objBossLeg1 = nullptr;
-	ObjObject3d* objBossLeg2 = nullptr;
-	ObjObject3d* objBossLeg3 = nullptr;
-	ObjObject3d* objBossLeg4 = nullptr;
+	ObjObject* objBossBody = nullptr;
+	ObjObject* objBossLeg1 = nullptr;
+	ObjObject* objBossLeg2 = nullptr;
+	ObjObject* objBossLeg3 = nullptr;
+	ObjObject* objBossLeg4 = nullptr;
 
 	FbxObject3d* testobject = nullptr;
 

@@ -26,7 +26,7 @@ PlayerBullet* PlayerBullet::Create(ObjModel* model)
 
 bool PlayerBullet::Initialize()
 {
-	if (!ObjObject3d::Initialize())
+	if (!ObjObject::Initialize())
 	{
 		return false;
 	}

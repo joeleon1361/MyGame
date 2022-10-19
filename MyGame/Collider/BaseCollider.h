@@ -12,11 +12,11 @@ public:
 	// 仮想デストラクタ
 	virtual ~BaseCollider() = default;
 
-	inline void SetObject(ObjObject3d* object) {
+	inline void SetObject(ObjObject* object) {
 		this->object3d = object;
 	}
 
-	inline ObjObject3d* GetObject3d() {
+	inline ObjObject* GetObject3d() {
 		return object3d;
 	}
 
@@ -31,7 +31,7 @@ public:
 	}
 
 protected:
-	ObjObject3d* object3d = nullptr;
+	ObjObject* object3d = nullptr;
 	// 形状タイプ
 	CollisionShapeType shapeType = SHAPE_UNKNOWN;
 };

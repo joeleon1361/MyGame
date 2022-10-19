@@ -3,13 +3,13 @@
 #include "BaseCollider.h"
 #include <DirectXMath.h>
 
-class ObjObject3d;
+class ObjObject;
 
 // レイキャストによる情報を得る為の構造体
 struct RaycastHit
 {
 	// 衝突相手のオブジェクト
-	ObjObject3d* object = nullptr;
+	ObjObject* object = nullptr;
 	// 衝突相手のコライダー
 	BaseCollider* collider = nullptr;
 	// 衝突点

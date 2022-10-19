@@ -31,7 +31,7 @@ public:
 
 
 // オーディオ
-class Audio
+class Sound
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略

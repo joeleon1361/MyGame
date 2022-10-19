@@ -13,8 +13,8 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 	WinApp *win = nullptr;
 	DirectXCommon *dxCommon = nullptr;
 	Input *input = nullptr;
-	Audio *audio = nullptr;
-	GameScene *gameScene = nullptr;
+	Sound *audio = nullptr;
+	GameScreen *gameScene = nullptr;
 	PostEffect* postEffect = nullptr;
 	FbxManager *fbxManager = FbxManager::Create();
 
@@ -34,7 +34,7 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 		return 1;
 	}
 	// オーディオの初期化
-	audio = new Audio();
+	audio = new Sound();
 	if ( !audio->Initialize() ) {
 		assert( 0 );
 		return 1;
@@ -53,13 +53,13 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 	postEffect->Initialize();
 
 	// 3Dオブジェクト静的初期化
-	ObjObject3d::StaticInitialize( dxCommon->GetDevice() );
+	ObjObject::StaticInitialize( dxCommon->GetDevice() );
 
 	FbxLoader::GetInstance()->Initialize( dxCommon->GetDevice() );
 #pragma endregion
 
 	// ゲームシーンの初期化
-	gameScene = new GameScene();
+	gameScene = new GameScreen();
 	gameScene->Initialize( dxCommon, input, audio );
 
 	// メインループ

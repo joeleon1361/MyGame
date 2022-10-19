@@ -9,7 +9,7 @@
 #include <vector>
 
 // 形状データ
-class Mesh
+class ObjMesh
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -54,10 +54,10 @@ public: // メンバ関数
 	inline size_t GetVertexCount() { return vertices.size(); }
 	
 	// マテリアルの取得
-	Material* GetMaterial() { return material; }
+	ObjMaterial* GetMaterial() { return material; }
 
 	// マテリアルの割り当て
-	void SetMaterial(Material* material);
+	void SetMaterial(ObjMaterial* material);
 
 	// バッファの生成
 	void CreateBuffers();
@@ -87,6 +87,6 @@ private: // メンバ変数
 	// 頂点インデックス配列
 	std::vector<unsigned short> indices;
 	// マテリアル
-	Material* material = nullptr;
+	ObjMaterial* material = nullptr;
 };
 

@@ -14,12 +14,12 @@ using namespace Microsoft::WRL;
 using namespace std;
 
 // 静的メンバ変数の実体
-ID3D12Device *ObjObject3d::device = nullptr;
-ID3D12GraphicsCommandList *ObjObject3d::cmdList = nullptr;
-ObjObject3d::PipelineSet ObjObject3d::pipelineSet;
-Camera *ObjObject3d::camera = nullptr;
+ID3D12Device *ObjObject::device = nullptr;
+ID3D12GraphicsCommandList *ObjObject::cmdList = nullptr;
+ObjObject::PipelineSet ObjObject::pipelineSet;
+Camera *ObjObject::camera = nullptr;
 
-ObjObject3d::~ObjObject3d()
+ObjObject::~ObjObject()
 {
 	if (collider)
 	{
@@ -29,14 +29,14 @@ ObjObject3d::~ObjObject3d()
 	}
 }
 
-void ObjObject3d::StaticInitialize( ID3D12Device *device, Camera *camera )
+void ObjObject::StaticInitialize( ID3D12Device *device, Camera *camera )
 {
 
 	// nullptrチェック
 	assert( device );
 
-	ObjObject3d::device = device;
-	ObjObject3d::camera = camera;
+	ObjObject::device = device;
+	ObjObject::camera = camera;
 
 	// グラフィックパイプラインの生成
 	CreateGraphicsPipeline();
@@ -46,7 +46,7 @@ void ObjObject3d::StaticInitialize( ID3D12Device *device, Camera *camera )
 
 }
 
-void ObjObject3d::CreateGraphicsPipeline()
+void ObjObject::CreateGraphicsPipeline()
 {
 	HRESULT result = S_FALSE;
 	ComPtr<ID3DBlob> vsBlob; // 頂点シェーダオブジェクト
@@ -199,28 +199,28 @@ void ObjObject3d::CreateGraphicsPipeline()
 	}
 }
 
-void ObjObject3d::PreDraw( ID3D12GraphicsCommandList *cmdList )
+void ObjObject::PreDraw( ID3D12GraphicsCommandList *cmdList )
 {
 	// PreDrawとPostDrawがペアで呼ばれていなければエラー
-	assert( ObjObject3d::cmdList == nullptr );
+	assert( ObjObject::cmdList == nullptr );
 
 	// コマンドリストをセット
-	ObjObject3d::cmdList = cmdList;
+	ObjObject::cmdList = cmdList;
 
 	// プリミティブ形状を設定
 	cmdList->IASetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 }
 
-void ObjObject3d::PostDraw()
+void ObjObject::PostDraw()
 {
 	// コマンドリストを解除
-	ObjObject3d::cmdList = nullptr;
+	ObjObject::cmdList = nullptr;
 }
 
-ObjObject3d *ObjObject3d::Create( ObjModel *model )
+ObjObject *ObjObject::Create( ObjModel *model )
 {
 	// 3Dオブジェクトのインスタンスを生成
-	ObjObject3d *object3d = new ObjObject3d();
+	ObjObject *object3d = new ObjObject();
 	if ( object3d == nullptr ) {
 		return nullptr;
 	}
@@ -242,7 +242,7 @@ ObjObject3d *ObjObject3d::Create( ObjModel *model )
 	return object3d;
 }
 
-bool ObjObject3d::Initialize()
+bool ObjObject::Initialize()
 {
 	// nullptrチェック
 	assert( device );
@@ -262,7 +262,7 @@ bool ObjObject3d::Initialize()
 	return true;
 }
 
-void ObjObject3d::Update()
+void ObjObject::Update()
 {
 	assert( camera );
 
@@ -314,11 +314,11 @@ void ObjObject3d::Update()
 	}
 }
 
-void ObjObject3d::Draw()
+void ObjObject::Draw()
 {
 	// nullptrチェック
 	assert( device );
-	assert( ObjObject3d::cmdList );
+	assert( ObjObject::cmdList );
 
 	// モデルの割り当てがなければ描画しない
 	if ( model == nullptr ) {
@@ -336,7 +336,7 @@ void ObjObject3d::Draw()
 	model->Draw( cmdList );
 }
 
-void ObjObject3d::SetCollider(BaseCollider* collider)
+void ObjObject::SetCollider(BaseCollider* collider)
 {
 	collider->SetObject(this);
 	this->collider = collider;

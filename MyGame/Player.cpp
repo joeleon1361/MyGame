@@ -28,7 +28,7 @@ Player* Player::Create(ObjModel* model)
 
 bool Player::Initialize()
 {
-	if (!ObjObject3d::Initialize())
+	if (!ObjObject::Initialize())
 	{
 		return false;
 	}
@@ -53,7 +53,7 @@ void Player::Update()
 	// ’e‚ð”­ŽË
 	// Shot();
 
-	ObjObject3d::Update();
+	ObjObject::Update();
 }
 
 void Player::FrontMove()

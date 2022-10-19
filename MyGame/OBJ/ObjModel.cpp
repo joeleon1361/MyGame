@@ -15,7 +15,7 @@ void ObjModel::StaticInitialize(ID3D12Device * device)
 	ObjModel::device = device;
 
 	// メッシュの静的初期化
-	Mesh::StaticInitialize(device);
+	ObjMesh::StaticInitialize(device);
 }
 
 ObjModel* ObjModel::CreateFromOBJ(const std::string& modelname)
@@ -57,7 +57,7 @@ void ObjModel::Initialize(const std::string& modelname)
 	name = modelname;
 
 	// メッシュ生成
-	Mesh* mesh = new Mesh;
+	ObjMesh* mesh = new ObjMesh;
 	int indexCountTex = 0;
 	int indexCountNoTex = 0;
 
@@ -91,7 +91,7 @@ void ObjModel::Initialize(const std::string& modelname)
 				// コンテナに登録
 				meshes.emplace_back(mesh);
 				// 次のメッシュ生成
-				mesh = new Mesh;
+				mesh = new ObjMesh;
 				indexCountTex = 0;
 			}
 
@@ -161,7 +161,7 @@ void ObjModel::Initialize(const std::string& modelname)
 				// 頂点番号
 				index_stream >> indexPosition;				
 
-				Material* material = mesh->GetMaterial();
+				ObjMaterial* material = mesh->GetMaterial();
 				index_stream.seekg(1, ios_base::cur); // スラッシュを飛ばす
 				// マテリアル、テクスチャがある場合
 				if (material && material->textureFilename.size() > 0) {
@@ -169,7 +169,7 @@ void ObjModel::Initialize(const std::string& modelname)
 					index_stream.seekg(1, ios_base::cur); // スラッシュを飛ばす
 					index_stream >> indexNormal;
 					// 頂点データの追加
-					Mesh::VertexPosNormalUv vertex{};
+					ObjMesh::VertexPosNormalUv vertex{};
 					vertex.pos = positions[indexPosition - 1];
 					vertex.normal = normals[indexNormal - 1];
 					vertex.uv = texcoords[indexTexcoord - 1];
@@ -181,7 +181,7 @@ void ObjModel::Initialize(const std::string& modelname)
 					// スラッシュ2連続の場合、頂点番号のみ
 					if (c == '/') {
 						// 頂点データの追加
-						Mesh::VertexPosNormalUv vertex{};
+						ObjMesh::VertexPosNormalUv vertex{};
 						vertex.pos = positions[indexPosition - 1];
 						vertex.normal = { 0, 0, 1 };
 						vertex.uv = { 0, 0 };
@@ -193,7 +193,7 @@ void ObjModel::Initialize(const std::string& modelname)
 						index_stream.seekg(1, ios_base::cur); // スラッシュを飛ばす
 						index_stream >> indexNormal;
 						// 頂点データの追加
-						Mesh::VertexPosNormalUv vertex{};
+						ObjMesh::VertexPosNormalUv vertex{};
 						vertex.pos = positions[indexPosition - 1];
 						vertex.normal = normals[indexNormal - 1];
 						vertex.uv = { 0, 0 };
@@ -239,7 +239,7 @@ void ObjModel::Initialize(const std::string& modelname)
 		if (m->GetMaterial() == nullptr) {
 			if (defaultMaterial == nullptr) {
 				// デフォルトマテリアルを生成
-				defaultMaterial = Material::Create();
+				defaultMaterial = ObjMaterial::Create();
 				defaultMaterial->name = "no material";
 				materials.emplace(defaultMaterial->name, defaultMaterial);
 			}
@@ -276,7 +276,7 @@ void ObjModel::LoadMaterial(const std::string & directoryPath, const std::string
 		assert(0);
 	}
 
-	Material* material = nullptr;
+	ObjMaterial* material = nullptr;
 
 	// 1行ずつ読み込む
 	string line;
@@ -304,7 +304,7 @@ void ObjModel::LoadMaterial(const std::string & directoryPath, const std::string
 			}
 
 			// 新しいマテリアルを生成
-			material = Material::Create();
+			material = ObjMaterial::Create();
 			// マテリアル名読み込み
 			line_stream >> material->name;
 		}
@@ -353,7 +353,7 @@ void ObjModel::LoadMaterial(const std::string & directoryPath, const std::string
 	}
 }
 
-void ObjModel::AddMaterial(Material * material)
+void ObjModel::AddMaterial(ObjMaterial * material)
 {
 	// コンテナに登録
 	materials.emplace(material->name, material);
@@ -388,7 +388,7 @@ void ObjModel::LoadTextures()
 	string directoryPath = baseDirectory + name + "/";
 
 	for (auto& m : materials) {
-		Material* material = m.second;
+		ObjMaterial* material = m.second;
 
 		// テクスチャあり
 		if (material->textureFilename.size() > 0) {

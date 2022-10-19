@@ -5,37 +5,37 @@
 #pragma comment(lib, "d3dcompiler.lib")
 
 // 静的メンバ変数の実体
-ID3D12Device* Mesh::device = nullptr;
+ID3D12Device* ObjMesh::device = nullptr;
 
-void Mesh::StaticInitialize(ID3D12Device * device)
+void ObjMesh::StaticInitialize(ID3D12Device * device)
 {
-	Mesh::device = device;	
+	ObjMesh::device = device;	
 
 	// マテリアルの静的初期化
-	Material::StaticInitialize(device);
+	ObjMaterial::StaticInitialize(device);
 }
 
-void Mesh::SetName(const std::string& name)
+void ObjMesh::SetName(const std::string& name)
 {
 	this->name = name;
 }
 
-void Mesh::AddVertex(const VertexPosNormalUv & vertex)
+void ObjMesh::AddVertex(const VertexPosNormalUv & vertex)
 {
 	vertices.emplace_back(vertex);
 }
 
-void Mesh::AddIndex(unsigned short index)
+void ObjMesh::AddIndex(unsigned short index)
 {
 	indices.emplace_back(index);
 }
 
-void Mesh::SetMaterial(Material * material)
+void ObjMesh::SetMaterial(ObjMaterial * material)
 {
 	this->material = material;
 }
 
-void Mesh::CreateBuffers()
+void ObjMesh::CreateBuffers()
 {
 	HRESULT result;
 		
@@ -95,7 +95,7 @@ void Mesh::CreateBuffers()
 	ibView.SizeInBytes = sizeIB;
 }
 
-void Mesh::Draw(ID3D12GraphicsCommandList * cmdList)
+void ObjMesh::Draw(ID3D12GraphicsCommandList * cmdList)
 {
 	// 頂点バッファをセット
 	cmdList->IASetVertexBuffers(0, 1, &vbView);

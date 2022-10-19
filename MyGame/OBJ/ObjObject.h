@@ -14,7 +14,7 @@
 class BaseCollider;
 
 // 3Dオブジェクト
-class ObjObject3d
+class ObjObject
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -54,7 +54,7 @@ public: // 静的メンバ関数
 	
 	// カメラのセット
 	static void SetCamera( Camera *camera ) {
-		ObjObject3d::camera = camera;
+		ObjObject::camera = camera;
 	}
 	
 	// 描画前処理
@@ -64,7 +64,7 @@ public: // 静的メンバ関数
 	static void PostDraw();
 
 	// 3Dオブジェクト生成
-	static ObjObject3d* Create( ObjModel *model = nullptr );
+	static ObjObject* Create( ObjModel *model = nullptr );
 
 
 private: // 静的メンバ変数
@@ -81,10 +81,10 @@ private:// 静的メンバ関数
 	
 public: // メンバ関数
 	// コンストラクタ
-	ObjObject3d() = default;
+	ObjObject() = default;
 
 	// デストラクタ
-	virtual ~ObjObject3d();
+	virtual ~ObjObject();
 
 	// 初期化
 	virtual bool Initialize();
@@ -116,7 +116,7 @@ public: // メンバ関数
 	// モデルのセット
 	void SetModel(ObjModel* model) { this->model = model; }
 
-	void SetParent(ObjObject3d* parent) { this->parent = parent; }
+	void SetParent(ObjObject* parent) { this->parent = parent; }
 
 	void SetBillboard(bool isBillboard) { this->isBillboard = isBillboard; }
 
@@ -139,7 +139,7 @@ protected: // メンバ変数
 	// ローカルワールド変換行列
 	XMMATRIX matWorld;
 	// 親オブジェクト
-	ObjObject3d* parent = nullptr;
+	ObjObject* parent = nullptr;
 	// モデル
 	ObjModel* model = nullptr;
 	// ビルボード

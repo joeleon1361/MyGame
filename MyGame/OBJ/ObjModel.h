@@ -51,11 +51,11 @@ private: // メンバ変数
 	// 名前
 	std::string name;
 	// メッシュコンテナ
-	std::vector<Mesh*> meshes;
+	std::vector<ObjMesh*> meshes;
 	// マテリアルコンテナ
-	std::unordered_map<std::string, Material*> materials;
+	std::unordered_map<std::string, ObjMaterial*> materials;
 	// デフォルトマテリアル
-	Material* defaultMaterial = nullptr;
+	ObjMaterial* defaultMaterial = nullptr;
 	// デスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> descHeap;
 
@@ -65,7 +65,7 @@ private: // メンバ関数
 	void LoadMaterial(const std::string& directoryPath, const std::string & filename);
 
 	// マテリアル登録
-	void AddMaterial(Material* material);
+	void AddMaterial(ObjMaterial* material);
 
 	// デスクリプタヒープの生成
 	void CreateDescriptorHeap();

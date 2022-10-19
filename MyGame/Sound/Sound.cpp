@@ -4,7 +4,7 @@
 
 #pragma comment(lib,"xaudio2.lib")
 
-bool Audio::Initialize()
+bool Sound::Initialize()
 {
 	HRESULT result;
 
@@ -25,7 +25,7 @@ bool Audio::Initialize()
 	return true;
 }
 
-void Audio::PlayWave(const char * filename)
+void Sound::PlayWave(const char * filename)
 {
 	HRESULT result;
 	// ファイルストリーム

@@ -9,7 +9,7 @@
 /// <summary>
 /// マテリアル
 /// </summary>
-class Material
+class ObjMaterial
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -38,7 +38,7 @@ public: // 静的メンバ関数
 	static void StaticInitialize(ID3D12Device* device);
 
 	// マテリアル生成
-	static Material* Create();
+	static ObjMaterial* Create();
 
 private: // 静的メンバ変数
 	// デバイス
@@ -78,7 +78,7 @@ private:
 
 private:
 	// コンストラクタ
-	Material() {
+	ObjMaterial() {
 		ambient = { 0.3f, 0.3f, 0.3f };
 		diffuse = { 0.0f, 0.0f, 0.0f };
 		specular = { 0.0f, 0.0f, 0.0f };

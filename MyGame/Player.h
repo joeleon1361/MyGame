@@ -4,7 +4,7 @@
 #include "PlayerBullet.h"
 
 class Player :
-	public ObjObject3d
+	public ObjObject
 {
 private:
 	using XMFLOAT3 = DirectX::XMFLOAT3;

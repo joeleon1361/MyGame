@@ -16,11 +16,11 @@
 
 using namespace DirectX;
 
-GameScene::GameScene()
+GameScreen::GameScreen()
 {
 }
 
-GameScene::~GameScene()
+GameScreen::~GameScreen()
 {
 	safe_delete(spriteBG);
 	safe_delete(objSkydome);
@@ -34,7 +34,7 @@ GameScene::~GameScene()
 	safe_delete(testobject);
 }
 
-void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
+void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 {
 	// nullptrチェック
 	assert(dxCommon);
@@ -49,7 +49,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	camera = new Camera(WinApp::window_width, WinApp::window_height);
 
 	// カメラセット
-	ObjObject3d::SetCamera(camera);
+	ObjObject::SetCamera(camera);
 	FbxObject3d::SetCamera(camera);
 
 	// デバイスをセット
@@ -84,19 +84,19 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
 
 	// 3Dオブジェクト生成
-	objSkydome = ObjObject3d::Create();
-	objGround = ObjObject3d::Create();
+	objSkydome = ObjObject::Create();
+	objGround = ObjObject::Create();
 	objPlayer = Player::Create();
 	objBullet = PlayerBullet::Create();
-	objCenter = ObjObject3d::Create();
+	objCenter = ObjObject::Create();
 
-	objBossBody = ObjObject3d::Create();
-	objBossLeg1 = ObjObject3d::Create();
-	objBossLeg2 = ObjObject3d::Create();
-	objBossLeg3 = ObjObject3d::Create();
-	objBossLeg4 = ObjObject3d::Create();
+	objBossBody = ObjObject::Create();
+	objBossLeg1 = ObjObject::Create();
+	objBossLeg2 = ObjObject::Create();
+	objBossLeg3 = ObjObject::Create();
+	objBossLeg4 = ObjObject::Create();
 
-	objC = ObjObject3d::Create();
+	objC = ObjObject::Create();
 
 	modelSkydome = ObjModel::CreateFromOBJ("skydome");
 	modelGround = ObjModel::CreateFromOBJ("ground");
@@ -165,7 +165,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio)
 	startCount = GetTickCount();
 }
 
-void GameScene::Update()
+void GameScreen::Update()
 {
 	playerPosition = objPlayer->GetPosition();
 	playerRotation = objPlayer->GetRotation();
@@ -288,7 +288,7 @@ void GameScene::Update()
 }
 
 
-void GameScene::Draw()
+void GameScreen::Draw()
 {
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
@@ -307,7 +307,7 @@ void GameScene::Draw()
 
 #pragma region 3Dオブジェクト描画
 	// 3Dオブジェクト描画前処理
-	ObjObject3d::PreDraw(cmdList);
+	ObjObject::PreDraw(cmdList);
 
 	// 3Dオブクジェクトの描画
 	objSkydome->Draw();
@@ -335,7 +335,7 @@ void GameScene::Draw()
 	//particleMan->Draw(cmdList);
 
 	// 3Dオブジェクト描画後処理
-	ObjObject3d::PostDraw();
+	ObjObject::PostDraw();
 #pragma endregion
 
 #pragma region 前景スプライト描画
@@ -373,7 +373,7 @@ void GameScene::Draw()
 //	}
 //}
 
-void GameScene::CreateParticles()
+void GameScreen::CreateParticles()
 {
 	for (int i = 0; i < 10; i++) {
 		// X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
@@ -399,7 +399,7 @@ void GameScene::CreateParticles()
 }
 
 // デバックテキスト
-void GameScene::CreateDebugText()
+void GameScreen::CreateDebugText()
 {
 	// プレイヤーの座標を表示
 	std::ostringstream PlayerPos;
@@ -500,7 +500,7 @@ void GameScene::CreateDebugText()
 	debugText.Print("Y:CameraSwitch", 1050, 70, 1.0f);
 }
 // 前方向移動処理
-void GameScene::FrontMove()
+void GameScreen::FrontMove()
 {
 	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
 	{
@@ -524,7 +524,7 @@ void GameScene::FrontMove()
 	}
 }
 // 右方向移動処理
-void GameScene::RightMove()
+void GameScreen::RightMove()
 {
 	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
 	{
@@ -548,7 +548,7 @@ void GameScene::RightMove()
 	}
 }
 // 後方向移動処理
-void GameScene::BackMove()
+void GameScreen::BackMove()
 {
 	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
 	{
@@ -572,7 +572,7 @@ void GameScene::BackMove()
 	}
 }
 // 左方向移動処理
-void GameScene::LeftMove()
+void GameScreen::LeftMove()
 {
 	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
 	{
@@ -596,7 +596,7 @@ void GameScene::LeftMove()
 	}
 }
 // XY座標の移動制限
-void GameScene::MoveLimitXY()
+void GameScreen::MoveLimitXY()
 {
 	// X軸を制限
 	playerPosition.x = max(playerPosition.x, -LimitXZ);
@@ -607,7 +607,7 @@ void GameScene::MoveLimitXY()
 	playerPosition.y = min(playerPosition.y, +LimitY);
 }
 // XZ座標の移動制限
-void GameScene::MoveLimitZY()
+void GameScreen::MoveLimitZY()
 {
 	// Z軸を制限
 	playerPosition.z = max(playerPosition.z, -LimitXZ);
@@ -618,7 +618,7 @@ void GameScene::MoveLimitZY()
 	playerPosition.y = min(playerPosition.y, +LimitY);
 }
 // 前方向時の自機の傾き
-void GameScene::FrontRolling()
+void GameScreen::FrontRolling()
 {
 	// ロール
 	if (input->PushKey(DIK_A) || input->PushKey(DIK_D))
@@ -649,7 +649,7 @@ void GameScene::FrontRolling()
 	}
 }
 // 後方向時の自機の傾き
-void GameScene::BackRolling()
+void GameScreen::BackRolling()
 {
 	// ロール
 	if (input->PushKey(DIK_A) || input->PushKey(DIK_D))
@@ -680,7 +680,7 @@ void GameScene::BackRolling()
 	}
 }
 // カメラ方向の切り替え
-void GameScene::CameraSwitching()
+void GameScreen::CameraSwitching()
 {
 	if (cameraMode == 0)
 	{
@@ -749,7 +749,7 @@ void GameScene::CameraSwitching()
 	if (input->TriggerKey(DIK_Y)) { cameraMode += 1; }
 }
 
-void GameScene::Attack()
+void GameScreen::Attack()
 {
 	PlayerBullet* newBullet = new PlayerBullet();
 	newBullet->Initialize();
@@ -758,7 +758,7 @@ void GameScene::Attack()
 }
 
 // スプライン曲線の計算
-XMFLOAT3 GameScene::SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t)
+XMFLOAT3 GameScreen::SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t)
 {
 	size_t n = points.size() - 2;
 
