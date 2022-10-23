@@ -167,6 +167,110 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 
 void GameScreen::Update()
 {
+	switch (scene)
+	{
+	case SCENE::TITLE:
+		TitleUpdate();
+		break;
+
+	case SCENE::GAME:
+		GameUpdate();
+		break;
+
+	case SCENE::RESULT:
+		ResultUpdata();
+		break;
+	}
+}
+
+
+void GameScreen::Draw()
+{
+	switch (scene)
+	{
+	case SCENE::TITLE:
+		TitleDraw();
+		break;
+
+	case SCENE::GAME:
+		GameDraw();
+		break;
+
+	case SCENE::RESULT:
+		ResultDraw();
+		break;
+	}
+}
+
+void GameScreen::TitleUpdate()
+{
+	if (input->TriggerKey(DIK_O))
+	{
+		scene = GAME;
+		GameInitialize();
+	}
+
+	// デバックテキスト
+	CreateDebugText();
+}
+
+void GameScreen::TitleDraw()
+{
+	// コマンドリストの取得
+	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
+
+#pragma region 背景スプライト描画
+	// 背景スプライト描画前処理
+	Sprite::PreDraw(cmdList);
+	// 背景スプライト描画
+	spriteBG->Draw();
+
+	// スプライト描画後処理
+	Sprite::PostDraw();
+	// 深度バッファクリア
+	dxCommon->ClearDepthBuffer();
+#pragma endregion
+
+#pragma region 3Dオブジェクト描画
+	// 3Dオブジェクト描画前処理
+	ObjObject::PreDraw(cmdList);
+
+	// 3Dオブクジェクトの描画
+
+	// パーティクルの描画
+	//particleMan->Draw(cmdList);
+
+	// 3Dオブジェクト描画後処理
+	ObjObject::PostDraw();
+#pragma endregion
+
+#pragma region 前景スプライト描画
+	// 前景スプライト描画前処理
+	Sprite::PreDraw(cmdList);
+
+	// 描画
+	//sprite1->Draw();
+	//sprite2->Draw();
+
+	// デバッグテキストの描画
+	debugText.DrawAll(cmdList);
+
+	// スプライト描画後処理
+	Sprite::PostDraw();
+#pragma endregion
+}
+
+void GameScreen::TitleInitialize()
+{
+}
+
+void GameScreen::GameUpdate()
+{
+	if (input->TriggerKey(DIK_O))
+	{
+		scene = RESULT;
+	}
+
 	playerPosition = objPlayer->GetPosition();
 	playerRotation = objPlayer->GetRotation();
 
@@ -265,9 +369,9 @@ void GameScreen::Update()
 
 	objSkydome->Update();
 	objGround->Update();
-	
+
 	objBullet->Update();
-	
+
 
 	testobject->Update();
 
@@ -287,8 +391,7 @@ void GameScreen::Update()
 	CreateDebugText();
 }
 
-
-void GameScreen::Draw()
+void GameScreen::GameDraw()
 {
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
@@ -354,24 +457,93 @@ void GameScreen::Draw()
 #pragma endregion
 }
 
-//void GameScene::MoveCamera()
-//{
-//	// カメラ移動
-//	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
-//	{
-//		if (input->PushKey(DIK_UP)) { camera->MoveVector({ 0.0f,+0.06f,0.0f }); }
-//		else if (input->PushKey(DIK_DOWN)) { camera->MoveVector({ 0.0f,-0.06f,0.0f }); }
-//		if (input->PushKey(DIK_RIGHT)) { camera->MoveVector({ +0.06f,0.0f,0.0f }); }
-//		else if (input->PushKey(DIK_LEFT)) { camera->MoveVector({ -0.06f,0.0f,0.0f }); }
-//	}
-//
-//	// カメラ移動
-//	if (input->PushKey(DIK_I) || input->PushKey(DIK_K))
-//	{
-//		if (input->PushKey(DIK_I)) { camera->MoveVector({ 0.0f,0.0f,+0.06f }); }
-//		else if (input->PushKey(DIK_K)) { camera->MoveVector({ 0.0f,0.0f,-0.06f }); }
-//	}
-//}
+void GameScreen::GameInitialize()
+{
+	// 座標のセット
+	objPlayer->SetPosition({ 0,0,0 });
+	objPlayer->SetRotation({ 0, 90, 0 });
+	objPlayer->SetScale({ 0.5f, 0.5f, 0.5f });
+
+	objCenter->SetPosition({ 0,0,0 });
+	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
+
+	objSkydome->SetPosition({ -70,0,0 });
+
+	objBossBody->SetPosition({ 0,0,0 });
+	objBossLeg1->SetPosition({ 2,-2,2 });
+	objBossLeg2->SetPosition({ 2,-2,-2 });
+	objBossLeg3->SetPosition({ -2,-2,2 });
+	objBossLeg4->SetPosition({ -2,-2,-2 });
+
+	objC->SetPosition({ 0,0,5 });
+	objC->SetRotation({ 0,0,0 });
+
+	camera->SetTarget({ 0, 0, 0 });
+	camera->SetEye({ 0, 0, 10 });
+	camera->SetUp({ 0, 1, 0 });
+}
+
+
+void GameScreen::ResultUpdata()
+{
+	if (input->TriggerKey(DIK_O))
+	{
+		scene = TITLE;
+	}
+
+	// デバックテキスト
+	CreateDebugText();
+}
+
+void GameScreen::ResultDraw()
+{
+	// コマンドリストの取得
+	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
+
+#pragma region 背景スプライト描画
+	// 背景スプライト描画前処理
+	Sprite::PreDraw(cmdList);
+	// 背景スプライト描画
+	spriteBG->Draw();
+
+	// スプライト描画後処理
+	Sprite::PostDraw();
+	// 深度バッファクリア
+	dxCommon->ClearDepthBuffer();
+#pragma endregion
+
+#pragma region 3Dオブジェクト描画
+	// 3Dオブジェクト描画前処理
+	ObjObject::PreDraw(cmdList);
+
+	// 3Dオブクジェクトの描画
+
+	// パーティクルの描画
+	//particleMan->Draw(cmdList);
+
+	// 3Dオブジェクト描画後処理
+	ObjObject::PostDraw();
+#pragma endregion
+
+#pragma region 前景スプライト描画
+	// 前景スプライト描画前処理
+	Sprite::PreDraw(cmdList);
+
+	// 描画
+	//sprite1->Draw();
+	//sprite2->Draw();
+
+	// デバッグテキストの描画
+	debugText.DrawAll(cmdList);
+
+	// スプライト描画後処理
+	Sprite::PostDraw();
+#pragma endregion
+}
+
+void GameScreen::ResultInitialize()
+{
+}
 
 void GameScreen::CreateParticles()
 {
@@ -491,6 +663,12 @@ void GameScreen::CreateDebugText()
 		<< std::fixed << std::setprecision(2)
 		<< bossLegHp4 << ")";
 	debugText.Print(BossLegHp4.str(), 50, 330, 1.0f);*/
+
+	std::ostringstream Scene;
+	Scene << "Scene:("
+		<< std::fixed << std::setprecision(2)
+		<< scene << ")";
+	debugText.Print(Scene.str(), 50, 210, 1.0f);
 
 	// 自機操作方法
 	debugText.Print("WASD:PlayerMove", 1050, 30, 1.0f);

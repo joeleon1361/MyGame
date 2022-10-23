@@ -48,6 +48,27 @@ public: // メンバ関数
 	// 描画
 	void Draw();
 
+	// タイトル
+	void TitleUpdate();
+
+	void TitleDraw();
+
+	void TitleInitialize();
+
+	// ゲーム
+	void GameUpdate();
+
+	void GameDraw();
+
+	void GameInitialize();
+
+	// リザルト
+	void ResultUpdata();
+
+	void ResultDraw();
+
+	void ResultInitialize();
+
 	// パーティクル生成
 	void CreateParticles();
 
@@ -173,5 +194,14 @@ private: // メンバ変数
 	const float LimitY = 5.0f;
 
 	PlayerBullet* Bullet = nullptr;
+
+	enum SCENE
+	{
+		TITLE,
+		GAME,
+		RESULT
+	};
+
+	int scene = TITLE;
 };
 
