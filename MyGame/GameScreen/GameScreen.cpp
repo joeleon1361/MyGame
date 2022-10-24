@@ -69,16 +69,19 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	debugText.Initialize(debugTextTexNumber);
 
 	// テクスチャ読み込み
-	if (!Sprite::LoadTexture(1, L"Resources/Sprite/background.png")) {
+	if (!Sprite::LoadTexture(1, L"Resources/Sprite/Title.png")) {
 		assert(0);
 		return;
 	}
 
-	// テクスチャ2番に読み込み
-	Sprite::LoadTexture(2, L"Resources/Sprite/texture.png");
+	if (!Sprite::LoadTexture(2, L"Resources/Sprite/Result.png")) {
+		assert(0);
+		return;
+	}
 
 	// 背景スプライト生成
-	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
+	TitleBG = Sprite::Create(1, { 0.0f,0.0f });
+	ResultBG = Sprite::Create(2, { 0.0f,0.0f });
 
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
@@ -183,7 +186,6 @@ void GameScreen::Update()
 	}
 }
 
-
 void GameScreen::Draw()
 {
 	switch (scene)
@@ -204,14 +206,14 @@ void GameScreen::Draw()
 
 void GameScreen::TitleUpdate()
 {
-	if (input->TriggerKey(DIK_O))
+	if (input->TriggerKey(DIK_SPACE))
 	{
 		scene = GAME;
 		GameInitialize();
 	}
 
 	// デバックテキスト
-	CreateDebugText();
+	AllDebugText();
 }
 
 void GameScreen::TitleDraw()
@@ -223,7 +225,7 @@ void GameScreen::TitleDraw()
 	// 背景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
 	// 背景スプライト描画
-	spriteBG->Draw();
+	TitleBG->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -266,9 +268,10 @@ void GameScreen::TitleInitialize()
 
 void GameScreen::GameUpdate()
 {
-	if (input->TriggerKey(DIK_O))
+	if (startIndex >= 5 )
 	{
 		scene = RESULT;
+		startIndex = 1;
 	}
 
 	playerPosition = objPlayer->GetPosition();
@@ -304,11 +307,11 @@ void GameScreen::GameUpdate()
 	}
 
 #pragma region スプライン曲線関係
-	if (input->PushKey(DIK_R))
+	/*if (input->PushKey(DIK_R))
 	{
 		startCount = GetTickCount();
 		startIndex = 1;
-	}
+	}*/
 
 	nowCount = GetTickCount();
 
@@ -388,7 +391,8 @@ void GameScreen::GameUpdate()
 	collisionManager->CheckAllCollisions();
 
 	// デバックテキスト
-	CreateDebugText();
+	AllDebugText();
+	GameDebugText();
 }
 
 void GameScreen::GameDraw()
@@ -400,7 +404,6 @@ void GameScreen::GameDraw()
 	// 背景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
 	// 背景スプライト描画
-	spriteBG->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -486,13 +489,13 @@ void GameScreen::GameInitialize()
 
 void GameScreen::ResultUpdata()
 {
-	if (input->TriggerKey(DIK_O))
+	if (input->TriggerKey(DIK_SPACE))
 	{
 		scene = TITLE;
 	}
 
 	// デバックテキスト
-	CreateDebugText();
+	AllDebugText();
 }
 
 void GameScreen::ResultDraw()
@@ -504,7 +507,7 @@ void GameScreen::ResultDraw()
 	// 背景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
 	// 背景スプライト描画
-	spriteBG->Draw();
+	ResultBG->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -570,8 +573,17 @@ void GameScreen::CreateParticles()
 	}
 }
 
+void GameScreen::AllDebugText()
+{
+	std::ostringstream Scene;
+	Scene << "Scene:("
+		<< std::fixed << std::setprecision(2)
+		<< scene << ")";
+	debugText.Print(Scene.str(), 50, 10, 1.0f);
+}
+
 // デバックテキスト
-void GameScreen::CreateDebugText()
+void GameScreen::GameDebugText()
 {
 	// プレイヤーの座標を表示
 	std::ostringstream PlayerPos;
@@ -598,7 +610,7 @@ void GameScreen::CreateDebugText()
 		<< CameraPos.z << ")"; // z
 	debugText.Print(cameraPos.str(), 50, 70, 1.0f);
 
-	/*std::ostringstream startCounter;
+	std::ostringstream startCounter;
 	startCounter << "StartCounter:("
 		<< std::fixed << std::setprecision(2)
 		<< startCount << ")";
@@ -632,7 +644,7 @@ void GameScreen::CreateDebugText()
 	StartIndex << "StartIndex:("
 		<< std::fixed << std::setprecision(2)
 		<< startIndex << ")";
-	debugText.Print(StartIndex.str(), 50, 210, 1.0f);*/
+	debugText.Print(StartIndex.str(), 50, 210, 1.0f);
 
 	/*std::ostringstream BossHp;
 	BossHp << "BossHp:("
@@ -664,16 +676,10 @@ void GameScreen::CreateDebugText()
 		<< bossLegHp4 << ")";
 	debugText.Print(BossLegHp4.str(), 50, 330, 1.0f);*/
 
-	std::ostringstream Scene;
-	Scene << "Scene:("
-		<< std::fixed << std::setprecision(2)
-		<< scene << ")";
-	debugText.Print(Scene.str(), 50, 210, 1.0f);
-
 	// 自機操作方法
 	debugText.Print("WASD:PlayerMove", 1050, 30, 1.0f);
 
-	debugText.Print("R:CameraReset", 1050, 50, 1.0f);
+	// debugText.Print("R:CameraReset", 1050, 50, 1.0f);
 
 	debugText.Print("Y:CameraSwitch", 1050, 70, 1.0f);
 }
@@ -826,6 +832,23 @@ void GameScreen::FrontRolling()
 		}
 	}
 }
+// 右方向時の自機の傾き
+void GameScreen::RightRolling()
+{
+	// 傾きを戻す
+	if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && playerRotation.x != 0.0f)
+	{
+		if (playerRotation.x >= 0.0f)
+		{
+			playerRotation.x -= 5.0f;
+		}
+
+		if (playerRotation.x <= 0.0f)
+		{
+			playerRotation.x += 5.0f;
+		}
+	}
+}
 // 後方向時の自機の傾き
 void GameScreen::BackRolling()
 {
@@ -843,6 +866,23 @@ void GameScreen::BackRolling()
 		}
 	}
 
+	// 傾きを戻す
+	if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && playerRotation.x != 0.0f)
+	{
+		if (playerRotation.x >= 0.0f)
+		{
+			playerRotation.x -= 5.0f;
+		}
+
+		if (playerRotation.x <= 0.0f)
+		{
+			playerRotation.x += 5.0f;
+		}
+	}
+}
+// 左方向時の自機の傾き
+void GameScreen::LeftRolling()
+{
 	// 傾きを戻す
 	if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && playerRotation.x != 0.0f)
 	{
@@ -888,6 +928,9 @@ void GameScreen::CameraSwitching()
 		// 移動制限
 		MoveLimitZY();
 
+		// ローリング
+		RightRolling();
+
 	}
 
 	else if (cameraMode == 2)
@@ -917,6 +960,9 @@ void GameScreen::CameraSwitching()
 
 		// 移動制限
 		MoveLimitZY();
+
+		// ローリング
+		LeftRolling();
 	}
 
 	else if (cameraMode >= 4)

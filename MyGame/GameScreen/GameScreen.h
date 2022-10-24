@@ -72,7 +72,9 @@ public: // メンバ関数
 	// パーティクル生成
 	void CreateParticles();
 
-	void CreateDebugText();
+	void AllDebugText();
+
+	void GameDebugText();
 
 	// 移動処理
 	void FrontMove();
@@ -91,7 +93,11 @@ public: // メンバ関数
 
 	void FrontRolling();
 
+	void RightRolling();
+
 	void BackRolling();
+
+	void LeftRolling();
 
 	//
 	void CameraSwitching();
@@ -111,6 +117,8 @@ private: // メンバ変数
 	Camera* camera = nullptr;
 
 	Sprite* spriteBG = nullptr;
+	Sprite* TitleBG = nullptr;
+	Sprite* ResultBG = nullptr;
 
 	ParticleManager* particleMan = nullptr;
 
@@ -155,14 +163,14 @@ private: // メンバ変数
 	XMFLOAT3 p2 = { -70.0f, 0.0f, -70.0f };
 	XMFLOAT3 p3 = { -140.0f, 0.0f, 0.0f };
 	XMFLOAT3 end = { -70.0f, 0.0f, 70.0f };
-	std::vector<XMFLOAT3> playerCheckPoint{ start, start, p2, p3, end,start, start };
+	std::vector<XMFLOAT3> playerCheckPoint{ start, start, p2, p3, end,start, p2, p2 };
 
 	// ボス制御点
 	XMFLOAT3 Bstart = { 10.0f, 0.0f, 20.0f };
 	XMFLOAT3 Bp2 = { -70.0f, 0.0f, -50.0f };
 	XMFLOAT3 Bp3 = { -150.0f, 0.0f, 20.0f };
 	XMFLOAT3 Bend = { -70.0f, 0.0f, 90.0f };
-	std::vector<XMFLOAT3> bossCheckPoint{ Bstart, Bstart, Bp2, Bp3, Bend,Bstart, Bstart };
+	std::vector<XMFLOAT3> bossCheckPoint{ Bstart, Bstart, Bp2, Bp3, Bend,Bstart, Bp2, Bp2 };
 
 	size_t startIndex = 1;
 
