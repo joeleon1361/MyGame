@@ -208,8 +208,8 @@ void GameScreen::TitleUpdate()
 {
 	if (input->TriggerKey(DIK_SPACE))
 	{
-		scene = GAME;
 		GameInitialize();
+		scene = GAME;
 	}
 
 	// デバックテキスト
@@ -307,11 +307,11 @@ void GameScreen::GameUpdate()
 	}
 
 #pragma region スプライン曲線関係
-	/*if (input->PushKey(DIK_R))
+	if (input->PushKey(DIK_R))
 	{
 		startCount = GetTickCount();
 		startIndex = 1;
-	}*/
+	}
 
 	nowCount = GetTickCount();
 
@@ -484,8 +484,9 @@ void GameScreen::GameInitialize()
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 0, 10 });
 	camera->SetUp({ 0, 1, 0 });
-}
 
+	startCount = GetTickCount();
+}
 
 void GameScreen::ResultUpdata()
 {
@@ -573,6 +574,7 @@ void GameScreen::CreateParticles()
 	}
 }
 
+// デバックテキスト
 void GameScreen::AllDebugText()
 {
 	std::ostringstream Scene;
@@ -582,7 +584,6 @@ void GameScreen::AllDebugText()
 	debugText.Print(Scene.str(), 50, 10, 1.0f);
 }
 
-// デバックテキスト
 void GameScreen::GameDebugText()
 {
 	// プレイヤーの座標を表示
@@ -679,7 +680,7 @@ void GameScreen::GameDebugText()
 	// 自機操作方法
 	debugText.Print("WASD:PlayerMove", 1050, 30, 1.0f);
 
-	// debugText.Print("R:CameraReset", 1050, 50, 1.0f);
+	debugText.Print("R:CameraReset", 1050, 50, 1.0f);
 
 	debugText.Print("Y:CameraSwitch", 1050, 70, 1.0f);
 }
