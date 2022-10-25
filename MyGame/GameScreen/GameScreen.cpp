@@ -90,7 +90,6 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	objSkydome = ObjObject::Create();
 	objGround = ObjObject::Create();
 	objPlayer = Player::Create();
-	objBullet = PlayerBullet::Create();
 	objCenter = ObjObject::Create();
 
 	objBossBody = ObjObject::Create();
@@ -109,7 +108,6 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	objSkydome->SetModel(modelSkydome);
 	objGround->SetModel(modelGround);
 	objPlayer->SetModel(modelPlayer);
-	objBullet->SetModel(modelBullet);
 	objCenter->SetModel(modelBullet);
 
 	objBossBody->SetModel(modelBullet);
@@ -268,7 +266,7 @@ void GameScreen::TitleInitialize()
 
 void GameScreen::GameUpdate()
 {
-	if (startIndex >= 5 )
+	if (startIndex >= 5)
 	{
 		scene = RESULT;
 		startIndex = 1;
@@ -277,7 +275,6 @@ void GameScreen::GameUpdate()
 	playerPosition = objPlayer->GetPosition();
 	playerRotation = objPlayer->GetRotation();
 
-	objBullet->GetPosition();
 
 	CenterPos = SplinePosition(playerCheckPoint, startIndex, timeRate);
 
@@ -299,12 +296,7 @@ void GameScreen::GameUpdate()
 
 	CameraSwitching();
 
-	Attack();
 
-	if (Bullet)
-	{
-		Bullet->Update();
-	}
 
 #pragma region スプライン曲線関係
 	if (input->PushKey(DIK_R))
@@ -373,9 +365,6 @@ void GameScreen::GameUpdate()
 	objSkydome->Update();
 	objGround->Update();
 
-	objBullet->Update();
-
-
 	testobject->Update();
 
 	objCenter->Update();
@@ -387,6 +376,14 @@ void GameScreen::GameUpdate()
 	objBossLeg2->Update();
 	objBossLeg3->Update();
 	objBossLeg4->Update();
+
+	Attack();
+
+	//弾更新
+	for (std::unique_ptr<PlayerBullet>& bullet : bullets_)
+	{
+		bullet->Update();
+	}
 
 	collisionManager->CheckAllCollisions();
 
@@ -432,9 +429,10 @@ void GameScreen::GameDraw()
 
 	// objCenter->Draw();
 
-	if (Bullet)
+	//弾描画
+	for (std::unique_ptr<PlayerBullet>& bullet : bullets_)
 	{
-		Bullet->Draw();
+		bullet->Draw();
 	}
 
 	// パーティクルの描画
@@ -976,12 +974,18 @@ void GameScreen::CameraSwitching()
 
 void GameScreen::Attack()
 {
-	PlayerBullet* newBullet = new PlayerBullet();
-	newBullet->Initialize();
+	if (input->TriggerKey(DIK_SPACE))
+	{
+		const float Speed = 3.0f;
+		XMVECTOR velocity = { 0, 0, Speed };
 
-	Bullet = newBullet;
+		velocity = XMVector3Transform(velocity, objPlayer->GetMatWorld());
+
+		newBullet = PlayerBullet::Create(modelBullet, { objPlayer->GetPosition().x, objPlayer->GetPosition().y, objPlayer->GetPosition().z }, { objPlayer->GetRotation().x, objPlayer->GetRotation().y, objPlayer->GetRotation().z }, velocity);
+
+		bullets_.push_back(std::move(newBullet));
+	}
 }
-
 // スプライン曲線の計算
 XMFLOAT3 GameScreen::SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t)
 {

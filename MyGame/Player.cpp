@@ -1,6 +1,5 @@
 #include "Player.h"
 #include "Input.h"
-#include "GameScreen.h"
 
 using namespace DirectX;
 
@@ -33,7 +32,7 @@ bool Player::Initialize()
 		return false;
 	}
 
-    return true;
+	return true;
 }
 
 void Player::Update()
@@ -262,6 +261,6 @@ void Player::Shot()
 
 	if (input->TriggerKey(DIK_SPACE))
 	{
-	
+
 	}
 }

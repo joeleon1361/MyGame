@@ -2,6 +2,7 @@
 
 #include "ObjObject.h"
 #include "PlayerBullet.h"
+#include "GameScreen.h"
 
 class Player :
 	public ObjObject
@@ -26,7 +27,6 @@ public: // ƒƒ“ƒoŠÖ”
 
 	void RightMove();
 
-
 	void BackMove();
 
 	void LeftMove();
@@ -40,7 +40,7 @@ public: // ƒƒ“ƒoŠÖ”
 
 	// ’e‚ğ‘Å‚Â
 	void Shot();
-	
+
 private: // ƒƒ“ƒo•Ï”
 	PlayerBullet* bullet = nullptr;
 

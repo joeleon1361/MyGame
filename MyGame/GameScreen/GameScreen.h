@@ -11,7 +11,11 @@
 #include "FbxObject.h"
 #include "ParticleManager.h"
 
+#include "Player.h"
 #include "PlayerBullet.h"
+
+#include <memory>
+#include <list>
 
 class CollisionManager;
 class Player;
@@ -132,7 +136,7 @@ private: // メンバ変数
 	ObjObject* objSkydome = nullptr;
 	ObjObject* objGround = nullptr;
 	Player* objPlayer = nullptr;
-	ObjObject* objBullet = nullptr;
+	ObjObject* objPlayerBullet = nullptr;
 
 	ObjObject* objCenter = nullptr;
 
@@ -186,7 +190,7 @@ private: // メンバ変数
 	XMFLOAT3 playerPosition;
 	XMFLOAT3 playerRotation;
 
-	XMFLOAT3 bulletPos;
+	XMFLOAT3 playerBulletPos;
 
 	XMFLOAT3 CenterPos;
 
@@ -201,7 +205,9 @@ private: // メンバ変数
 	const float LimitXZ = 8.5f;
 	const float LimitY = 5.0f;
 
-	PlayerBullet* Bullet = nullptr;
+	// プレイヤー弾
+	std::list<std::unique_ptr<PlayerBullet>> bullets_;
+	std::unique_ptr<PlayerBullet> newBullet;
 
 	enum SCENE
 	{
