@@ -53,7 +53,8 @@ public: // 静的メンバ関数
 	static void CreateGraphicsPipeline();
 	
 	// カメラのセット
-	static void SetCamera( Camera *camera ) {
+	static void SetCamera( Camera *camera )
+	{
 		ObjObject::camera = camera;
 	}
 	

@@ -154,6 +154,9 @@
     <ClCompile Include="Collider\SphereCollider.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\FBX.hlsli">
@@ -290,5 +293,6 @@
     <ClInclude Include="Collider\SphereCollider.h">
       <Filter>Collider</Filter>
     </ClInclude>
+    <ClInclude Include="Bullet.h" />
   </ItemGroup>
 </Project>

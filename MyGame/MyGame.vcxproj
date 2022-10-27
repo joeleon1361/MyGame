@@ -149,6 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Collider\Collision.cpp" />
     <ClCompile Include="Collider\CollisionManager.cpp" />
@@ -252,6 +253,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="Collider\BaseCollider.h" />
     <ClInclude Include="Collider\Collision.h" />

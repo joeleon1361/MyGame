@@ -90,6 +90,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	objSkydome = ObjObject::Create();
 	objGround = ObjObject::Create();
 	objPlayer = Player::Create();
+	//objBullet = Bullet::Create(modelBullet, playerPosition);
 	objCenter = ObjObject::Create();
 
 	objBossBody = ObjObject::Create();
@@ -108,6 +109,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	objSkydome->SetModel(modelSkydome);
 	objGround->SetModel(modelGround);
 	objPlayer->SetModel(modelPlayer);
+	// objBullet->SetModel(modelBullet);
 	objCenter->SetModel(modelBullet);
 
 	objBossBody->SetModel(modelBullet);
@@ -144,6 +146,8 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	objPlayer->SetPosition({ 0,0,0 });
 	objPlayer->SetRotation({ 0, 90, 0 });
 	objPlayer->SetScale({ 0.5f, 0.5f, 0.5f });
+
+	// objBullet->SetScale({ 0.3f,0.3f,0.3f });
 
 	objCenter->SetPosition({ 0,0,0 });
 	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
@@ -276,7 +280,7 @@ void GameScreen::GameUpdate()
 	playerRotation = objPlayer->GetRotation();
 
 
-	CenterPos = SplinePosition(playerCheckPoint, startIndex, timeRate);
+	/*CenterPos = SplinePosition(playerCheckPoint, startIndex, timeRate);
 
 	CameraPos = { CenterPos.x, CenterPos.y, CenterPos.z - 10 };
 
@@ -284,6 +288,9 @@ void GameScreen::GameUpdate()
 	SkydomRot = objSkydome->GetRotation();
 
 	BossPos = SplinePosition(bossCheckPoint, startIndex, timeRate);
+	BossRot = objBossBody->GetRotation();*/
+
+	BossPos = objBossBody->GetPosition();
 	BossRot = objBossBody->GetRotation();
 
 	XMFLOAT3 CRot = objC->GetRotation();
@@ -296,7 +303,9 @@ void GameScreen::GameUpdate()
 
 	CameraSwitching();
 
+	DodgeRoll();
 
+	
 
 #pragma region スプライン曲線関係
 	if (input->PushKey(DIK_R))
@@ -358,6 +367,18 @@ void GameScreen::GameUpdate()
 
 	objC->SetRotation(CRot);
 
+	if (input->TriggerKey(DIK_SPACE))
+	{
+		Bullet* newBullet = new Bullet();
+		newBullet->Bullet::Create(modelBullet,playerPosition);
+		bullet_ = newBullet;
+	}
+
+	if (bullet_)
+	{
+		bullet_->Update();
+	}
+
 	// アップデート
 	camera->Update();
 	particleMan->Update();
@@ -370,6 +391,7 @@ void GameScreen::GameUpdate()
 	objCenter->Update();
 	objC->Update();
 	objPlayer->Update();
+	// objBullet->Update();
 
 	objBossBody->Update();
 	objBossLeg1->Update();
@@ -377,13 +399,13 @@ void GameScreen::GameUpdate()
 	objBossLeg3->Update();
 	objBossLeg4->Update();
 
-	Attack();
+	//Attack();
 
 	//弾更新
-	for (std::unique_ptr<PlayerBullet>& bullet : bullets_)
+	/*for (std::unique_ptr<PlayerBullet>& bullet : bullets_)
 	{
 		bullet->Update();
-	}
+	}*/
 
 	collisionManager->CheckAllCollisions();
 
@@ -425,15 +447,20 @@ void GameScreen::GameDraw()
 	objBossLeg3->Draw();
 	objBossLeg4->Draw();
 
+	if (bullet_)
+	{
+		bullet_->Draw();
+	}
+
 	// testobject->Draw(cmdList);
 
 	// objCenter->Draw();
 
 	//弾描画
-	for (std::unique_ptr<PlayerBullet>& bullet : bullets_)
+	/*for (std::unique_ptr<PlayerBullet>& bullet : bullets_)
 	{
 		bullet->Draw();
-	}
+	}*/
 
 	// パーティクルの描画
 	//particleMan->Draw(cmdList);
@@ -470,7 +497,7 @@ void GameScreen::GameInitialize()
 
 	objSkydome->SetPosition({ -70,0,0 });
 
-	objBossBody->SetPosition({ 0,0,0 });
+	objBossBody->SetPosition({ 0,0,20 });
 	objBossLeg1->SetPosition({ 2,-2,2 });
 	objBossLeg2->SetPosition({ 2,-2,-2 });
 	objBossLeg3->SetPosition({ -2,-2,2 });
@@ -609,7 +636,7 @@ void GameScreen::GameDebugText()
 		<< CameraPos.z << ")"; // z
 	debugText.Print(cameraPos.str(), 50, 70, 1.0f);
 
-	std::ostringstream startCounter;
+	/*std::ostringstream startCounter;
 	startCounter << "StartCounter:("
 		<< std::fixed << std::setprecision(2)
 		<< startCount << ")";
@@ -643,7 +670,13 @@ void GameScreen::GameDebugText()
 	StartIndex << "StartIndex:("
 		<< std::fixed << std::setprecision(2)
 		<< startIndex << ")";
-	debugText.Print(StartIndex.str(), 50, 210, 1.0f);
+	debugText.Print(StartIndex.str(), 50, 210, 1.0f);*/
+
+	std::ostringstream BulletFlag;
+	BulletFlag << "StartIndex:("
+		<< std::fixed << std::setprecision(2)
+		<< bullet_ << ")";
+	debugText.Print(BulletFlag.str(), 50, 210, 1.0f);
 
 	/*std::ostringstream BossHp;
 	BossHp << "BossHp:("
@@ -690,19 +723,19 @@ void GameScreen::FrontMove()
 		// 移動後の座標を計算
 		if (input->PushKey(DIK_W))
 		{
-			playerPosition.y += 0.3f;
+			playerPosition.y += playerVelocity;
 		}
 		else if (input->PushKey(DIK_S))
 		{
-			playerPosition.y -= 0.3f;
+			playerPosition.y -= playerVelocity;
 		}
 		if (input->PushKey(DIK_D))
 		{
-			playerPosition.x += 0.3f;
+			playerPosition.x += playerVelocity;
 		}
 		else if (input->PushKey(DIK_A))
 		{
-			playerPosition.x -= 0.3f;
+			playerPosition.x -= playerVelocity;
 		}
 	}
 }
@@ -714,19 +747,19 @@ void GameScreen::RightMove()
 		// 移動後の座標を計算
 		if (input->PushKey(DIK_W))
 		{
-			playerPosition.y += 0.3f;
+			playerPosition.y += playerVelocity;
 		}
 		else if (input->PushKey(DIK_S))
 		{
-			playerPosition.y -= 0.3f;
+			playerPosition.y -= playerVelocity;
 		}
 		if (input->PushKey(DIK_D))
 		{
-			playerPosition.z -= 0.3f;
+			playerPosition.z -= playerVelocity;
 		}
 		else if (input->PushKey(DIK_A))
 		{
-			playerPosition.z += 0.3f;
+			playerPosition.z += playerVelocity;
 		}
 	}
 }
@@ -738,19 +771,19 @@ void GameScreen::BackMove()
 		// 移動後の座標を計算
 		if (input->PushKey(DIK_W))
 		{
-			playerPosition.y += 0.3f;
+			playerPosition.y += playerVelocity;
 		}
 		else if (input->PushKey(DIK_S))
 		{
-			playerPosition.y -= 0.3f;
+			playerPosition.y -= playerVelocity;
 		}
 		if (input->PushKey(DIK_D))
 		{
-			playerPosition.x -= 0.3f;
+			playerPosition.x -= playerVelocity;
 		}
 		else if (input->PushKey(DIK_A))
 		{
-			playerPosition.x += 0.3f;
+			playerPosition.x += playerVelocity;
 		}
 	}
 }
@@ -762,19 +795,19 @@ void GameScreen::LeftMove()
 		// 移動後の座標を計算
 		if (input->PushKey(DIK_W))
 		{
-			playerPosition.y += 0.3f;
+			playerPosition.y += playerVelocity;
 		}
 		else if (input->PushKey(DIK_S))
 		{
-			playerPosition.y -= 0.3f;
+			playerPosition.y -= playerVelocity;
 		}
 		if (input->PushKey(DIK_D))
 		{
-			playerPosition.z += 0.3f;
+			playerPosition.z += playerVelocity;
 		}
 		else if (input->PushKey(DIK_A))
 		{
-			playerPosition.z -= 0.3f;
+			playerPosition.z -= playerVelocity;
 		}
 	}
 }
@@ -896,6 +929,14 @@ void GameScreen::LeftRolling()
 		}
 	}
 }
+
+void GameScreen::DodgeRoll()
+{
+	if (input->TriggerKey(DIK_V))
+	{
+		playerVelocity += 1.0;
+	}
+}
 // カメラ方向の切り替え
 void GameScreen::CameraSwitching()
 {
@@ -974,7 +1015,7 @@ void GameScreen::CameraSwitching()
 
 void GameScreen::Attack()
 {
-	if (input->TriggerKey(DIK_SPACE))
+	/*if (input->TriggerKey(DIK_SPACE))
 	{
 		const float Speed = 3.0f;
 		XMVECTOR velocity = { 0, 0, Speed };
@@ -984,7 +1025,7 @@ void GameScreen::Attack()
 		newBullet = PlayerBullet::Create(modelBullet, { objPlayer->GetPosition().x, objPlayer->GetPosition().y, objPlayer->GetPosition().z }, { objPlayer->GetRotation().x, objPlayer->GetRotation().y, objPlayer->GetRotation().z }, velocity);
 
 		bullets_.push_back(std::move(newBullet));
-	}
+	}*/
 }
 // スプライン曲線の計算
 XMFLOAT3 GameScreen::SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t)

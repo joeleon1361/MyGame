@@ -12,6 +12,7 @@
 #include "ParticleManager.h"
 
 #include "Player.h"
+#include "Bullet.h"
 #include "PlayerBullet.h"
 
 #include <memory>
@@ -19,6 +20,7 @@
 
 class CollisionManager;
 class Player;
+class Bullet;
 
 // ゲームシーン
 class GameScreen
@@ -103,6 +105,8 @@ public: // メンバ関数
 
 	void LeftRolling();
 
+	void DodgeRoll();
+
 	//
 	void CameraSwitching();
 
@@ -116,6 +120,9 @@ private: // メンバ変数
 	Sound* audio = nullptr;
 	DebugText debugText;
 	CollisionManager* collisionManager = nullptr;
+
+	Player* player_ = nullptr;
+	Bullet* bullet_ = nullptr;
 
 	// ゲームシーン用
 	Camera* camera = nullptr;
@@ -136,6 +143,7 @@ private: // メンバ変数
 	ObjObject* objSkydome = nullptr;
 	ObjObject* objGround = nullptr;
 	Player* objPlayer = nullptr;
+	Bullet* objBullet = nullptr;
 	ObjObject* objPlayerBullet = nullptr;
 
 	ObjObject* objCenter = nullptr;
@@ -217,5 +225,7 @@ private: // メンバ変数
 	};
 
 	int scene = TITLE;
+
+	float playerVelocity = 0.3f;
 };
 
