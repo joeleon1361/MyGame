@@ -210,8 +210,8 @@ private: // メンバ変数
 	XMFLOAT3 BossPos;
 	XMFLOAT3 BossRot;
 
-	const float LimitXZ = 8.5f;
-	const float LimitY = 5.0f;
+	const float LimitXZ = 18.0f;
+	const float LimitY = 10.0f;
 
 	// プレイヤー弾
 	std::list<std::unique_ptr<PlayerBullet>> bullets_;
@@ -227,5 +227,9 @@ private: // メンバ変数
 	int scene = TITLE;
 
 	float playerVelocity = 0.3f;
+
+	float dodgeRollVelocity = 0.0f;
+	float dodgeRollRotation = 0.0f;
+	int dodgeRollFlag = 0;
 };
 

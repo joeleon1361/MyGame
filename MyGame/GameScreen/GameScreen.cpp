@@ -295,6 +295,8 @@ void GameScreen::GameUpdate()
 
 	XMFLOAT3 CRot = objC->GetRotation();
 
+	playerRotation.x += dodgeRollRotation;
+
 	// パーティクル生成
 	CreateParticles();
 
@@ -708,6 +710,24 @@ void GameScreen::GameDebugText()
 		<< bossLegHp4 << ")";
 	debugText.Print(BossLegHp4.str(), 50, 330, 1.0f);*/
 
+	std::ostringstream DodgeRollFlag;
+	DodgeRollFlag << "DodgeRollFlag:("
+		<< std::fixed << std::setprecision(2)
+		<< dodgeRollFlag << ")";
+	debugText.Print(DodgeRollFlag.str(), 50, 250, 1.0f);
+
+	std::ostringstream DodgeRollVelocity;
+	DodgeRollVelocity << "DodgeRollVelocity:("
+		<< std::fixed << std::setprecision(2)
+		<< dodgeRollVelocity << ")";
+	debugText.Print(DodgeRollVelocity.str(), 50, 270, 1.0f);
+
+	std::ostringstream DodgeRollRotation;
+	DodgeRollRotation << "DodgeRollRotation:("
+		<< std::fixed << std::setprecision(2)
+		<< dodgeRollRotation << ")";
+	debugText.Print(DodgeRollRotation.str(), 50, 290, 1.0f);
+
 	// 自機操作方法
 	debugText.Print("WASD:PlayerMove", 1050, 30, 1.0f);
 
@@ -723,19 +743,19 @@ void GameScreen::FrontMove()
 		// 移動後の座標を計算
 		if (input->PushKey(DIK_W))
 		{
-			playerPosition.y += playerVelocity;
+			playerPosition.y += playerVelocity + dodgeRollVelocity;
 		}
 		else if (input->PushKey(DIK_S))
 		{
-			playerPosition.y -= playerVelocity;
+			playerPosition.y -= playerVelocity + dodgeRollVelocity;
 		}
 		if (input->PushKey(DIK_D))
 		{
-			playerPosition.x += playerVelocity;
+			playerPosition.x += playerVelocity + dodgeRollVelocity;
 		}
 		else if (input->PushKey(DIK_A))
 		{
-			playerPosition.x -= playerVelocity;
+			playerPosition.x -= playerVelocity + dodgeRollVelocity;
 		}
 	}
 }
@@ -837,16 +857,19 @@ void GameScreen::MoveLimitZY()
 void GameScreen::FrontRolling()
 {
 	// ロール
-	if (input->PushKey(DIK_A) || input->PushKey(DIK_D))
+	if (dodgeRollFlag == 0)
 	{
-		if (input->PushKey(DIK_D) && playerRotation.x <= +40.0f)
+		if (input->PushKey(DIK_A) || input->PushKey(DIK_D))
 		{
-			playerRotation.x += 5.0f;
-		}
+			if (input->PushKey(DIK_D) && playerRotation.x <= +40.0f)
+			{
+				playerRotation.x += 5.0f;
+			}
 
-		if (input->PushKey(DIK_A) && playerRotation.x >= -40.0f)
-		{
-			playerRotation.x -= 5.0f;
+			if (input->PushKey(DIK_A) && playerRotation.x >= -40.0f)
+			{
+				playerRotation.x -= 5.0f;
+			}
 		}
 	}
 
@@ -932,9 +955,23 @@ void GameScreen::LeftRolling()
 
 void GameScreen::DodgeRoll()
 {
-	if (input->TriggerKey(DIK_V))
+	if (dodgeRollFlag == 0)
 	{
-		playerVelocity += 1.0;
+		if (input->TriggerKey(DIK_V))
+		{
+			dodgeRollFlag = 1;
+			dodgeRollVelocity = 0.4;
+			// dodgeRollRotation = 5.0;
+		}
+	}
+	else if(dodgeRollFlag == 1)
+	{
+		dodgeRollVelocity -= 0.01f;
+		if (dodgeRollVelocity <= 0)
+		{
+			dodgeRollVelocity = 0.0f;
+			dodgeRollFlag = 0;
+		}
 	}
 }
 // カメラ方向の切り替え
