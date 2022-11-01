@@ -90,7 +90,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	objSkydome = ObjObject::Create();
 	objGround = ObjObject::Create();
 	objPlayer = Player::Create();
-	//objBullet = Bullet::Create(modelBullet, playerPosition);
+	
 	objCenter = ObjObject::Create();
 
 	objBossBody = ObjObject::Create();
@@ -101,6 +101,8 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 
 	objC = ObjObject::Create();
 
+	objBullet = Bullet::Create();
+
 	modelSkydome = ObjModel::CreateFromOBJ("skydome");
 	modelGround = ObjModel::CreateFromOBJ("ground");
 	modelPlayer = ObjModel::CreateFromOBJ("player2");
@@ -109,8 +111,8 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	objSkydome->SetModel(modelSkydome);
 	objGround->SetModel(modelGround);
 	objPlayer->SetModel(modelPlayer);
-	// objBullet->SetModel(modelBullet);
 	objCenter->SetModel(modelBullet);
+	objBullet->SetModel(modelBullet);
 
 	objBossBody->SetModel(modelBullet);
 	objBossLeg1->SetModel(modelBullet);
@@ -369,17 +371,7 @@ void GameScreen::GameUpdate()
 
 	objC->SetRotation(CRot);
 
-	if (input->TriggerKey(DIK_SPACE))
-	{
-		Bullet* newBullet = new Bullet();
-		newBullet->Bullet::Create(modelBullet,playerPosition);
-		bullet_ = newBullet;
-	}
-
-	if (bullet_)
-	{
-		bullet_->Update();
-	}
+	
 
 	// アップデート
 	camera->Update();
@@ -393,7 +385,7 @@ void GameScreen::GameUpdate()
 	objCenter->Update();
 	objC->Update();
 	objPlayer->Update();
-	// objBullet->Update();
+	objBullet->Update();
 
 	objBossBody->Update();
 	objBossLeg1->Update();
@@ -440,6 +432,7 @@ void GameScreen::GameDraw()
 	objSkydome->Draw();
 	// objGround->Draw();
 	objPlayer->Draw();
+	objBullet->Draw();
 
 	// objC->Draw();
 
@@ -448,11 +441,6 @@ void GameScreen::GameDraw()
 	objBossLeg2->Draw();
 	objBossLeg3->Draw();
 	objBossLeg4->Draw();
-
-	if (bullet_)
-	{
-		bullet_->Draw();
-	}
 
 	// testobject->Draw(cmdList);
 
@@ -673,12 +661,6 @@ void GameScreen::GameDebugText()
 		<< std::fixed << std::setprecision(2)
 		<< startIndex << ")";
 	debugText.Print(StartIndex.str(), 50, 210, 1.0f);*/
-
-	std::ostringstream BulletFlag;
-	BulletFlag << "StartIndex:("
-		<< std::fixed << std::setprecision(2)
-		<< bullet_ << ")";
-	debugText.Print(BulletFlag.str(), 50, 210, 1.0f);
 
 	/*std::ostringstream BossHp;
 	BossHp << "BossHp:("
@@ -1052,17 +1034,7 @@ void GameScreen::CameraSwitching()
 
 void GameScreen::Attack()
 {
-	/*if (input->TriggerKey(DIK_SPACE))
-	{
-		const float Speed = 3.0f;
-		XMVECTOR velocity = { 0, 0, Speed };
-
-		velocity = XMVector3Transform(velocity, objPlayer->GetMatWorld());
-
-		newBullet = PlayerBullet::Create(modelBullet, { objPlayer->GetPosition().x, objPlayer->GetPosition().y, objPlayer->GetPosition().z }, { objPlayer->GetRotation().x, objPlayer->GetRotation().y, objPlayer->GetRotation().z }, velocity);
-
-		bullets_.push_back(std::move(newBullet));
-	}*/
+	
 }
 // スプライン曲線の計算
 XMFLOAT3 GameScreen::SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t)

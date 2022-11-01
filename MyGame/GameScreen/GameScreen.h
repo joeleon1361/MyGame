@@ -13,7 +13,6 @@
 
 #include "Player.h"
 #include "Bullet.h"
-#include "PlayerBullet.h"
 
 #include <memory>
 #include <list>
@@ -122,7 +121,6 @@ private: // メンバ変数
 	CollisionManager* collisionManager = nullptr;
 
 	Player* player_ = nullptr;
-	Bullet* bullet_ = nullptr;
 
 	// ゲームシーン用
 	Camera* camera = nullptr;
@@ -142,8 +140,10 @@ private: // メンバ変数
 
 	ObjObject* objSkydome = nullptr;
 	ObjObject* objGround = nullptr;
+	
 	Player* objPlayer = nullptr;
 	Bullet* objBullet = nullptr;
+
 	ObjObject* objPlayerBullet = nullptr;
 
 	ObjObject* objCenter = nullptr;
@@ -214,8 +214,7 @@ private: // メンバ変数
 	const float LimitY = 10.0f;
 
 	// プレイヤー弾
-	std::list<std::unique_ptr<PlayerBullet>> bullets_;
-	std::unique_ptr<PlayerBullet> newBullet;
+
 
 	enum SCENE
 	{
@@ -232,4 +231,3 @@ private: // メンバ変数
 	float dodgeRollRotation = 0.0f;
 	int dodgeRollFlag = 0;
 };
-

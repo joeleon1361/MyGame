@@ -14,10 +14,10 @@ using namespace Microsoft::WRL;
 using namespace std;
 
 // 静的メンバ変数の実体
-ID3D12Device *ObjObject::device = nullptr;
-ID3D12GraphicsCommandList *ObjObject::cmdList = nullptr;
+ID3D12Device* ObjObject::device = nullptr;
+ID3D12GraphicsCommandList* ObjObject::cmdList = nullptr;
 ObjObject::PipelineSet ObjObject::pipelineSet;
-Camera *ObjObject::camera = nullptr;
+Camera* ObjObject::camera = nullptr;
 
 ObjObject::~ObjObject()
 {
@@ -29,11 +29,10 @@ ObjObject::~ObjObject()
 	}
 }
 
-void ObjObject::StaticInitialize( ID3D12Device *device, Camera *camera )
+void ObjObject::StaticInitialize(ID3D12Device* device, Camera* camera)
 {
-
 	// nullptrチェック
-	assert( device );
+	assert(device);
 
 	ObjObject::device = device;
 	ObjObject::camera = camera;
@@ -42,8 +41,7 @@ void ObjObject::StaticInitialize( ID3D12Device *device, Camera *camera )
 	CreateGraphicsPipeline();
 
 	// モデルの静的初期化
-	ObjModel::StaticInitialize( device );
-
+	ObjModel::StaticInitialize(device);
 }
 
 void ObjObject::CreateGraphicsPipeline()
@@ -61,19 +59,19 @@ void ObjObject::CreateGraphicsPipeline()
 		"main", "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
 		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
 		0,
-		&vsBlob, &errorBlob );
-	if ( FAILED( result ) ) {
+		&vsBlob, &errorBlob);
+	if (FAILED(result)) {
 		// errorBlobからエラー内容をstring型にコピー
 		std::string errstr;
-		errstr.resize( errorBlob->GetBufferSize() );
+		errstr.resize(errorBlob->GetBufferSize());
 
-		std::copy_n( (char *)errorBlob->GetBufferPointer(),
+		std::copy_n((char*)errorBlob->GetBufferPointer(),
 			errorBlob->GetBufferSize(),
-			errstr.begin() );
+			errstr.begin());
 		errstr += "\n";
 		// エラー内容を出力ウィンドウに表示
-		OutputDebugStringA( errstr.c_str() );
-		exit( 1 );
+		OutputDebugStringA(errstr.c_str());
+		exit(1);
 	}
 
 	// ピクセルシェーダの読み込みとコンパイル
@@ -84,19 +82,19 @@ void ObjObject::CreateGraphicsPipeline()
 		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定
 		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
 		0,
-		&psBlob, &errorBlob );
-	if ( FAILED( result ) ) {
+		&psBlob, &errorBlob);
+	if (FAILED(result)) {
 		// errorBlobからエラー内容をstring型にコピー
 		std::string errstr;
-		errstr.resize( errorBlob->GetBufferSize() );
+		errstr.resize(errorBlob->GetBufferSize());
 
-		std::copy_n( (char *)errorBlob->GetBufferPointer(),
+		std::copy_n((char*)errorBlob->GetBufferPointer(),
 			errorBlob->GetBufferSize(),
-			errstr.begin() );
+			errstr.begin());
 		errstr += "\n";
 		// エラー内容を出力ウィンドウに表示
-		OutputDebugStringA( errstr.c_str() );
-		exit( 1 );
+		OutputDebugStringA(errstr.c_str());
+		exit(1);
 	}
 
 	// 頂点レイアウト
@@ -120,17 +118,17 @@ void ObjObject::CreateGraphicsPipeline()
 
 	// グラフィックスパイプラインの流れを設定
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC gpipeline{};
-	gpipeline.VS = CD3DX12_SHADER_BYTECODE( vsBlob.Get() );
-	gpipeline.PS = CD3DX12_SHADER_BYTECODE( psBlob.Get() );
+	gpipeline.VS = CD3DX12_SHADER_BYTECODE(vsBlob.Get());
+	gpipeline.PS = CD3DX12_SHADER_BYTECODE(psBlob.Get());
 
 	// サンプルマスク
 	gpipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
 	// ラスタライザステート
-	gpipeline.RasterizerState = CD3DX12_RASTERIZER_DESC( D3D12_DEFAULT );
+	gpipeline.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	//gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 	//gpipeline.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
 	// デプスステンシルステート
-	gpipeline.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC( D3D12_DEFAULT );
+	gpipeline.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 
 	// レンダーターゲットのブレンド設定
 	D3D12_RENDER_TARGET_BLEND_DESC blenddesc{};
@@ -152,7 +150,7 @@ void ObjObject::CreateGraphicsPipeline()
 
 	// 頂点レイアウトの設定
 	gpipeline.InputLayout.pInputElementDescs = inputLayout;
-	gpipeline.InputLayout.NumElements = _countof( inputLayout );
+	gpipeline.InputLayout.NumElements = _countof(inputLayout);
 
 	// 図形の形状設定（三角形）
 	gpipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
@@ -163,52 +161,52 @@ void ObjObject::CreateGraphicsPipeline()
 
 	// デスクリプタレンジ
 	CD3DX12_DESCRIPTOR_RANGE descRangeSRV;
-	descRangeSRV.Init( D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0 ); // t0 レジスタ
+	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0 レジスタ
 
 	// ルートパラメータ
 	CD3DX12_ROOT_PARAMETER rootparams[3];
 	// CBV（座標変換行列用）
-	rootparams[0].InitAsConstantBufferView( 0, 0, D3D12_SHADER_VISIBILITY_ALL );
-	rootparams[1].InitAsConstantBufferView( 1, 0, D3D12_SHADER_VISIBILITY_ALL );
+	rootparams[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
+	rootparams[1].InitAsConstantBufferView(1, 0, D3D12_SHADER_VISIBILITY_ALL);
 	// SRV（テクスチャ）
-	rootparams[2].InitAsDescriptorTable( 1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL );
+	rootparams[2].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
 
 	// スタティックサンプラー
-	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC( 0 );
+	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
 
 	// ルートシグネチャの設定
 	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc;
-	rootSignatureDesc.Init_1_0( _countof( rootparams ), rootparams, 1, &samplerDesc, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT );
+	rootSignatureDesc.Init_1_0(_countof(rootparams), rootparams, 1, &samplerDesc, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	ComPtr<ID3DBlob> rootSigBlob;
 	// バージョン自動判定のシリアライズ
-	result = D3DX12SerializeVersionedRootSignature( &rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &errorBlob );
+	result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &errorBlob);
 	// ルートシグネチャの生成
-	result = device->CreateRootSignature( 0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS( &pipelineSet.rootsignature ) );
-	if ( FAILED( result ) ) {
-		assert( 0 );
+	result = device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&pipelineSet.rootsignature));
+	if (FAILED(result)) {
+		assert(0);
 	}
 
 	gpipeline.pRootSignature = pipelineSet.rootsignature.Get();
 
 	// グラフィックスパイプラインの生成
-	result = device->CreateGraphicsPipelineState( &gpipeline, IID_PPV_ARGS( &pipelineSet.pipelinestate ) );
+	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelineSet.pipelinestate));
 
-	if ( FAILED( result ) ) {
-		assert( 0 );
+	if (FAILED(result)) {
+		assert(0);
 	}
 }
 
-void ObjObject::PreDraw( ID3D12GraphicsCommandList *cmdList )
+void ObjObject::PreDraw(ID3D12GraphicsCommandList* cmdList)
 {
 	// PreDrawとPostDrawがペアで呼ばれていなければエラー
-	assert( ObjObject::cmdList == nullptr );
+	assert(ObjObject::cmdList == nullptr);
 
 	// コマンドリストをセット
 	ObjObject::cmdList = cmdList;
 
 	// プリミティブ形状を設定
-	cmdList->IASetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 void ObjObject::PostDraw()
@@ -217,22 +215,22 @@ void ObjObject::PostDraw()
 	ObjObject::cmdList = nullptr;
 }
 
-ObjObject *ObjObject::Create( ObjModel *model )
+ObjObject* ObjObject::Create(ObjModel* model)
 {
 	// 3Dオブジェクトのインスタンスを生成
-	ObjObject *object3d = new ObjObject();
-	if ( object3d == nullptr ) {
+	ObjObject* object3d = new ObjObject();
+	if (object3d == nullptr) {
 		return nullptr;
 	}
 
 	// 初期化
-	if ( !object3d->Initialize() ) {
+	if (!object3d->Initialize()) {
 		delete object3d;
-		assert( 0 );
+		assert(0);
 	}
 
-	if ( model ) {
-		object3d->SetModel( model );
+	if (model) {
+		object3d->SetModel(model);
 
 	}
 
@@ -245,17 +243,17 @@ ObjObject *ObjObject::Create( ObjModel *model )
 bool ObjObject::Initialize()
 {
 	// nullptrチェック
-	assert( device );
+	assert(device);
 
 	HRESULT result;
 	// 定数バッファの生成
 	result = device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES( D3D12_HEAP_TYPE_UPLOAD ), 	// アップロード可能
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 	// アップロード可能
 		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer( (sizeof( ConstBufferDataB0 ) + 0xff) & ~0xff ),
+		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB0) + 0xff) & ~0xff),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS( &constBuffB0 ) );
+		IID_PPV_ARGS(&constBuffB0));
 
 	name = typeid(*this).name();
 
@@ -264,18 +262,18 @@ bool ObjObject::Initialize()
 
 void ObjObject::Update()
 {
-	assert( camera );
+	assert(camera);
 
 	HRESULT result;
 	XMMATRIX matScale, matRot, matTrans;
 
 	// スケール、回転、平行移動行列の計算
-	matScale = XMMatrixScaling( scale.x, scale.y, scale.z );
+	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
 	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationZ( XMConvertToRadians( rotation.z ) );
-	matRot *= XMMatrixRotationX( XMConvertToRadians( rotation.x ) );
-	matRot *= XMMatrixRotationY( XMConvertToRadians( rotation.y ) );
-	matTrans = XMMatrixTranslation( position.x, position.y, position.z );
+	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
+	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
+	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 
 	// ワールド行列の合成
 	matWorld = XMMatrixIdentity(); // 変形をリセット
@@ -283,8 +281,8 @@ void ObjObject::Update()
 	matWorld *= matRot; // ワールド行列に回転を反映
 	matWorld *= matTrans; // ワールド行列に平行移動を反映
 
-	if ( isBillboard ) {
-		const XMMATRIX &matBillboard = camera->GetBillboardMatrix();
+	if (isBillboard) {
+		const XMMATRIX& matBillboard = camera->GetBillboardMatrix();
 
 		matWorld = XMMatrixIdentity();
 		matWorld *= matScale; // ワールド行列にスケーリングを反映
@@ -294,18 +292,18 @@ void ObjObject::Update()
 	}
 
 	// 親オブジェクトがあれば
-	if ( parent != nullptr ) {
+	if (parent != nullptr) {
 		// 親オブジェクトのワールド行列を掛ける
 		matWorld *= parent->matWorld;
 	}
 
-	const XMMATRIX &matViewProjection = camera->GetViewProjectionMatrix();
+	const XMMATRIX& matViewProjection = camera->GetViewProjectionMatrix();
 
 	// 定数バッファへデータ転送
-	ConstBufferDataB0 *constMap = nullptr;
-	result = constBuffB0->Map( 0, nullptr, (void **)&constMap );
+	ConstBufferDataB0* constMap = nullptr;
+	result = constBuffB0->Map(0, nullptr, (void**)&constMap);
 	constMap->mat = matWorld * matViewProjection;	// 行列の合成
-	constBuffB0->Unmap( 0, nullptr );
+	constBuffB0->Unmap(0, nullptr);
 
 	// 当たり判定更新
 	if (collider)
@@ -317,23 +315,23 @@ void ObjObject::Update()
 void ObjObject::Draw()
 {
 	// nullptrチェック
-	assert( device );
-	assert( ObjObject::cmdList );
+	assert(device);
+	assert(ObjObject::cmdList);
 
 	// モデルの割り当てがなければ描画しない
-	if ( model == nullptr ) {
+	if (model == nullptr) {
 		return;
 	}
 
 	// パイプラインステートの設定
-	cmdList->SetPipelineState( pipelineSet.pipelinestate.Get() );
+	cmdList->SetPipelineState(pipelineSet.pipelinestate.Get());
 	// ルートシグネチャの設定
-	cmdList->SetGraphicsRootSignature( pipelineSet.rootsignature.Get() );
+	cmdList->SetGraphicsRootSignature(pipelineSet.rootsignature.Get());
 	// 定数バッファビューをセット
-	cmdList->SetGraphicsRootConstantBufferView( 0, constBuffB0->GetGPUVirtualAddress() );
+	cmdList->SetGraphicsRootConstantBufferView(0, constBuffB0->GetGPUVirtualAddress());
 
 	// モデル描画
-	model->Draw( cmdList );
+	model->Draw(cmdList);
 }
 
 void ObjObject::SetCollider(BaseCollider* collider)

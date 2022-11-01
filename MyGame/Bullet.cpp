@@ -1,33 +1,29 @@
 #include "Bullet.h"
 
-Bullet* Bullet::Create(ObjModel* model,XMFLOAT3 pos)
+Bullet* Bullet::Create(ObjModel* model)
 {
-    // 3Dオブジェクトのインスタンスを生成
-    Bullet* instance = new Bullet();
-    if (instance == nullptr)
-	{
-        return nullptr;
-    }
+	// 3Dオブジェクトのインスタンスを生成
+	Bullet* instance = new Bullet();
+	if (instance == nullptr) {
+		return nullptr;
+	}
 
 	// 初期化
-	if (!instance->Initialize(pos)) {
+	if (!instance->Initialize()) {
 		delete instance;
 		assert(0);
 	}
 
 	// モデルのセット
-	if (model)
-	{
+	if (model) {
 		instance->SetModel(model);
 	}
 
 	return instance;
 }
 
-bool Bullet::Initialize(XMFLOAT3 pos)
+bool Bullet::Initialize()
 {
-	position = pos;
-
 	if (!ObjObject::Initialize())
 	{
 		return false;
@@ -39,6 +35,4 @@ bool Bullet::Initialize(XMFLOAT3 pos)
 void Bullet::Update()
 {
 	ObjObject::Update();
-
-	//position.z += 0.1f;
 }

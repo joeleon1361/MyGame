@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ObjObject.h"
-#include "PlayerBullet.h"
 #include "GameScreen.h"
 
 class Player :
@@ -42,7 +41,6 @@ public: // ƒƒ“ƒoŠÖ”
 	void Shot();
 
 private: // ƒƒ“ƒo•Ï”
-	PlayerBullet* bullet = nullptr;
 
 	const float MoveLimitX = 8.5f;
 	const float MoveLimitY = 5.0f;

@@ -170,7 +170,6 @@
     <ClCompile Include="OBJ\ObjObject.cpp" />
     <ClCompile Include="Particle\ParticleManager.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayerBullet.cpp" />
     <ClCompile Include="PostEffect\PostEffect.cpp" />
     <ClCompile Include="RouteCamera.cpp" />
     <ClCompile Include="Sound\Sound.cpp" />
@@ -278,7 +277,6 @@
     <ClInclude Include="OBJ\ObjObject.h" />
     <ClInclude Include="Particle\ParticleManager.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayerBullet.h" />
     <ClInclude Include="PostEffect\PostEffect.h" />
     <ClInclude Include="RouteCamera.h" />
     <ClInclude Include="Sound\Sound.h" />
