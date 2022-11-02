@@ -115,7 +115,7 @@ public: // メンバ関数
 	void SetScale(XMFLOAT3 scale) { this->scale = scale; }
 
 	// モデルのセット
-	void SetModel(ObjModel* model) { this->model = model; }
+ 	void SetModel(ObjModel* model) { this->model = model; }
 
 	void SetParent(ObjObject* parent) { this->parent = parent; }
 

@@ -29,6 +29,8 @@ GameScreen::~GameScreen()
 	safe_delete(modelSkydome);
 	safe_delete(modelGround);
 	safe_delete(modelPlayer);
+	safe_delete(modelBullet);
+	safe_delete(objBullet);
 
 	safe_delete(testmodel);
 	safe_delete(testobject);
@@ -98,10 +100,10 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	objBossLeg2 = ObjObject::Create();
 	objBossLeg3 = ObjObject::Create();
 	objBossLeg4 = ObjObject::Create();
-
+	objBullet = Bullet::Create(modelBullet);
 	objC = ObjObject::Create();
 
-	objBullet = Bullet::Create();
+	//objBullet = Bullet::Create(modelBullet);
 
 	modelSkydome = ObjModel::CreateFromOBJ("skydome");
 	modelGround = ObjModel::CreateFromOBJ("ground");
@@ -309,7 +311,18 @@ void GameScreen::GameUpdate()
 
 	DodgeRoll();
 
-	
+	if (input->TriggerKey(DIK_SPACE))
+	{
+		Bullet* newBullet = new Bullet();
+		newBullet = Bullet::Create(modelBullet);
+
+		objBullet = newBullet;
+	}
+
+	if (objBullet)
+	{
+		objBullet->Update();
+	}
 
 #pragma region スプライン曲線関係
 	if (input->PushKey(DIK_R))
@@ -385,7 +398,7 @@ void GameScreen::GameUpdate()
 	objCenter->Update();
 	objC->Update();
 	objPlayer->Update();
-	objBullet->Update();
+	
 
 	objBossBody->Update();
 	objBossLeg1->Update();
@@ -396,10 +409,7 @@ void GameScreen::GameUpdate()
 	//Attack();
 
 	//弾更新
-	/*for (std::unique_ptr<PlayerBullet>& bullet : bullets_)
-	{
-		bullet->Update();
-	}*/
+	
 
 	collisionManager->CheckAllCollisions();
 
@@ -432,7 +442,14 @@ void GameScreen::GameDraw()
 	objSkydome->Draw();
 	// objGround->Draw();
 	objPlayer->Draw();
-	objBullet->Draw();
+
+	if (objBullet)
+	{
+		objBullet->Draw();
+	}
+	
+
+	
 
 	// objC->Draw();
 

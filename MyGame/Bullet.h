@@ -2,7 +2,7 @@
 #include "ObjObject.h"
 
 class Bullet :
-    public ObjObject
+	public ObjObject
 {
 private:
 	// Microsoft::WRL::を省略
@@ -15,7 +15,7 @@ private:
 
 public: // 静的メンバ関数
 	// 3Dオブジェクト生成
-	static Bullet* Create(ObjModel* model = nullptr);
+	static Bullet* Create(ObjModel* model);
 
 public: // メンバ関数
 	// 初期化
@@ -24,6 +24,12 @@ public: // メンバ関数
 	// 毎フレーム処理
 	void Update();
 
+	// 座標の取得
+	const XMFLOAT3& GetPosition() { return bulletPos; }
+
 private: // メンバ変数
+	
+public:
+	XMFLOAT3 bulletPos = { 0,0,0 };
 };
 

@@ -120,7 +120,7 @@ private: // メンバ変数
 	DebugText debugText;
 	CollisionManager* collisionManager = nullptr;
 
-	Player* player_ = nullptr;
+	Bullet* bullet_ = nullptr;
 
 	// ゲームシーン用
 	Camera* camera = nullptr;
@@ -141,6 +141,7 @@ private: // メンバ変数
 	ObjObject* objSkydome = nullptr;
 	ObjObject* objGround = nullptr;
 	
+	// 
 	Player* objPlayer = nullptr;
 	Bullet* objBullet = nullptr;
 

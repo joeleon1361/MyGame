@@ -24,15 +24,13 @@ Bullet* Bullet::Create(ObjModel* model)
 
 bool Bullet::Initialize()
 {
-	if (!ObjObject::Initialize())
-	{
-		return false;
-	}
-
+	ObjObject::Initialize();
 	return true;
 }
 
 void Bullet::Update()
 {
 	ObjObject::Update();
+
+	position.z += 2.0f;
 }
