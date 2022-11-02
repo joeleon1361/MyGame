@@ -143,7 +143,9 @@ private: // メンバ変数
 	
 	// 
 	Player* objPlayer = nullptr;
-	Bullet* objBullet = nullptr;
+	// Bullet* objBullet = nullptr;
+
+	std::unique_ptr<Bullet> objBullet;
 
 	ObjObject* objPlayerBullet = nullptr;
 

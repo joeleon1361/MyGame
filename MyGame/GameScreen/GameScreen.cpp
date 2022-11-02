@@ -30,7 +30,7 @@ GameScreen::~GameScreen()
 	safe_delete(modelGround);
 	safe_delete(modelPlayer);
 	safe_delete(modelBullet);
-	safe_delete(objBullet);
+	// safe_delete(objBullet);
 
 	safe_delete(testmodel);
 	safe_delete(testobject);
@@ -390,6 +390,11 @@ void GameScreen::GameUpdate()
 	objBossLeg4->Update();
 
 	Attack();
+
+	if (objBullet)
+	{
+		objBullet->Update();
+	}
 
 	//弾更新
 	
@@ -1039,12 +1044,7 @@ void GameScreen::Attack()
 		Bullet* newBullet = new Bullet();
 		newBullet = Bullet::Create(modelBullet, playerPosition);
 
-		objBullet = newBullet;
-	}
-
-	if (objBullet)
-	{
-		objBullet->Update();
+		objBullet.reset(newBullet);
 	}
 }
 // スプライン曲線の計算
