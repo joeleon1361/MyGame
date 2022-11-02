@@ -100,10 +100,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	objBossLeg2 = ObjObject::Create();
 	objBossLeg3 = ObjObject::Create();
 	objBossLeg4 = ObjObject::Create();
-	objBullet = Bullet::Create(modelBullet);
 	objC = ObjObject::Create();
-
-	//objBullet = Bullet::Create(modelBullet);
 
 	modelSkydome = ObjModel::CreateFromOBJ("skydome");
 	modelGround = ObjModel::CreateFromOBJ("ground");
@@ -114,7 +111,6 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	objGround->SetModel(modelGround);
 	objPlayer->SetModel(modelPlayer);
 	objCenter->SetModel(modelBullet);
-	objBullet->SetModel(modelBullet);
 
 	objBossBody->SetModel(modelBullet);
 	objBossLeg1->SetModel(modelBullet);
@@ -150,8 +146,6 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	objPlayer->SetPosition({ 0,0,0 });
 	objPlayer->SetRotation({ 0, 90, 0 });
 	objPlayer->SetScale({ 0.5f, 0.5f, 0.5f });
-
-	// objBullet->SetScale({ 0.3f,0.3f,0.3f });
 
 	objCenter->SetPosition({ 0,0,0 });
 	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
@@ -311,18 +305,7 @@ void GameScreen::GameUpdate()
 
 	DodgeRoll();
 
-	if (input->TriggerKey(DIK_SPACE))
-	{
-		Bullet* newBullet = new Bullet();
-		newBullet = Bullet::Create(modelBullet);
-
-		objBullet = newBullet;
-	}
-
-	if (objBullet)
-	{
-		objBullet->Update();
-	}
+	
 
 #pragma region スプライン曲線関係
 	if (input->PushKey(DIK_R))
@@ -406,7 +389,7 @@ void GameScreen::GameUpdate()
 	objBossLeg3->Update();
 	objBossLeg4->Update();
 
-	//Attack();
+	Attack();
 
 	//弾更新
 	
@@ -1051,7 +1034,18 @@ void GameScreen::CameraSwitching()
 
 void GameScreen::Attack()
 {
-	
+	if (input->TriggerKey(DIK_SPACE))
+	{
+		Bullet* newBullet = new Bullet();
+		newBullet = Bullet::Create(modelBullet, playerPosition);
+
+		objBullet = newBullet;
+	}
+
+	if (objBullet)
+	{
+		objBullet->Update();
+	}
 }
 // スプライン曲線の計算
 XMFLOAT3 GameScreen::SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t)

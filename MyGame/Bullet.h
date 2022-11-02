@@ -15,11 +15,11 @@ private:
 
 public: // 静的メンバ関数
 	// 3Dオブジェクト生成
-	static Bullet* Create(ObjModel* model);
+	static Bullet* Create(ObjModel* model, const XMFLOAT3 position);
 
 public: // メンバ関数
 	// 初期化
-	bool Initialize();
+	bool Initialize(const XMFLOAT3 position );
 
 	// 毎フレーム処理
 	void Update();
