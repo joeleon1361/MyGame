@@ -277,6 +277,8 @@ void GameScreen::GameUpdate()
 	playerPosition = objPlayer->GetPosition();
 	playerRotation = objPlayer->GetRotation();
 
+	bulletScale = { 0.3f, 0.3f, 0.3f };
+
 
 	/*CenterPos = SplinePosition(playerCheckPoint, startIndex, timeRate);
 
@@ -391,9 +393,14 @@ void GameScreen::GameUpdate()
 
 	Attack();
 
-	if (objBullet)
+	/*if (objBullet)
 	{
 		objBullet->Update();
+	}*/
+
+	for (std::unique_ptr<Bullet>& bullet : objBullets)
+	{
+		bullet->Update();
 	}
 
 	//弾更新
@@ -431,12 +438,15 @@ void GameScreen::GameDraw()
 	// objGround->Draw();
 	objPlayer->Draw();
 
-	if (objBullet)
+	/*if (objBullet)
 	{
 		objBullet->Draw();
-	}
+	}*/
 	
-
+	for (std::unique_ptr<Bullet>& bullet : objBullets)
+	{
+		bullet->Draw();
+	}
 	
 
 	// objC->Draw();
@@ -1041,10 +1051,12 @@ void GameScreen::Attack()
 {
 	if (input->TriggerKey(DIK_SPACE))
 	{
-		Bullet* newBullet = new Bullet();
-		newBullet = Bullet::Create(modelBullet, playerPosition);
+		// Bullet* newBullet = new Bullet();
+		std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
+		newBullet = Bullet::Create(modelBullet, playerPosition, bulletScale);
 
-		objBullet.reset(newBullet);
+		// objBullet.reset(newBullet);
+		objBullets.push_back(std::move(newBullet));
 	}
 }
 // スプライン曲線の計算

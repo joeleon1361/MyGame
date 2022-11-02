@@ -15,21 +15,19 @@ private:
 
 public: // 静的メンバ関数
 	// 3Dオブジェクト生成
-	static Bullet* Create(ObjModel* model, const XMFLOAT3 position);
+	static std::unique_ptr<Bullet>Create(ObjModel* model, const XMFLOAT3 position, const XMFLOAT3 scale);
 
 public: // メンバ関数
 	// 初期化
-	bool Initialize(const XMFLOAT3 position );
+	bool Initialize(const XMFLOAT3 position, const XMFLOAT3 scale);
 
 	// 毎フレーム処理
 	void Update();
 
-	// 座標の取得
-	const XMFLOAT3& GetPosition() { return bulletPos; }
 
 private: // メンバ変数
 	
 public:
-	XMFLOAT3 bulletPos = { 0,0,0 };
+	float Velocity = 2.0f;
 };
 

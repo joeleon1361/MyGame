@@ -145,7 +145,10 @@ private: // メンバ変数
 	Player* objPlayer = nullptr;
 	// Bullet* objBullet = nullptr;
 
-	std::unique_ptr<Bullet> objBullet;
+	// std::unique_ptr<Bullet> objBullet;
+
+	std::list<std::unique_ptr<Bullet>> objBullets;
+
 
 	ObjObject* objPlayerBullet = nullptr;
 
@@ -201,7 +204,7 @@ private: // メンバ変数
 	XMFLOAT3 playerPosition;
 	XMFLOAT3 playerRotation;
 
-	XMFLOAT3 playerBulletPos;
+	XMFLOAT3 bulletScale;
 
 	XMFLOAT3 CenterPos;
 
