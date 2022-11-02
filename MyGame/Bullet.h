@@ -15,11 +15,11 @@ private:
 
 public: // 静的メンバ関数
 	// 3Dオブジェクト生成
-	static std::unique_ptr<Bullet>Create(ObjModel* model, const XMFLOAT3 position, const XMFLOAT3 scale);
+	static std::unique_ptr<Bullet>Create(ObjModel* model, const XMFLOAT3 position, const XMFLOAT3 scale, const float velocity);
 
 public: // メンバ関数
 	// 初期化
-	bool Initialize(const XMFLOAT3 position, const XMFLOAT3 scale);
+	bool Initialize(const XMFLOAT3 position, const XMFLOAT3 scale, const float velocity);
 
 	// 毎フレーム処理
 	void Update();
@@ -28,6 +28,6 @@ public: // メンバ関数
 private: // メンバ変数
 	
 public:
-	float Velocity = 2.0f;
+	float velocity = 0.0f;
 };
 

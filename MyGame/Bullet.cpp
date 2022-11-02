@@ -1,6 +1,6 @@
 #include "Bullet.h"
 
-std::unique_ptr<Bullet> Bullet::Create(ObjModel* model, const XMFLOAT3 position, const XMFLOAT3 scale)
+std::unique_ptr<Bullet> Bullet::Create(ObjModel* model, const XMFLOAT3 position, const XMFLOAT3 scale, const float velocity)
 {
 	// 3Dオブジェクトのインスタンスを生成
 	Bullet* instance = new Bullet();
@@ -9,7 +9,7 @@ std::unique_ptr<Bullet> Bullet::Create(ObjModel* model, const XMFLOAT3 position,
 	}
 
 	// 初期化
-	if (!instance->Initialize(position, scale)) {
+	if (!instance->Initialize(position, scale, velocity)) {
 		delete instance;
 		assert(0);
 	}
@@ -22,7 +22,7 @@ std::unique_ptr<Bullet> Bullet::Create(ObjModel* model, const XMFLOAT3 position,
 	return std::unique_ptr<Bullet>(instance);
 }
 
-bool Bullet::Initialize(const XMFLOAT3 position, const XMFLOAT3 scale)
+bool Bullet::Initialize(const XMFLOAT3 position, const XMFLOAT3 scale, const float velocity)
 {
 	if (!ObjObject::Initialize())
 	{
@@ -30,6 +30,7 @@ bool Bullet::Initialize(const XMFLOAT3 position, const XMFLOAT3 scale)
 	}
 	this->position = position;
 	this->scale = scale;
+	this->velocity = velocity;
 	return true;
 }
 
@@ -37,5 +38,5 @@ void Bullet::Update()
 {
 	ObjObject::Update();
 
-	position.z += Velocity;
+	position.z += velocity;
 }

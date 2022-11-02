@@ -277,7 +277,7 @@ void GameScreen::GameUpdate()
 	playerPosition = objPlayer->GetPosition();
 	playerRotation = objPlayer->GetRotation();
 
-	bulletScale = { 0.3f, 0.3f, 0.3f };
+	
 
 
 	/*CenterPos = SplinePosition(playerCheckPoint, startIndex, timeRate);
@@ -1051,11 +1051,9 @@ void GameScreen::Attack()
 {
 	if (input->TriggerKey(DIK_SPACE))
 	{
-		// Bullet* newBullet = new Bullet();
 		std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
-		newBullet = Bullet::Create(modelBullet, playerPosition, bulletScale);
+		newBullet = Bullet::Create(modelBullet, playerPosition, bulletScale, bulletVelocity);
 
-		// objBullet.reset(newBullet);
 		objBullets.push_back(std::move(newBullet));
 	}
 }

@@ -204,7 +204,8 @@ private: // メンバ変数
 	XMFLOAT3 playerPosition;
 	XMFLOAT3 playerRotation;
 
-	XMFLOAT3 bulletScale;
+	XMFLOAT3 bulletScale = { 0.3f, 0.3f, 0.3f };
+	float bulletVelocity = 2.0f;
 
 	XMFLOAT3 CenterPos;
 
