@@ -92,7 +92,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	objSkydome = ObjObject::Create();
 	objGround = ObjObject::Create();
 	objPlayer = Player::Create();
-	
+
 	objCenter = ObjObject::Create();
 
 	objBossBody = ObjObject::Create();
@@ -147,7 +147,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	objPlayer->SetRotation({ 0, 90, 0 });
 	objPlayer->SetScale({ 0.5f, 0.5f, 0.5f });
 
-	objCenter->SetPosition({ 0,0,0 });
+	objCenter->SetPosition({ 10,10,10 });
 	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
 
 	objSkydome->SetPosition({ -70,0,0 });
@@ -277,9 +277,6 @@ void GameScreen::GameUpdate()
 	playerPosition = objPlayer->GetPosition();
 	playerRotation = objPlayer->GetRotation();
 
-	
-
-
 	/*CenterPos = SplinePosition(playerCheckPoint, startIndex, timeRate);
 
 	CameraPos = { CenterPos.x, CenterPos.y, CenterPos.z - 10 };
@@ -290,8 +287,13 @@ void GameScreen::GameUpdate()
 	BossPos = SplinePosition(bossCheckPoint, startIndex, timeRate);
 	BossRot = objBossBody->GetRotation();*/
 
+	centerPosition = objCenter->GetPosition();
+
 	BossPos = objBossBody->GetPosition();
 	BossRot = objBossBody->GetRotation();
+
+	BossLeg2Pos = objBossLeg2->GetPosition();
+	BossLeg4Pos = objBossLeg4->GetPosition();
 
 	XMFLOAT3 CRot = objC->GetRotation();
 
@@ -301,13 +303,101 @@ void GameScreen::GameUpdate()
 	CreateParticles();
 
 	CRot.x += 2;
-	BossRot.y += 2;
+	// BossRot.y += 2;
 
 	CameraSwitching();
 
 	DodgeRoll();
 
-	
+	Attack();
+
+	// 弾を更新
+	for (std::unique_ptr<Bullet>& bullet : objBullets)
+	{
+		bullet->Update();
+	}
+
+	// アップデート
+		// 弾を消去
+	objBullets.remove_if([](std::unique_ptr<Bullet>& bullet)
+		{
+			return bullet->GetDeathFlag();
+		}
+	);
+
+	// 当たり判定
+	if (bossFlag == true)
+	{
+		for (std::unique_ptr<Bullet>& bullet : objBullets)
+		{
+			if (CheckCollision(bullet->GetPosition(), objBossBody->GetPosition(), 1.0f, 1.0f) == true)
+			{
+				bossHp -= 1;
+			}
+		}
+	}
+
+	if (bossHp <= 0)
+	{
+		bossFlag = false;
+	}
+
+	// 当たり判定
+	if (bossLegFlag2 == true)
+	{
+		for (std::unique_ptr<Bullet>& bullet : objBullets)
+		{
+			if (CheckCollision(bullet->GetPosition(), objBossLeg1->GetPosition(), 1.0f, 1.0f) == true)
+			{
+				bossLegHp2 -= 1;
+			}
+		}
+	}
+
+	if (bossLegHp2 <= 0)
+	{
+		bossLeg2Break = true;
+	}
+
+
+	if (bossLeg2Break == true)
+	{
+		BossLeg2Pos.y -= 0.3f;
+	}
+
+	if (BossLeg2Pos.y <= -20.0f)
+	{
+		bossLeg2Break = false;
+		bossLegFlag2 = false;
+	}
+
+	// 当たり判定
+	if (bossLegFlag4 == true)
+	{
+		for (std::unique_ptr<Bullet>& bullet : objBullets)
+		{
+			if (CheckCollision(bullet->GetPosition(), objBossLeg3->GetPosition(), 1.0f, 1.0f) == true)
+			{
+				bossLegHp4 -= 1;
+			}
+		}
+	}
+
+	if (bossLegHp4 <= 0)
+	{
+		bossLeg4Break = true;
+	}
+
+	if (bossLeg4Break == true)
+	{
+		BossLeg4Pos.y -= 0.3f;
+	}
+
+	if (BossLeg4Pos.y <= -20.0f)
+	{
+		bossLeg4Break = false;
+		bossLegFlag4 = false;
+	}
 
 #pragma region スプライン曲線関係
 	if (input->PushKey(DIK_R))
@@ -357,9 +447,9 @@ void GameScreen::GameUpdate()
 	objPlayer->SetRotation(playerRotation);
 
 	camera->SetEye(CameraPos);
-	camera->SetTarget(CenterPos);
+	camera->SetTarget(centerPosition);
 
-	objCenter->SetPosition(CenterPos);
+	objCenter->SetPosition(centerPosition);
 
 	objSkydome->SetPosition(SkydomPos);
 	objSkydome->SetRotation(SkydomRot);
@@ -367,11 +457,14 @@ void GameScreen::GameUpdate()
 	objBossBody->SetPosition(BossPos);
 	objBossBody->SetRotation(BossRot);
 
+	objBossLeg2->SetPosition(BossLeg2Pos);
+	objBossLeg4->SetPosition(BossLeg4Pos);
+
 	objC->SetRotation(CRot);
 
-	
 
-	// アップデート
+
+
 	camera->Update();
 	particleMan->Update();
 
@@ -383,28 +476,13 @@ void GameScreen::GameUpdate()
 	objCenter->Update();
 	objC->Update();
 	objPlayer->Update();
-	
+
 
 	objBossBody->Update();
 	objBossLeg1->Update();
 	objBossLeg2->Update();
 	objBossLeg3->Update();
 	objBossLeg4->Update();
-
-	Attack();
-
-	/*if (objBullet)
-	{
-		objBullet->Update();
-	}*/
-
-	for (std::unique_ptr<Bullet>& bullet : objBullets)
-	{
-		bullet->Update();
-	}
-
-	//弾更新
-	
 
 	collisionManager->CheckAllCollisions();
 
@@ -438,25 +516,32 @@ void GameScreen::GameDraw()
 	// objGround->Draw();
 	objPlayer->Draw();
 
-	/*if (objBullet)
-	{
-		objBullet->Draw();
-	}*/
-	
 	for (std::unique_ptr<Bullet>& bullet : objBullets)
 	{
 		bullet->Draw();
 	}
-	
 
 	// objC->Draw();
 
-	objBossBody->Draw();
-	objBossLeg1->Draw();
-	objBossLeg2->Draw();
-	objBossLeg3->Draw();
-	objBossLeg4->Draw();
+	if (bossFlag == true)
+	{
+		objBossBody->Draw();
 
+		objBossLeg1->Draw();
+
+		if (bossLegFlag2 == true)
+		{
+			objBossLeg2->Draw();
+		}
+
+		objBossLeg3->Draw();
+
+		if (bossLegFlag4 == true)
+		{
+			objBossLeg4->Draw();
+		}
+	}
+	
 	// testobject->Draw(cmdList);
 
 	// objCenter->Draw();
@@ -616,30 +701,38 @@ void GameScreen::AllDebugText()
 
 void GameScreen::GameDebugText()
 {
-	// プレイヤーの座標を表示
-	std::ostringstream PlayerPos;
-	PlayerPos << "PlayerPos:("
-		<< std::fixed << std::setprecision(2)
-		<< playerPosition.x << "," // x
-		<< playerPosition.y << "," // y
-		<< playerPosition.z << ") Local"; // z
-	debugText.Print(PlayerPos.str(), 50, 30, 1.0f);
+	//// プレイヤーの座標を表示
+	//std::ostringstream PlayerPos;
+	//PlayerPos << "PlayerPos:("
+	//	<< std::fixed << std::setprecision(2)
+	//	<< playerPosition.x << "," // x
+	//	<< playerPosition.y << "," // y
+	//	<< playerPosition.z << ") Local"; // z
+	//debugText.Print(PlayerPos.str(), 50, 30, 1.0f);
 
-	std::ostringstream bossPos;
-	bossPos << "BossPos:("
-		<< std::fixed << std::setprecision(2)
-		<< BossPos.x << "," // x
-		<< BossPos.y << "," // y
-		<< BossPos.z << ")"; // z
-	debugText.Print(bossPos.str(), 50, 50, 1.0f);
+	//std::ostringstream bossPos;
+	//bossPos << "BossPos:("
+	//	<< std::fixed << std::setprecision(2)
+	//	<< BossPos.x << "," // x
+	//	<< BossPos.y << "," // y
+	//	<< BossPos.z << ")"; // z
+	//debugText.Print(bossPos.str(), 50, 50, 1.0f);
 
-	std::ostringstream cameraPos;
-	cameraPos << "CameraPos:("
-		<< std::fixed << std::setprecision(2)
-		<< CameraPos.x << "," // x
-		<< CameraPos.y << "," // y
-		<< CameraPos.z << ")"; // z
-	debugText.Print(cameraPos.str(), 50, 70, 1.0f);
+	//std::ostringstream cameraPos;
+	//cameraPos << "CameraPos:("
+	//	<< std::fixed << std::setprecision(2)
+	//	<< CameraPos.x << "," // x
+	//	<< CameraPos.y << "," // y
+	//	<< CameraPos.z << ")"; // z
+	//debugText.Print(cameraPos.str(), 50, 70, 1.0f);
+
+	//std::ostringstream CenterPos;
+	//CenterPos << "CenterPos:("
+	//	<< std::fixed << std::setprecision(2)
+	//	<< centerPosition.x << "," // x
+	//	<< centerPosition.y << "," // y
+	//	<< centerPosition.z << ") World"; // z
+	//debugText.Print(CenterPos.str(), 50, 110, 1.0f);
 
 	/*std::ostringstream startCounter;
 	startCounter << "StartCounter:("
@@ -677,37 +770,39 @@ void GameScreen::GameDebugText()
 		<< startIndex << ")";
 	debugText.Print(StartIndex.str(), 50, 210, 1.0f);*/
 
-	/*std::ostringstream BossHp;
+	// ボスのHP関連
+	std::ostringstream BossHp;
 	BossHp << "BossHp:("
 		<< std::fixed << std::setprecision(2)
 		<< bossHp << ")";
-	debugText.Print(BossHp.str(), 50, 250, 1.0f);
+	debugText.Print(BossHp.str(), 50, 30, 1.0f);
 
 	std::ostringstream BossLegHp1;
 	BossLegHp1 << "BossLegHp1:("
 		<< std::fixed << std::setprecision(2)
 		<< bossLegHp1 << ")";
-	debugText.Print(BossLegHp1.str(), 50, 270, 1.0f);
+	debugText.Print(BossLegHp1.str(), 50, 50, 1.0f);
 
 	std::ostringstream BossLegHp2;
 	BossLegHp2 << "BossLegHp2:("
 		<< std::fixed << std::setprecision(2)
 		<< bossLegHp2 << ")";
-	debugText.Print(BossLegHp2.str(), 50, 290, 1.0f);
+	debugText.Print(BossLegHp2.str(), 50, 70, 1.0f);
 
 	std::ostringstream BossLegHp3;
 	BossLegHp3 << "BossLegHp3:("
 		<< std::fixed << std::setprecision(2)
 		<< bossLegHp3 << ")";
-	debugText.Print(BossLegHp3.str(), 50, 310, 1.0f);
+	debugText.Print(BossLegHp3.str(), 50, 90, 1.0f);
 
 	std::ostringstream BossLegHp4;
 	BossLegHp4 << "BossLegHp4:("
 		<< std::fixed << std::setprecision(2)
 		<< bossLegHp4 << ")";
-	debugText.Print(BossLegHp4.str(), 50, 330, 1.0f);*/
+	debugText.Print(BossLegHp4.str(), 50, 110, 1.0f);
 
-	std::ostringstream DodgeRollFlag;
+	// プレイヤーの回避関連
+	/*std::ostringstream DodgeRollFlag;
 	DodgeRollFlag << "DodgeRollFlag:("
 		<< std::fixed << std::setprecision(2)
 		<< dodgeRollFlag << ")";
@@ -723,7 +818,7 @@ void GameScreen::GameDebugText()
 	DodgeRollRotation << "DodgeRollRotation:("
 		<< std::fixed << std::setprecision(2)
 		<< dodgeRollRotation << ")";
-	debugText.Print(DodgeRollRotation.str(), 50, 290, 1.0f);
+	debugText.Print(DodgeRollRotation.str(), 50, 290, 1.0f);*/
 
 	// 自機操作方法
 	debugText.Print("WASD:PlayerMove", 1050, 30, 1.0f);
@@ -961,7 +1056,7 @@ void GameScreen::DodgeRoll()
 			// dodgeRollRotation = 5.0;
 		}
 	}
-	else if(dodgeRollFlag == 1)
+	else if (dodgeRollFlag == 1)
 	{
 		dodgeRollVelocity -= 0.01f;
 		if (dodgeRollVelocity <= 0)
@@ -978,7 +1073,7 @@ void GameScreen::CameraSwitching()
 	{
 		playerPosition.z = 0;
 
-		CameraPos = { CenterPos.x, CenterPos.y, CenterPos.z - 10 };
+		CameraPos = { centerPosition.x, centerPosition.y, centerPosition.z - 10 };
 
 		// オブジェクト移動
 		FrontMove();
@@ -994,7 +1089,7 @@ void GameScreen::CameraSwitching()
 	{
 		playerPosition.x = 0;
 
-		CameraPos = { CenterPos.x - 10, CenterPos.y, CenterPos.z };
+		CameraPos = { centerPosition.x - 10, centerPosition.y, centerPosition.z };
 
 		// オブジェクト移動
 		RightMove();
@@ -1011,7 +1106,7 @@ void GameScreen::CameraSwitching()
 	{
 		playerPosition.z = 0;
 
-		CameraPos = { CenterPos.x, CenterPos.y, CenterPos.z + 10 };
+		CameraPos = { centerPosition.x, centerPosition.y, centerPosition.z + 10 };
 
 		// オブジェクト移動
 		BackMove();
@@ -1027,7 +1122,7 @@ void GameScreen::CameraSwitching()
 	{
 		playerPosition.x = 0;
 
-		CameraPos = { CenterPos.x + 10, CenterPos.y, CenterPos.z };
+		CameraPos = { centerPosition.x + 10, centerPosition.y, centerPosition.z };
 
 		// オブジェクト移動
 		LeftMove();
@@ -1055,6 +1150,19 @@ void GameScreen::Attack()
 		newBullet = Bullet::Create(modelBullet, playerPosition, bulletScale, bulletVelocity);
 
 		objBullets.push_back(std::move(newBullet));
+	}
+}
+
+bool GameScreen::CheckCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB)
+{
+	float Check = sqrtf((sphereA.x - sphereB.x) * (sphereA.x - sphereB.x) + (sphereA.y - sphereB.y) * (sphereA.y - sphereB.y) + (sphereA.z - sphereB.z) * (sphereA.z - sphereB.z));
+	if (Check <= radiusA - radiusB || Check <= radiusB - radiusA || Check < radiusA + radiusB)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 // スプライン曲線の計算

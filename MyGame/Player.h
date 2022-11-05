@@ -41,7 +41,6 @@ public: // ƒƒ“ƒoŠÖ”
 	void Shot();
 
 private: // ƒƒ“ƒo•Ï”
-
 	const float MoveLimitX = 8.5f;
 	const float MoveLimitY = 5.0f;
 

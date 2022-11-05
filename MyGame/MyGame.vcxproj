@@ -122,6 +122,7 @@
       <ConformanceMode>false</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)FBX;$(ProjectDir)OBJ;$(ProjectDir)Particle;$(ProjectDir)PostEffect;$(ProjectDir)Sound;$(ProjectDir)Input;$(ProjectDir)Camera;$(ProjectDir)Sprite;$(ProjectDir)DebugText;$(ProjectDir)EngineBase;$(ProjectDir)GameScreen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -139,6 +140,7 @@
       <ConformanceMode>false</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)FBX;$(ProjectDir)OBJ;$(ProjectDir)Particle;$(ProjectDir)PostEffect;$(ProjectDir)Sound;$(ProjectDir)Input;$(ProjectDir)Camera;$(ProjectDir)Sprite;$(ProjectDir)DebugText;$(ProjectDir)EngineBase;$(ProjectDir)GameScreen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

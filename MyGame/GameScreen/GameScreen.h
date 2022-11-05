@@ -110,6 +110,9 @@ public: // メンバ関数
 	void CameraSwitching();
 
 	void Attack();
+
+	// 当たり判定
+	bool CheckCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB);
 private:
 	XMFLOAT3 SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t);
 
@@ -119,8 +122,6 @@ private: // メンバ変数
 	Sound* audio = nullptr;
 	DebugText debugText;
 	CollisionManager* collisionManager = nullptr;
-
-	Bullet* bullet_ = nullptr;
 
 	// ゲームシーン用
 	Camera* camera = nullptr;
@@ -141,16 +142,11 @@ private: // メンバ変数
 	ObjObject* objSkydome = nullptr;
 	ObjObject* objGround = nullptr;
 	
-	// 
+	// プレイヤー関連
 	Player* objPlayer = nullptr;
-	// Bullet* objBullet = nullptr;
-
-	// std::unique_ptr<Bullet> objBullet;
 
 	std::list<std::unique_ptr<Bullet>> objBullets;
 
-
-	ObjObject* objPlayerBullet = nullptr;
 
 	ObjObject* objCenter = nullptr;
 
@@ -164,13 +160,6 @@ private: // メンバ変数
 	ObjObject* objBossLeg4 = nullptr;
 
 	FbxObject3d* testobject = nullptr;
-
-	// ボス関連
-	int bossHp = 0;
-	int bossLegHp1 = 0;
-	int bossLegHp2 = 0;
-	int bossLegHp3 = 0;
-	int bossLegHp4 = 0;
 
 	// カメラ関連
 	int cameraMode = 0;
@@ -201,28 +190,55 @@ private: // メンバ変数
 	float maxTime = 8000.0f;
 	float timeRate;
 
+	// プレイヤー関連
 	XMFLOAT3 playerPosition;
 	XMFLOAT3 playerRotation;
 
+	const float LimitXZ = 18.0f;
+	const float LimitY = 10.0f;
+
+	float playerVelocity = 0.3f;
+
+	float dodgeRollVelocity = 0.0f;
+	float dodgeRollRotation = 0.0f;
+	int dodgeRollFlag = 0;
+
+	// 弾関連
 	XMFLOAT3 bulletScale = { 0.3f, 0.3f, 0.3f };
 	float bulletVelocity = 2.0f;
 
-	XMFLOAT3 CenterPos;
+	// ボス関連
+	XMFLOAT3 BossPos;
+	XMFLOAT3 BossRot;
+
+	XMFLOAT3 BossLeg2Pos;
+	XMFLOAT3 BossLeg4Pos;
+
+	// ボス関連
+	int bossHp = 10;
+	int bossLegHp1 = 0;
+	int bossLegHp2 = 10;
+	int bossLegHp3 = 0;
+	int bossLegHp4 = 10;
+
+	int bossLeg2Break = false;
+	int bossLeg4Break = false;
+
+	int bossFlag = true;
+	int bossLegFlag2 = true;
+	int bossLegFlag4 = true;
+
+	// デスフラグ
+	bool bossDeathFlag = false;
+
+	XMFLOAT3 centerPosition;
 
 	XMFLOAT3 CameraPos;
 
 	XMFLOAT3 SkydomPos;
 	XMFLOAT3 SkydomRot;
 
-	XMFLOAT3 BossPos;
-	XMFLOAT3 BossRot;
-
-	const float LimitXZ = 18.0f;
-	const float LimitY = 10.0f;
-
-	// プレイヤー弾
-
-
+	// シーン遷移関連
 	enum SCENE
 	{
 		TITLE,
@@ -231,10 +247,4 @@ private: // メンバ変数
 	};
 
 	int scene = TITLE;
-
-	float playerVelocity = 0.3f;
-
-	float dodgeRollVelocity = 0.0f;
-	float dodgeRollRotation = 0.0f;
-	int dodgeRollFlag = 0;
 };

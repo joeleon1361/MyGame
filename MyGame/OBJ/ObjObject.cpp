@@ -233,10 +233,6 @@ ObjObject* ObjObject::Create(ObjModel* model)
 		object3d->SetModel(model);
 
 	}
-
-	//float scale_val = 20;
-	//object3d->scale = { scale_val,scale_val,scale_val };
-
 	return object3d;
 }
 
@@ -280,16 +276,6 @@ void ObjObject::Update()
 	matWorld *= matScale; // ワールド行列にスケーリングを反映
 	matWorld *= matRot; // ワールド行列に回転を反映
 	matWorld *= matTrans; // ワールド行列に平行移動を反映
-
-	if (isBillboard) {
-		const XMMATRIX& matBillboard = camera->GetBillboardMatrix();
-
-		matWorld = XMMatrixIdentity();
-		matWorld *= matScale; // ワールド行列にスケーリングを反映
-		matWorld *= matRot; // ワールド行列に回転を反映
-		matWorld *= matBillboard;
-		matWorld *= matTrans; // ワールド行列に平行移動を反映
-	}
 
 	// 親オブジェクトがあれば
 	if (parent != nullptr) {

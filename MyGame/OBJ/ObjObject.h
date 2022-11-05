@@ -119,8 +119,6 @@ public: // メンバ関数
 
 	void SetParent(ObjObject* parent) { this->parent = parent; }
 
-	void SetBillboard(bool isBillboard) { this->isBillboard = isBillboard; }
-
 	// コライダーのセット
 	void SetCollider(BaseCollider* collider);
 
@@ -143,8 +141,6 @@ protected: // メンバ変数
 	ObjObject* parent = nullptr;
 	// モデル
 	ObjModel* model = nullptr;
-	// ビルボード
-	bool isBillboard = false;
 
 	// クラス名
 	const char* name = nullptr;

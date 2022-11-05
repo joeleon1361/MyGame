@@ -39,4 +39,9 @@ void Bullet::Update()
 	ObjObject::Update();
 
 	position.z += velocity;
+
+	if (--deathTimer <= 0)
+	{
+		deathFlag = true;
+	}
 }
