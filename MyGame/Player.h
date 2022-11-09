@@ -21,7 +21,6 @@ public: // メンバ関数
 	// 毎フレーム処理
 	void Update() override;
 
-	// 移動処理
 	void FrontMove();
 
 	void RightMove();
@@ -31,9 +30,17 @@ public: // メンバ関数
 	void LeftMove();
 
 	// 移動制限
-	void MoveLimit();
+	void MoveLimitXY();
 
-	void Rolling();
+	void MoveLimitZY();
+
+	void FrontRolling();
+
+	void RightRolling();
+
+	void BackRolling();
+
+	void LeftRolling();
 
 	void DodgeRoll();
 
@@ -41,9 +48,13 @@ public: // メンバ関数
 	void Shot();
 
 private: // メンバ変数
-	const float MoveLimitX = 8.5f;
-	const float MoveLimitY = 5.0f;
+	const float LimitXZ = 18.0f;
+	const float LimitY = 10.0f;
 
-	const float DodgeTime = 2.0f;
+	float playerVelocity = 0.3f;
+
+	float dodgeRollVelocity = 0.0f;
+	float dodgeRollRotation = 0.0f;
+	int dodgeRollFlag = 0;
 };
 

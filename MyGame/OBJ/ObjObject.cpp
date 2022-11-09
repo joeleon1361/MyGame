@@ -279,8 +279,34 @@ void ObjObject::Update()
 
 	// 親オブジェクトがあれば
 	if (parent != nullptr) {
+		XMMATRIX matWorldScale, matWorldRot, matWorldTrans;
+
+		// スケール、回転、平行移動行列の計算
+		matWorldScale = XMMatrixScaling(worldScale.x, worldScale.y, worldScale.z);
+		matWorldRot = XMMatrixIdentity();
+		matWorldRot *= XMMatrixRotationZ(XMConvertToRadians(worldRotation.z));
+		matWorldRot *= XMMatrixRotationX(XMConvertToRadians(worldRotation.x));
+		matWorldRot *= XMMatrixRotationY(XMConvertToRadians(worldRotation.y));
+		matWorldTrans = XMMatrixTranslation(worldPosition.x, worldPosition.y, worldPosition.z);
+
+		// ワールド行列の合成
+		updateMatWorld = XMMatrixIdentity(); // 変形をリセット
+		updateMatWorld *= matWorldScale; // ワールド行列にスケーリングを反映
+		updateMatWorld *= matWorldRot; // ワールド行列に回転を反映
+		updateMatWorld *= matWorldTrans; // ワールド行列に平行移動を反映
+
 		// 親オブジェクトのワールド行列を掛ける
-		matWorld *= parent->matWorld;
+		matLocal = matWorld *= parent->matWorld;
+
+		const XMMATRIX& matViewProjection = camera->GetViewProjectionMatrix();
+
+		// 定数バッファへデータ転送
+		ConstBufferDataB0* constMap = nullptr;
+		result = constBuffB0->Map(0, nullptr, (void**)&constMap);
+		constMap->mat = matLocal * matViewProjection;	// 行列の合成
+		constBuffB0->Unmap(0, nullptr);
+
+		updateMatWorld = matLocal * parent->matWorld;
 	}
 
 	const XMMATRIX& matViewProjection = camera->GetViewProjectionMatrix();

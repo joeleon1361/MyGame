@@ -129,16 +129,26 @@ protected: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
 	// 色
 	XMFLOAT4 color = { 1,1,1,1 };
+	// ワールドスケール
+	XMFLOAT3 worldScale = { 1,1,1 };
+	// X,Y,Z軸回りのワールド回転角
+	XMFLOAT3 worldRotation = { 0,0,0 };
+	// ワールド座標
+	XMFLOAT3 worldPosition = { 0,0,0 };
 	// ローカルスケール
 	XMFLOAT3 scale = { 1,1,1 };
 	// X,Y,Z軸回りのローカル回転角
 	XMFLOAT3 rotation = { 0,0,0 };
 	// ローカル座標
 	XMFLOAT3 position = { 0,0,0 };
-	// ローカルワールド変換行列
+	// ワールド変換行列
 	XMMATRIX matWorld;
+	// ローカル変換行列
+	XMMATRIX matLocal;
 	// 親オブジェクト
 	ObjObject* parent = nullptr;
+	// 
+	XMMATRIX updateMatWorld;
 	// モデル
 	ObjModel* model = nullptr;
 

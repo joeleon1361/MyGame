@@ -13,6 +13,7 @@
 
 #include "Player.h"
 #include "Bullet.h"
+#include "Boss.h"
 
 #include <memory>
 #include <list>
@@ -20,6 +21,7 @@
 class CollisionManager;
 class Player;
 class Bullet;
+class Boss;
 
 // ゲームシーン
 class GameScreen
@@ -80,32 +82,6 @@ public: // メンバ関数
 	void AllDebugText();
 
 	void GameDebugText();
-
-	// 移動処理
-	void FrontMove();
-
-	void RightMove();
-
-
-	void BackMove();
-
-	void LeftMove();
-
-	// 移動制限
-	void MoveLimitXY();
-
-	void MoveLimitZY();
-
-	void FrontRolling();
-
-	void RightRolling();
-
-	void BackRolling();
-
-	void LeftRolling();
-
-	void DodgeRoll();
-
 	//
 	void CameraSwitching();
 
@@ -143,27 +119,28 @@ private: // メンバ変数
 	ObjObject* objGround = nullptr;
 	
 	// プレイヤー関連
-	Player* objPlayer = nullptr;
+	Player* player = nullptr;
 
-	std::list<std::unique_ptr<Bullet>> objBullets;
+	std::list<std::unique_ptr<Bullet>> bullets;
 
+	// ボス関連
+	Boss* bossBody = nullptr;
+	Boss* bossLeg1 = nullptr;
+	Boss* bossLeg2 = nullptr;
+	Boss* bossLeg3 = nullptr;
+	Boss* bossLeg4 = nullptr;
 
 	ObjObject* objCenter = nullptr;
 
 	ObjObject* objC = nullptr;
 
-	// ボス関連
-	ObjObject* objBossBody = nullptr;
-	ObjObject* objBossLeg1 = nullptr;
-	ObjObject* objBossLeg2 = nullptr;
-	ObjObject* objBossLeg3 = nullptr;
-	ObjObject* objBossLeg4 = nullptr;
+	
 
 	FbxObject3d* testobject = nullptr;
 
 	// カメラ関連
-	int cameraMode = 0;
 
+#pragma region スプライン曲線関連
 	// スプライン曲線関連
 	// プレイヤー制御点
 	XMFLOAT3 start = { 10.0f, 0.0f, 0.0f };
@@ -189,24 +166,21 @@ private: // メンバ変数
 
 	float maxTime = 8000.0f;
 	float timeRate;
+#pragma endregion
 
+#pragma region プレイヤー関連
 	// プレイヤー関連
 	XMFLOAT3 playerPosition;
 	XMFLOAT3 playerRotation;
 
-	const float LimitXZ = 18.0f;
-	const float LimitY = 10.0f;
-
-	float playerVelocity = 0.3f;
-
-	float dodgeRollVelocity = 0.0f;
-	float dodgeRollRotation = 0.0f;
-	int dodgeRollFlag = 0;
+	XMFLOAT3 playerWorldPosition;
 
 	// 弾関連
 	XMFLOAT3 bulletScale = { 0.3f, 0.3f, 0.3f };
 	float bulletVelocity = 2.0f;
+#pragma endregion
 
+#pragma region ボス関連
 	// ボス関連
 	XMFLOAT3 BossPos;
 	XMFLOAT3 BossRot;
@@ -214,7 +188,6 @@ private: // メンバ変数
 	XMFLOAT3 BossLeg2Pos;
 	XMFLOAT3 BossLeg4Pos;
 
-	// ボス関連
 	int bossHp = 10;
 	int bossLegHp1 = 0;
 	int bossLegHp2 = 10;
@@ -230,6 +203,7 @@ private: // メンバ変数
 
 	// デスフラグ
 	bool bossDeathFlag = false;
+#pragma endregion
 
 	XMFLOAT3 centerPosition;
 
