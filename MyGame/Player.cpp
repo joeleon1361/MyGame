@@ -1,5 +1,4 @@
 #include "Player.h"
-#include "Input.h"
 
 extern int cameraMode;
 
@@ -41,7 +40,7 @@ void Player::Update()
 {
 	ObjObject::Update();
 
-	if (cameraMode == 0)
+	if (cameraMode == FRONT)
 	{
 		// オブジェクト移動
 		FrontMove();
@@ -52,7 +51,7 @@ void Player::Update()
 		// ローリング
 		FrontRolling();
 	}
-	else if (cameraMode == 1)
+	else if (cameraMode == RIGHT)
 	{
 		// オブジェクト移動
 		RightMove();
@@ -63,7 +62,7 @@ void Player::Update()
 		// ローリング
 		RightRolling();
 	}
-	else if (cameraMode == 2)
+	else if (cameraMode == BACK)
 	{
 		// オブジェクト移動
 		BackMove();
@@ -74,7 +73,7 @@ void Player::Update()
 		// ローリング
 		BackRolling();
 	}
-	else if (cameraMode == 3)
+	else if (cameraMode == LEFT)
 	{
 		// オブジェクト移動
 		LeftMove();
@@ -322,7 +321,7 @@ void Player::LeftRolling()
 		}
 	}
 }
-
+// 回避
 void Player::DodgeRoll()
 {
 	Input* input = Input::GetInstance();

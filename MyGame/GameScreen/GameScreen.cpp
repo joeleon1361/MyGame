@@ -1,28 +1,6 @@
 ﻿#include "GameScreen.h"
-#include "ObjModel.h"
-#include "FbxLoader.h"
-#include "FbxObject.h"
-#include "Camera.h"
-#include "Player.h"
-#include "Collider/SphereCollider.h"
-#include "Collider/CollisionManager.h"
-#include "Collider/Collision.h"
 
-#include <cassert>
-#include <sstream>
-#include <iomanip>
-#include <stdio.h>
-#include <DirectXMath.h>
-
-extern enum CAMERAMODE
-{
-	FRONT,
-	RIGHT,
-	BACK,
-	LEFT
-};
-
-extern int cameraMode = FRONT;
+extern int cameraMode = 0;
 
 using namespace DirectX;
 
@@ -40,7 +18,6 @@ GameScreen::~GameScreen()
 	safe_delete(modelGround);
 	safe_delete(modelPlayer);
 	safe_delete(modelBullet);
-	// safe_delete(objBullet);
 
 	safe_delete(testmodel);
 	safe_delete(testobject);
@@ -287,34 +264,37 @@ void GameScreen::GameUpdate()
 	playerPosition = player->GetPosition();
 	playerRotation = player->GetRotation();
 
-	/*CenterPos = SplinePosition(playerCheckPoint, startIndex, timeRate);
+	/*centerPosition = SplinePosition(playerCheckPoint, startIndex, timeRate);
 
-	CameraPos = { CenterPos.x, CenterPos.y, CenterPos.z - 10 };
+	CameraPos = { centerPosition.x, centerPosition.y,centerPosition.z - 10 };
 
 	SkydomPos = objSkydome->GetPosition();
 	SkydomRot = objSkydome->GetRotation();
 
-	BossPos = SplinePosition(bossCheckPoint, startIndex, timeRate);
-	BossRot = objBossBody->GetRotation();*/
+	bossPosition = SplinePosition(bossCheckPoint, startIndex, timeRate);
+	bossRotation = bossBody->GetRotation();*/
 
 	centerPosition = objCenter->GetPosition();
 
-	BossPos = bossBody->GetPosition();
-	BossRot = bossBody->GetRotation();
+	bossPosition = bossBody->GetPosition();
+	bossRotation = bossBody->GetRotation();
 
-	BossLeg2Pos = bossLeg2->GetPosition();
-	BossLeg4Pos = bossLeg4->GetPosition();
+	bossLeg1Position = bossLeg1->GetPosition();
+	bossLeg2Position = bossLeg2->GetPosition();
+	bossLeg3Position = bossLeg3->GetPosition();
+	bossLeg4Position = bossLeg4->GetPosition();
 
 	XMFLOAT3 CRot = objC->GetRotation();
 
 	// パーティクル生成
 	CreateParticles();
 
-	CRot.x += 2;
-	// BossRot.y += 2;
+	//CRot.x += 2;
+	//bossRotation.y += 2;
 
 	CameraSwitching();
 
+#pragma region 弾関連
 	Attack();
 
 	// 弾を更新
@@ -330,6 +310,7 @@ void GameScreen::GameUpdate()
 			return bullet->GetDeathFlag();
 		}
 	);
+#pragma endregion
 
 #pragma region ボス関連
 	// 当たり判定
@@ -337,9 +318,10 @@ void GameScreen::GameUpdate()
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
 		{
-			if (CheckCollision(bullet->GetPosition(), bossBody->GetPosition(), 1.0f, 1.0f) == true)
+			if (OnCollision(bullet->GetPosition(), bossBody->GetPosition(), 0.8f, 0.8f) == true)
 			{
 				bossHp -= 1;
+				bullet->deathFlag = true;
 			}
 		}
 	}
@@ -350,18 +332,49 @@ void GameScreen::GameUpdate()
 	}
 
 	// 当たり判定
-	if (bossLegFlag2 == true)
+	if (bossLeg1Flag == true)
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
 		{
-			if (CheckCollision(bullet->GetPosition(), bossLeg1->GetPosition(), 1.0f, 1.0f) == true)
+			if (OnCollision(bullet->GetPosition(), bossLeg1WorldPosition, 0.8f, 0.6f) == true)
 			{
-				bossLegHp2 -= 1;
+				bossLeg1Hp -= 1;
+				bullet->deathFlag = true;
 			}
 		}
 	}
 
-	if (bossLegHp2 <= 0)
+	if (bossLeg1Hp <= 0)
+	{
+		bossLeg1Break = true;
+	}
+
+
+	if (bossLeg1Break == true)
+	{
+		bossLeg1Position.y -= 0.3f;
+	}
+
+	if (bossLeg1Position.y <= -20.0f)
+	{
+		bossLeg1Break = false;
+		bossLeg1Flag = false;
+	}
+
+	// 当たり判定
+	if (bossLeg2Flag == true)
+	{
+		for (std::unique_ptr<Bullet>& bullet : bullets)
+		{
+			if (OnCollision(bullet->GetPosition(), bossLeg2WorldPosition, 0.8f, 0.6f) == true)
+			{
+				bossLeg2Hp -= 1;
+				bullet->deathFlag = true;
+			}
+		}
+	}
+
+	if (bossLeg2Hp <= 0)
 	{
 		bossLeg2Break = true;
 	}
@@ -369,41 +382,72 @@ void GameScreen::GameUpdate()
 
 	if (bossLeg2Break == true)
 	{
-		BossLeg2Pos.y -= 0.3f;
+		bossLeg2Position.y -= 0.3f;
 	}
 
-	if (BossLeg2Pos.y <= -20.0f)
+	if (bossLeg2Position.y <= -20.0f)
 	{
 		bossLeg2Break = false;
-		bossLegFlag2 = false;
+		bossLeg2Flag = false;
 	}
 
 	// 当たり判定
-	if (bossLegFlag4 == true)
+	if (bossLeg3Flag == true)
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
 		{
-			if (CheckCollision(bullet->GetPosition(), bossLeg3->GetPosition(), 1.0f, 1.0f) == true)
+			if (OnCollision(bullet->GetPosition(), bossLeg3WorldPosition, 0.8f, 0.6f) == true)
 			{
-				bossLegHp4 -= 1;
+				bossLeg3Hp -= 1;
+				bullet->deathFlag = true;
 			}
 		}
 	}
 
-	if (bossLegHp4 <= 0)
+	if (bossLeg3Hp <= 0)
+	{
+		bossLeg3Break = true;
+	}
+
+
+	if (bossLeg3Break == true)
+	{
+		bossLeg3Position.y -= 0.3f;
+	}
+
+	if (bossLeg3Position.y <= -20.0f)
+	{
+		bossLeg3Break = false;
+		bossLeg3Flag = false;
+	}
+
+	// 当たり判定
+	if (bossLeg4Flag == true)
+	{
+		for (std::unique_ptr<Bullet>& bullet : bullets)
+		{
+			if (OnCollision(bullet->GetPosition(), bossLeg4WorldPosition, 0.8f, 0.6f) == true)
+			{
+				bossLeg4Hp -= 1;
+				bullet->deathFlag = true;
+			}
+		}
+	}
+
+	if (bossLeg4Hp <= 0)
 	{
 		bossLeg4Break = true;
 	}
 
 	if (bossLeg4Break == true)
 	{
-		BossLeg4Pos.y -= 0.3f;
+		bossLeg4Position.y -= 0.3f;
 	}
 
-	if (BossLeg4Pos.y <= -20.0f)
+	if (bossLeg4Position.y <= -20.0f)
 	{
 		bossLeg4Break = false;
-		bossLegFlag4 = false;
+		bossLeg4Flag = false;
 	}
 #pragma endregion
 
@@ -451,6 +495,60 @@ void GameScreen::GameUpdate()
 
 #pragma endregion
 
+#pragma region 座標変換
+	// XMFLOAT3 f;
+	// XMVECTOR v;
+	// XMMATRIX m;
+
+	// XMFLOAT3 を XMVECTORに変換
+	// v = DirectX::XMLoadFloat3(&f);
+	// v.m128_f32[3] = 1.0f;
+
+	// 座標v に行列mを掛け算
+	// v = DirectX::XMVector3Transform(v, m);
+
+	// XMVECTOR を XMFLOAT3に変換
+	// DirectX::XMStoreFloat3(&f, v);
+
+	// プレイヤーの座標変換
+	XMVECTOR playerPositionV;
+
+	playerPositionV = DirectX::XMLoadFloat3(&playerPosition);
+	playerPositionV.m128_f32[3] = 1.0f;
+
+	playerPositionV = DirectX::XMVector3Transform(playerPositionV, objCenter->GetMatWorld());
+
+	DirectX::XMStoreFloat3(&playerBulletPosition, playerPositionV);
+
+	// ボスの座標変換
+	XMVECTOR bossLeg1PositionV;
+	XMVECTOR bossLeg2PositionV;
+	XMVECTOR bossLeg3PositionV;
+	XMVECTOR bossLeg4PositionV;
+
+	bossLeg1PositionV = DirectX::XMLoadFloat3(&bossLeg1Position);
+	bossLeg1PositionV.m128_f32[3] = 1.0f;
+	bossLeg1PositionV = DirectX::XMVector3Transform(bossLeg1PositionV, bossBody->GetMatWorld());
+	DirectX::XMStoreFloat3(&bossLeg1WorldPosition, bossLeg1PositionV);
+
+	bossLeg2PositionV = DirectX::XMLoadFloat3(&bossLeg2Position);
+	bossLeg2PositionV.m128_f32[3] = 1.0f;
+	bossLeg2PositionV = DirectX::XMVector3Transform(bossLeg2PositionV, bossBody->GetMatWorld());
+	DirectX::XMStoreFloat3(&bossLeg2WorldPosition, bossLeg2PositionV);
+
+	bossLeg3PositionV = DirectX::XMLoadFloat3(&bossLeg3Position);
+	bossLeg3PositionV.m128_f32[3] = 1.0f;
+	bossLeg3PositionV = DirectX::XMVector3Transform(bossLeg3PositionV, bossBody->GetMatWorld());
+	DirectX::XMStoreFloat3(&bossLeg3WorldPosition, bossLeg3PositionV);
+
+	bossLeg4PositionV = DirectX::XMLoadFloat3(&bossLeg4Position);
+	bossLeg4PositionV.m128_f32[3] = 1.0f;
+	bossLeg4PositionV = DirectX::XMVector3Transform(bossLeg4PositionV, bossBody->GetMatWorld());
+	DirectX::XMStoreFloat3(&bossLeg4WorldPosition, bossLeg4PositionV);
+
+
+#pragma endregion
+
 	player->SetPosition(playerPosition);
 	player->SetRotation(playerRotation);
 
@@ -462,14 +560,15 @@ void GameScreen::GameUpdate()
 	objSkydome->SetPosition(SkydomPos);
 	objSkydome->SetRotation(SkydomRot);
 
-	bossBody->SetPosition(BossPos);
-	bossBody->SetRotation(BossRot);
+	bossBody->SetPosition(bossPosition);
+	bossBody->SetRotation(bossRotation);
 
-	bossLeg2->SetPosition(BossLeg2Pos);
-	bossLeg4->SetPosition(BossLeg4Pos);
+	bossLeg1->SetPosition(bossLeg1Position);
+	bossLeg2->SetPosition(bossLeg2Position);
+	bossLeg3->SetPosition(bossLeg3Position);
+	bossLeg4->SetPosition(bossLeg4Position);
 
 	objC->SetRotation(CRot);
-
 
 	camera->Update();
 	particleMan->Update();
@@ -535,14 +634,14 @@ void GameScreen::GameDraw()
 
 		bossLeg1->Draw();
 
-		if (bossLegFlag2 == true)
+		if (bossLeg2Flag == true)
 		{
 			bossLeg2->Draw();
 		}
 
 		bossLeg3->Draw();
 
-		if (bossLegFlag4 == true)
+		if (bossLeg4Flag == true)
 		{
 			bossLeg4->Draw();
 		}
@@ -551,12 +650,6 @@ void GameScreen::GameDraw()
 	// testobject->Draw(cmdList);
 
 	// objCenter->Draw();
-
-	//弾描画
-	/*for (std::unique_ptr<PlayerBullet>& bullet : bullets_)
-	{
-		bullet->Draw();
-	}*/
 
 	// パーティクルの描画
 	//particleMan->Draw(cmdList);
@@ -608,20 +701,24 @@ void GameScreen::GameInitialize()
 
 	// ボス関連
 	bossHp = 10;
-	bossLegHp1 = 0;
-	bossLegHp2 = 10;
-	bossLegHp3 = 0;
-	bossLegHp4 = 10;
+	bossLeg1Hp = 10;
+	bossLeg2Hp = 10;
+	bossLeg3Hp = 10;
+	bossLeg4Hp = 10;
 
+	bossLeg1Break = false;
 	bossLeg2Break = false;
+	bossLeg3Break = false;
 	bossLeg4Break = false;
 
 	bossFlag = true;
-	bossLegFlag2 = true;
-	bossLegFlag4 = true;
+	bossLeg1Flag = true;
+	bossLeg2Flag = true;
+	bossLeg3Flag = true;
+	bossLeg4Flag = true;
 
 	// デスフラグ
-	bool bossDeathFlag = false;
+	bossDeathFlag = false;
 
 	startCount = GetTickCount();
 }
@@ -800,29 +897,29 @@ void GameScreen::GameDebugText()
 		<< bossHp << ")";
 	debugText.Print(BossHp.str(), 50, 30, 1.0f);
 
-	std::ostringstream BossLegHp1;
-	BossLegHp1 << "BossLegHp1:("
+	std::ostringstream BossLeg1Hp;
+	BossLeg1Hp << "BossLeg1Hp:("
 		<< std::fixed << std::setprecision(2)
-		<< bossLegHp1 << ")";
-	debugText.Print(BossLegHp1.str(), 50, 50, 1.0f);
+		<< bossLeg1Hp << ")";
+	debugText.Print(BossLeg1Hp.str(), 50, 50, 1.0f);
 
-	std::ostringstream BossLegHp2;
-	BossLegHp2 << "BossLegHp2:("
+	std::ostringstream BossLeg2Hp;
+	BossLeg2Hp << "BossLeg2Hp:("
 		<< std::fixed << std::setprecision(2)
-		<< bossLegHp2 << ")";
-	debugText.Print(BossLegHp2.str(), 50, 70, 1.0f);
+		<< bossLeg2Hp << ")";
+	debugText.Print(BossLeg2Hp.str(), 50, 70, 1.0f);
 
-	std::ostringstream BossLegHp3;
-	BossLegHp3 << "BossLegHp3:("
+	std::ostringstream BossLeg3Hp;
+	BossLeg3Hp << "BossLeg3Hp:("
 		<< std::fixed << std::setprecision(2)
-		<< bossLegHp3 << ")";
-	debugText.Print(BossLegHp3.str(), 50, 90, 1.0f);
+		<< bossLeg3Hp << ")";
+	debugText.Print(BossLeg3Hp.str(), 50, 90, 1.0f);
 
-	std::ostringstream BossLegHp4;
-	BossLegHp4 << "BossLegHp4:("
+	std::ostringstream BossLeg4Hp;
+	BossLeg4Hp << "BossLeg4Hp:("
 		<< std::fixed << std::setprecision(2)
-		<< bossLegHp4 << ")";
-	debugText.Print(BossLegHp4.str(), 50, 110, 1.0f);
+		<< bossLeg4Hp << ")";
+	debugText.Print(BossLeg4Hp.str(), 50, 110, 1.0f);
 
 	// プレイヤーの回避関連
 	/*std::ostringstream DodgeRollFlag;
@@ -894,13 +991,13 @@ void GameScreen::Attack()
 	if (input->TriggerKey(DIK_SPACE))
 	{
 		std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
-		newBullet = Bullet::Create(modelBullet, playerPosition, bulletScale, bulletVelocity);
+		newBullet = Bullet::Create(modelBullet, playerBulletPosition, bulletScale, bulletVelocity);
 
 		bullets.push_back(std::move(newBullet));
 	}
 }
 
-bool GameScreen::CheckCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB)
+bool GameScreen::OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB)
 {
 	float Check = sqrtf((sphereA.x - sphereB.x) * (sphereA.x - sphereB.x) + (sphereA.y - sphereB.y) * (sphereA.y - sphereB.y) + (sphereA.z - sphereB.z) * (sphereA.z - sphereB.z));
 	if (Check <= radiusA - radiusB || Check <= radiusB - radiusA || Check < radiusA + radiusB)

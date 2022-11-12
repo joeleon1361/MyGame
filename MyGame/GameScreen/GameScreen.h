@@ -10,11 +10,24 @@
 #include "Sound.h"
 #include "FbxObject.h"
 #include "ParticleManager.h"
+#include "Camera.h"
+#include "ObjModel.h"
+#include "FbxLoader.h"
+#include "FbxObject.h"
+
+#include "Collider/SphereCollider.h"
+#include "Collider/CollisionManager.h"
+#include "Collider/Collision.h"
 
 #include "Player.h"
 #include "Bullet.h"
 #include "Boss.h"
 
+#include <cassert>
+#include <sstream>
+#include <iomanip>
+#include <stdio.h>
+#include <DirectXMath.h>
 #include <memory>
 #include <list>
 
@@ -88,7 +101,7 @@ public: // メンバ関数
 	void Attack();
 
 	// 当たり判定
-	bool CheckCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB);
+	bool OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB);
 private:
 	XMFLOAT3 SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t);
 
@@ -134,11 +147,16 @@ private: // メンバ変数
 
 	ObjObject* objC = nullptr;
 
-	
-
 	FbxObject3d* testobject = nullptr;
 
 	// カメラ関連
+	enum CAMERAMODE
+	{
+		FRONT,
+		RIGHT,
+		BACK,
+		LEFT
+	};
 
 #pragma region スプライン曲線関連
 	// スプライン曲線関連
@@ -173,7 +191,7 @@ private: // メンバ変数
 	XMFLOAT3 playerPosition;
 	XMFLOAT3 playerRotation;
 
-	XMFLOAT3 playerWorldPosition;
+	XMFLOAT3 playerBulletPosition;
 
 	// 弾関連
 	XMFLOAT3 bulletScale = { 0.3f, 0.3f, 0.3f };
@@ -182,24 +200,35 @@ private: // メンバ変数
 
 #pragma region ボス関連
 	// ボス関連
-	XMFLOAT3 BossPos;
-	XMFLOAT3 BossRot;
+	XMFLOAT3 bossPosition;
+	XMFLOAT3 bossRotation;
 
-	XMFLOAT3 BossLeg2Pos;
-	XMFLOAT3 BossLeg4Pos;
+	XMFLOAT3 bossLeg1Position;
+	XMFLOAT3 bossLeg2Position;
+	XMFLOAT3 bossLeg3Position;
+	XMFLOAT3 bossLeg4Position;
+
+	XMFLOAT3 bossLeg1WorldPosition;
+	XMFLOAT3 bossLeg2WorldPosition;
+	XMFLOAT3 bossLeg3WorldPosition;
+	XMFLOAT3 bossLeg4WorldPosition;
 
 	int bossHp = 10;
-	int bossLegHp1 = 0;
-	int bossLegHp2 = 10;
-	int bossLegHp3 = 0;
-	int bossLegHp4 = 10;
+	int bossLeg1Hp = 10;
+	int bossLeg2Hp = 10;
+	int bossLeg3Hp = 10;
+	int bossLeg4Hp = 10;
 
+	int bossLeg1Break = false;
 	int bossLeg2Break = false;
+	int bossLeg3Break = false;
 	int bossLeg4Break = false;
 
 	int bossFlag = true;
-	int bossLegFlag2 = true;
-	int bossLegFlag4 = true;
+	int bossLeg1Flag = true;
+	int bossLeg2Flag = true;
+	int bossLeg3Flag = true;
+	int bossLeg4Flag = true;
 
 	// デスフラグ
 	bool bossDeathFlag = false;

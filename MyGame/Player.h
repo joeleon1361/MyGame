@@ -2,6 +2,7 @@
 
 #include "ObjObject.h"
 #include "GameScreen.h"
+#include "Input.h"
 
 class Player :
 	public ObjObject
@@ -48,6 +49,16 @@ public: // ƒƒ“ƒoŠÖ”
 	void Shot();
 
 private: // ƒƒ“ƒo•Ï”
+	ObjModel* modelBullet = nullptr;
+
+	enum CAMERAMODE
+	{
+		FRONT,
+		RIGHT,
+		BACK,
+		LEFT
+	};
+
 	const float LimitXZ = 18.0f;
 	const float LimitY = 10.0f;
 

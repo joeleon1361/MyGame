@@ -105,6 +105,7 @@ public: // メンバ関数
 	// 座標の取得
 	const XMFLOAT3& GetRotation() { return rotation; }
 
+
 	// 座標の設定
 	void SetPosition(XMFLOAT3 position) { this->position = position; }
 
@@ -129,12 +130,6 @@ protected: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
 	// 色
 	XMFLOAT4 color = { 1,1,1,1 };
-	// ワールドスケール
-	XMFLOAT3 worldScale = { 1,1,1 };
-	// X,Y,Z軸回りのワールド回転角
-	XMFLOAT3 worldRotation = { 0,0,0 };
-	// ワールド座標
-	XMFLOAT3 worldPosition = { 0,0,0 };
 	// ローカルスケール
 	XMFLOAT3 scale = { 1,1,1 };
 	// X,Y,Z軸回りのローカル回転角
@@ -143,8 +138,6 @@ protected: // メンバ変数
 	XMFLOAT3 position = { 0,0,0 };
 	// ワールド変換行列
 	XMMATRIX matWorld;
-	// ローカル変換行列
-	XMMATRIX matLocal;
 	// 親オブジェクト
 	ObjObject* parent = nullptr;
 	// 
