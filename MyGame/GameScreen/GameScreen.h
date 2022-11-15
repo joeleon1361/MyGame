@@ -191,7 +191,7 @@ private: // メンバ変数
 	XMFLOAT3 playerPosition;
 	XMFLOAT3 playerRotation;
 
-	XMFLOAT3 playerBulletPosition;
+	XMFLOAT3 playerWorldPosition;
 
 	// 弾関連
 	XMFLOAT3 bulletScale = { 0.3f, 0.3f, 0.3f };

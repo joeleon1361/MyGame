@@ -264,7 +264,7 @@ void GameScreen::GameUpdate()
 	playerPosition = player->GetPosition();
 	playerRotation = player->GetRotation();
 
-	/*centerPosition = SplinePosition(playerCheckPoint, startIndex, timeRate);
+	centerPosition = SplinePosition(playerCheckPoint, startIndex, timeRate);
 
 	CameraPos = { centerPosition.x, centerPosition.y,centerPosition.z - 10 };
 
@@ -272,12 +272,12 @@ void GameScreen::GameUpdate()
 	SkydomRot = objSkydome->GetRotation();
 
 	bossPosition = SplinePosition(bossCheckPoint, startIndex, timeRate);
-	bossRotation = bossBody->GetRotation();*/
+	bossRotation = bossBody->GetRotation();
 
-	centerPosition = objCenter->GetPosition();
+	/*centerPosition = objCenter->GetPosition();
 
 	bossPosition = bossBody->GetPosition();
-	bossRotation = bossBody->GetRotation();
+	bossRotation = bossBody->GetRotation();*/
 
 	bossLeg1Position = bossLeg1->GetPosition();
 	bossLeg2Position = bossLeg2->GetPosition();
@@ -290,7 +290,7 @@ void GameScreen::GameUpdate()
 	CreateParticles();
 
 	//CRot.x += 2;
-	//bossRotation.y += 2;
+	bossRotation.y += 2;
 
 	CameraSwitching();
 
@@ -518,7 +518,7 @@ void GameScreen::GameUpdate()
 
 	playerPositionV = DirectX::XMVector3Transform(playerPositionV, objCenter->GetMatWorld());
 
-	DirectX::XMStoreFloat3(&playerBulletPosition, playerPositionV);
+	DirectX::XMStoreFloat3(&playerWorldPosition, playerPositionV);
 
 	// ボスの座標変換
 	XMVECTOR bossLeg1PositionV;
@@ -679,7 +679,7 @@ void GameScreen::GameInitialize()
 	// 座標のセット
 	player->SetPosition({ 0,0,0 });
 	player->SetRotation({ 0, 90, 0 });
-	player->SetScale({ 0.5f, 0.5f, 0.5f });
+	player->SetScale({ 0.8f, 0.8f, 0.8f });
 
 	objCenter->SetPosition({ 0,0,0 });
 	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
@@ -991,7 +991,7 @@ void GameScreen::Attack()
 	if (input->TriggerKey(DIK_SPACE))
 	{
 		std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
-		newBullet = Bullet::Create(modelBullet, playerBulletPosition, bulletScale, bulletVelocity);
+		newBullet = Bullet::Create(modelBullet, playerWorldPosition, bulletScale, bulletVelocity);
 
 		bullets.push_back(std::move(newBullet));
 	}
