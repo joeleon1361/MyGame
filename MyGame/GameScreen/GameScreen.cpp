@@ -137,8 +137,6 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	objCenter->SetPosition({ 10,10,10 });
 	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
 
-	objSkydome->SetPosition({ -70,0,0 });
-
 	bossBody->SetPosition({ 0,0,0 });
 	bossLeg1->SetPosition({ 2,-2,2 });
 	bossLeg2->SetPosition({ 2,-2,-2 });
@@ -255,7 +253,13 @@ void GameScreen::TitleInitialize()
 
 void GameScreen::GameUpdate()
 {
-	if (startIndex >= 5)
+	if (startIndex >= 29)
+	{
+		scene = RESULT;
+		startIndex = 1;
+	}
+
+	if (bossHp <= 0)
 	{
 		scene = RESULT;
 		startIndex = 1;
@@ -303,8 +307,7 @@ void GameScreen::GameUpdate()
 		bullet->Update();
 	}
 
-	// アップデート
-		// 弾を消去
+	// 弾を消去
 	bullets.remove_if([](std::unique_ptr<Bullet>& bullet)
 		{
 			return bullet->GetDeathFlag();
@@ -694,8 +697,6 @@ void GameScreen::GameInitialize()
 	objCenter->SetPosition({ 0,0,0 });
 	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
 
-	objSkydome->SetPosition({ -70,0,0 });
-
 	bossBody->SetPosition({ 0,0,20 });
 	bossLeg1->SetPosition({ 2,-2,2 });
 	bossLeg2->SetPosition({ 2,-2,-2 });
@@ -729,6 +730,8 @@ void GameScreen::GameInitialize()
 
 	// デスフラグ
 	bossDeathFlag = false;
+
+	cameraMode = 0;
 
 	startCount = GetTickCount();
 }
@@ -831,7 +834,7 @@ void GameScreen::AllDebugText()
 
 void GameScreen::GameDebugText()
 {
-	//// プレイヤーの座標を表示
+	// プレイヤーの座標を表示
 	//std::ostringstream PlayerPos;
 	//PlayerPos << "PlayerPos:("
 	//	<< std::fixed << std::setprecision(2)
@@ -966,34 +969,33 @@ void GameScreen::CameraSwitching()
 
 		CameraPos = { centerPosition.x, centerPosition.y, centerPosition.z - 10 };
 	}
-
-	else if (cameraMode == 1)
+	if (cameraMode == 1)
 	{
 		playerPosition.x = 0;
 
 		CameraPos = { centerPosition.x - 10, centerPosition.y, centerPosition.z };
 	}
-
-	else if (cameraMode == 2)
+	if (cameraMode == 2)
 	{
 		playerPosition.z = 0;
 
 		CameraPos = { centerPosition.x, centerPosition.y, centerPosition.z + 10 };
 	}
-
-	else if (cameraMode == 3)
+	if (cameraMode == 3)
 	{
 		playerPosition.x = 0;
 
 		CameraPos = { centerPosition.x + 10, centerPosition.y, centerPosition.z };
 	}
 
-	else if (cameraMode >= 4)
+	if (startIndex == 11)
 	{
-		cameraMode = 0;
+		cameraMode = 3;
 	}
-
-	if (input->TriggerKey(DIK_Y)) { cameraMode += 1; }
+	else if (startIndex == 14)
+	{
+		cameraMode = 2;
+	}
 }
 
 void GameScreen::Attack()

@@ -1,5 +1,6 @@
 #pragma once
 #include "ObjObject.h"
+#include "GameScreen.h"
 
 class Bullet :
 	public ObjObject
@@ -19,7 +20,7 @@ public: // 静的メンバ関数
 
 private: // 静的メンバ変数
 	// 消えるまでの時間
-	static const int32_t LifeTime = 60 * 5;
+	static const int32_t LifeTime = 30;
 
 public: // メンバ関数
 	// 初期化
@@ -36,6 +37,14 @@ private: // メンバ変数
 
 	// デスタイマー 
 	int32_t deathTimer = LifeTime;
+
+	enum CAMERAMODE
+	{
+		FRONT,
+		RIGHT,
+		BACK,
+		LEFT
+	};
 
 public:
 	// デスフラグ

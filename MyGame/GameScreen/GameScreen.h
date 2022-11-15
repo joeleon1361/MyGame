@@ -130,7 +130,7 @@ private: // メンバ変数
 
 	ObjObject* objSkydome = nullptr;
 	ObjObject* objGround = nullptr;
-	
+
 	// プレイヤー関連
 	Player* player = nullptr;
 
@@ -144,7 +144,6 @@ private: // メンバ変数
 	Boss* bossLeg4 = nullptr;
 
 	ObjObject* objCenter = nullptr;
-
 	ObjObject* objC = nullptr;
 
 	FbxObject3d* testobject = nullptr;
@@ -161,18 +160,74 @@ private: // メンバ変数
 #pragma region スプライン曲線関連
 	// スプライン曲線関連
 	// プレイヤー制御点
-	XMFLOAT3 start = { 10.0f, 0.0f, 0.0f };
-	XMFLOAT3 p2 = { -70.0f, 0.0f, -70.0f };
-	XMFLOAT3 p3 = { -140.0f, 0.0f, 0.0f };
-	XMFLOAT3 end = { -70.0f, 0.0f, 70.0f };
-	std::vector<XMFLOAT3> playerCheckPoint{ start, start, p2, p3, end,start, p2, p2 };
+	XMFLOAT3 start = { 0.0f, 0.0f, -70.0f };
+	XMFLOAT3 p2 = { 0.0f, 0.0f, -60.0f };
+	XMFLOAT3 p3 = { 0.0f, 0.0f, -50.0f };
+	XMFLOAT3 p4 = { 0.0f, 0.0f, -40.0f };
+	XMFLOAT3 p5 = { 0.0f, 0.0f, -30.0f };
+	XMFLOAT3 p6 = { 0.0f, 0.0f, -20.0f };
+	XMFLOAT3 p7 = { 0.0f, 0.0f, -10.0f };
+	XMFLOAT3 p8 = { 10.0f, 0.0f, 0.0f };
+	XMFLOAT3 p9 = { 20.0f, 0.0f, 0.0f };
+	XMFLOAT3 p10 = { 30.0f, 0.0f, 0.0f };
+	XMFLOAT3 p11 = { 50.0f, 0.0f, 10.0f };
+	XMFLOAT3 p12 = { 60.0f, 0.0f, 20.0f };
+	XMFLOAT3 p13 = { 60.0f, 0.0f, 40.0f };
+	XMFLOAT3 p14 = { 50.0f, 0.0f, 50.0f };
+	XMFLOAT3 p15 = { 30.0f, 0.0f, 60.0f };
+	XMFLOAT3 p16 = { 20.0f, 0.0f, 60.0f };
+	XMFLOAT3 p17 = { 10.0f, 0.0f, 60.0f };
+	XMFLOAT3 p18 = { 0.0f, 0.0f, 60.0f };
+	XMFLOAT3 p19 = { -10.0f, 0.0f, 60.0f };
+	XMFLOAT3 p20 = { -20.0f, 0.0f, 60.0f };
+	XMFLOAT3 p21 = { -30.0f, 0.0f, 60.0f };
+	XMFLOAT3 p22 = { -60.0f, 0.0f, 40.0f };
+	XMFLOAT3 p23 = { -60.0f, 0.0f, 30.0f };
+	XMFLOAT3 p24 = { -60.0f, 0.0f, 20.0f };
+	XMFLOAT3 p25 = { -60.0f, 0.0f, 10.0f };
+	XMFLOAT3 p26 = { -60.0f, 0.0f, 0.0f };
+	XMFLOAT3 p27 = { -60.0f, 0.0f, -10.0f };
+	XMFLOAT3 p28 = { -60.0f, 0.0f, -20.0f };
+	XMFLOAT3 p29 = { -60.0f, 0.0f, -30.0f };
+	XMFLOAT3 end = { -60.0f, 0.0f, -40.0f };
+	std::vector<XMFLOAT3> playerCheckPoint{ start, start, p2, p3, p4, p5, p6, p7, p8, p9, p10,
+		p11,p12, p13, p14, p15, p16, p17, p18, p19, p20, p21,p22, p23, p24, p25, p26, p27, p28,
+	p29, end, end};
 
 	// ボス制御点
-	XMFLOAT3 Bstart = { 10.0f, 0.0f, 20.0f };
-	XMFLOAT3 Bp2 = { -70.0f, 0.0f, -50.0f };
-	XMFLOAT3 Bp3 = { -150.0f, 0.0f, 20.0f };
-	XMFLOAT3 Bend = { -70.0f, 0.0f, 90.0f };
-	std::vector<XMFLOAT3> bossCheckPoint{ Bstart, Bstart, Bp2, Bp3, Bend,Bstart, Bp2, Bp2 };
+	XMFLOAT3 Bstart = { 0.0f, 40.0f, -30.0f };
+	XMFLOAT3 Bp2 = { 0.0f, 20.0f, -30.0f };
+	XMFLOAT3 Bp3 = { 0.0f, 0.0f, -30.0f };
+	XMFLOAT3 Bp4 = { 5.0f, 0.0f, -20.0f };
+	XMFLOAT3 Bp5 = { 0.0f, -5.0f, -10.0f };
+	XMFLOAT3 Bp6 = { -5.0f, 0.0f, 0.0f };
+	XMFLOAT3 Bp7 = { 0.0f, 5.0f, 10.0f };
+	XMFLOAT3 Bp8 = { 10.0f, 0.0f, 20.0f };
+	XMFLOAT3 Bp9 = { 20.0f, -5.0f, 20.0f };
+	XMFLOAT3 Bp10 = { 30.0f, 0.0f, 20.0f };
+	XMFLOAT3 Bp11 = { 40.0f, 5.0f, 20.0f };
+	XMFLOAT3 Bp12 = { 40.0f, 10.0f, 20.0f };
+	XMFLOAT3 Bp13 = { 40.0f, 10.0f, 40.0f };
+	XMFLOAT3 Bp14 = { 40.0f, 5.0f, 40.0f };
+	XMFLOAT3 Bp15 = { 30.0f, 0.0f, 40.0f };
+	XMFLOAT3 Bp16 = { 20.0f, -5.0f, 40.0f };
+	XMFLOAT3 Bp17 = { 10.0f, 0.0f, 40.0f };
+	XMFLOAT3 Bp18 = { 0.0f, 5.0f, 40.0f };
+	XMFLOAT3 Bp19 = { -10.0f, 0.0f, 40.0f };
+	XMFLOAT3 Bp20 = { -20.0f, -5.0f, 40.0f };
+	XMFLOAT3 Bp21 = { -30.0f, 0.0f, 30.0f };
+	XMFLOAT3 Bp22 = { -55.0f, 5.0f, 20.0f };
+	XMFLOAT3 Bp23 = { -60.0f, 0.0f, 10.0f };
+	XMFLOAT3 Bp24 = { -70.0f, -5.0f, 0.0f };
+	XMFLOAT3 Bp25 = { -60.0f, 0.0f, -10.0f };
+	XMFLOAT3 Bp26 = { -50.0f, 5.0f, -20.0f };
+	XMFLOAT3 Bp27 = { -60.0f, 0.0f, -30.0f };
+	XMFLOAT3 Bp28 = { -65.0f, -5.0f, -40.0f };
+	XMFLOAT3 Bp29 = { -60.0f, 0.0f, -50.0f };
+	XMFLOAT3 Bend = { -60.0f, 5.0f, -60.0f };
+	std::vector<XMFLOAT3> bossCheckPoint{ Bstart, Bstart, Bp2, Bp3, Bp4, Bp5, Bp6, Bp7, Bp8, Bp9, Bp10,
+		Bp11,Bp12, Bp13, Bp14, Bp15, Bp16, Bp17, Bp18, Bp19, Bp20, Bp21,Bp22, Bp23, Bp24, Bp25, Bp26, Bp27, Bp28,
+	Bp29, Bend, Bend };
 
 	size_t startIndex = 1;
 
@@ -182,7 +237,7 @@ private: // メンバ変数
 	int elapsedCount = 0;
 	float elapsedTime;
 
-	float maxTime = 8000.0f;
+	float maxTime = 2000.0f;
 	float timeRate;
 #pragma endregion
 
@@ -213,11 +268,11 @@ private: // メンバ変数
 	XMFLOAT3 bossLeg3WorldPosition;
 	XMFLOAT3 bossLeg4WorldPosition;
 
-	int bossHp = 50;
-	int bossLeg1Hp = 10;
-	int bossLeg2Hp = 10;
-	int bossLeg3Hp = 10;
-	int bossLeg4Hp = 10;
+	int bossHp;
+	int bossLeg1Hp;
+	int bossLeg2Hp;
+	int bossLeg3Hp;
+	int bossLeg4Hp;
 
 	int bossLeg1Break = false;
 	int bossLeg2Break = false;
