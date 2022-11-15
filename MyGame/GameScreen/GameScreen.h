@@ -90,7 +90,7 @@ public: // メンバ関数
 	void ResultInitialize();
 
 	// パーティクル生成
-	void CreateParticles();
+	void CreateParticles(XMFLOAT3 position);
 
 	void AllDebugText();
 
@@ -213,7 +213,7 @@ private: // メンバ変数
 	XMFLOAT3 bossLeg3WorldPosition;
 	XMFLOAT3 bossLeg4WorldPosition;
 
-	int bossHp = 10;
+	int bossHp = 50;
 	int bossLeg1Hp = 10;
 	int bossLeg2Hp = 10;
 	int bossLeg3Hp = 10;

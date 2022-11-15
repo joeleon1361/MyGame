@@ -286,13 +286,13 @@ void GameScreen::GameUpdate()
 
 	XMFLOAT3 CRot = objC->GetRotation();
 
-	// パーティクル生成
-	CreateParticles();
+	
 
 	//CRot.x += 2;
 	bossRotation.y += 2;
 
 	CameraSwitching();
+	//CreateParticles(bossPosition);
 
 #pragma region 弾関連
 	Attack();
@@ -322,6 +322,8 @@ void GameScreen::GameUpdate()
 			{
 				bossHp -= 1;
 				bullet->deathFlag = true;
+				// パーティクル生成
+				CreateParticles(bossPosition);
 			}
 		}
 	}
@@ -340,6 +342,8 @@ void GameScreen::GameUpdate()
 			{
 				bossLeg1Hp -= 1;
 				bullet->deathFlag = true;
+				// パーティクル生成
+				CreateParticles(bossLeg1WorldPosition);
 			}
 		}
 	}
@@ -370,6 +374,8 @@ void GameScreen::GameUpdate()
 			{
 				bossLeg2Hp -= 1;
 				bullet->deathFlag = true;
+				// パーティクル生成
+				CreateParticles(bossLeg2WorldPosition);
 			}
 		}
 	}
@@ -400,6 +406,8 @@ void GameScreen::GameUpdate()
 			{
 				bossLeg3Hp -= 1;
 				bullet->deathFlag = true;
+				// パーティクル生成
+				CreateParticles(bossLeg3WorldPosition);
 			}
 		}
 	}
@@ -430,6 +438,8 @@ void GameScreen::GameUpdate()
 			{
 				bossLeg4Hp -= 1;
 				bullet->deathFlag = true;
+				// パーティクル生成
+				CreateParticles(bossLeg4WorldPosition);
 			}
 		}
 	}
@@ -652,7 +662,7 @@ void GameScreen::GameDraw()
 	// objCenter->Draw();
 
 	// パーティクルの描画
-	//particleMan->Draw(cmdList);
+	particleMan->Draw(cmdList);
 
 	// 3Dオブジェクト描画後処理
 	ObjObject::PostDraw();
@@ -700,11 +710,11 @@ void GameScreen::GameInitialize()
 	camera->SetUp({ 0, 1, 0 });
 
 	// ボス関連
-	bossHp = 10;
-	bossLeg1Hp = 10;
-	bossLeg2Hp = 10;
-	bossLeg3Hp = 10;
-	bossLeg4Hp = 10;
+	bossHp = 50;
+	bossLeg1Hp = 50;
+	bossLeg2Hp = 50;
+	bossLeg3Hp = 50;
+	bossLeg4Hp = 50;
 
 	bossLeg1Break = false;
 	bossLeg2Break = false;
@@ -784,28 +794,28 @@ void GameScreen::ResultInitialize()
 {
 }
 
-void GameScreen::CreateParticles()
+void GameScreen::CreateParticles(XMFLOAT3 position)
 {
 	for (int i = 0; i < 10; i++) {
-		// X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
-		const float rnd_pos = 10.0f;
+		// X,Y,Z全て[-20.0f,+20.0f]でランダムに分布
+		const float rnd_pos = 0.0f;
 		XMFLOAT3 pos{};
-		pos.x = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-		pos.y = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-		pos.z = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+		pos.x = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.x;
+		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.y;
+		pos.z = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.z;
 
-		const float rnd_vel = 0.1f;
+		const float rnd_vel = 1.0f;
 		XMFLOAT3 vel{};
 		vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
 		vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
 		vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
 
 		XMFLOAT3 acc{};
-		const float rnd_acc = 0.001f;
+		const float rnd_acc = 0.0f;
 		acc.y = -(float)rand() / RAND_MAX * rnd_acc;
 
 		// 追加
-		particleMan->Add(60, pos, vel, acc, 1.0f, 0.0f);
+		particleMan->Add(20,pos, vel, acc, 3.0f, 0.0f);
 	}
 }
 
