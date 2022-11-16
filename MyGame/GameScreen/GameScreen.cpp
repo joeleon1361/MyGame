@@ -326,7 +326,7 @@ void GameScreen::GameUpdate()
 				bossHp -= 1;
 				bullet->deathFlag = true;
 				// パーティクル生成
-				CreateParticles(bossPosition);
+				CreateHitParticles(bossPosition);
 			}
 		}
 	}
@@ -346,7 +346,7 @@ void GameScreen::GameUpdate()
 				bossLeg1Hp -= 1;
 				bullet->deathFlag = true;
 				// パーティクル生成
-				CreateParticles(bossLeg1WorldPosition);
+				CreateHitParticles(bossLeg1WorldPosition);
 			}
 		}
 	}
@@ -359,7 +359,8 @@ void GameScreen::GameUpdate()
 
 	if (bossLeg1Break == true)
 	{
-		bossLeg1Position.y -= 0.3f;
+		bossLeg1Position.y -= 0.2f;
+		CreateBossParticles(bossLeg1WorldPosition);
 	}
 
 	if (bossLeg1Position.y <= -20.0f)
@@ -378,7 +379,7 @@ void GameScreen::GameUpdate()
 				bossLeg2Hp -= 1;
 				bullet->deathFlag = true;
 				// パーティクル生成
-				CreateParticles(bossLeg2WorldPosition);
+				CreateHitParticles(bossLeg2WorldPosition);
 			}
 		}
 	}
@@ -391,7 +392,8 @@ void GameScreen::GameUpdate()
 
 	if (bossLeg2Break == true)
 	{
-		bossLeg2Position.y -= 0.3f;
+		bossLeg2Position.y -= 0.2f;
+		CreateBossParticles(bossLeg2WorldPosition);
 	}
 
 	if (bossLeg2Position.y <= -20.0f)
@@ -410,7 +412,7 @@ void GameScreen::GameUpdate()
 				bossLeg3Hp -= 1;
 				bullet->deathFlag = true;
 				// パーティクル生成
-				CreateParticles(bossLeg3WorldPosition);
+				CreateHitParticles(bossLeg3WorldPosition);
 			}
 		}
 	}
@@ -423,7 +425,8 @@ void GameScreen::GameUpdate()
 
 	if (bossLeg3Break == true)
 	{
-		bossLeg3Position.y -= 0.3f;
+		bossLeg3Position.y -= 0.2f;
+		CreateBossParticles(bossLeg3WorldPosition);
 	}
 
 	if (bossLeg3Position.y <= -20.0f)
@@ -442,7 +445,7 @@ void GameScreen::GameUpdate()
 				bossLeg4Hp -= 1;
 				bullet->deathFlag = true;
 				// パーティクル生成
-				CreateParticles(bossLeg4WorldPosition);
+				CreateHitParticles(bossLeg4WorldPosition);
 			}
 		}
 	}
@@ -454,7 +457,8 @@ void GameScreen::GameUpdate()
 
 	if (bossLeg4Break == true)
 	{
-		bossLeg4Position.y -= 0.3f;
+		bossLeg4Position.y -= 0.2f;
+		CreateBossParticles(bossLeg4WorldPosition);
 	}
 
 	if (bossLeg4Position.y <= -20.0f)
@@ -692,7 +696,7 @@ void GameScreen::GameInitialize()
 	// 座標のセット
 	player->SetPosition({ 0,0,0 });
 	player->SetRotation({ 0, 90, 0 });
-	player->SetScale({ 0.8f, 0.8f, 0.8f });
+	player->SetScale({ 1.0f, 1.0f, 1.0f });
 
 	objCenter->SetPosition({ 0,0,0 });
 	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
@@ -712,10 +716,10 @@ void GameScreen::GameInitialize()
 
 	// ボス関連
 	bossHp = 50;
-	bossLeg1Hp = 50;
-	bossLeg2Hp = 50;
-	bossLeg3Hp = 50;
-	bossLeg4Hp = 50;
+	bossLeg1Hp = 15;
+	bossLeg2Hp = 15;
+	bossLeg3Hp = 15;
+	bossLeg4Hp = 15;
 
 	bossLeg1Break = false;
 	bossLeg2Break = false;
@@ -797,7 +801,7 @@ void GameScreen::ResultInitialize()
 {
 }
 
-void GameScreen::CreateParticles(XMFLOAT3 position)
+void GameScreen::CreateHitParticles(XMFLOAT3 position)
 {
 	for (int i = 0; i < 10; i++) {
 		// X,Y,Z全て[-20.0f,+20.0f]でランダムに分布
@@ -819,6 +823,31 @@ void GameScreen::CreateParticles(XMFLOAT3 position)
 
 		// 追加
 		particleMan->Add(20,pos, vel, acc, 3.0f, 0.0f);
+	}
+}
+
+void GameScreen::CreateBossParticles(XMFLOAT3 position)
+{
+	for (int i = 0; i < 10; i++) {
+		// X,Y,Z全て[-20.0f,+20.0f]でランダムに分布
+		const float rnd_pos = 0.0f;
+		XMFLOAT3 pos{};
+		pos.x = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.x;
+		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.y;
+		pos.z = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.z;
+
+		const float rnd_vel = 0.01f;
+		XMFLOAT3 vel{};
+		vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+		vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+		vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+
+		XMFLOAT3 acc{};
+		const float rnd_acc = 0.01f;
+		acc.y = +(float)rand() / RAND_MAX * rnd_acc;
+
+		// 追加
+		particleMan->Add(30, pos, vel, acc, 2.0f, 0.0f);
 	}
 }
 
@@ -954,11 +983,9 @@ void GameScreen::GameDebugText()
 	debugText.Print(DodgeRollRotation.str(), 50, 290, 1.0f);*/
 
 	// 自機操作方法
-	debugText.Print("WASD:PlayerMove", 1050, 30, 1.0f);
+	debugText.Print("WASD : PlayerMove", 1050, 30, 1.0f);
 
-	debugText.Print("R:CameraReset", 1050, 50, 1.0f);
-
-	debugText.Print("Y:CameraSwitch", 1050, 70, 1.0f);
+	debugText.Print("SPACE : Shot", 1050, 50, 1.0f);
 }
 // カメラ方向の切り替え
 void GameScreen::CameraSwitching()
@@ -1000,12 +1027,25 @@ void GameScreen::CameraSwitching()
 
 void GameScreen::Attack()
 {
-	if (input->TriggerKey(DIK_SPACE))
-	{
-		std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
-		newBullet = Bullet::Create(modelBullet, playerWorldPosition, bulletScale, bulletVelocity);
+	shotRate -= 0.1f;
 
-		bullets.push_back(std::move(newBullet));
+	if (input->PushKey(DIK_SPACE))
+	{
+		if (shotRate <= 0)
+		{
+			shotFlag = true;
+		}
+
+		if (shotFlag == true)
+		{
+			std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
+			newBullet = Bullet::Create(modelBullet, playerWorldPosition, bulletScale, bulletVelocity);
+
+			bullets.push_back(std::move(newBullet));
+
+			shotFlag = false;
+			shotRate = 1.5f;
+		}
 	}
 }
 

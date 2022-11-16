@@ -90,7 +90,9 @@ public: // メンバ関数
 	void ResultInitialize();
 
 	// パーティクル生成
-	void CreateParticles(XMFLOAT3 position);
+	void CreateHitParticles(XMFLOAT3 position);
+
+	void CreateBossParticles(XMFLOAT3 position);
 
 	void AllDebugText();
 
@@ -251,6 +253,9 @@ private: // メンバ変数
 	// 弾関連
 	XMFLOAT3 bulletScale = { 0.3f, 0.3f, 0.3f };
 	float bulletVelocity = 2.0f;
+
+	float shotRate;
+	bool shotFlag = true;
 #pragma endregion
 
 #pragma region ボス関連
