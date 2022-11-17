@@ -133,12 +133,6 @@
     <ClCompile Include="Player.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="RouteCamera.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Vector3.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Collider\Collision.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
@@ -155,6 +149,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Boss.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="BossBullet.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -266,8 +263,6 @@
       <Filter>GameScreen</Filter>
     </ClInclude>
     <ClInclude Include="Player.h" />
-    <ClInclude Include="RouteCamera.h" />
-    <ClInclude Include="Vector3.h" />
     <ClInclude Include="Collider\BaseCollider.h">
       <Filter>Collider</Filter>
     </ClInclude>
@@ -294,5 +289,6 @@
     </ClInclude>
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Boss.h" />
+    <ClInclude Include="BossBullet.h" />
   </ItemGroup>
 </Project>

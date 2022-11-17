@@ -313,6 +313,17 @@ void GameScreen::GameUpdate()
 			return bullet->GetDeathFlag();
 		}
 	);
+
+	for (std::unique_ptr<BossBullet>& bullet : bossBullets)
+	{
+		bullet->Update();
+	}
+
+	bossBullets.remove_if([](std::unique_ptr<BossBullet>& bullet)
+		{
+			return bullet->GetDeathFlag();
+		}
+	);
 #pragma endregion
 
 #pragma region ボス関連
@@ -475,40 +486,7 @@ void GameScreen::GameUpdate()
 		startIndex = 1;
 	}
 
-	nowCount = GetTickCount();
-
-	elapsedCount = nowCount - startCount;
-	elapsedTime = static_cast<float> (elapsedCount) / 1000.0f;
-
-	timeRate = elapsedCount / maxTime;
-
-	if (timeRate >= 1.0f)
-	{
-		if (startIndex < playerCheckPoint.size() - 3)
-		{
-			startIndex += 1;
-			timeRate -= 1.0f;
-			startCount = GetTickCount();
-		}
-		else
-		{
-			timeRate = 1.0f;
-		}
-	}
-
-	if (timeRate >= 1.0f)
-	{
-		if (startIndex < bossCheckPoint.size() - 3)
-		{
-			startIndex += 1;
-			timeRate -= 1.0f;
-			startCount = GetTickCount();
-		}
-		else
-		{
-			timeRate = 1.0f;
-		}
-	}
+	SplineCount();
 
 #pragma endregion
 
@@ -642,6 +620,12 @@ void GameScreen::GameDraw()
 	{
 		bullet->Draw();
 	}
+
+	for (std::unique_ptr<BossBullet>& bullet : bossBullets)
+	{
+		bullet->Draw();
+	}
+
 
 	// objC->Draw();
 
@@ -990,6 +974,12 @@ void GameScreen::GameDebugText()
 // カメラ方向の切り替え
 void GameScreen::CameraSwitching()
 {
+cameraFrontPosition = { centerPosition.x, centerPosition.y, centerPosition.z - 10 };
+cameraRightPosition = { centerPosition.x - 10, centerPosition.y, centerPosition.z };
+cameraBackPosition = { centerPosition.x, centerPosition.y, centerPosition.z + 10 };
+cameraLeftPosition = { centerPosition.x + 10, centerPosition.y, centerPosition.z };
+//CameraPos = lerp(cameraFrontPosition, cameraRightPosition, timeRate);
+
 	if (cameraMode == 0)
 	{
 		playerPosition.z = 0;
@@ -1045,6 +1035,52 @@ void GameScreen::Attack()
 
 			shotFlag = false;
 			shotRate = 1.5f;
+		}
+	}
+
+	if (input->TriggerKey(DIK_SPACE))
+	{
+		std::unique_ptr<BossBullet> newBullet = std::make_unique<BossBullet>();
+		newBullet = BossBullet::Create(modelBullet, bossPosition, bulletScale, bulletVelocity);
+
+		bossBullets.push_back(std::move(newBullet));
+	}
+}
+
+void GameScreen::SplineCount()
+{
+	nowCount = GetTickCount();
+
+	elapsedCount = nowCount - startCount;
+	elapsedTime = static_cast<float> (elapsedCount) / 1000.0f;
+
+	timeRate = elapsedCount / maxTime;
+
+	if (timeRate >= 1.0f)
+	{
+		if (startIndex < playerCheckPoint.size() - 3)
+		{
+			startIndex += 1;
+			timeRate -= 1.0f;
+			startCount = GetTickCount();
+		}
+		else
+		{
+			timeRate = 1.0f;
+		}
+	}
+
+	if (timeRate >= 1.0f)
+	{
+		if (startIndex < bossCheckPoint.size() - 3)
+		{
+			startIndex += 1;
+			timeRate -= 1.0f;
+			startCount = GetTickCount();
+		}
+		else
+		{
+			timeRate = 1.0f;
 		}
 	}
 }
@@ -1105,4 +1141,15 @@ XMFLOAT3 GameScreen::SplinePosition(const std::vector<XMFLOAT3>& points, size_t 
 	XMFLOAT3 position = { N.x * 0.5f, N.y * 0.5f, N.z * 0.5f };
 
 	return position;
+}
+
+XMFLOAT3 GameScreen::lerp(const XMFLOAT3& start, const XMFLOAT3& end, const float t)
+{
+	XMFLOAT3 A, B;
+	A = XMFLOAT3(start.x * (1.0f - t), start.y * (1.0f - t), start.z * (1.0f - t));
+	B = XMFLOAT3(end.x * t, end.y * t, end.z * t);
+
+	XMFLOAT3 C;
+	C = XMFLOAT3(A.x + B.x, A.y + B.y, A.z + B.z);
+	return C;
 }

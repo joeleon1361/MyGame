@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Boss.cpp" />
+    <ClCompile Include="BossBullet.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Collider\Collision.cpp" />
@@ -174,10 +175,8 @@
     <ClCompile Include="Particle\ParticleManager.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PostEffect\PostEffect.cpp" />
-    <ClCompile Include="RouteCamera.cpp" />
     <ClCompile Include="Sound\Sound.cpp" />
     <ClCompile Include="Sprite\Sprite.cpp" />
-    <ClCompile Include="Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\FBX.hlsli" />
@@ -256,6 +255,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Boss.h" />
+    <ClInclude Include="BossBullet.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="Collider\BaseCollider.h" />
@@ -282,10 +282,8 @@
     <ClInclude Include="Particle\ParticleManager.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PostEffect\PostEffect.h" />
-    <ClInclude Include="RouteCamera.h" />
     <ClInclude Include="Sound\Sound.h" />
     <ClInclude Include="Sprite\Sprite.h" />
-    <ClInclude Include="Vector3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

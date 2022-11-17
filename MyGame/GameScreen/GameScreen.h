@@ -22,6 +22,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Boss.h"
+#include "BossBullet.h"
 
 #include <cassert>
 #include <sstream>
@@ -35,6 +36,7 @@ class CollisionManager;
 class Player;
 class Bullet;
 class Boss;
+class BossBullet;
 
 // ゲームシーン
 class GameScreen
@@ -102,10 +104,14 @@ public: // メンバ関数
 
 	void Attack();
 
+	void SplineCount();
+
 	// 当たり判定
 	bool OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB);
 private:
 	XMFLOAT3 SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t);
+
+	XMFLOAT3 lerp(const XMFLOAT3& start, const XMFLOAT3& end, const float t);
 
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
@@ -144,6 +150,8 @@ private: // メンバ変数
 	Boss* bossLeg2 = nullptr;
 	Boss* bossLeg3 = nullptr;
 	Boss* bossLeg4 = nullptr;
+
+	std::list<std::unique_ptr<BossBullet>>bossBullets;
 
 	ObjObject* objCenter = nullptr;
 	ObjObject* objC = nullptr;
@@ -297,6 +305,13 @@ private: // メンバ変数
 	XMFLOAT3 centerPosition;
 
 	XMFLOAT3 CameraPos;
+
+	XMFLOAT3 cameraFrontPosition;
+	XMFLOAT3 cameraRightPosition;
+	XMFLOAT3 cameraBackPosition;
+	XMFLOAT3 cameraLeftPosition;
+
+	float cameraTimeRate;
 
 	XMFLOAT3 SkydomPos;
 	XMFLOAT3 SkydomRot;
