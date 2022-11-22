@@ -63,7 +63,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 		return;
 	}
 
-	if (!Sprite::LoadTexture(2, L"Resources/Sprite/Result.png")) {
+	if (!Sprite::LoadTexture(2, L"Resources/Sprite/ResultBG.png")) {
 		assert(0);
 		return;
 	}
@@ -71,6 +71,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	// 背景スプライト生成
 	TitleBG = Sprite::Create(1, { 0.0f,0.0f });
 	ResultBG = Sprite::Create(2, { 0.0f,0.0f });
+	TitleLogo = Sprite::Create(1, { 100.0f,100.0f });
 
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
@@ -88,6 +89,8 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	bossLeg3 = Boss::Create();
 	bossLeg4 = Boss::Create();
 	objC = ObjObject::Create();
+
+	objTitlePlayer = ObjObject::Create();
 
 	modelSkydome = ObjModel::CreateFromOBJ("skydome");
 	modelGround = ObjModel::CreateFromOBJ("ground");
@@ -113,6 +116,8 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 
 	objC->SetModel(modelPlayer);
 
+	objTitlePlayer->SetModel(modelPlayer);
+
 	player->SetParent(objCenter);
 
 	bossLeg1->SetParent(bossBody);
@@ -129,28 +134,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	testobject->Initialize();
 	testobject->SetModel(testmodel);
 
-	// 座標のセット
-	player->SetPosition({ 0,0,0 });
-	player->SetRotation({ 0, 90, 0 });
-	player->SetScale({ 0.5f, 0.5f, 0.5f });
-
-	objCenter->SetPosition({ 10,10,10 });
-	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
-
-	bossBody->SetPosition({ 0,0,0 });
-	bossLeg1->SetPosition({ 2,-2,2 });
-	bossLeg2->SetPosition({ 2,-2,-2 });
-	bossLeg3->SetPosition({ -2,-2,2 });
-	bossLeg4->SetPosition({ -2,-2,-2 });
-
-	objC->SetPosition({ 0,0,5 });
-	objC->SetRotation({ 0,0,0 });
-
-	camera->SetTarget({ 0, 0, 0 });
-	camera->SetEye({ 0, 0, 10 });
-	camera->SetUp({ 0, 1, 0 });
-
-	startCount = GetTickCount();
+	TitleInitialize();
 }
 
 void GameScreen::Update()
@@ -197,6 +181,84 @@ void GameScreen::TitleUpdate()
 		scene = GAME;
 	}
 
+	SkydomRot = objSkydome->GetRotation();
+	XMFLOAT3 TitlePlayerPosition = objTitlePlayer->GetPosition();
+
+	SkydomRot.y += 0.4f;
+
+	TitlePlayerPosition.x += moveX;
+	moveCountX++;
+	if (moveCountX == 150 && moveX >= 0)
+	{
+		subSpeedX = true;
+	}
+	if (moveCountX == 150 && moveX <= 0)
+	{
+		addSpeedX = true;
+	}
+	if (subSpeedX == true)
+	{
+		moveX -= 0.001;
+		{
+			if (moveX <= -0.05)
+			{
+				subSpeedX = false;
+				moveCountX = 0;
+			}
+		}
+	}
+	if (addSpeedX == true)
+	{
+		moveX += 0.001;
+		{
+			if (moveX >= 0.05)
+			{
+				addSpeedX = false;
+				moveCountX = 0;
+			}
+		}
+	}
+
+	TitlePlayerPosition.y += moveY;
+	moveCountY++;
+	if (moveCountY == 100 && moveY >= 0)
+	{
+		subSpeedY = true;
+	}
+	if (moveCountY == 100 && moveY <= 0)
+	{
+		addSpeedY = true;
+	}
+	if (subSpeedY == true)
+	{
+		moveY -= 0.001;
+		{
+			if (moveY <= -0.02)
+			{
+				subSpeedY = false;
+				moveCountY = 0;
+			}
+		}
+	}
+	if (addSpeedY == true)
+	{
+		moveY += 0.001;
+		{
+			if (moveY >= 0.02)
+			{
+				addSpeedY = false;
+				moveCountY = 0;
+			}
+		}
+	}
+
+	objSkydome->SetRotation(SkydomRot);
+	objTitlePlayer->SetPosition(TitlePlayerPosition);
+
+	camera->Update();
+	objSkydome->Update();
+	objTitlePlayer->Update();
+
 	// デバックテキスト
 	AllDebugText();
 }
@@ -210,7 +272,7 @@ void GameScreen::TitleDraw()
 	// 背景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
 	// 背景スプライト描画
-	TitleBG->Draw();
+	//TitleBG->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -223,9 +285,12 @@ void GameScreen::TitleDraw()
 	ObjObject::PreDraw(cmdList);
 
 	// 3Dオブクジェクトの描画
+	objSkydome->Draw();
+	objTitlePlayer->Draw();
+
 
 	// パーティクルの描画
-	//particleMan->Draw(cmdList);
+	particleMan->Draw(cmdList);
 
 	// 3Dオブジェクト描画後処理
 	ObjObject::PostDraw();
@@ -236,8 +301,7 @@ void GameScreen::TitleDraw()
 	Sprite::PreDraw(cmdList);
 
 	// 描画
-	//sprite1->Draw();
-	//sprite2->Draw();
+	TitleLogo->Draw();
 
 	// デバッグテキストの描画
 	debugText.DrawAll(cmdList);
@@ -249,6 +313,17 @@ void GameScreen::TitleDraw()
 
 void GameScreen::TitleInitialize()
 {
+	objTitlePlayer->SetPosition({ -5.0f,-3.5f,0 });
+	objTitlePlayer->SetRotation({ 0, 180, 0 });
+	objTitlePlayer->SetScale({ 0.7f, 0.7f, 0.7f });
+
+	objSkydome->SetPosition({ 0.0f, 0.0f, 70.0f });
+
+	camera->SetTarget({ 0, 0, 0 });
+	camera->SetEye({ 0, 0, 10 });
+	camera->SetUp({ 0, 1, 0 });
+
+	moveCountX = 0;
 }
 
 void GameScreen::GameUpdate()
@@ -290,7 +365,7 @@ void GameScreen::GameUpdate()
 
 	XMFLOAT3 CRot = objC->GetRotation();
 
-	
+
 
 	//CRot.x += 2;
 	bossRotation.y += 2;
@@ -647,7 +722,7 @@ void GameScreen::GameDraw()
 			bossLeg4->Draw();
 		}
 	}
-	
+
 	// testobject->Draw(cmdList);
 
 	// objCenter->Draw();
@@ -681,6 +756,8 @@ void GameScreen::GameInitialize()
 	player->SetPosition({ 0,0,0 });
 	player->SetRotation({ 0, 90, 0 });
 	player->SetScale({ 1.0f, 1.0f, 1.0f });
+
+	objSkydome->SetPosition({ 0.0f, 0.0f, 0.0f });
 
 	objCenter->SetPosition({ 0,0,0 });
 	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
@@ -806,7 +883,7 @@ void GameScreen::CreateHitParticles(XMFLOAT3 position)
 		acc.y = -(float)rand() / RAND_MAX * rnd_acc;
 
 		// 追加
-		particleMan->Add(20,pos, vel, acc, 3.0f, 0.0f);
+		particleMan->Add(20, pos, vel, acc, 3.0f, 0.0f);
 	}
 }
 
@@ -843,6 +920,18 @@ void GameScreen::AllDebugText()
 		<< std::fixed << std::setprecision(2)
 		<< scene << ")";
 	debugText.Print(Scene.str(), 50, 10, 1.0f);
+
+	/*std::ostringstream MoveX;
+	MoveX << "MoveX:("
+		<< std::fixed << std::setprecision(2)
+		<< moveX << ")";
+	debugText.Print(MoveX.str(), 50, 30, 1.0f);
+
+	std::ostringstream MoveY;
+	MoveY << "MoveY:("
+		<< std::fixed << std::setprecision(2)
+		<< moveY << ")";
+	debugText.Print(MoveY.str(), 50, 50, 1.0f);*/
 }
 
 void GameScreen::GameDebugText()
@@ -974,11 +1063,11 @@ void GameScreen::GameDebugText()
 // カメラ方向の切り替え
 void GameScreen::CameraSwitching()
 {
-cameraFrontPosition = { centerPosition.x, centerPosition.y, centerPosition.z - 10 };
-cameraRightPosition = { centerPosition.x - 10, centerPosition.y, centerPosition.z };
-cameraBackPosition = { centerPosition.x, centerPosition.y, centerPosition.z + 10 };
-cameraLeftPosition = { centerPosition.x + 10, centerPosition.y, centerPosition.z };
-//CameraPos = lerp(cameraFrontPosition, cameraRightPosition, timeRate);
+	cameraFrontPosition = { centerPosition.x, centerPosition.y, centerPosition.z - 10 };
+	cameraRightPosition = { centerPosition.x - 10, centerPosition.y, centerPosition.z };
+	cameraBackPosition = { centerPosition.x, centerPosition.y, centerPosition.z + 10 };
+	cameraLeftPosition = { centerPosition.x + 10, centerPosition.y, centerPosition.z };
+	//CameraPos = lerp(cameraFrontPosition, cameraRightPosition, timeRate);
 
 	if (cameraMode == 0)
 	{

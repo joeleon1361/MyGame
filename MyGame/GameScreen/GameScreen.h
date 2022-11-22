@@ -127,6 +127,8 @@ private: // メンバ変数
 	Sprite* TitleBG = nullptr;
 	Sprite* ResultBG = nullptr;
 
+	Sprite* TitleLogo = nullptr;
+
 	ParticleManager* particleMan = nullptr;
 
 	ObjModel* modelSkydome = nullptr;
@@ -138,6 +140,7 @@ private: // メンバ変数
 
 	ObjObject* objSkydome = nullptr;
 	ObjObject* objGround = nullptr;
+	ObjObject* objTitlePlayer = nullptr;
 
 	// プレイヤー関連
 	Player* player = nullptr;
@@ -325,4 +328,16 @@ private: // メンバ変数
 	};
 
 	int scene = TITLE;
+
+	float moveCountX;
+	float moveX = 0.05f;
+
+	float moveCountY;
+	float moveY = 0.02f;
+
+	bool addSpeedX = false;
+	bool subSpeedX = false;
+
+	bool addSpeedY = false;
+	bool subSpeedY = false;
 };

@@ -100,7 +100,7 @@ void Player::FrontMove()
 		{
 			position.y += playerVelocity + dodgeRollVelocity;
 		}
-		else if (input->PushKey(DIK_S))
+		if (input->PushKey(DIK_S))
 		{
 			position.y -= playerVelocity + dodgeRollVelocity;
 		}
@@ -108,7 +108,7 @@ void Player::FrontMove()
 		{
 			position.x += playerVelocity + dodgeRollVelocity;
 		}
-		else if (input->PushKey(DIK_A))
+		if (input->PushKey(DIK_A))
 		{
 			position.x -= playerVelocity + dodgeRollVelocity;
 		}
@@ -126,7 +126,7 @@ void Player::RightMove()
 		{
 			position.y += playerVelocity;
 		}
-		else if (input->PushKey(DIK_S))
+		if (input->PushKey(DIK_S))
 		{
 			position.y -= playerVelocity;
 		}
@@ -134,7 +134,7 @@ void Player::RightMove()
 		{
 			position.z -= playerVelocity;
 		}
-		else if (input->PushKey(DIK_A))
+		if (input->PushKey(DIK_A))
 		{
 			position.z += playerVelocity;
 		}
@@ -152,7 +152,7 @@ void Player::BackMove()
 		{
 			position.y += playerVelocity;
 		}
-		else if (input->PushKey(DIK_S))
+		if (input->PushKey(DIK_S))
 		{
 			position.y -= playerVelocity;
 		}
@@ -160,7 +160,7 @@ void Player::BackMove()
 		{
 			position.x -= playerVelocity;
 		}
-		else if (input->PushKey(DIK_A))
+		if (input->PushKey(DIK_A))
 		{
 			position.x += playerVelocity;
 		}
@@ -178,7 +178,7 @@ void Player::LeftMove()
 		{
 			position.y += playerVelocity;
 		}
-		else if (input->PushKey(DIK_S))
+		if (input->PushKey(DIK_S))
 		{
 			position.y -= playerVelocity;
 		}
@@ -186,7 +186,7 @@ void Player::LeftMove()
 		{
 			position.z += playerVelocity;
 		}
-		else if (input->PushKey(DIK_A))
+		if (input->PushKey(DIK_A))
 		{
 			position.z -= playerVelocity;
 		}
