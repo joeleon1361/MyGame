@@ -405,6 +405,15 @@ void GameScreen::GameUpdate()
 	// 当たり判定
 	if (bossFlag == true)
 	{
+		bossBody->shotTimer--;
+
+		if (bossBody->shotTimer <= 0)
+		{
+			BossAttack();
+
+			bossBody->shotTimer = bossBody->ShotInterval;
+		}
+
 		for (std::unique_ptr<Bullet>& bullet : bullets)
 		{
 			if (OnCollision(bullet->GetPosition(), bossBody->GetPosition(), 0.8f, 0.8f) == true)
@@ -1127,13 +1136,21 @@ void GameScreen::Attack()
 		}
 	}
 
-	if (input->TriggerKey(DIK_SPACE))
+	/*if (input->TriggerKey(DIK_SPACE))
 	{
 		std::unique_ptr<BossBullet> newBullet = std::make_unique<BossBullet>();
 		newBullet = BossBullet::Create(modelBullet, bossPosition, bulletScale, bulletVelocity);
 
 		bossBullets.push_back(std::move(newBullet));
-	}
+	}*/
+}
+
+void GameScreen::BossAttack()
+{
+	std::unique_ptr<BossBullet> newBullet = std::make_unique<BossBullet>();
+	newBullet = BossBullet::Create(modelBullet, bossPosition, bulletScale, bulletVelocity);
+
+	bossBullets.push_back(std::move(newBullet));
 }
 
 void GameScreen::SplineCount()

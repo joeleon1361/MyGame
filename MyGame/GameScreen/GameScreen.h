@@ -104,6 +104,8 @@ public: // メンバ関数
 
 	void Attack();
 
+	void BossAttack();
+
 	void SplineCount();
 
 	// 当たり判定
