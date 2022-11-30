@@ -73,11 +73,17 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 		return;
 	}
 
+	if (!Sprite::LoadTexture(4, L"Resources/Sprite/StageSelect.png")) {
+		assert(0);
+		return;
+	}
+
 	// 背景スプライト生成
 	TitleBG = Sprite::Create(1, { 0.0f,0.0f });
 	ResultBG = Sprite::Create(2, { 0.0f,0.0f });
 	TitleLogo = Sprite::Create(1, { 100.0f,100.0f }, { 1, 1, 1, 1 });
 	LoadingBG = Sprite::Create(3, { 0.0f,0.0f }, { 1,1,1,0 });
+	StageSelectBG = Sprite::Create(4, { 0.0f,0.0f });
 
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
@@ -147,6 +153,7 @@ void GameScreen::Update()
 		break;
 
 	case SCENE::STAGESELECT:
+		StageSelectUpdate();
 		break;
 
 	case SCENE::GAME:
@@ -168,6 +175,7 @@ void GameScreen::Draw()
 		break;
 
 	case SCENE::STAGESELECT:
+		StageSelectDraw();
 		break;
 
 	case SCENE::GAME:
@@ -266,7 +274,7 @@ void GameScreen::TitleUpdate()
 		break;
 
 	case TITLESCENE::STAGING:
-		stagingCount++;
+		stagingCount--;
 
 		if (moveX >= 0)
 		{
@@ -277,7 +285,7 @@ void GameScreen::TitleUpdate()
 			moveX += 0.001;
 		}
 
-		if (stagingCount >= 60.0f)
+		if (stagingCount <= 0.0f)
 		{
 			titleScene = MOVESCENE;
 			stagingFlag = true;
@@ -289,9 +297,9 @@ void GameScreen::TitleUpdate()
 
 		if (stagingFlag == true)
 		{
-			moveCountX++;
+			moveCountX--;
 			moveX -= 0.005;
-			if (moveCountX >= 40.0f)
+			if (moveCountX <= 0.0f)
 			{
 				stagingFlag = false;
 			}
@@ -323,8 +331,9 @@ void GameScreen::TitleUpdate()
 
 		if (changeSceneTimer <= 0)
 		{
-			GameInitialize();
-			scene = GAME;
+			loadingColor.w = 0.0f;
+			StageSelectInitialize();
+			scene = STAGESELECT;
 		}
 
 		break;
@@ -341,6 +350,7 @@ void GameScreen::TitleUpdate()
 
 	// デバックテキスト
 	AllDebugText();
+	TitleDebugText();
 }
 
 void GameScreen::TitleDraw()
@@ -405,7 +415,125 @@ void GameScreen::TitleInitialize()
 	camera->SetEye({ 0, 0, 10 });
 	camera->SetUp({ 0, 1, 0 });
 
-	moveCountX = 0;
+	moveCountX = 40.0f;
+	stagingCount = 60.0f;
+
+	moveX = 0.05f;
+
+	stagingFlag = false;
+	moveY = 0.01f;
+
+	addSpeedX = false;
+	subSpeedX = false;
+
+	addSpeedY = false;
+	subSpeedY = false;
+
+	titleScene = WAITING;
+
+	changeColorFlag = false;
+	changeColorTimer = 30.0f;
+
+	changeSceneFlag = false;
+	changeSceneTimer = 100.0f;
+}
+
+void GameScreen::StageSelectUpdate()
+{
+	SkydomRot = objSkydome->GetRotation();
+
+	loadingColor = LoadingBG->GetColor();
+
+	if (input->TriggerKey(DIK_SPACE))
+	{
+		changeColorFlag = true;
+	}
+	
+	if (changeColorFlag == true)
+	{
+		loadingColor.w += 0.05f;
+		changeSceneFlag = true;
+	}
+
+	if (changeSceneFlag == true)
+	{
+		changeSceneTimer--;
+	}
+
+	if (changeSceneTimer <= 0)
+	{
+		loadingColor.w = 0.0f;
+		GameInitialize();
+		scene = GAME;
+	}
+
+	LoadingBG->SetColor(loadingColor);
+
+	camera->Update();
+	objSkydome->Update();
+}
+
+void GameScreen::StageSelectDraw()
+{
+	// コマンドリストの取得
+	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
+
+#pragma region 背景スプライト描画
+	// 背景スプライト描画前処理
+	Sprite::PreDraw(cmdList);
+	// 背景スプライト描画
+	//TitleBG->Draw();
+
+	// スプライト描画後処理
+	Sprite::PostDraw();
+	// 深度バッファクリア
+	dxCommon->ClearDepthBuffer();
+#pragma endregion
+
+#pragma region 3Dオブジェクト描画
+	// 3Dオブジェクト描画前処理
+	ObjObject::PreDraw(cmdList);
+
+	// 3Dオブクジェクトの描画
+	objSkydome->Draw();
+
+	// パーティクルの描画
+	particleMan->Draw(cmdList);
+
+	// 3Dオブジェクト描画後処理
+	ObjObject::PostDraw();
+#pragma endregion
+
+#pragma region 前景スプライト描画
+	// 前景スプライト描画前処理
+	Sprite::PreDraw(cmdList);
+
+	// 描画
+	StageSelectBG->Draw();
+
+	LoadingBG->Draw();
+
+	// デバッグテキストの描画
+	debugText.DrawAll(cmdList);
+
+	// スプライト描画後処理
+	Sprite::PostDraw();
+#pragma endregion
+}
+
+void GameScreen::StageSelectInitialize()
+{
+	objSkydome->SetPosition({ 0.0f, 0.0f, 70.0f });
+
+	camera->SetTarget({ 0, 0, 0 });
+	camera->SetEye({ 0, 0, 10 });
+	camera->SetUp({ 0, 1, 0 });
+
+	changeColorFlag = false;
+	changeColorTimer = 30.0f;
+
+	changeSceneFlag = false;
+	changeSceneTimer = 100.0f;
 }
 
 void GameScreen::GameUpdate()
@@ -1015,7 +1143,10 @@ void GameScreen::AllDebugText()
 		<< std::fixed << std::setprecision(2)
 		<< scene << ")";
 	debugText.Print(Scene.str(), 50, 10, 1.0f);
+}
 
+void GameScreen::TitleDebugText()
+{
 	std::ostringstream MoveX;
 	MoveX << "MoveX:("
 		<< std::fixed << std::setprecision(6)

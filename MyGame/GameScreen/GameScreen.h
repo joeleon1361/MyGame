@@ -78,6 +78,13 @@ public: // メンバ関数
 
 	void TitleInitialize();
 
+	// ステージセレクト
+	void StageSelectUpdate();
+
+	void StageSelectDraw();
+
+	void StageSelectInitialize();
+
 	// ゲーム
 	void GameUpdate();
 
@@ -98,6 +105,8 @@ public: // メンバ関数
 	void CreateBossParticles(XMFLOAT3 position);
 
 	void AllDebugText();
+
+	void TitleDebugText();
 
 	void GameDebugText();
 	//
@@ -129,6 +138,7 @@ private: // メンバ変数
 	Sprite* spriteBG = nullptr;
 	Sprite* TitleBG = nullptr;
 	Sprite* ResultBG = nullptr;
+	Sprite* StageSelectBG = nullptr;
 
 	Sprite* TitleLogo = nullptr;
 
@@ -334,8 +344,8 @@ private: // メンバ変数
 
 	int scene = TITLE;
 
-	float moveCountX;
-	float stagingCount;
+	float moveCountX = 40.0f;
+	float stagingCount = 60.0f;
 	float moveX = 0.05f;
 
 	bool stagingFlag = false;
