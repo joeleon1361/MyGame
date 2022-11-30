@@ -2,7 +2,6 @@
 
 #include "SafeDelete.h"
 #include "DirectXCommon.h"
-#include <DirectXMath.h>
 #include "Input.h"
 #include "Sprite.h"
 #include "ObjObject.h"
@@ -23,6 +22,8 @@
 #include "Bullet.h"
 #include "Boss.h"
 #include "BossBullet.h"
+
+#include "Spline.h"
 
 #include <cassert>
 #include <sstream>
@@ -131,6 +132,8 @@ private: // メンバ変数
 
 	Sprite* TitleLogo = nullptr;
 
+	Sprite* LoadingBG = nullptr;
+
 	ParticleManager* particleMan = nullptr;
 
 	ObjModel* modelSkydome = nullptr;
@@ -159,7 +162,6 @@ private: // メンバ変数
 	std::list<std::unique_ptr<BossBullet>>bossBullets;
 
 	ObjObject* objCenter = nullptr;
-	ObjObject* objC = nullptr;
 
 	FbxObject3d* testobject = nullptr;
 
@@ -325,6 +327,7 @@ private: // メンバ変数
 	enum SCENE
 	{
 		TITLE,
+		STAGESELECT,
 		GAME,
 		RESULT
 	};
@@ -332,14 +335,32 @@ private: // メンバ変数
 	int scene = TITLE;
 
 	float moveCountX;
+	float stagingCount;
 	float moveX = 0.05f;
 
-	float moveCountY;
-	float moveY = 0.02f;
+	bool stagingFlag = false;
+	float moveY = 0.01f;
 
 	bool addSpeedX = false;
 	bool subSpeedX = false;
 
 	bool addSpeedY = false;
 	bool subSpeedY = false;
+
+	enum TITLESCENE
+	{
+		WAITING,
+		STAGING,
+		MOVESCENE
+	};
+
+	int titleScene = WAITING;
+
+	XMFLOAT4 loadingColor;
+
+	bool changeColorFlag = false;
+	float changeColorTimer = 30.0f;
+
+	bool changeSceneFlag = false;
+	float changeSceneTimer = 100.0f;
 };

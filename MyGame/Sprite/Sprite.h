@@ -78,14 +78,23 @@ public: // メンバ関数
 	// 初期化
 	bool Initialize();
 
-	// 角度の設定
-	void SetRotation(float rotation);
-
 	// 座標の取得
 	const XMFLOAT2& GetPosition() { return position; }
 
 	// 座標の設定
 	void SetPosition(XMFLOAT2 position);
+
+	// 角度の取得
+	const float& GetRosition() { return rotation; }
+
+	// 角度の設定
+	void SetRotation(float rotation);
+
+	// 色の取得
+	const XMFLOAT4& GetColor() { return color; }
+
+	// 色の設定
+	void SetColor(XMFLOAT4 color);
 	
 	// サイズの設定
 	void SetSize(XMFLOAT2 size);

@@ -77,8 +77,6 @@ private: // 静的メンバ変数
 	static PipelineSet pipelineSet;
 	// カメラ
 	static Camera *camera;
-
-private:// 静的メンバ関数
 	
 public: // メンバ関数
 	// コンストラクタ

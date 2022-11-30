@@ -176,6 +176,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PostEffect\PostEffect.cpp" />
     <ClCompile Include="Sound\Sound.cpp" />
+    <ClCompile Include="Spline.cpp" />
     <ClCompile Include="Sprite\Sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -283,6 +284,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PostEffect\PostEffect.h" />
     <ClInclude Include="Sound\Sound.h" />
+    <ClInclude Include="Spline.h" />
     <ClInclude Include="Sprite\Sprite.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
