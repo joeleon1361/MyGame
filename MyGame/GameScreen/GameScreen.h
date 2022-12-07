@@ -116,6 +116,14 @@ public: // メンバ関数
 
 	void BossAttack();
 
+	void BossLeg1Attack();
+
+	void BossLeg2Attack();
+
+	void BossLeg3Attack();
+
+	void BossLeg4Attack();
+
 	void SplineCount();
 
 	// 当たり判定
@@ -156,6 +164,10 @@ private: // メンバ変数
 	ObjObject* objSkydome = nullptr;
 	ObjObject* objGround = nullptr;
 	ObjObject* objTitlePlayer = nullptr;
+
+	ObjObject* objStage1 = nullptr;
+	ObjObject* objStage2 = nullptr;
+	ObjObject* objStage3 = nullptr;
 
 	// プレイヤー関連
 	Player* player = nullptr;
@@ -317,6 +329,23 @@ private: // メンバ変数
 
 	// デスフラグ
 	bool bossDeathFlag = false;
+
+	enum BOSSPATTERN
+	{
+		STAY,
+		NORMAL,
+		BODYUP,
+		BODYDOWN,
+		BODYRIGHT,
+		BODYLEFT,
+		RUSH,
+		TYPE1
+	};
+
+	int bossPattern = STAY;
+
+	float moveValue = 0;
+
 #pragma endregion
 
 	XMFLOAT3 centerPosition;
@@ -351,11 +380,16 @@ private: // メンバ変数
 	bool stagingFlag = false;
 	float moveY = 0.01f;
 
+	float moveR = 1.0;
+
 	bool addSpeedX = false;
 	bool subSpeedX = false;
 
 	bool addSpeedY = false;
 	bool subSpeedY = false;
+
+	bool addAngleX = false;
+	bool subAngleX = false;
 
 	enum TITLESCENE
 	{
@@ -366,6 +400,9 @@ private: // メンバ変数
 
 	int titleScene = WAITING;
 
+	XMFLOAT3 TitlePlayerPosition;
+	XMFLOAT3 TitlePlayerRotation;
+
 	XMFLOAT4 loadingColor;
 
 	bool changeColorFlag = false;
@@ -373,4 +410,10 @@ private: // メンバ変数
 
 	bool changeSceneFlag = false;
 	float changeSceneTimer = 100.0f;
+
+	XMFLOAT3 stage1Position;
+	XMFLOAT3 stage2Position;
+	XMFLOAT3 stage3Position;
+
+	bool breakCameraFlag = false;
 };

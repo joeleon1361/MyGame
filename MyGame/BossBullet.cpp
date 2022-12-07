@@ -1,5 +1,7 @@
 #include "BossBullet.h"
 
+extern int cameraMode;
+
 using namespace DirectX;
 
 std::unique_ptr<BossBullet> BossBullet::Create(ObjModel* model, const XMFLOAT3 position, const XMFLOAT3 scale, const float velocity)
@@ -40,7 +42,22 @@ void BossBullet::Update()
 {
 	ObjObject::Update();
 
-	position.z -= velocity;
+	if (cameraMode == FRONT)
+	{
+		position.z -= velocity;
+	}
+	else if (cameraMode == RIGHT)
+	{
+		position.x -= velocity;
+	}
+	else if (cameraMode == BACK)
+	{
+		position.z += velocity;
+	}
+	else if (cameraMode == LEFT)
+	{
+		position.x += velocity;
+	}
 
 	if (--deathTimer <= 0)
 	{

@@ -1,5 +1,6 @@
 #pragma once
 #include "ObjObject.h"
+#include "GameScreen.h"
 
 class BossBullet :
     public ObjObject
@@ -35,6 +36,14 @@ private: // メンバ変数
 
 	// デスタイマー 
 	int32_t deathTimer = LifeTime;
+
+	enum CAMERAMODE
+	{
+		FRONT,
+		RIGHT,
+		BACK,
+		LEFT
+	};
 
 public:
 	// デスフラグ

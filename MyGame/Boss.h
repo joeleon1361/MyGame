@@ -17,6 +17,8 @@ public:
 	// ’e‚Ì”­ËŠÔŠu
 	static const int32_t ShotInterval = 60;
 
+	static const int32_t RushInterval = 20;
+
 public: // ƒƒ“ƒoŠÖ”
 // ‰Šú‰»
 	bool Initialize() override;
