@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="BossBullet.cpp" />
+    <ClCompile Include="BossTargetBullet.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Collider\Collision.cpp" />
@@ -257,6 +258,7 @@
   <ItemGroup>
     <ClInclude Include="Boss.h" />
     <ClInclude Include="BossBullet.h" />
+    <ClInclude Include="BossTargetBullet.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="Collider\BaseCollider.h" />

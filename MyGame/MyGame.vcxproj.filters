@@ -157,6 +157,9 @@
     <ClCompile Include="Spline.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="BossTargetBullet.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\FBX.hlsli">
@@ -294,5 +297,6 @@
     <ClInclude Include="Boss.h" />
     <ClInclude Include="BossBullet.h" />
     <ClInclude Include="Spline.h" />
+    <ClInclude Include="BossTargetBullet.h" />
   </ItemGroup>
 </Project>

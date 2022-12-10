@@ -674,6 +674,17 @@ void GameScreen::GameUpdate()
 			return bullet->GetDeathFlag();
 		}
 	);
+
+	for (std::unique_ptr<BossTargetBullet>& bullet : bossTargetBullets)
+	{
+		bullet->Update();
+	}
+
+	bossTargetBullets.remove_if([](std::unique_ptr<BossTargetBullet>& bullet)
+		{
+			return bullet->GetDeathFlag();
+		}
+	);
 #pragma endregion
 
 #pragma region ボス関連
@@ -1091,6 +1102,10 @@ void GameScreen::GameDraw()
 		bullet->Draw();
 	}
 
+	for (std::unique_ptr<BossTargetBullet>& bullet : bossTargetBullets)
+	{
+		bullet->Draw();
+	}
 
 	// objC->Draw();
 
@@ -1540,10 +1555,15 @@ void GameScreen::BossAttack()
 
 	//bulletVelocity* V;
 
-	std::unique_ptr<BossBullet> newBullet = std::make_unique<BossBullet>();
+	/*std::unique_ptr<BossBullet> newBullet = std::make_unique<BossBullet>();
 	newBullet = BossBullet::Create(modelBullet, bossPosition, bulletScale, bulletVelocity);
 
-	bossBullets.push_back(std::move(newBullet));
+	bossBullets.push_back(std::move(newBullet));*/
+
+	std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
+	newBullet = BossTargetBullet::Create(modelBullet, bossPosition, bulletScale, targetBulletVelocity);
+
+	bossTargetBullets.push_back(std::move(newBullet));
 }
 
 void GameScreen::BossLeg1Attack()

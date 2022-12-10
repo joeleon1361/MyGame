@@ -22,6 +22,7 @@
 #include "Bullet.h"
 #include "Boss.h"
 #include "BossBullet.h"
+#include "BossTargetBullet.h"
 
 #include "Spline.h"
 
@@ -38,6 +39,7 @@ class Player;
 class Bullet;
 class Boss;
 class BossBullet;
+class BossTargetBullet;
 
 // ゲームシーン
 class GameScreen
@@ -183,6 +185,8 @@ private: // メンバ変数
 
 	std::list<std::unique_ptr<BossBullet>>bossBullets;
 
+	std::list<std::unique_ptr<BossTargetBullet>>bossTargetBullets;
+
 	ObjObject* objCenter = nullptr;
 
 	FbxObject3d* testobject = nullptr;
@@ -231,7 +235,7 @@ private: // メンバ変数
 	XMFLOAT3 end = { -60.0f, 0.0f, -40.0f };
 	std::vector<XMFLOAT3> playerCheckPoint{ start, start, p2, p3, p4, p5, p6, p7, p8, p9, p10,
 		p11,p12, p13, p14, p15, p16, p17, p18, p19, p20, p21,p22, p23, p24, p25, p26, p27, p28,
-	p29, end, end};
+	p29, end, end };
 
 	// ボス制御点
 	XMFLOAT3 Bstart = { 0.0f, 40.0f, -30.0f };
@@ -345,6 +349,8 @@ private: // メンバ変数
 	int bossPattern = STAY;
 
 	float moveValue = 0;
+
+	XMFLOAT3 targetBulletVelocity = { 2.0,2.0,2.0 };
 
 #pragma endregion
 
