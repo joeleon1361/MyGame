@@ -726,7 +726,7 @@ void GameScreen::GameUpdate()
 		}
 		else if (bossRotation.x <= 0.0f)
 		{
-			bossPattern = NORMAL;
+			bossPattern = STAY;
 		}
 
 		break;
@@ -736,11 +736,29 @@ void GameScreen::GameUpdate()
 
 		if (bossBody->shotTimer <= 0)
 		{
-			BossLeg1Attack();
-			BossLeg2Attack();
-			BossLeg3Attack();
-			BossLeg4Attack();
+			if (rushOrder >= 4)
+			{
+				rushOrder = 0;
+			}
 
+			if (rushOrder == 0)
+			{
+				BossLeg1Attack();
+			}
+			if (rushOrder == 1)
+			{
+				BossLeg2Attack();
+			}
+			if (rushOrder == 2)
+			{
+				BossLeg4Attack();
+			}
+			if (rushOrder == 3)
+			{
+				BossLeg3Attack();
+			}
+
+			rushOrder += 1;
 			bossBody->shotTimer = bossBody->RushInterval;
 		}
 		break;
@@ -1557,34 +1575,34 @@ void GameScreen::BossAttack()
 
 void GameScreen::BossLeg1Attack()
 {
-	std::unique_ptr<BossBullet> newBullet = std::make_unique<BossBullet>();
-	newBullet = BossBullet::Create(modelBullet, bossLeg1WorldPosition, bulletScale, bulletVelocity);
+	std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
+	newBullet = BossTargetBullet::Create(modelBullet, bossLeg1WorldPosition, bulletScale, playerWorldPosition, bulletVelocity);
 
-	bossBullets.push_back(std::move(newBullet));
+	bossTargetBullets.push_back(std::move(newBullet));
 }
 
 void GameScreen::BossLeg2Attack()
 {
-	std::unique_ptr<BossBullet> newBullet = std::make_unique<BossBullet>();
-	newBullet = BossBullet::Create(modelBullet, bossLeg2WorldPosition, bulletScale, bulletVelocity);
+	std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
+	newBullet = BossTargetBullet::Create(modelBullet, bossLeg2WorldPosition, bulletScale, playerWorldPosition, bulletVelocity);
 
-	bossBullets.push_back(std::move(newBullet));
+	bossTargetBullets.push_back(std::move(newBullet));
 }
 
 void GameScreen::BossLeg3Attack()
 {
-	std::unique_ptr<BossBullet> newBullet = std::make_unique<BossBullet>();
-	newBullet = BossBullet::Create(modelBullet, bossLeg3WorldPosition, bulletScale, bulletVelocity);
+	std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
+	newBullet = BossTargetBullet::Create(modelBullet, bossLeg3WorldPosition, bulletScale, playerWorldPosition, bulletVelocity);
 
-	bossBullets.push_back(std::move(newBullet));
+	bossTargetBullets.push_back(std::move(newBullet));
 }
 
 void GameScreen::BossLeg4Attack()
 {
-	std::unique_ptr<BossBullet> newBullet = std::make_unique<BossBullet>();
-	newBullet = BossBullet::Create(modelBullet, bossLeg4WorldPosition, bulletScale, bulletVelocity);
+	std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
+	newBullet = BossTargetBullet::Create(modelBullet, bossLeg4WorldPosition, bulletScale, playerWorldPosition, bulletVelocity);
 
-	bossBullets.push_back(std::move(newBullet));
+	bossTargetBullets.push_back(std::move(newBullet));
 }
 
 void GameScreen::SplineCount()

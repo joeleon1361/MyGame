@@ -350,6 +350,8 @@ private: // メンバ変数
 
 	float moveValue = 0;
 
+	float rushOrder = 0;
+
 #pragma endregion
 
 	XMFLOAT3 centerPosition;

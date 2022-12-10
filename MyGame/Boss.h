@@ -17,7 +17,7 @@ public:
 	// ’e‚Ì”­ËŠÔŠu
 	static const int32_t ShotInterval = 60;
 
-	static const int32_t RushInterval = 20;
+	static const int32_t RushInterval = 10;
 
 public: // ƒƒ“ƒoŠÖ”
 // ‰Šú‰»
