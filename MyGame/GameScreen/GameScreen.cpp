@@ -1544,24 +1544,13 @@ void GameScreen::Attack()
 
 void GameScreen::BossAttack()
 {
-	//const float bulletSpeed = 1.0f;
-
-	//// 差分ベクトルを求める
-	//float X = playerPosition.x - bossPosition.x;
-	//float Y = playerPosition.y - bossPosition.y;
-	//float Z = playerPosition.z - bossPosition.z;
-
-	//float V = sqrtf(X * X + Y * Y + Z * Z);
-
-	//bulletVelocity* V;
-
 	/*std::unique_ptr<BossBullet> newBullet = std::make_unique<BossBullet>();
 	newBullet = BossBullet::Create(modelBullet, bossPosition, bulletScale, bulletVelocity);
 
 	bossBullets.push_back(std::move(newBullet));*/
 
 	std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-	newBullet = BossTargetBullet::Create(modelBullet, bossPosition, bulletScale, targetBulletVelocity);
+	newBullet = BossTargetBullet::Create(modelBullet, bossPosition, bulletScale, playerWorldPosition, bulletVelocity);
 
 	bossTargetBullets.push_back(std::move(newBullet));
 }

@@ -350,8 +350,6 @@ private: // メンバ変数
 
 	float moveValue = 0;
 
-	XMFLOAT3 targetBulletVelocity = { 2.0,2.0,2.0 };
-
 #pragma endregion
 
 	XMFLOAT3 centerPosition;
