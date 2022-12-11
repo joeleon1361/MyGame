@@ -317,7 +317,7 @@ void GameScreen::TitleUpdate()
 		break;
 
 	case TITLESCENE::STAGING:
-		stagingCount--;
+		stagingTimer--;
 
 		if (moveX >= 0)
 		{
@@ -328,7 +328,7 @@ void GameScreen::TitleUpdate()
 			moveX += 0.001;
 		}
 
-		if (stagingCount <= 0.0f)
+		if (stagingTimer <= 0.0f)
 		{
 			titleScene = MOVESCENE;
 			stagingFlag = true;
@@ -340,9 +340,9 @@ void GameScreen::TitleUpdate()
 
 		if (stagingFlag == true)
 		{
-			moveCountX--;
+			backTimer--;
 			moveX -= 0.005;
-			if (moveCountX <= 0.0f)
+			if (backTimer <= 0.0f)
 			{
 				stagingFlag = false;
 			}
@@ -459,8 +459,8 @@ void GameScreen::TitleInitialize()
 	camera->SetEye({ 0, 0, 10 });
 	camera->SetUp({ 0, 1, 0 });
 
-	moveCountX = 40.0f;
-	stagingCount = 60.0f;
+	backTimer = 40.0f;
+	stagingTimer = 60.0f;
 
 	moveX = 0.05f;
 
@@ -484,7 +484,7 @@ void GameScreen::TitleInitialize()
 
 void GameScreen::StageSelectUpdate()
 {
-	SkydomRot = objSkydome->GetRotation();
+	//SkydomRot = objSkydome->GetRotation();
 
 	stage1Position = objStage1->GetPosition();
 	stage2Position = objStage2->GetPosition();
@@ -609,14 +609,14 @@ void GameScreen::GameUpdate()
 {
 	if (startIndex >= 29)
 	{
+		ResultInitialize();
 		scene = RESULT;
-		startIndex = 1;
 	}
 
 	if (bossHp <= 0)
 	{
+		ResultInitialize();
 		scene = RESULT;
-		startIndex = 1;
 	}
 
 	playerPosition = player->GetPosition();
@@ -781,7 +781,7 @@ void GameScreen::GameUpdate()
 		
 		break;
 
-	case BOSSPATTERN::TYPE1:
+	case BOSSPATTERN::FOURWAYRUSH:
 
 		break;
 	}
@@ -1026,6 +1026,7 @@ void GameScreen::GameUpdate()
 
 
 #pragma endregion
+
 	// プレイヤー座標のセット
 	player->SetPosition(playerPosition);
 	player->SetRotation(playerRotation);
@@ -1198,10 +1199,10 @@ void GameScreen::GameInitialize()
 
 	// ボス関連
 	bossHp = 50;
-	bossLeg1Hp = 15;
-	bossLeg2Hp = 15;
-	bossLeg3Hp = 15;
-	bossLeg4Hp = 15;
+	bossLeg1Hp = 30;
+	bossLeg2Hp = 30;
+	bossLeg3Hp = 30;
+	bossLeg4Hp = 30;
 
 	bossLeg1Break = false;
 	bossLeg2Break = false;
@@ -1219,15 +1220,49 @@ void GameScreen::GameInitialize()
 
 	cameraMode = 0;
 
+	bossPattern = STAY;
+
+	rushOrder = 0;
+
+	shotFlag = false;
+
+	shotRate = 1.5f;
+
+	startIndex = 1;
+
 	startCount = GetTickCount();
 }
 
 void GameScreen::ResultUpdata()
 {
+	loadingColor = LoadingBG->GetColor();
+
 	if (input->TriggerKey(DIK_SPACE))
 	{
+		changeColorFlag = true;
+	}
+
+	if (changeColorFlag == true)
+	{
+		loadingColor.w += 0.05f;
+		changeSceneFlag = true;
+	}
+
+	if (changeSceneFlag == true)
+	{
+		changeSceneTimer--;
+	}
+
+	if (changeSceneTimer <= 0)
+	{
+		loadingColor.w = 0.0f;
+		TitleInitialize();
 		scene = TITLE;
 	}
+
+	LoadingBG->SetColor(loadingColor);
+
+	camera->Update();
 
 	// デバックテキスト
 	AllDebugText();
@@ -1271,6 +1306,8 @@ void GameScreen::ResultDraw()
 	//sprite1->Draw();
 	//sprite2->Draw();
 
+	LoadingBG->Draw();
+
 	// デバッグテキストの描画
 	debugText.DrawAll(cmdList);
 
@@ -1281,6 +1318,15 @@ void GameScreen::ResultDraw()
 
 void GameScreen::ResultInitialize()
 {
+	camera->SetTarget({ 0, 0, 0 });
+	camera->SetEye({ 0, 0, 0 });
+	camera->SetUp({ 0, 1, 0 });
+
+	changeColorFlag = false;
+	changeColorTimer = 30.0f;
+
+	changeSceneFlag = false;
+	changeSceneTimer = 100.0f;
 }
 
 void GameScreen::CreateHitParticles(XMFLOAT3 position)

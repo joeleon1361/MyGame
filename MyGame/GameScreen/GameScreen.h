@@ -295,8 +295,8 @@ private: // メンバ変数
 	XMFLOAT3 bulletScale = { 0.3f, 0.3f, 0.3f };
 	float bulletVelocity = 2.0f;
 
-	float shotRate;
-	bool shotFlag = true;
+	float shotRate = 1.5f;
+	bool shotFlag = false;
 #pragma endregion
 
 #pragma region ボス関連
@@ -343,7 +343,9 @@ private: // メンバ変数
 		BODYRIGHT,
 		BODYLEFT,
 		RUSH,
-		TYPE1
+		GUARDON,
+		GUARDOFF,
+		FOURWAYRUSH
 	};
 
 	int bossPattern = STAY;
@@ -379,8 +381,8 @@ private: // メンバ変数
 
 	int scene = TITLE;
 
-	float moveCountX = 40.0f;
-	float stagingCount = 60.0f;
+	float backTimer = 40.0f;
+	float stagingTimer = 60.0f;
 	float moveX = 0.05f;
 
 	bool stagingFlag = false;
