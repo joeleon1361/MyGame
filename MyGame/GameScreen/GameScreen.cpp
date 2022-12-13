@@ -78,12 +78,134 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 		return;
 	}
 
+	if (!Sprite::LoadTexture(5, L"Resources/Sprite/HpUI/Hp00UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(6, L"Resources/Sprite/HpUI/Hp01UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(7, L"Resources/Sprite/HpUI/Hp02UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(8, L"Resources/Sprite/HpUI/Hp03UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(9, L"Resources/Sprite/HpUI/Hp04UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(10, L"Resources/Sprite/HpUI/Hp05UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(11, L"Resources/Sprite/HpUI/Hp06UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(12, L"Resources/Sprite/HpUI/Hp07UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(13, L"Resources/Sprite/HpUI/Hp08UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(14, L"Resources/Sprite/HpUI/Hp09UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(15, L"Resources/Sprite/HpUI/Hp10UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(16, L"Resources/Sprite/HpUI/Hp11UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(17, L"Resources/Sprite/HpUI/Hp12UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(18, L"Resources/Sprite/HpUI/Hp13UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(19, L"Resources/Sprite/HpUI/Hp14UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(20, L"Resources/Sprite/HpUI/Hp15UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(21, L"Resources/Sprite/HpUI/Hp16UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(22, L"Resources/Sprite/HpUI/Hp17UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(23, L"Resources/Sprite/HpUI/Hp18UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(24, L"Resources/Sprite/HpUI/Hp19UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(25, L"Resources/Sprite/HpUI/Hp20UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(26, L"Resources/Sprite/GameFG.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(27, L"Resources/Sprite/TitleStartUI.png")) {
+		assert(0);
+		return;
+	}
+
 	// スプライト生成
 	TitleBG = Sprite::Create(1, { 0.0f,0.0f });
 	ResultBG = Sprite::Create(2, { 0.0f,0.0f });
 	TitleLogo = Sprite::Create(1, { 100.0f,100.0f }, { 1, 1, 1, 1 });
 	LoadingBG = Sprite::Create(3, { 0.0f,0.0f }, { 1,1,1,0 });
 	StageSelectBG = Sprite::Create(4, { 0.0f,0.0f });
+	GameFG = Sprite::Create(26, { 0.0f,0.0f });
+	TitleStartUI = Sprite::Create(27, { 310.0f,630.0f });
+
+	for (int i = 0; i < 21; i++)
+	{
+		playerHpUI[i] = Sprite::Create((i + 5), { 800.0f, 525.0f });
+	}
 
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
@@ -207,6 +329,8 @@ void GameScreen::TitleUpdate()
 
 	loadingColor = LoadingBG->GetColor();
 
+	titleStartUIColor = TitleStartUI->GetColor();
+
 	TitlePlayerPosition.x += moveX;
 	TitlePlayerPosition.y += moveY;
 
@@ -309,8 +433,16 @@ void GameScreen::TitleUpdate()
 
 		}*/
 
+		titleStartUIColor.w -= 0.01f;
+
+		if (titleStartUIColor.w <= 0.3f)
+		{
+			titleStartUIColor.w = 1.0f;
+		}
+
 		if (input->TriggerKey(DIK_SPACE))
 		{
+			titleStartUIColor.w = 1.0f;
 			titleScene = STAGING;
 		}
 
@@ -318,6 +450,7 @@ void GameScreen::TitleUpdate()
 
 	case TITLESCENE::STAGING:
 		stagingTimer--;
+		titleStartUIColor.w -= 0.02f;
 
 		if (moveX >= 0)
 		{
@@ -388,6 +521,8 @@ void GameScreen::TitleUpdate()
 
 	LoadingBG->SetColor(loadingColor);
 
+	TitleStartUI->SetColor(titleStartUIColor);
+
 	camera->Update();
 	objSkydome->Update();
 	objTitlePlayer->Update();
@@ -437,6 +572,8 @@ void GameScreen::TitleDraw()
 	// 描画
 	TitleLogo->Draw();
 
+	TitleStartUI->Draw();
+
 	LoadingBG->Draw();
 
 	// デバッグテキストの描画
@@ -458,6 +595,8 @@ void GameScreen::TitleInitialize()
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 0, 10 });
 	camera->SetUp({ 0, 1, 0 });
+
+	titleStartUIColor.w = 1.0f;
 
 	backTimer = 40.0f;
 	stagingTimer = 60.0f;
@@ -773,7 +912,7 @@ void GameScreen::GameUpdate()
 		{
 			bossRotation.y += 1.0f;
 		}
-		
+
 		break;
 
 	case BOSSPATTERN::BODYLEFT:
@@ -782,7 +921,7 @@ void GameScreen::GameUpdate()
 		{
 			bossRotation.y -= 1.0f;
 		}
-		
+
 		break;
 
 	case BOSSPATTERN::FOURWAYRUSH:
@@ -846,6 +985,7 @@ void GameScreen::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossLeg1WorldPosition, 0.8f, 0.6f) == true)
 			{
+				bossHp -= 1;
 				bossLeg1Hp -= 1;
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -879,6 +1019,7 @@ void GameScreen::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossLeg2WorldPosition, 0.8f, 0.6f) == true)
 			{
+				bossHp -= 1;
 				bossLeg2Hp -= 1;
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -912,6 +1053,7 @@ void GameScreen::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossLeg3WorldPosition, 0.8f, 0.6f) == true)
 			{
+				bossHp -= 1;
 				bossLeg3Hp -= 1;
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -945,6 +1087,7 @@ void GameScreen::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossLeg4WorldPosition, 0.8f, 0.6f) == true)
 			{
+				bossHp -= 1;
 				bossLeg4Hp -= 1;
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -995,7 +1138,7 @@ void GameScreen::GameUpdate()
 	{
 		SplineCount();
 	}
-	
+
 	if (startIndex == 12)
 	{
 		//railCountFlag = false;
@@ -1084,6 +1227,13 @@ void GameScreen::GameUpdate()
 	// カメラの更新
 	camera->Update();
 
+	// ボス関連の更新
+	bossBody->Update();
+	bossLeg1->Update();
+	bossLeg2->Update();
+	bossLeg3->Update();
+	bossLeg4->Update();
+
 	// パーティクルの更新
 	particleMan->Update();
 
@@ -1102,12 +1252,7 @@ void GameScreen::GameUpdate()
 	// プレイヤーの更新
 	player->Update();
 
-	// ボス関連の更新
-	bossBody->Update();
-	bossLeg1->Update();
-	bossLeg2->Update();
-	bossLeg3->Update();
-	bossLeg4->Update();
+
 
 	collisionManager->CheckAllCollisions();
 
@@ -1193,8 +1338,95 @@ void GameScreen::GameDraw()
 	Sprite::PreDraw(cmdList);
 
 	// 描画
-	//sprite1->Draw();
-	//sprite2->Draw();
+	playerHpUI[0]->Draw();
+	switch (playerHp)
+	{
+	case 0:
+		playerHpUI[0]->Draw();
+		break;
+
+	case 1:
+		playerHpUI[1]->Draw();
+		break;
+
+	case 2:
+		playerHpUI[2]->Draw();
+		break;
+
+	case 3:
+		playerHpUI[3]->Draw();
+		break;
+
+	case 4:
+		playerHpUI[4]->Draw();
+		break;
+
+	case 5:
+		playerHpUI[5]->Draw();
+		break;
+
+	case 6:
+		playerHpUI[6]->Draw();
+		break;
+
+	case 7:
+		playerHpUI[7]->Draw();
+		break;
+
+	case 8:
+		playerHpUI[8]->Draw();
+		break;
+
+	case 9:
+		playerHpUI[9]->Draw();
+		break;
+
+	case 10:
+		playerHpUI[10]->Draw();
+		break;
+
+	case 11:
+		playerHpUI[11]->Draw();
+		break;
+
+	case 12:
+		playerHpUI[12]->Draw();
+		break;
+
+	case 13:
+		playerHpUI[13]->Draw();
+		break;
+
+	case 14:
+		playerHpUI[14]->Draw();
+		break;
+
+	case 15:
+		playerHpUI[15]->Draw();
+		break;
+
+	case 16:
+		playerHpUI[16]->Draw();
+		break;
+
+	case 17:
+		playerHpUI[17]->Draw();
+		break;
+
+	case 18:
+		playerHpUI[18]->Draw();
+		break;
+
+	case 19:
+		playerHpUI[19]->Draw();
+		break;
+
+	case 20:
+		playerHpUI[20]->Draw();
+		break;
+	}
+
+	GameFG->Draw();
 
 	// デバッグテキストの描画
 	debugText.DrawAll(cmdList);
@@ -1212,7 +1444,7 @@ void GameScreen::GameInitialize()
 	player->SetScale({ 1.0f, 1.0f, 1.0f });
 
 	objSkydome->SetPosition({ 0.0f, 0.0f, 0.0f });
-	objSkydome->SetRotation({0.0f,0.0f,0.0f,});
+	objSkydome->SetRotation({ 0.0f,0.0f,0.0f, });
 
 	objCenter->SetPosition({ 0,0,0 });
 	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
@@ -1228,7 +1460,7 @@ void GameScreen::GameInitialize()
 	camera->SetUp({ 0, 1, 0 });
 
 	// プレイヤー関連
-	playerHp = 30;
+	playerHp = 20;
 
 	// ボス関連
 	bossHp = 50;
@@ -1585,7 +1817,7 @@ void GameScreen::CameraSwitching()
 	cameraBackPosition = { centerPosition.x, centerPosition.y, centerPosition.z + 10 };
 	cameraLeftPosition = { centerPosition.x + 10, centerPosition.y, centerPosition.z };
 
-	
+
 	if (cameraMode == 0)
 	{
 		playerPosition.z = 0;

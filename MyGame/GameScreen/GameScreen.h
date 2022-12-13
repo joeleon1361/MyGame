@@ -33,6 +33,7 @@
 #include <DirectXMath.h>
 #include <memory>
 #include <list>
+#include <array>
 
 class CollisionManager;
 class Player;
@@ -151,10 +152,14 @@ private: // メンバ変数
 	Sprite* TitleBG = nullptr;
 	Sprite* ResultBG = nullptr;
 	Sprite* StageSelectBG = nullptr;
+	Sprite* GameFG = nullptr;
+	Sprite* TitleStartUI = nullptr;
 
 	Sprite* TitleLogo = nullptr;
 
 	Sprite* LoadingBG = nullptr;
+
+	std::array<Sprite*, 21> playerHpUI{ {} };
 
 	ParticleManager* particleMan = nullptr;
 
@@ -452,4 +457,6 @@ private: // メンバ変数
 
 	// スピード
 	float specialBulletSpeed = 0;
+
+	XMFLOAT4 titleStartUIColor;
 };
