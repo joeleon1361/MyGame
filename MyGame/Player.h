@@ -62,7 +62,7 @@ private: // ƒƒ“ƒo•Ï”
 	const float LimitXZ = 18.0f;
 	const float LimitY = 10.0f;
 
-	float playerVelocity = 0.3f;
+	float playerVelocity = 0.4f;
 
 	float dodgeRollVelocity = 0.0f;
 	float dodgeRollRotation = 0.0f;

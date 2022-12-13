@@ -126,6 +126,8 @@ public: // メンバ関数
 
 	void BossLeg4Attack();
 
+	void BossSpecialAttack();
+
 	void SplineCount();
 
 	// 当たり判定
@@ -232,6 +234,16 @@ private: // メンバ変数
 	XMFLOAT3 p27 = { -60.0f, 0.0f, -10.0f };
 	XMFLOAT3 p28 = { -60.0f, 0.0f, -20.0f };
 	XMFLOAT3 p29 = { -60.0f, 0.0f, -30.0f };
+	XMFLOAT3 p30 = { -60.0f, 0.0f, -40.0f };
+	XMFLOAT3 p31 = { -60.0f, 0.0f, -40.0f };
+	XMFLOAT3 p32 = { -60.0f, 0.0f, -40.0f };
+	XMFLOAT3 p33 = { -60.0f, 0.0f, -40.0f };
+	XMFLOAT3 p34 = { -60.0f, 0.0f, -40.0f };
+	XMFLOAT3 p35 = { -60.0f, 0.0f, -40.0f };
+	XMFLOAT3 p36 = { -60.0f, 0.0f, -40.0f };
+	XMFLOAT3 p37 = { -60.0f, 0.0f, -40.0f };
+	XMFLOAT3 p38 = { -60.0f, 0.0f, -40.0f };
+	XMFLOAT3 p39 = { -60.0f, 0.0f, -40.0f };
 	XMFLOAT3 end = { -60.0f, 0.0f, -40.0f };
 	std::vector<XMFLOAT3> playerCheckPoint{ start, start, p2, p3, p4, p5, p6, p7, p8, p9, p10,
 		p11,p12, p13, p14, p15, p16, p17, p18, p19, p20, p21,p22, p23, p24, p25, p26, p27, p28,
@@ -291,9 +303,11 @@ private: // メンバ変数
 
 	XMFLOAT3 playerWorldPosition;
 
+	int playerHp;
+
 	// 弾関連
 	XMFLOAT3 bulletScale = { 0.3f, 0.3f, 0.3f };
-	float bulletVelocity = 2.0f;
+	float bulletVelocity = 1.5f;
 
 	float shotRate = 1.5f;
 	bool shotFlag = false;
@@ -313,6 +327,8 @@ private: // メンバ変数
 	XMFLOAT3 bossLeg2WorldPosition;
 	XMFLOAT3 bossLeg3WorldPosition;
 	XMFLOAT3 bossLeg4WorldPosition;
+
+	XMFLOAT3 bossLeg1Velocity = { 0,0,0 };
 
 	int bossHp;
 	int bossLeg1Hp;
@@ -424,4 +440,16 @@ private: // メンバ変数
 	XMFLOAT3 stage3Position;
 
 	bool breakCameraFlag = false;
+
+	bool railCountFlag = true;
+
+	// スペシャル攻撃
+	// 弾のサイズ
+	XMFLOAT3 specialBulletScale = { 0.0f,0.0f,0.0f };
+
+	// 生成位置
+	XMFLOAT3 specialBulletPosition;
+
+	// スピード
+	float specialBulletSpeed = 0;
 };

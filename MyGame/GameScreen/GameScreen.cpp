@@ -643,7 +643,7 @@ void GameScreen::GameUpdate()
 	bossLeg3Position = bossLeg3->GetPosition();
 	bossLeg4Position = bossLeg4->GetPosition();
 
-	//
+	specialBulletPosition = { bossPosition.x , bossPosition.y - 5, bossPosition.z };
 
 	CameraSwitching();
 	//CreateParticles(bossPosition);
@@ -664,22 +664,26 @@ void GameScreen::GameUpdate()
 		}
 	);
 
+	// ボスの弾を更新
 	for (std::unique_ptr<BossBullet>& bullet : bossBullets)
 	{
 		bullet->Update();
 	}
 
+	// ボスの弾を消去
 	bossBullets.remove_if([](std::unique_ptr<BossBullet>& bullet)
 		{
 			return bullet->GetDeathFlag();
 		}
 	);
 
+	// ボスの狙い弾を更新
 	for (std::unique_ptr<BossTargetBullet>& bullet : bossTargetBullets)
 	{
 		bullet->Update();
 	}
 
+	// ボスの狙い弾を消去
 	bossTargetBullets.remove_if([](std::unique_ptr<BossTargetBullet>& bullet)
 		{
 			return bullet->GetDeathFlag();
@@ -782,6 +786,7 @@ void GameScreen::GameUpdate()
 		break;
 
 	case BOSSPATTERN::FOURWAYRUSH:
+		BossSpecialAttack();
 
 		break;
 	}
@@ -795,6 +800,10 @@ void GameScreen::GameUpdate()
 	{
 		moveValue = 90.0f;
 		bossPattern = BODYLEFT;
+	}
+	else if (startIndex == 12)
+	{
+		//bossPattern = FOURWAYRUSH;
 	}
 	else if (startIndex == 14)
 	{
@@ -810,7 +819,7 @@ void GameScreen::GameUpdate()
 		bossPattern = BODYDOWN;
 	}
 
-	// 当たり判定
+	// ボス本体の当たり判定
 	if (bossFlag == true)
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
@@ -830,7 +839,7 @@ void GameScreen::GameUpdate()
 		bossFlag = false;
 	}
 
-	// 当たり判定
+	// ボス部位1の当たり判定
 	if (bossLeg1Flag == true)
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
@@ -863,7 +872,7 @@ void GameScreen::GameUpdate()
 		bossLeg1Flag = false;
 	}
 
-	// 当たり判定
+	// ボス部位2の当たり判定
 	if (bossLeg2Flag == true)
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
@@ -896,7 +905,7 @@ void GameScreen::GameUpdate()
 		bossLeg2Flag = false;
 	}
 
-	// 当たり判定
+	// ボス部位3の当たり判定
 	if (bossLeg3Flag == true)
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
@@ -929,7 +938,7 @@ void GameScreen::GameUpdate()
 		bossLeg3Flag = false;
 	}
 
-	// 当たり判定
+	// ボス部位4の当たり判定
 	if (bossLeg4Flag == true)
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
@@ -960,6 +969,19 @@ void GameScreen::GameUpdate()
 		bossLeg4Break = false;
 		bossLeg4Flag = false;
 	}
+
+	// プレイヤーの当たり判定
+	for (std::unique_ptr<BossTargetBullet>& bullet : bossTargetBullets)
+	{
+		if (OnCollision(bullet->GetPosition(), playerWorldPosition, 0.8f, 0.6f) == true)
+		{
+			playerHp -= 1;
+			bullet->deathFlag = true;
+			// パーティクル生成
+			CreateHitParticles(playerWorldPosition);
+		}
+	}
+
 #pragma endregion
 
 #pragma region スプライン曲線関係
@@ -969,7 +991,15 @@ void GameScreen::GameUpdate()
 		startIndex = 1;
 	}
 
-	SplineCount();
+	if (railCountFlag == true)
+	{
+		SplineCount();
+	}
+	
+	if (startIndex == 12)
+	{
+		//railCountFlag = false;
+	}
 
 #pragma endregion
 
@@ -1196,6 +1226,9 @@ void GameScreen::GameInitialize()
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 0, 10 });
 	camera->SetUp({ 0, 1, 0 });
+
+	// プレイヤー関連
+	playerHp = 30;
 
 	// ボス関連
 	bossHp = 50;
@@ -1514,6 +1547,12 @@ void GameScreen::GameDebugText()
 		<< bossLeg4Hp << ")";
 	debugText.Print(BossLeg4Hp.str(), 50, 110, 1.0f);
 
+	std::ostringstream PlayerHp;
+	PlayerHp << "PlayerHp:("
+		<< std::fixed << std::setprecision(2)
+		<< playerHp << ")";
+	debugText.Print(PlayerHp.str(), 50, 130, 1.0f);
+
 	// プレイヤーの回避関連
 	/*std::ostringstream DodgeRollFlag;
 	DodgeRollFlag << "DodgeRollFlag:("
@@ -1545,8 +1584,8 @@ void GameScreen::CameraSwitching()
 	cameraRightPosition = { centerPosition.x - 10, centerPosition.y, centerPosition.z };
 	cameraBackPosition = { centerPosition.x, centerPosition.y, centerPosition.z + 10 };
 	cameraLeftPosition = { centerPosition.x + 10, centerPosition.y, centerPosition.z };
-	//CameraPos = lerp(cameraFrontPosition, cameraRightPosition, timeRate);
 
+	
 	if (cameraMode == 0)
 	{
 		playerPosition.z = 0;
@@ -1647,6 +1686,14 @@ void GameScreen::BossLeg4Attack()
 {
 	std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
 	newBullet = BossTargetBullet::Create(modelBullet, bossLeg4WorldPosition, bulletScale, playerWorldPosition, bulletVelocity);
+
+	bossTargetBullets.push_back(std::move(newBullet));
+}
+
+void GameScreen::BossSpecialAttack()
+{
+	std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
+	newBullet = BossTargetBullet::Create(modelBullet, specialBulletPosition, bulletScale, playerWorldPosition, specialBulletSpeed);
 
 	bossTargetBullets.push_back(std::move(newBullet));
 }
