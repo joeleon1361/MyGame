@@ -198,7 +198,7 @@ private: // メンバ変数
 
 	FbxObject3d* testobject = nullptr;
 
-	// カメラ関連
+#pragma region カメラ関連
 	enum CAMERAMODE
 	{
 		FRONT,
@@ -206,6 +206,11 @@ private: // メンバ変数
 		BACK,
 		LEFT
 	};
+
+	bool breakCameraFlag = false;
+#pragma endregion
+
+	bool railCountFlag = true;
 
 #pragma region スプライン曲線関連
 	// スプライン曲線関連
@@ -240,19 +245,19 @@ private: // メンバ変数
 	XMFLOAT3 p28 = { -60.0f, 0.0f, -20.0f };
 	XMFLOAT3 p29 = { -60.0f, 0.0f, -30.0f };
 	XMFLOAT3 p30 = { -60.0f, 0.0f, -40.0f };
-	XMFLOAT3 p31 = { -60.0f, 0.0f, -40.0f };
-	XMFLOAT3 p32 = { -60.0f, 0.0f, -40.0f };
-	XMFLOAT3 p33 = { -60.0f, 0.0f, -40.0f };
-	XMFLOAT3 p34 = { -60.0f, 0.0f, -40.0f };
-	XMFLOAT3 p35 = { -60.0f, 0.0f, -40.0f };
-	XMFLOAT3 p36 = { -60.0f, 0.0f, -40.0f };
-	XMFLOAT3 p37 = { -60.0f, 0.0f, -40.0f };
-	XMFLOAT3 p38 = { -60.0f, 0.0f, -40.0f };
-	XMFLOAT3 p39 = { -60.0f, 0.0f, -40.0f };
-	XMFLOAT3 end = { -60.0f, 0.0f, -40.0f };
+	XMFLOAT3 p31 = { -50.0f, 0.0f, -40.0f };
+	XMFLOAT3 p32 = { -40.0f, 0.0f, -40.0f };
+	XMFLOAT3 p33 = { -30.0f, 0.0f, -40.0f };
+	XMFLOAT3 p34 = { -20.0f, 0.0f, -40.0f };
+	XMFLOAT3 p35 = { -10.0f, 0.0f, -40.0f };
+	XMFLOAT3 p36 = { 0.0f, 0.0f, -40.0f };
+	XMFLOAT3 p37 = { 10.0f, 0.0f, -40.0f };
+	XMFLOAT3 p38 = { 20.0f, 0.0f, -40.0f };
+	XMFLOAT3 p39 = { 30.0f, 0.0f, -40.0f };
+	XMFLOAT3 end = { 40.0f, 0.0f, -40.0f };
 	std::vector<XMFLOAT3> playerCheckPoint{ start, start, p2, p3, p4, p5, p6, p7, p8, p9, p10,
 		p11,p12, p13, p14, p15, p16, p17, p18, p19, p20, p21,p22, p23, p24, p25, p26, p27, p28,
-	p29, end, end };
+	p29,p30,p31,p32, p33, p34, p35, p36, p37, p38,p39, end, end };
 
 	// ボス制御点
 	XMFLOAT3 Bstart = { 0.0f, 40.0f, -30.0f };
@@ -282,12 +287,22 @@ private: // メンバ変数
 	XMFLOAT3 Bp25 = { -60.0f, 0.0f, -10.0f };
 	XMFLOAT3 Bp26 = { -50.0f, 5.0f, -20.0f };
 	XMFLOAT3 Bp27 = { -60.0f, 0.0f, -30.0f };
-	XMFLOAT3 Bp28 = { -65.0f, -5.0f, -40.0f };
-	XMFLOAT3 Bp29 = { -60.0f, 0.0f, -50.0f };
-	XMFLOAT3 Bend = { -60.0f, 5.0f, -60.0f };
+	XMFLOAT3 Bp28 = { -65.0f, 0.0f, -40.0f };
+	XMFLOAT3 Bp29 = { -60.0f, 15.0f, -40.0f };
+	XMFLOAT3 Bp30 = { -50.0f, 0.0f, -40.0f };
+	XMFLOAT3 Bp31 = { -40.0f, 0.0f, -40.0f };
+	XMFLOAT3 Bp32 = { -30.0f, 0.0f, -40.0f };
+	XMFLOAT3 Bp33 = { -20.0f, 0.0f, -40.0f };
+	XMFLOAT3 Bp34 = { -10.0f, 0.0f, -40.0f };
+	XMFLOAT3 Bp35 = { 0.0f, 0.0f, -40.0f };
+	XMFLOAT3 Bp36 = { 10.0f, 0.0f, -40.0f };
+	XMFLOAT3 Bp37 = { 20.0f, 0.0f, -40.0f };
+	XMFLOAT3 Bp38 = { 30.0f, 0.0f, -40.0f };
+	XMFLOAT3 Bp39 = { 40.0f, 0.0f, -40.0f };
+	XMFLOAT3 Bend = { 50.0f, 0.0f, -40.0f };
 	std::vector<XMFLOAT3> bossCheckPoint{ Bstart, Bstart, Bp2, Bp3, Bp4, Bp5, Bp6, Bp7, Bp8, Bp9, Bp10,
 		Bp11,Bp12, Bp13, Bp14, Bp15, Bp16, Bp17, Bp18, Bp19, Bp20, Bp21,Bp22, Bp23, Bp24, Bp25, Bp26, Bp27, Bp28,
-	Bp29, Bend, Bend };
+	Bp29,Bp30,Bp31,Bp32, Bp33, Bp34, Bp35, Bp36, Bp37, Bp38,Bp39,Bend, Bend };
 
 	size_t startIndex = 1;
 
@@ -341,16 +356,17 @@ private: // メンバ変数
 	int bossLeg3Hp;
 	int bossLeg4Hp;
 
-	int bossLeg1Break = false;
-	int bossLeg2Break = false;
-	int bossLeg3Break = false;
-	int bossLeg4Break = false;
+	bool bossBreak = false;
+	bool bossLeg1Break = false;
+	bool bossLeg2Break = false;
+	bool bossLeg3Break = false;
+	bool bossLeg4Break = false;
 
-	int bossFlag = true;
-	int bossLeg1Flag = true;
-	int bossLeg2Flag = true;
-	int bossLeg3Flag = true;
-	int bossLeg4Flag = true;
+	bool bossFlag = true;
+	bool bossLeg1Flag = true;
+	bool bossLeg2Flag = true;
+	bool bossLeg3Flag = true;
+	bool bossLeg4Flag = true;
 
 	// デスフラグ
 	bool bossDeathFlag = false;
@@ -375,6 +391,16 @@ private: // メンバ変数
 
 	float rushOrder = 0;
 
+	// スペシャル攻撃
+	// 弾のサイズ
+	XMFLOAT3 specialBulletScale = { 0.0f,0.0f,0.0f };
+
+	// 生成位置
+	XMFLOAT3 specialBulletPosition;
+
+	// スピード
+	float specialBulletSpeed = 0;
+
 #pragma endregion
 
 	XMFLOAT3 centerPosition;
@@ -386,12 +412,10 @@ private: // メンバ変数
 	XMFLOAT3 cameraBackPosition;
 	XMFLOAT3 cameraLeftPosition;
 
-	float cameraTimeRate;
-
 	XMFLOAT3 SkydomPos;
 	XMFLOAT3 SkydomRot;
 
-	// シーン遷移関連
+#pragma region シーン遷移関連
 	enum SCENE
 	{
 		TITLE,
@@ -402,14 +426,36 @@ private: // メンバ変数
 
 	int scene = TITLE;
 
+	XMFLOAT4 loadingColor;
+
+	bool changeColorFlag = false;
+	float changeColorTimer = 30.0f;
+
+	bool changeSceneFlag = false;
+	float changeSceneTimer = 100.0f;
+#pragma endregion
+
+#pragma region ステージセレクト関連
+	XMFLOAT3 stage1Position;
+	XMFLOAT3 stage2Position;
+	XMFLOAT3 stage3Position;
+#pragma endregion
+
+#pragma region タイトル画面で使う変数
+	XMFLOAT3 TitlePlayerPosition;
+	XMFLOAT3 TitlePlayerRotation;
+
+	XMFLOAT4 titleStartUIColor;
+
+	int titleScene = WAITING;
+
 	float backTimer = 40.0f;
 	float stagingTimer = 60.0f;
-	float moveX = 0.05f;
 
 	bool stagingFlag = false;
-	float moveY = 0.01f;
 
-	float moveR = 1.0;
+	float moveY = 0.01f;
+	float moveX = 0.05f;
 
 	bool addSpeedX = false;
 	bool subSpeedX = false;
@@ -426,37 +472,5 @@ private: // メンバ変数
 		STAGING,
 		MOVESCENE
 	};
-
-	int titleScene = WAITING;
-
-	XMFLOAT3 TitlePlayerPosition;
-	XMFLOAT3 TitlePlayerRotation;
-
-	XMFLOAT4 loadingColor;
-
-	bool changeColorFlag = false;
-	float changeColorTimer = 30.0f;
-
-	bool changeSceneFlag = false;
-	float changeSceneTimer = 100.0f;
-
-	XMFLOAT3 stage1Position;
-	XMFLOAT3 stage2Position;
-	XMFLOAT3 stage3Position;
-
-	bool breakCameraFlag = false;
-
-	bool railCountFlag = true;
-
-	// スペシャル攻撃
-	// 弾のサイズ
-	XMFLOAT3 specialBulletScale = { 0.0f,0.0f,0.0f };
-
-	// 生成位置
-	XMFLOAT3 specialBulletPosition;
-
-	// スピード
-	float specialBulletSpeed = 0;
-
-	XMFLOAT4 titleStartUIColor;
+#pragma endregion
 };

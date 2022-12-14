@@ -402,37 +402,6 @@ void GameScreen::TitleUpdate()
 
 		}
 
-		/*if (TitlePlayerRotation.x >= 8.0f)
-		{
-			subAngleX = true;
-		}
-
-		if (TitlePlayerRotation.x <= -8.0f)
-		{
-			addAngleX = true;
-		}
-
-		if (subAngleX == true)
-		{
-			moveR -= 0.1;
-
-			if (moveR <= -1.0)
-			{
-				subAngleX = false;
-			}
-
-		}
-		if (addAngleX == true)
-		{
-			moveR += 0.1;
-
-			if (moveR >= 1.0)
-			{
-				addAngleX = false;
-			}
-
-		}*/
-
 		titleStartUIColor.w -= 0.01f;
 
 		if (titleStartUIColor.w <= 0.3f)
@@ -440,7 +409,7 @@ void GameScreen::TitleUpdate()
 			titleStartUIColor.w = 1.0f;
 		}
 
-		if (input->TriggerKey(DIK_SPACE))
+		if (input->TriggerKey(DIK_SPACE) || input->TriggerKey(DIK_W) || input->TriggerKey(DIK_A) || input->TriggerKey(DIK_S) || input->TriggerKey(DIK_D))
 		{
 			titleStartUIColor.w = 1.0f;
 			titleScene = STAGING;
@@ -507,9 +476,8 @@ void GameScreen::TitleUpdate()
 
 		if (changeSceneTimer <= 0)
 		{
-			loadingColor.w = 0.0f;
-			StageSelectInitialize();
-			scene = STAGESELECT;
+			GameInitialize();
+			scene = GAME;
 		}
 
 		break;
@@ -529,7 +497,7 @@ void GameScreen::TitleUpdate()
 
 	// デバックテキスト
 	AllDebugText();
-	TitleDebugText();
+	//TitleDebugText();
 }
 
 void GameScreen::TitleDraw()
@@ -596,6 +564,8 @@ void GameScreen::TitleInitialize()
 	camera->SetEye({ 0, 0, 10 });
 	camera->SetUp({ 0, 1, 0 });
 
+	loadingColor.w = 0.0f;
+
 	titleStartUIColor.w = 1.0f;
 
 	backTimer = 40.0f;
@@ -649,7 +619,6 @@ void GameScreen::StageSelectUpdate()
 
 	if (changeSceneTimer <= 0)
 	{
-		loadingColor.w = 0.0f;
 		GameInitialize();
 		scene = GAME;
 	}
@@ -737,6 +706,8 @@ void GameScreen::StageSelectInitialize()
 	camera->SetEye({ 0, 50, 100 });
 	camera->SetUp({ 0, 1, 0 });
 
+	loadingColor.w = 0.0f;
+
 	changeColorFlag = false;
 	changeColorTimer = 30.0f;
 
@@ -746,16 +717,19 @@ void GameScreen::StageSelectInitialize()
 
 void GameScreen::GameUpdate()
 {
-	if (startIndex >= 29)
+	if (startIndex >= 39)
 	{
-		ResultInitialize();
-		scene = RESULT;
+		changeColorFlag = true;
 	}
 
-	if (bossHp <= 0)
+	if (bossFlag == false)
 	{
-		ResultInitialize();
-		scene = RESULT;
+		changeColorFlag = true;
+	}
+
+	if (playerHp <= 0)
+	{
+		changeColorFlag = true;
 	}
 
 	playerPosition = player->GetPosition();
@@ -769,7 +743,14 @@ void GameScreen::GameUpdate()
 	SkydomPos = objSkydome->GetPosition();
 	SkydomRot = objSkydome->GetRotation();
 
-	bossPosition = SplinePosition(bossCheckPoint, startIndex, timeRate);
+	if (bossBreak == false)
+	{
+		bossPosition = SplinePosition(bossCheckPoint, startIndex, timeRate);
+	}
+	else if (bossBreak == true)
+	{
+		bossPosition = bossBody->GetPosition();
+	}
 	bossRotation = bossBody->GetRotation();
 
 	/*centerPosition = objCenter->GetPosition();
@@ -786,6 +767,26 @@ void GameScreen::GameUpdate()
 
 	CameraSwitching();
 	//CreateParticles(bossPosition);
+
+	loadingColor = LoadingBG->GetColor();
+
+	if (changeColorFlag == true)
+	{
+		loadingColor.w += 0.05f;
+		changeSceneFlag = true;
+	}
+
+	if (changeSceneFlag == true)
+	{
+		changeSceneTimer--;
+	}
+
+	if (changeSceneTimer <= 0)
+	{
+		loadingColor.w = 0.0f;
+		ResultInitialize();
+		scene = RESULT;
+	}
 
 #pragma region 弾関連
 	Attack();
@@ -957,6 +958,11 @@ void GameScreen::GameUpdate()
 	{
 		bossPattern = BODYDOWN;
 	}
+	else if (startIndex == 29)
+	{
+		moveValue = 270.0f;
+		bossPattern = BODYLEFT;
+	}
 
 	// ボス本体の当たり判定
 	if (bossFlag == true)
@@ -975,7 +981,24 @@ void GameScreen::GameUpdate()
 
 	if (bossHp <= 0)
 	{
+		bossBreak = true;
+	}
+
+	if (bossBreak == true)
+	{
+		bossPosition.y -= 0.2f;
+		CreateBossParticles(bossPosition);
+	}
+
+	if (bossPosition.y <= -20.0f)
+	{
+		bossBreak == false;
+
 		bossFlag = false;
+		bossLeg1Flag == false;
+		bossLeg2Flag == false;
+		bossLeg3Flag == false;
+		bossLeg4Flag == false;
 	}
 
 	// ボス部位1の当たり判定
@@ -1224,6 +1247,8 @@ void GameScreen::GameUpdate()
 	bossLeg3->SetPosition(bossLeg3Position);
 	bossLeg4->SetPosition(bossLeg4Position);
 
+	LoadingBG->SetColor(loadingColor);
+
 	// カメラの更新
 	camera->Update();
 
@@ -1307,14 +1332,20 @@ void GameScreen::GameDraw()
 	{
 		bossBody->Draw();
 
-		bossLeg1->Draw();
+		if (bossLeg1Flag == true)
+		{
+			bossLeg1->Draw();
+		}
 
 		if (bossLeg2Flag == true)
 		{
 			bossLeg2->Draw();
 		}
 
-		bossLeg3->Draw();
+		if (bossLeg3Flag == true)
+		{
+			bossLeg3->Draw();
+		}
 
 		if (bossLeg4Flag == true)
 		{
@@ -1428,6 +1459,8 @@ void GameScreen::GameDraw()
 
 	GameFG->Draw();
 
+	LoadingBG->Draw();
+
 	// デバッグテキストの描画
 	debugText.DrawAll(cmdList);
 
@@ -1455,20 +1488,27 @@ void GameScreen::GameInitialize()
 	bossLeg3->SetPosition({ -2,-2,2 });
 	bossLeg4->SetPosition({ -2,-2,-2 });
 
+	bossBody->SetRotation({ 0,0,0 });
+	bossLeg1->SetRotation({ 0,0,0 });
+	bossLeg2->SetRotation({ 0,0,0 });
+	bossLeg3->SetRotation({ 0,0,0 });
+	bossLeg4->SetRotation({ 0,0,0 });
+
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 0, 10 });
 	camera->SetUp({ 0, 1, 0 });
 
 	// プレイヤー関連
-	playerHp = 20;
+	playerHp = 100;
 
 	// ボス関連
-	bossHp = 50;
+	bossHp = 60;
 	bossLeg1Hp = 30;
 	bossLeg2Hp = 30;
 	bossLeg3Hp = 30;
 	bossLeg4Hp = 30;
 
+	bossBreak = false;
 	bossLeg1Break = false;
 	bossLeg2Break = false;
 	bossLeg3Break = false;
@@ -1494,6 +1534,14 @@ void GameScreen::GameInitialize()
 	shotRate = 1.5f;
 
 	startIndex = 1;
+
+	changeColorFlag = false;
+	changeColorTimer = 30.0f;
+
+	changeSceneFlag = false;
+	changeSceneTimer = 100.0f;
+
+	loadingColor.w = 0.0f;
 
 	startCount = GetTickCount();
 }
@@ -1586,6 +1634,8 @@ void GameScreen::ResultInitialize()
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 0, 0 });
 	camera->SetUp({ 0, 1, 0 });
+
+	loadingColor.w = 0.0f;
 
 	changeColorFlag = false;
 	changeColorTimer = 30.0f;
@@ -1851,6 +1901,10 @@ void GameScreen::CameraSwitching()
 	{
 		cameraMode = 2;
 	}
+	else if (startIndex == 30)
+	{
+		cameraMode = 1;
+	}
 }
 
 void GameScreen::Attack()
@@ -1883,43 +1937,57 @@ void GameScreen::BossAttack()
 	newBullet = BossBullet::Create(modelBullet, bossPosition, bulletScale, bulletVelocity);
 
 	bossBullets.push_back(std::move(newBullet));*/
+	if (playerHp >= 0)
+	{
+		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
+		newBullet = BossTargetBullet::Create(modelBullet, bossPosition, bulletScale, playerWorldPosition, bulletVelocity);
 
-	std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-	newBullet = BossTargetBullet::Create(modelBullet, bossPosition, bulletScale, playerWorldPosition, bulletVelocity);
-
-	bossTargetBullets.push_back(std::move(newBullet));
+		bossTargetBullets.push_back(std::move(newBullet));
+	}
 }
 
 void GameScreen::BossLeg1Attack()
 {
-	std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-	newBullet = BossTargetBullet::Create(modelBullet, bossLeg1WorldPosition, bulletScale, playerWorldPosition, bulletVelocity);
+	if (playerHp >= 0)
+	{
+		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
+		newBullet = BossTargetBullet::Create(modelBullet, bossLeg1WorldPosition, bulletScale, playerWorldPosition, bulletVelocity);
 
-	bossTargetBullets.push_back(std::move(newBullet));
+		bossTargetBullets.push_back(std::move(newBullet));
+	}
 }
 
 void GameScreen::BossLeg2Attack()
 {
-	std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-	newBullet = BossTargetBullet::Create(modelBullet, bossLeg2WorldPosition, bulletScale, playerWorldPosition, bulletVelocity);
+	if (playerHp >= 0)
+	{
+		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
+		newBullet = BossTargetBullet::Create(modelBullet, bossLeg2WorldPosition, bulletScale, playerWorldPosition, bulletVelocity);
 
-	bossTargetBullets.push_back(std::move(newBullet));
+		bossTargetBullets.push_back(std::move(newBullet));
+	}
 }
 
 void GameScreen::BossLeg3Attack()
 {
-	std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-	newBullet = BossTargetBullet::Create(modelBullet, bossLeg3WorldPosition, bulletScale, playerWorldPosition, bulletVelocity);
+	if (playerHp >= 0)
+	{
+		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
+		newBullet = BossTargetBullet::Create(modelBullet, bossLeg3WorldPosition, bulletScale, playerWorldPosition, bulletVelocity);
 
-	bossTargetBullets.push_back(std::move(newBullet));
+		bossTargetBullets.push_back(std::move(newBullet));
+	}
 }
 
 void GameScreen::BossLeg4Attack()
 {
-	std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-	newBullet = BossTargetBullet::Create(modelBullet, bossLeg4WorldPosition, bulletScale, playerWorldPosition, bulletVelocity);
+	if (playerHp >= 0)
+	{
+		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
+		newBullet = BossTargetBullet::Create(modelBullet, bossLeg4WorldPosition, bulletScale, playerWorldPosition, bulletVelocity);
 
-	bossTargetBullets.push_back(std::move(newBullet));
+		bossTargetBullets.push_back(std::move(newBullet));
+	}
 }
 
 void GameScreen::BossSpecialAttack()
