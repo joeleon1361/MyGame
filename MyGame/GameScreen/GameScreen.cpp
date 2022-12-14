@@ -736,9 +736,8 @@ void GameScreen::GameUpdate()
 	playerRotation = player->GetRotation();
 
 	centerPosition = SplinePosition(playerCheckPoint, startIndex, timeRate);
-	// centerPosition = Spline::SplinePosition(playerCheckPoint, startIndex, timeRate);
 
-	CameraPos = { centerPosition.x, centerPosition.y,centerPosition.z - 10 };
+	CameraPos = camera->GetEye();
 
 	SkydomPos = objSkydome->GetPosition();
 	SkydomRot = objSkydome->GetRotation();
@@ -753,11 +752,6 @@ void GameScreen::GameUpdate()
 	}
 	bossRotation = bossBody->GetRotation();
 
-	/*centerPosition = objCenter->GetPosition();
-
-	bossPosition = bossBody->GetPosition();
-	bossRotation = bossBody->GetRotation();*/
-
 	bossLeg1Position = bossLeg1->GetPosition();
 	bossLeg2Position = bossLeg2->GetPosition();
 	bossLeg3Position = bossLeg3->GetPosition();
@@ -766,7 +760,6 @@ void GameScreen::GameUpdate()
 	specialBulletPosition = { bossPosition.x , bossPosition.y - 5, bossPosition.z };
 
 	CameraSwitching();
-	//CreateParticles(bossPosition);
 
 	loadingColor = LoadingBG->GetColor();
 
@@ -783,7 +776,6 @@ void GameScreen::GameUpdate()
 
 	if (changeSceneTimer <= 0)
 	{
-		loadingColor.w = 0.0f;
 		ResultInitialize();
 		scene = RESULT;
 	}
