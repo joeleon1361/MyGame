@@ -234,6 +234,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	modelGround = ObjModel::CreateFromOBJ("ground");
 	modelPlayer = ObjModel::CreateFromOBJ("player2");
 	modelBullet = ObjModel::CreateFromOBJ("bullet2");
+	modelBossLeg = ObjModel::CreateFromOBJ("BossLeg");
 
 	objSkydome->SetModel(modelSkydome);
 	objGround->SetModel(modelGround);
@@ -245,10 +246,10 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	objStage3->SetModel(modelBullet);
 
 	bossBody->SetModel(modelBullet);
-	bossLeg1->SetModel(modelBullet);
-	bossLeg2->SetModel(modelBullet);
-	bossLeg3->SetModel(modelBullet);
-	bossLeg4->SetModel(modelBullet);
+	bossLeg1->SetModel(modelBossLeg);
+	bossLeg2->SetModel(modelBossLeg);
+	bossLeg3->SetModel(modelBossLeg);
+	bossLeg4->SetModel(modelBossLeg);
 
 	bossBody->SetCollider(new SphereCollider);
 	bossLeg1->SetCollider(new SphereCollider);
@@ -496,7 +497,7 @@ void GameScreen::TitleUpdate()
 	objTitlePlayer->Update();
 
 	// デバックテキスト
-	AllDebugText();
+	//AllDebugText();
 	//TitleDebugText();
 }
 
@@ -1454,7 +1455,7 @@ void GameScreen::GameDraw()
 	LoadingBG->Draw();
 
 	// デバッグテキストの描画
-	debugText.DrawAll(cmdList);
+	//debugText.DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -1491,7 +1492,7 @@ void GameScreen::GameInitialize()
 	camera->SetUp({ 0, 1, 0 });
 
 	// プレイヤー関連
-	playerHp = 100;
+	playerHp = 20;
 
 	// ボス関連
 	bossHp = 60;
@@ -1570,7 +1571,7 @@ void GameScreen::ResultUpdata()
 	camera->Update();
 
 	// デバックテキスト
-	AllDebugText();
+	//AllDebugText();
 }
 
 void GameScreen::ResultDraw()

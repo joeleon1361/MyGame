@@ -167,6 +167,7 @@ private: // メンバ変数
 	ObjModel* modelGround = nullptr;
 	ObjModel* modelPlayer = nullptr;
 	ObjModel* modelBullet = nullptr;
+	ObjModel* modelBossLeg = nullptr;
 
 	FbxModel* testmodel = nullptr;
 
