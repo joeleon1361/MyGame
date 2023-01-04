@@ -256,9 +256,14 @@ private: // メンバ変数
 	XMFLOAT3 p38 = { 20.0f, 0.0f, -40.0f };
 	XMFLOAT3 p39 = { 30.0f, 0.0f, -40.0f };
 	XMFLOAT3 end = { 40.0f, 0.0f, -40.0f };
+	XMFLOAT3 end2 = { 50.0f, 0.0f, -40.0f };
 	std::vector<XMFLOAT3> playerCheckPoint{ start, start, p2, p3, p4, p5, p6, p7, p8, p9, p10,
 		p11,p12, p13, p14, p15, p16, p17, p18, p19, p20, p21,p22, p23, p24, p25, p26, p27, p28,
 	p29,p30,p31,p32, p33, p34, p35, p36, p37, p38,p39, end, end };
+
+	std::vector<XMFLOAT3> playerTargetCheckPoint{ p2, p2, p3, p4, p5, p6, p7, p8, p9, p10,
+		p11,p12, p13, p14, p15, p16, p17, p18, p19, p20, p21,p22, p23, p24, p25, p26, p27, p28,
+	p29,p30,p31,p32, p33, p34, p35, p36, p37, p38,p39, end, end2, end2 };
 
 	// ボス制御点
 	XMFLOAT3 Bstart = { 0.0f, 40.0f, -30.0f };
@@ -474,4 +479,11 @@ private: // メンバ変数
 		MOVESCENE
 	};
 #pragma endregion
+
+	float testX;
+	float testZ;
+	float testRadians;
+	float testDegrees;
+
+	XMFLOAT3 playerTargetPosition;
 };

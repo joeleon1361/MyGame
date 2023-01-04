@@ -204,7 +204,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 
 	for (int i = 0; i < 21; i++)
 	{
-		playerHpUI[i] = Sprite::Create((i + 5), { 800.0f, 525.0f });
+		playerHpUI[i] = Sprite::Create((i + 5), { 810.0f, 540.0f });
 	}
 
 	// パーティクルマネージャー
@@ -497,8 +497,8 @@ void GameScreen::TitleUpdate()
 	objTitlePlayer->Update();
 
 	// デバックテキスト
-	//AllDebugText();
-	//TitleDebugText();
+	AllDebugText();
+	TitleDebugText();
 }
 
 void GameScreen::TitleDraw()
@@ -735,6 +735,8 @@ void GameScreen::GameUpdate()
 
 	playerPosition = player->GetPosition();
 	playerRotation = player->GetRotation();
+
+	playerTargetPosition = SplinePosition(playerTargetCheckPoint, startIndex, timeRate);
 
 	centerPosition = SplinePosition(playerCheckPoint, startIndex, timeRate);
 
@@ -1216,9 +1218,14 @@ void GameScreen::GameUpdate()
 
 #pragma endregion
 
+	testX = playerTargetPosition.x - playerWorldPosition.x;
+	testZ = playerTargetPosition.z - playerWorldPosition.z;
+	testRadians = atan2(testZ, testX);
+	testDegrees = XMConvertToDegrees(testRadians);
+
 	// プレイヤー座標のセット
 	player->SetPosition(playerPosition);
-	player->SetRotation(playerRotation);
+	player->SetRotation({playerRotation.x, -testDegrees + 180.0f, playerRotation.z});
 
 	// カメラ座標のセット
 	camera->SetEye(CameraPos);
@@ -1455,7 +1462,7 @@ void GameScreen::GameDraw()
 	LoadingBG->Draw();
 
 	// デバッグテキストの描画
-	//debugText.DrawAll(cmdList);
+	debugText.DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -1571,7 +1578,7 @@ void GameScreen::ResultUpdata()
 	camera->Update();
 
 	// デバックテキスト
-	//AllDebugText();
+	AllDebugText();
 }
 
 void GameScreen::ResultDraw()
@@ -1609,8 +1616,6 @@ void GameScreen::ResultDraw()
 	Sprite::PreDraw(cmdList);
 
 	// 描画
-	//sprite1->Draw();
-	//sprite2->Draw();
 
 	LoadingBG->Draw();
 
@@ -2014,7 +2019,7 @@ void GameScreen::SplineCount()
 		}
 	}
 
-	if (timeRate >= 1.0f)
+	/*if (timeRate >= 1.0f)
 	{
 		if (startIndex < bossCheckPoint.size() - 3)
 		{
@@ -2026,7 +2031,7 @@ void GameScreen::SplineCount()
 		{
 			timeRate = 1.0f;
 		}
-	}
+	}*/
 }
 
 bool GameScreen::OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB)
