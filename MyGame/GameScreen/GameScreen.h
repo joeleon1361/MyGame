@@ -197,6 +197,8 @@ private: // メンバ変数
 
 	ObjObject* objCenter = nullptr;
 
+	ObjObject* frontCamera = nullptr;
+
 	FbxObject3d* testobject = nullptr;
 
 #pragma region カメラ関連
