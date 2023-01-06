@@ -1218,8 +1218,9 @@ void GameScreen::GameUpdate()
 
 #pragma endregion
 
-	testX = playerTargetPosition.x - playerWorldPosition.x;
-	testZ = playerTargetPosition.z - playerWorldPosition.z;
+	// レールの進行方向へ自機の角度を向ける
+	testX = playerTargetPosition.x - centerPosition.x;
+	testZ = playerTargetPosition.z - centerPosition.z;
 	testRadians = atan2(testZ, testX);
 	testDegrees = XMConvertToDegrees(testRadians);
 
@@ -1233,6 +1234,7 @@ void GameScreen::GameUpdate()
 
 	// レール中心オブジェクト座標のセット
 	objCenter->SetPosition(centerPosition);
+	//objCenter->SetRotation({ centerRotation.x, -testDegrees + 90.0f, centerRotation.z });
 
 	// 背景天球座標のセット
 	objSkydome->SetPosition(SkydomPos);

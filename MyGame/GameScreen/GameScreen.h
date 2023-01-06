@@ -410,6 +410,7 @@ private: // メンバ変数
 #pragma endregion
 
 	XMFLOAT3 centerPosition;
+	XMFLOAT3 centerRotation;
 
 	XMFLOAT3 CameraPos;
 
