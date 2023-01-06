@@ -221,7 +221,11 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	player = Player::Create();
 
 	objCenter = ObjObject::Create();
+
 	frontCamera = ObjObject::Create();
+	rightCamera = ObjObject::Create();
+	backCamera = ObjObject::Create();
+	leftCamera = ObjObject::Create();
 
 	bossBody = Boss::Create();
 	bossLeg1 = Boss::Create();
@@ -243,6 +247,9 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 
 	objCenter->SetModel(modelBullet);
 	frontCamera->SetModel(modelBullet);
+	rightCamera->SetModel(modelBullet);
+	backCamera->SetModel(modelBullet);
+	leftCamera->SetModel(modelBullet);
 
 	objStage1->SetModel(modelBullet);
 	objStage2->SetModel(modelBullet);
@@ -265,6 +272,9 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
 	player->SetParent(objCenter);
 
 	frontCamera->SetParent(objCenter);
+	rightCamera->SetParent(objCenter);
+	backCamera->SetParent(objCenter);
+	leftCamera->SetParent(objCenter);
 
 	bossLeg1->SetParent(bossBody);
 	bossLeg2->SetParent(bossBody);
@@ -745,7 +755,7 @@ void GameScreen::GameUpdate()
 
 	centerPosition = SplinePosition(playerCheckPoint, startIndex, timeRate);
 
-	CameraPos = camera->GetEye();
+	//CameraPos = camera->GetEye();
 
 	SkydomPos = objSkydome->GetPosition();
 	SkydomRot = objSkydome->GetRotation();
@@ -1184,11 +1194,29 @@ void GameScreen::GameUpdate()
 
 	// カメラの座標変換
 	XMVECTOR cameraFrontPositionV;
+	XMVECTOR cameraRightPositionV;
+	XMVECTOR cameraBackPositionV;
+	XMVECTOR cameraLeftPositionV;
 
 	cameraFrontPositionV = DirectX::XMLoadFloat3(&frontCamera->GetPosition());
 	cameraFrontPositionV.m128_f32[3] = 1.0f;
 	cameraFrontPositionV = DirectX::XMVector3Transform(cameraFrontPositionV, objCenter->GetMatWorld());
 	DirectX::XMStoreFloat3(&cameraFrontPosition, cameraFrontPositionV);
+
+	cameraRightPositionV = DirectX::XMLoadFloat3(&rightCamera->GetPosition());
+	cameraRightPositionV.m128_f32[3] = 1.0f;
+	cameraRightPositionV = DirectX::XMVector3Transform(cameraRightPositionV, objCenter->GetMatWorld());
+	DirectX::XMStoreFloat3(&cameraRightPosition, cameraRightPositionV);
+
+	cameraBackPositionV = DirectX::XMLoadFloat3(&backCamera->GetPosition());
+	cameraBackPositionV.m128_f32[3] = 1.0f;
+	cameraBackPositionV = DirectX::XMVector3Transform(cameraBackPositionV, objCenter->GetMatWorld());
+	DirectX::XMStoreFloat3(&cameraBackPosition, cameraBackPositionV);
+
+	cameraLeftPositionV = DirectX::XMLoadFloat3(&leftCamera->GetPosition());
+	cameraLeftPositionV.m128_f32[3] = 1.0f;
+	cameraLeftPositionV = DirectX::XMVector3Transform(cameraLeftPositionV, objCenter->GetMatWorld());
+	DirectX::XMStoreFloat3(&cameraLeftPosition, cameraLeftPositionV);
 
 	// プレイヤーの座標変換
 	XMVECTOR playerPositionV;
@@ -1233,15 +1261,15 @@ void GameScreen::GameUpdate()
 	testRadians = atan2(testZ, testX);
 	testDegrees = XMConvertToDegrees(testRadians);
 
-	// プレイヤー座標のセット
-	player->SetPosition(playerPosition);
-	// player->SetRotation({playerRotation.x, -testDegrees + 180.0f, playerRotation.z});
-	player->SetRotation(playerRotation);
-
 	// カメラ座標のセット
 	//camera->SetEye(cameraFrontPosition);
 	CameraSwitching();
 	camera->SetTarget(centerPosition);
+
+	// プレイヤー座標のセット
+	player->SetPosition(playerPosition);
+	// player->SetRotation({playerRotation.x, -testDegrees + 180.0f, playerRotation.z});
+	player->SetRotation(playerRotation);
 
 	// レール中心オブジェクト座標のセット
 	objCenter->SetPosition(centerPosition);
@@ -1262,8 +1290,7 @@ void GameScreen::GameUpdate()
 
 	LoadingBG->SetColor(loadingColor);
 
-	// カメラの更新
-	camera->Update();
+	
 
 	// ボス関連の更新
 	bossBody->Update();
@@ -1281,16 +1308,22 @@ void GameScreen::GameUpdate()
 	// 地面の更新
 	objGround->Update();
 
-	// FBXの更新
-	testobject->Update();
+	// カメラの更新
+	camera->Update();
 
 	// プレイヤーの更新
 	player->Update();
 
+	frontCamera->Update();
+	rightCamera->Update();
+	backCamera->Update();
+	leftCamera->Update();
+
 	// レール中心オブジェクトの更新
 	objCenter->Update();
 
-	frontCamera->Update();
+	// FBXの更新
+	testobject->Update();
 
 	collisionManager->CheckAllCollisions();
 
@@ -1371,6 +1404,9 @@ void GameScreen::GameDraw()
 	// objCenter->Draw();
 
 	frontCamera->Draw();
+	rightCamera->Draw();
+	backCamera->Draw();
+	leftCamera->Draw();
 
 	// パーティクルの描画
 	particleMan->Draw(cmdList);
@@ -1495,6 +1531,9 @@ void GameScreen::GameInitialize()
 	objSkydome->SetRotation({ 0.0f,0.0f,0.0f, });
 
 	frontCamera->SetPosition({ 0,0,-20.0f });
+	rightCamera->SetPosition({ -20,0,0.0f });
+	backCamera->SetPosition({ 0,0,20.0f });
+	leftCamera->SetPosition({ 20,0,0.0f });
 
 	objCenter->SetPosition({ 0,0,0 });
 	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
@@ -1877,12 +1916,6 @@ void GameScreen::GameDebugText()
 // カメラ方向の切り替え
 void GameScreen::CameraSwitching()
 {
-	/*cameraFrontPosition = { centerPosition.x, centerPosition.y, centerPosition.z - 10 };
-	cameraRightPosition = { centerPosition.x - 10, centerPosition.y, centerPosition.z };
-	cameraBackPosition = { centerPosition.x, centerPosition.y, centerPosition.z + 10 };
-	cameraLeftPosition = { centerPosition.x + 10, centerPosition.y, centerPosition.z };*/
-
-
 	if (cameraMode == 0)
 	{
 		playerPosition.z = 0;
@@ -1893,19 +1926,19 @@ void GameScreen::CameraSwitching()
 	{
 		playerPosition.x = 0;
 
-		CameraPos = { centerPosition.x - 10, centerPosition.y, centerPosition.z };
+		camera->SetEye(cameraRightPosition);
 	}
 	if (cameraMode == 2)
 	{
 		playerPosition.z = 0;
 
-		CameraPos = { centerPosition.x, centerPosition.y, centerPosition.z + 10 };
+		camera->SetEye(cameraBackPosition);
 	}
 	if (cameraMode == 3)
 	{
 		playerPosition.x = 0;
 
-		CameraPos = { centerPosition.x + 10, centerPosition.y, centerPosition.z };
+		camera->SetEye(cameraLeftPosition);
 	}
 
 	/*if (startIndex == 11)
