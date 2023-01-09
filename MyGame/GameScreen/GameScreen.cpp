@@ -23,16 +23,24 @@ GameScreen::~GameScreen()
 	safe_delete(testobject);
 }
 
-void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio)
+void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 {
 	// nullptrチェック
 	assert(dxCommon);
 	assert(input);
-	assert(audio);
+	assert(sound);
 
 	this->dxCommon = dxCommon;
 	this->input = input;
-	this->audio = audio;
+	this->sound = sound;
+
+	// サウンド初期化
+	sound->Initialize();
+
+	//音声ロード
+	sound->LoadWave("Title.wav");
+	sound->LoadWave("Shot.wav");
+
 
 	// カメラ生成
 	camera = new Camera(WinApp::window_width, WinApp::window_height);
@@ -352,6 +360,7 @@ void GameScreen::TitleUpdate()
 
 	// TitlePlayerRotation.x += moveR;
 
+
 	if (TitlePlayerPosition.y >= -1.0f)
 	{
 		subSpeedY = true;
@@ -492,6 +501,7 @@ void GameScreen::TitleUpdate()
 
 		if (changeSceneTimer <= 0)
 		{
+			sound->StopWave("Title.wav");
 			GameInitialize();
 			scene = GAME;
 		}
@@ -605,6 +615,8 @@ void GameScreen::TitleInitialize()
 
 	changeSceneFlag = false;
 	changeSceneTimer = 100.0f;
+
+	sound->PlayWave("Title.wav", Volume_Title, true);
 }
 
 void GameScreen::StageSelectUpdate()
@@ -1290,8 +1302,6 @@ void GameScreen::GameUpdate()
 
 	LoadingBG->SetColor(loadingColor);
 
-	
-
 	// ボス関連の更新
 	bossBody->Update();
 	bossLeg1->Update();
@@ -1964,6 +1974,7 @@ void GameScreen::Attack()
 		if (shotRate <= 0)
 		{
 			shotFlag = true;
+			sound->PlayWave("Shot.wav", Volume_Title);
 		}
 
 		if (shotFlag == true)

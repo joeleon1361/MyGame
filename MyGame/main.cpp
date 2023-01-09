@@ -13,7 +13,7 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 	WinApp *win = nullptr;
 	DirectXCommon *dxCommon = nullptr;
 	Input *input = nullptr;
-	Sound *audio = nullptr;
+	Sound *sound = nullptr;
 	GameScreen *gameScene = nullptr;
 	PostEffect* postEffect = nullptr;
 	FbxManager *fbxManager = FbxManager::Create();
@@ -34,11 +34,9 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 		return 1;
 	}
 	// オーディオの初期化
-	audio = new Sound();
-	if ( !audio->Initialize() ) {
-		assert( 0 );
-		return 1;
-	}
+	sound = new Sound();
+	sound->Initialize();
+	
 	// スプライト静的初期化
 	if ( !Sprite::StaticInitialize( dxCommon->GetDevice(), WinApp::window_width, WinApp::window_height ) ) {
 		assert( 0 );
@@ -60,7 +58,7 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 
 	// ゲームシーンの初期化
 	gameScene = new GameScreen();
-	gameScene->Initialize( dxCommon, input, audio );
+	gameScene->Initialize( dxCommon, input, sound );
 
 	// メインループ
 	while ( true )
@@ -91,7 +89,7 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 	}
 	// 各種解放
 	safe_delete( gameScene );
-	safe_delete( audio );
+	safe_delete( sound );
 	// safe_delete( input );
 	safe_delete( dxCommon );
 	delete postEffect;

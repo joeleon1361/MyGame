@@ -66,7 +66,7 @@ public: // メンバ関数
 	~GameScreen();
 
 	// 初期化
-	void Initialize(DirectXCommon* dxCommon, Input* input, Sound* audio);
+	void Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound);
 
 	// 毎フレーム処理
 	void Update();
@@ -141,7 +141,7 @@ private:
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
 	Input* input = nullptr;
-	Sound* audio = nullptr;
+	Sound* sound = nullptr;
 	DebugText debugText;
 	CollisionManager* collisionManager = nullptr;
 
@@ -492,4 +492,7 @@ private: // メンバ変数
 	float testDegrees;
 
 	XMFLOAT3 playerTargetPosition;
+
+	//オーディオのボリューム
+	const float Volume_Title = 0.07f;
 };
