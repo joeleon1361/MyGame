@@ -26,6 +26,8 @@
 
 #include "Spline.h"
 
+#include "GamePad.h"
+
 #include <cassert>
 #include <sstream>
 #include <iomanip>

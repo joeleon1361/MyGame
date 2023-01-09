@@ -160,6 +160,9 @@
     <ClCompile Include="BossTargetBullet.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="GamePad.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\FBX.hlsli">
@@ -298,5 +301,6 @@
     <ClInclude Include="BossBullet.h" />
     <ClInclude Include="Spline.h" />
     <ClInclude Include="BossTargetBullet.h" />
+    <ClInclude Include="GamePad.h" />
   </ItemGroup>
 </Project>

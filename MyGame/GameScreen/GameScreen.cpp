@@ -21,6 +21,8 @@ GameScreen::~GameScreen()
 
 	safe_delete(testmodel);
 	safe_delete(testobject);
+
+	sound->Finalize();
 }
 
 void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
@@ -33,6 +35,9 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	this->dxCommon = dxCommon;
 	this->input = input;
 	this->sound = sound;
+
+	//コントローラー初期化
+	InitInput();
 
 	// サウンド初期化
 	sound->Initialize();
@@ -1969,7 +1974,7 @@ void GameScreen::Attack()
 {
 	shotRate -= 0.1f;
 
-	if (input->PushKey(DIK_SPACE))
+	if (input->PushKey(DIK_SPACE) || (IsButtonPush(ButtonKind::Button_A)))
 	{
 		if (shotRate <= 0)
 		{
