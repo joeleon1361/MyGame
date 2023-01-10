@@ -45,6 +45,11 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	//音声ロード
 	sound->LoadWave("Title.wav");
 	sound->LoadWave("Shot.wav");
+	sound->LoadWave("Bomb.wav");
+	sound->LoadWave("Damage.wav");
+	sound->LoadWave("Hit.wav");
+	sound->LoadWave("Play.wav");
+	sound->LoadWave("Push.wav");
 
 	// カメラ生成
 	camera = new Camera(WinApp::window_width, WinApp::window_height);
@@ -440,6 +445,7 @@ void GameScreen::TitleUpdate()
 
 		if (input->TriggerKey(DIK_SPACE) || input->TriggerKey(DIK_W) || input->TriggerKey(DIK_A) || input->TriggerKey(DIK_S) || input->TriggerKey(DIK_D))
 		{
+			sound->PlayWave("Push.wav", Volume_Title);
 			titleStartUIColor.w = 1.0f;
 			titleScene = STAGING;
 		}
@@ -589,6 +595,7 @@ void GameScreen::TitleInitialize()
 	objTitlePlayer->SetScale({ 0.8f, 0.8f, 0.8f });
 
 	objSkydome->SetPosition({ 0.0f, 0.0f, 70.0f });
+	objSkydome->SetScale({ 1.0f,1.0f,1.0f });
 
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 0, 10 });
@@ -795,6 +802,14 @@ void GameScreen::GameUpdate()
 
 	loadingColor = LoadingBG->GetColor();
 
+	if (changeColorFlag == false)
+	{
+		if (loadingColor.w > -0.1)
+		{
+			loadingColor.w -= 0.05f;
+		}
+	}
+
 	if (changeColorFlag == true)
 	{
 		loadingColor.w += 0.05f;
@@ -808,6 +823,7 @@ void GameScreen::GameUpdate()
 
 	if (changeSceneTimer <= 0)
 	{
+		sound->StopWave("Play.wav");
 		ResultInitialize();
 		scene = RESULT;
 	}
@@ -956,18 +972,18 @@ void GameScreen::GameUpdate()
 	}
 
 	// 特定のルート通過でパターン変化
-	if (startIndex == 3)
+	if (startIndex == 4)
 	{
 		bossPattern = NORMAL;
 	}
 	else if (startIndex == 11)
 	{
+		bossPattern = STAY;
+	}
+	else if (startIndex == 13)
+	{
 		moveValue = 90.0f;
 		bossPattern = BODYLEFT;
-	}
-	else if (startIndex == 12)
-	{
-		//bossPattern = FOURWAYRUSH;
 	}
 	else if (startIndex == 14)
 	{
@@ -982,10 +998,23 @@ void GameScreen::GameUpdate()
 	{
 		bossPattern = BODYDOWN;
 	}
-	else if (startIndex == 29)
+	else if (startIndex == 30)
 	{
 		moveValue = 270.0f;
 		bossPattern = BODYLEFT;
+	}
+	else if (startIndex == 31)
+	{
+		moveValue = 360.0f;
+		bossPattern = BODYLEFT;
+	}
+	else if (startIndex == 32)
+	{
+		bossPattern = BODYUP;
+	}
+	else if (startIndex == 36)
+	{
+		bossPattern = BODYDOWN;
 	}
 
 	// ボス本体の当たり判定
@@ -996,6 +1025,7 @@ void GameScreen::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossBody->GetPosition(), 0.8f, 0.8f) == true)
 			{
 				bossHp -= 1;
+				sound->PlayWave("Hit.wav", Volume_Title);
 				bullet->deathFlag = true;
 				// パーティクル生成
 				CreateHitParticles(bossPosition);
@@ -1033,6 +1063,7 @@ void GameScreen::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossLeg1WorldPosition, 0.8f, 0.6f) == true)
 			{
 				bossHp -= 1;
+				sound->PlayWave("Hit.wav", Volume_Title);
 				bossLeg1Hp -= 1;
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -1067,6 +1098,7 @@ void GameScreen::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossLeg2WorldPosition, 0.8f, 0.6f) == true)
 			{
 				bossHp -= 1;
+				sound->PlayWave("Hit.wav", Volume_Title);
 				bossLeg2Hp -= 1;
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -1101,6 +1133,7 @@ void GameScreen::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossLeg3WorldPosition, 0.8f, 0.6f) == true)
 			{
 				bossHp -= 1;
+				sound->PlayWave("Hit.wav", Volume_Title);
 				bossLeg3Hp -= 1;
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -1135,6 +1168,7 @@ void GameScreen::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossLeg4WorldPosition, 0.8f, 0.6f) == true)
 			{
 				bossHp -= 1;
+				sound->PlayWave("Hit.wav", Volume_Title);
 				bossLeg4Hp -= 1;
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -1166,6 +1200,7 @@ void GameScreen::GameUpdate()
 		if (OnCollision(bullet->GetPosition(), playerWorldPosition, 0.8f, 0.6f) == true)
 		{
 			playerHp -= 1;
+			sound->PlayWave("Damage.wav", Volume_Title);
 			bullet->deathFlag = true;
 			// パーティクル生成
 			CreateHitParticles(playerWorldPosition);
@@ -1417,10 +1452,10 @@ void GameScreen::GameDraw()
 
 	// objCenter->Draw();
 
-	frontCamera->Draw();
+	/*frontCamera->Draw();
 	rightCamera->Draw();
 	backCamera->Draw();
-	leftCamera->Draw();
+	leftCamera->Draw();*/
 
 	// パーティクルの描画
 	particleMan->Draw(cmdList);
@@ -1527,7 +1562,7 @@ void GameScreen::GameDraw()
 	LoadingBG->Draw();
 
 	// デバッグテキストの描画
-	debugText.DrawAll(cmdList);
+	//debugText.DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -1574,10 +1609,10 @@ void GameScreen::GameInitialize()
 
 	// ボス関連
 	bossHp = 60;
-	bossLeg1Hp = 30;
-	bossLeg2Hp = 30;
-	bossLeg3Hp = 30;
-	bossLeg4Hp = 30;
+	bossLeg1Hp = 40;
+	bossLeg2Hp = 40;
+	bossLeg3Hp = 40;
+	bossLeg4Hp = 40;
 
 	bossBreak = false;
 	bossLeg1Break = false;
@@ -1612,7 +1647,9 @@ void GameScreen::GameInitialize()
 	changeSceneFlag = false;
 	changeSceneTimer = 100.0f;
 
-	loadingColor.w = 0.0f;
+	loadingColor.w = 1.0f;
+
+	sound->PlayWave("Play.wav", Volume_Title, true);
 
 	startCount = GetTickCount();
 }
@@ -1620,6 +1657,14 @@ void GameScreen::GameInitialize()
 void GameScreen::ResultUpdata()
 {
 	loadingColor = LoadingBG->GetColor();
+
+	if (changeColorFlag == false)
+	{
+		if (loadingColor.w > -0.1)
+		{
+			loadingColor.w -= 0.05f;
+		}
+	}
 
 	if (input->TriggerKey(DIK_SPACE))
 	{
@@ -1691,7 +1736,7 @@ void GameScreen::ResultDraw()
 	LoadingBG->Draw();
 
 	// デバッグテキストの描画
-	debugText.DrawAll(cmdList);
+	//debugText.DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -1704,7 +1749,7 @@ void GameScreen::ResultInitialize()
 	camera->SetEye({ 0, 0, 0 });
 	camera->SetUp({ 0, 1, 0 });
 
-	loadingColor.w = 0.0f;
+	loadingColor.w = 1.0f;
 
 	changeColorFlag = false;
 	changeColorTimer = 30.0f;
@@ -1956,18 +2001,15 @@ void GameScreen::CameraSwitching()
 		camera->SetEye(cameraLeftPosition);
 	}
 
-	/*if (startIndex == 11)
-	{
-		cameraMode = 3;
-	}
-	else if (startIndex == 14)
+	if (startIndex == 12)
 	{
 		cameraMode = 2;
 	}
-	else if (startIndex == 30)
+	
+	else if (startIndex == 29)
 	{
-		cameraMode = 1;
-	}*/
+		cameraMode = 0;
+	}
 }
 
 void GameScreen::Attack()
@@ -2003,6 +2045,9 @@ void GameScreen::BossAttack()
 	newBullet = BossBullet::Create(modelBullet, bossPosition, bulletScale, bulletVelocity);
 
 	bossBullets.push_back(std::move(newBullet));*/
+
+	sound->PlayWave("Bomb.wav", Volume_Title);
+
 	if (playerHp >= 0)
 	{
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
@@ -2014,6 +2059,7 @@ void GameScreen::BossAttack()
 
 void GameScreen::BossLeg1Attack()
 {
+	sound->PlayWave("Bomb.wav", Volume_Title);
 	if (playerHp >= 0)
 	{
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
@@ -2025,6 +2071,7 @@ void GameScreen::BossLeg1Attack()
 
 void GameScreen::BossLeg2Attack()
 {
+	sound->PlayWave("Bomb.wav", Volume_Title);
 	if (playerHp >= 0)
 	{
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
@@ -2036,6 +2083,7 @@ void GameScreen::BossLeg2Attack()
 
 void GameScreen::BossLeg3Attack()
 {
+	sound->PlayWave("Bomb.wav", Volume_Title);
 	if (playerHp >= 0)
 	{
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
@@ -2047,6 +2095,7 @@ void GameScreen::BossLeg3Attack()
 
 void GameScreen::BossLeg4Attack()
 {
+	sound->PlayWave("Bomb.wav", Volume_Title);
 	if (playerHp >= 0)
 	{
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
