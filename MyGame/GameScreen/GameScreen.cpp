@@ -46,7 +46,6 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	sound->LoadWave("Title.wav");
 	sound->LoadWave("Shot.wav");
 
-
 	// カメラ生成
 	camera = new Camera(WinApp::window_width, WinApp::window_height);
 
@@ -576,7 +575,7 @@ void GameScreen::TitleDraw()
 	LoadingBG->Draw();
 
 	// デバッグテキストの描画
-	debugText.DrawAll(cmdList);
+	// debugText.DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -871,7 +870,7 @@ void GameScreen::GameUpdate()
 
 		if (bossBody->shotTimer <= 0)
 		{
-			//BossAttack();
+			BossAttack();
 			bossBody->shotTimer = bossBody->ShotInterval;
 		}
 		break;
@@ -912,19 +911,19 @@ void GameScreen::GameUpdate()
 
 			if (rushOrder == 0)
 			{
-				//BossLeg1Attack();
+				BossLeg1Attack();
 			}
 			if (rushOrder == 1)
 			{
-				//BossLeg2Attack();
+				BossLeg2Attack();
 			}
 			if (rushOrder == 2)
 			{
-				//BossLeg4Attack();
+				BossLeg4Attack();
 			}
 			if (rushOrder == 3)
 			{
-				//BossLeg3Attack();
+				BossLeg3Attack();
 			}
 
 			rushOrder += 1;
@@ -1293,8 +1292,8 @@ void GameScreen::GameUpdate()
 	objCenter->SetRotation({ centerRotation.x, -testDegrees + 90.0f, centerRotation.z });
 
 	// 背景天球座標のセット
-	objSkydome->SetPosition(SkydomPos);
-	objSkydome->SetRotation(SkydomRot);
+	/*objSkydome->SetPosition(SkydomPos);
+	objSkydome->SetRotation(SkydomRot);*/
 
 	// ボス関連座標のセット
 	bossBody->SetPosition(bossPosition);
@@ -1544,6 +1543,7 @@ void GameScreen::GameInitialize()
 
 	objSkydome->SetPosition({ 0.0f, 0.0f, 0.0f });
 	objSkydome->SetRotation({ 0.0f,0.0f,0.0f, });
+	objSkydome->SetScale({ 5.0f, 5.0f, 5.0f });
 
 	frontCamera->SetPosition({ 0,0,-20.0f });
 	rightCamera->SetPosition({ -20,0,0.0f });
@@ -1974,6 +1974,8 @@ void GameScreen::Attack()
 {
 	shotRate -= 0.1f;
 
+	XMVECTOR bulletVelocity = { 0,0,bulletSpeed };
+
 	if (input->PushKey(DIK_SPACE) || (IsButtonPush(ButtonKind::Button_A)))
 	{
 		if (shotRate <= 0)
@@ -1985,7 +1987,7 @@ void GameScreen::Attack()
 		if (shotFlag == true)
 		{
 			std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
-			newBullet = Bullet::Create(modelBullet, playerWorldPosition, bulletScale, bulletVelocity);
+			newBullet = Bullet::Create(modelBullet, playerWorldPosition, bulletScale, bulletSpeed);
 
 			bullets.push_back(std::move(newBullet));
 
@@ -2004,7 +2006,7 @@ void GameScreen::BossAttack()
 	if (playerHp >= 0)
 	{
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-		newBullet = BossTargetBullet::Create(modelBullet, bossPosition, bulletScale, playerWorldPosition, bulletVelocity);
+		newBullet = BossTargetBullet::Create(modelBullet, bossPosition, bulletScale, playerWorldPosition, bulletSpeed);
 
 		bossTargetBullets.push_back(std::move(newBullet));
 	}
@@ -2015,7 +2017,7 @@ void GameScreen::BossLeg1Attack()
 	if (playerHp >= 0)
 	{
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-		newBullet = BossTargetBullet::Create(modelBullet, bossLeg1WorldPosition, bulletScale, playerWorldPosition, bulletVelocity);
+		newBullet = BossTargetBullet::Create(modelBullet, bossLeg1WorldPosition, bulletScale, playerWorldPosition, bulletSpeed);
 
 		bossTargetBullets.push_back(std::move(newBullet));
 	}
@@ -2026,7 +2028,7 @@ void GameScreen::BossLeg2Attack()
 	if (playerHp >= 0)
 	{
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-		newBullet = BossTargetBullet::Create(modelBullet, bossLeg2WorldPosition, bulletScale, playerWorldPosition, bulletVelocity);
+		newBullet = BossTargetBullet::Create(modelBullet, bossLeg2WorldPosition, bulletScale, playerWorldPosition, bulletSpeed);
 
 		bossTargetBullets.push_back(std::move(newBullet));
 	}
@@ -2037,7 +2039,7 @@ void GameScreen::BossLeg3Attack()
 	if (playerHp >= 0)
 	{
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-		newBullet = BossTargetBullet::Create(modelBullet, bossLeg3WorldPosition, bulletScale, playerWorldPosition, bulletVelocity);
+		newBullet = BossTargetBullet::Create(modelBullet, bossLeg3WorldPosition, bulletScale, playerWorldPosition, bulletSpeed);
 
 		bossTargetBullets.push_back(std::move(newBullet));
 	}
@@ -2048,7 +2050,7 @@ void GameScreen::BossLeg4Attack()
 	if (playerHp >= 0)
 	{
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-		newBullet = BossTargetBullet::Create(modelBullet, bossLeg4WorldPosition, bulletScale, playerWorldPosition, bulletVelocity);
+		newBullet = BossTargetBullet::Create(modelBullet, bossLeg4WorldPosition, bulletScale, playerWorldPosition, bulletSpeed);
 
 		bossTargetBullets.push_back(std::move(newBullet));
 	}

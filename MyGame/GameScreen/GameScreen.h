@@ -340,7 +340,8 @@ private: // メンバ変数
 
 	// 弾関連
 	XMFLOAT3 bulletScale = { 0.3f, 0.3f, 0.3f };
-	float bulletVelocity = 1.5f;
+
+	float bulletSpeed = 1.5f;
 
 	float shotRate = 1.5f;
 	bool shotFlag = false;
