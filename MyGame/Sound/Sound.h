@@ -63,16 +63,16 @@ public: // メンバ関数
 	void Finalize();
 
 	// 音声読み込み
-	void LoadWave(const std::string& filename);
+	void LoadWav(const std::string& filename);
 
 	// サウンドデータの解放
 	void UnLoad(SoundData* soundData);
 
 	// サウンドファイルの読み込みと再生
-	void PlayWave(const std::string& filename, const float Volume, bool Loop = false);
+	void PlayWav(const std::string& filename, const float Volume, bool Loop = false);
 
 	// サウンドファイルの停止
-	void StopWave(const std::string& filename);
+	void StopWav(const std::string& filename);
 
 private: // メンバ変数
 	ComPtr<IXAudio2> xAudio2;

@@ -42,15 +42,6 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	// サウンド初期化
 	sound->Initialize();
 
-	//音声ロード
-	sound->LoadWave("Title.wav");
-	sound->LoadWave("Shot.wav");
-	sound->LoadWave("Bomb.wav");
-	sound->LoadWave("Damage.wav");
-	sound->LoadWave("Hit.wav");
-	sound->LoadWave("Play.wav");
-	sound->LoadWave("Push.wav");
-
 	// カメラ生成
 	camera = new Camera(WinApp::window_width, WinApp::window_height);
 
@@ -74,141 +65,11 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	// デバッグテキスト初期化
 	debugText.Initialize(debugTextTexNumber);
 
+	//音声の読み込み
+	LoadWavFunction();
+
 	// テクスチャ読み込み
-	if (!Sprite::LoadTexture(1, L"Resources/Sprite/Title.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(2, L"Resources/Sprite/ResultBG.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(3, L"Resources/Sprite/Loading.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(4, L"Resources/Sprite/StageSelect.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(5, L"Resources/Sprite/HpUI/Hp00UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(6, L"Resources/Sprite/HpUI/Hp01UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(7, L"Resources/Sprite/HpUI/Hp02UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(8, L"Resources/Sprite/HpUI/Hp03UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(9, L"Resources/Sprite/HpUI/Hp04UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(10, L"Resources/Sprite/HpUI/Hp05UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(11, L"Resources/Sprite/HpUI/Hp06UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(12, L"Resources/Sprite/HpUI/Hp07UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(13, L"Resources/Sprite/HpUI/Hp08UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(14, L"Resources/Sprite/HpUI/Hp09UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(15, L"Resources/Sprite/HpUI/Hp10UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(16, L"Resources/Sprite/HpUI/Hp11UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(17, L"Resources/Sprite/HpUI/Hp12UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(18, L"Resources/Sprite/HpUI/Hp13UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(19, L"Resources/Sprite/HpUI/Hp14UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(20, L"Resources/Sprite/HpUI/Hp15UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(21, L"Resources/Sprite/HpUI/Hp16UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(22, L"Resources/Sprite/HpUI/Hp17UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(23, L"Resources/Sprite/HpUI/Hp18UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(24, L"Resources/Sprite/HpUI/Hp19UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(25, L"Resources/Sprite/HpUI/Hp20UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(26, L"Resources/Sprite/GameFG.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(27, L"Resources/Sprite/TitleStartUI.png")) {
-		assert(0);
-		return;
-	}
+	LoadTextureFunction();
 
 	// スプライト生成
 	TitleBG = Sprite::Create(1, { 0.0f,0.0f });
@@ -278,14 +139,9 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	bossLeg3->SetModel(modelBossLeg);
 	bossLeg4->SetModel(modelBossLeg);
 
-	bossBody->SetCollider(new SphereCollider);
-	bossLeg1->SetCollider(new SphereCollider);
-	bossLeg2->SetCollider(new SphereCollider);
-	bossLeg3->SetCollider(new SphereCollider);
-	bossLeg4->SetCollider(new SphereCollider);
-
 	objTitlePlayer->SetModel(modelPlayer);
 
+	// 親子関係を結ぶ
 	player->SetParent(objCenter);
 
 	frontCamera->SetParent(objCenter);
@@ -298,6 +154,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	bossLeg3->SetParent(bossBody);
 	bossLeg4->SetParent(bossBody);
 
+	// FBXモデルのロード
 	testmodel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 
 	// FBX3Dオブジェクト生成とモデルとセット
@@ -305,6 +162,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	testobject->Initialize();
 	testobject->SetModel(testmodel);
 
+	// タイトル画面の初期化
 	TitleInitialize();
 }
 
@@ -354,6 +212,7 @@ void GameScreen::Draw()
 
 void GameScreen::TitleUpdate()
 {
+#pragma region 情報の取得
 	SkydomRot = objSkydome->GetRotation();
 	TitlePlayerPosition = objTitlePlayer->GetPosition();
 	TitlePlayerRotation = objTitlePlayer->GetRotation();
@@ -363,12 +222,11 @@ void GameScreen::TitleUpdate()
 	loadingColor = LoadingBG->GetColor();
 
 	titleStartUIColor = TitleStartUI->GetColor();
+#pragma endregion
 
+#pragma region プレイヤーモデルの制御
 	TitlePlayerPosition.x += moveX;
 	TitlePlayerPosition.y += moveY;
-
-	// TitlePlayerRotation.x += moveR;
-
 
 	if (TitlePlayerPosition.y >= -1.0f)
 	{
@@ -400,6 +258,7 @@ void GameScreen::TitleUpdate()
 		}
 
 	}
+#pragma endregion
 
 	switch (titleScene)
 	{
@@ -436,6 +295,7 @@ void GameScreen::TitleUpdate()
 
 		}
 
+		// UIの点滅
 		titleStartUIColor.w -= 0.01f;
 
 		if (titleStartUIColor.w <= 0.3f)
@@ -443,9 +303,10 @@ void GameScreen::TitleUpdate()
 			titleStartUIColor.w = 1.0f;
 		}
 
+		// 特定のキーを押してシーン遷移開始
 		if (input->TriggerKey(DIK_SPACE) || input->TriggerKey(DIK_W) || input->TriggerKey(DIK_A) || input->TriggerKey(DIK_S) || input->TriggerKey(DIK_D))
 		{
-			sound->PlayWave("Push.wav", Volume_Title);
+			sound->PlayWav("Push.wav", Volume_Title);
 			titleStartUIColor.w = 1.0f;
 			titleScene = STAGING;
 		}
@@ -511,7 +372,7 @@ void GameScreen::TitleUpdate()
 
 		if (changeSceneTimer <= 0)
 		{
-			sound->StopWave("Title.wav");
+			sound->StopWav("Title.wav");
 			GameInitialize();
 			scene = GAME;
 		}
@@ -519,6 +380,7 @@ void GameScreen::TitleUpdate()
 		break;
 	}
 
+#pragma region 情報のセット
 	objSkydome->SetRotation(SkydomRot);
 	objTitlePlayer->SetPosition(TitlePlayerPosition);
 	objTitlePlayer->SetRotation(TitlePlayerRotation);
@@ -526,10 +388,13 @@ void GameScreen::TitleUpdate()
 	LoadingBG->SetColor(loadingColor);
 
 	TitleStartUI->SetColor(titleStartUIColor);
+#pragma endregion
 
+#pragma region 更新処理
 	camera->Update();
 	objSkydome->Update();
 	objTitlePlayer->Update();
+#pragma endregion
 
 	// デバックテキスト
 	AllDebugText();
@@ -627,7 +492,7 @@ void GameScreen::TitleInitialize()
 	changeSceneFlag = false;
 	changeSceneTimer = 100.0f;
 
-	sound->PlayWave("Title.wav", Volume_Title, true);
+	sound->PlayWav("Title.wav", Volume_Title, true);
 }
 
 void GameScreen::StageSelectUpdate()
@@ -756,21 +621,25 @@ void GameScreen::StageSelectInitialize()
 
 void GameScreen::GameUpdate()
 {
+	// ルートを完走したら遷移
 	if (startIndex >= 39)
 	{
 		changeColorFlag = true;
 	}
 
+	// ボスが撃破されたら遷移
 	if (bossFlag == false)
 	{
 		changeColorFlag = true;
 	}
 
+	// プレイヤーが撃破されたら遷移
 	if (playerHp <= 0)
 	{
 		changeColorFlag = true;
 	}
 
+#pragma region 情報を取得
 	playerPosition = player->GetPosition();
 	playerRotation = player->GetRotation();
 
@@ -791,6 +660,7 @@ void GameScreen::GameUpdate()
 	{
 		bossPosition = bossBody->GetPosition();
 	}
+
 	bossRotation = bossBody->GetRotation();
 
 	bossLeg1Position = bossLeg1->GetPosition();
@@ -801,7 +671,9 @@ void GameScreen::GameUpdate()
 	specialBulletPosition = { bossPosition.x , bossPosition.y - 5, bossPosition.z };
 
 	loadingColor = LoadingBG->GetColor();
+#pragma endregion
 
+	// 暗転を解除
 	if (changeColorFlag == false)
 	{
 		if (loadingColor.w > -0.1)
@@ -810,6 +682,7 @@ void GameScreen::GameUpdate()
 		}
 	}
 
+	// 暗転させてからシーン遷移
 	if (changeColorFlag == true)
 	{
 		loadingColor.w += 0.05f;
@@ -823,7 +696,7 @@ void GameScreen::GameUpdate()
 
 	if (changeSceneTimer <= 0)
 	{
-		sound->StopWave("Play.wav");
+		sound->StopWav("Play.wav");
 		ResultInitialize();
 		scene = RESULT;
 	}
@@ -872,6 +745,8 @@ void GameScreen::GameUpdate()
 #pragma endregion
 
 #pragma region ボス関連
+
+#pragma region ボスの行動パターン
 	switch (bossPattern)
 	{
 	case BOSSPATTERN::STAY:
@@ -880,8 +755,6 @@ void GameScreen::GameUpdate()
 		break;
 
 	case BOSSPATTERN::NORMAL:
-		//bossRotation.y += 2;
-
 		bossBody->shotTimer--;
 
 		if (bossBody->shotTimer <= 0)
@@ -892,6 +765,7 @@ void GameScreen::GameUpdate()
 		break;
 
 	case BOSSPATTERN::BODYUP:
+		rushFlag = true;
 		if (bossRotation.x <= 90.0f)
 		{
 			bossRotation.x += 1.0f;
@@ -910,6 +784,7 @@ void GameScreen::GameUpdate()
 		}
 		else if (bossRotation.x <= 0.0f)
 		{
+			rushFlag = false;
 			bossPattern = STAY;
 		}
 
@@ -970,8 +845,9 @@ void GameScreen::GameUpdate()
 
 		break;
 	}
+#pragma endregion
 
-	// 特定のルート通過でパターン変化
+#pragma region 特定のルート通過でパターン変化
 	if (startIndex == 4)
 	{
 		bossPattern = NORMAL;
@@ -1016,7 +892,9 @@ void GameScreen::GameUpdate()
 	{
 		bossPattern = BODYDOWN;
 	}
+#pragma endregion
 
+#pragma region 当たり判定
 	// ボス本体の当たり判定
 	if (bossFlag == true)
 	{
@@ -1025,7 +903,7 @@ void GameScreen::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossBody->GetPosition(), 0.8f, 0.8f) == true)
 			{
 				bossHp -= 1;
-				sound->PlayWave("Hit.wav", Volume_Title);
+				sound->PlayWav("Hit.wav", Volume_Title);
 				bullet->deathFlag = true;
 				// パーティクル生成
 				CreateHitParticles(bossPosition);
@@ -1063,7 +941,7 @@ void GameScreen::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossLeg1WorldPosition, 0.8f, 0.6f) == true)
 			{
 				bossHp -= 1;
-				sound->PlayWave("Hit.wav", Volume_Title);
+				sound->PlayWav("Hit.wav", Volume_Title);
 				bossLeg1Hp -= 1;
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -1098,7 +976,7 @@ void GameScreen::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossLeg2WorldPosition, 0.8f, 0.6f) == true)
 			{
 				bossHp -= 1;
-				sound->PlayWave("Hit.wav", Volume_Title);
+				sound->PlayWav("Hit.wav", Volume_Title);
 				bossLeg2Hp -= 1;
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -1133,7 +1011,7 @@ void GameScreen::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossLeg3WorldPosition, 0.8f, 0.6f) == true)
 			{
 				bossHp -= 1;
-				sound->PlayWave("Hit.wav", Volume_Title);
+				sound->PlayWav("Hit.wav", Volume_Title);
 				bossLeg3Hp -= 1;
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -1168,7 +1046,7 @@ void GameScreen::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossLeg4WorldPosition, 0.8f, 0.6f) == true)
 			{
 				bossHp -= 1;
-				sound->PlayWave("Hit.wav", Volume_Title);
+				sound->PlayWav("Hit.wav", Volume_Title);
 				bossLeg4Hp -= 1;
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -1200,12 +1078,13 @@ void GameScreen::GameUpdate()
 		if (OnCollision(bullet->GetPosition(), playerWorldPosition, 0.8f, 0.6f) == true)
 		{
 			playerHp -= 1;
-			sound->PlayWave("Damage.wav", Volume_Title);
+			sound->PlayWav("Damage.wav", Volume_Title);
 			bullet->deathFlag = true;
 			// パーティクル生成
 			CreateHitParticles(playerWorldPosition);
 		}
 	}
+#pragma endregion
 
 #pragma endregion
 
@@ -1312,6 +1191,7 @@ void GameScreen::GameUpdate()
 	testRadians = atan2(testZ, testX);
 	testDegrees = XMConvertToDegrees(testRadians);
 
+#pragma region 座標のセット
 	// カメラ座標のセット
 	//camera->SetEye(cameraFrontPosition);
 	CameraSwitching();
@@ -1340,7 +1220,9 @@ void GameScreen::GameUpdate()
 	bossLeg4->SetPosition(bossLeg4Position);
 
 	LoadingBG->SetColor(loadingColor);
+#pragma endregion
 
+#pragma region 更新処理
 	// ボス関連の更新
 	bossBody->Update();
 	bossLeg1->Update();
@@ -1373,6 +1255,7 @@ void GameScreen::GameUpdate()
 
 	// FBXの更新
 	testobject->Update();
+#pragma endregion
 
 	collisionManager->CheckAllCollisions();
 
@@ -1562,7 +1445,7 @@ void GameScreen::GameDraw()
 	LoadingBG->Draw();
 
 	// デバッグテキストの描画
-	//debugText.DrawAll(cmdList);
+	debugText.DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -1626,6 +1509,8 @@ void GameScreen::GameInitialize()
 	bossLeg3Flag = true;
 	bossLeg4Flag = true;
 
+	rushFlag = false;
+
 	// デスフラグ
 	bossDeathFlag = false;
 
@@ -1649,7 +1534,7 @@ void GameScreen::GameInitialize()
 
 	loadingColor.w = 1.0f;
 
-	sound->PlayWave("Play.wav", Volume_Title, true);
+	sound->PlayWav("Play.wav", Volume_Title, true);
 
 	startCount = GetTickCount();
 }
@@ -1909,7 +1794,7 @@ void GameScreen::GameDebugText()
 	std::ostringstream StartIndex;
 	StartIndex << "StartIndex:("
 		<< std::fixed << std::setprecision(2)
-		<< startIndex << ")";
+		<< rushFlag << ")";
 	debugText.Print(StartIndex.str(), 50, 210, 1.0f);
 
 	// ボスのHP関連
@@ -2005,7 +1890,7 @@ void GameScreen::CameraSwitching()
 	{
 		cameraMode = 2;
 	}
-	
+
 	else if (startIndex == 29)
 	{
 		cameraMode = 0;
@@ -2023,7 +1908,7 @@ void GameScreen::Attack()
 		if (shotRate <= 0)
 		{
 			shotFlag = true;
-			sound->PlayWave("Shot.wav", Volume_Title);
+			sound->PlayWav("Shot.wav", Volume_Title);
 		}
 
 		if (shotFlag == true)
@@ -2046,7 +1931,7 @@ void GameScreen::BossAttack()
 
 	bossBullets.push_back(std::move(newBullet));*/
 
-	sound->PlayWave("Bomb.wav", Volume_Title);
+	sound->PlayWav("Bomb.wav", Volume_Title);
 
 	if (playerHp >= 0)
 	{
@@ -2059,7 +1944,7 @@ void GameScreen::BossAttack()
 
 void GameScreen::BossLeg1Attack()
 {
-	sound->PlayWave("Bomb.wav", Volume_Title);
+	sound->PlayWav("Bomb.wav", Volume_Title);
 	if (playerHp >= 0)
 	{
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
@@ -2071,7 +1956,7 @@ void GameScreen::BossLeg1Attack()
 
 void GameScreen::BossLeg2Attack()
 {
-	sound->PlayWave("Bomb.wav", Volume_Title);
+	sound->PlayWav("Bomb.wav", Volume_Title);
 	if (playerHp >= 0)
 	{
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
@@ -2083,7 +1968,7 @@ void GameScreen::BossLeg2Attack()
 
 void GameScreen::BossLeg3Attack()
 {
-	sound->PlayWave("Bomb.wav", Volume_Title);
+	sound->PlayWav("Bomb.wav", Volume_Title);
 	if (playerHp >= 0)
 	{
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
@@ -2095,7 +1980,7 @@ void GameScreen::BossLeg3Attack()
 
 void GameScreen::BossLeg4Attack()
 {
-	sound->PlayWave("Bomb.wav", Volume_Title);
+	sound->PlayWav("Bomb.wav", Volume_Title);
 	if (playerHp >= 0)
 	{
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
@@ -2149,6 +2034,155 @@ void GameScreen::SplineCount()
 			timeRate = 1.0f;
 		}
 	}*/
+}
+
+void GameScreen::LoadTextureFunction()
+{
+	if (!Sprite::LoadTexture(1, L"Resources/Sprite/Title.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(2, L"Resources/Sprite/ResultBG.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(3, L"Resources/Sprite/Loading.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(4, L"Resources/Sprite/StageSelect.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(5, L"Resources/Sprite/HpUI/Hp00UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(6, L"Resources/Sprite/HpUI/Hp01UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(7, L"Resources/Sprite/HpUI/Hp02UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(8, L"Resources/Sprite/HpUI/Hp03UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(9, L"Resources/Sprite/HpUI/Hp04UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(10, L"Resources/Sprite/HpUI/Hp05UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(11, L"Resources/Sprite/HpUI/Hp06UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(12, L"Resources/Sprite/HpUI/Hp07UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(13, L"Resources/Sprite/HpUI/Hp08UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(14, L"Resources/Sprite/HpUI/Hp09UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(15, L"Resources/Sprite/HpUI/Hp10UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(16, L"Resources/Sprite/HpUI/Hp11UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(17, L"Resources/Sprite/HpUI/Hp12UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(18, L"Resources/Sprite/HpUI/Hp13UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(19, L"Resources/Sprite/HpUI/Hp14UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(20, L"Resources/Sprite/HpUI/Hp15UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(21, L"Resources/Sprite/HpUI/Hp16UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(22, L"Resources/Sprite/HpUI/Hp17UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(23, L"Resources/Sprite/HpUI/Hp18UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(24, L"Resources/Sprite/HpUI/Hp19UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(25, L"Resources/Sprite/HpUI/Hp20UI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(26, L"Resources/Sprite/GameFG.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(27, L"Resources/Sprite/TitleStartUI.png")) {
+		assert(0);
+		return;
+	}
+}
+
+void GameScreen::LoadWavFunction()
+{
+	sound->LoadWav("Title.wav");
+	sound->LoadWav("Shot.wav");
+	sound->LoadWav("Bomb.wav");
+	sound->LoadWav("Damage.wav");
+	sound->LoadWav("Hit.wav");
+	sound->LoadWav("Play.wav");
+	sound->LoadWav("Push.wav");
 }
 
 bool GameScreen::OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB)

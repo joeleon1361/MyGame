@@ -133,6 +133,10 @@ public: // メンバ関数
 
 	void SplineCount();
 
+	void LoadTextureFunction();
+
+	void LoadWavFunction();
+
 	// 当たり判定
 	bool OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB);
 private:
@@ -483,6 +487,8 @@ private: // メンバ変数
 		GUARDOFF,
 		FOURWAYRUSH
 	};
+
+	bool rushFlag = false;
 
 	int bossPattern = STAY;
 

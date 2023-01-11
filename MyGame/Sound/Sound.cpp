@@ -47,7 +47,7 @@ void Sound::Finalize()
 	}
 }
 
-void Sound::LoadWave(const std::string& filename)
+void Sound::LoadWav(const std::string& filename)
 {
 	if (soundDatas.find(filename) != soundDatas.end())
 	{
@@ -149,7 +149,7 @@ void Sound::UnLoad(SoundData* soundData)
 	soundData->wfex = {};
 }
 
-void Sound::PlayWave(const std::string& filename, const float Volume, bool Loop)
+void Sound::PlayWav(const std::string& filename, const float Volume, bool Loop)
 {
 	HRESULT result;
 
@@ -184,7 +184,7 @@ void Sound::PlayWave(const std::string& filename, const float Volume, bool Loop)
 	result = soundData.pSourceVoice->Start();
 }
 
-void Sound::StopWave(const std::string& filename)
+void Sound::StopWav(const std::string& filename)
 {
 	std::map<std::string, SoundData>::iterator it = soundDatas.find(filename);
 
