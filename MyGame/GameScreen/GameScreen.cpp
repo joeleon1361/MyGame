@@ -78,13 +78,14 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	LoadingBG = Sprite::Create(3, { 0.0f,0.0f }, { 1,1,1,0 });
 	StageSelectBG = Sprite::Create(4, { 0.0f,0.0f });
 
-
 	GameFG = Sprite::Create(26, { 0.0f,0.0f });
 	TitleStartUI = Sprite::Create(27, { 310.0f,630.0f });
 
 	playerHpUI = Sprite::Create(5, { 810.0f, 540.0f });
-	playerHpGage = Sprite::Create(6, { 833.0f, 680.0f });
+	playerHpGage = Sprite::Create(6, { 1153.0f, 710.0f });
 
+	bossHpUI = Sprite::Create(7, { 700.0f, 20.0f });
+	bossHpGage = Sprite::Create(8, { 1254.0f, 59.0f });
 
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
@@ -675,6 +676,8 @@ void GameScreen::GameUpdate()
 	loadingColor = LoadingBG->GetColor();
 
 	playerHpGageSize = playerHpGage->GetSize();
+
+	bossHpGageSize = bossHpGage->GetSize();
 #pragma endregion
 
 	// 暗転を解除
@@ -906,7 +909,8 @@ void GameScreen::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossBody->GetPosition(), 0.8f, 0.8f) == true)
 			{
-				bossHp -= 1;
+				bossHp -= 10;
+				bossHpGageSize.x -= 10;
 				sound->PlayWav("Hit.wav", Volume_Title);
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -945,7 +949,8 @@ void GameScreen::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossLeg1WorldPosition, 0.8f, 0.6f) == true)
 			{
 				sound->PlayWav("Hit.wav", Volume_Title);
-				bossHp -= 1;
+				bossHp -= 5;
+				bossHpGageSize.x -= 5;
 				if (rushFlag == false)
 				{
 					bossLeg1Hp -= 1;
@@ -983,7 +988,8 @@ void GameScreen::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossLeg2WorldPosition, 0.8f, 0.6f) == true)
 			{
 				sound->PlayWav("Hit.wav", Volume_Title);
-				bossHp -= 1;
+				bossHp -= 5;
+				bossHpGageSize.x -= 5;
 				if (rushFlag == false)
 				{
 					bossLeg2Hp -= 1;
@@ -1021,7 +1027,8 @@ void GameScreen::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossLeg3WorldPosition, 0.8f, 0.6f) == true)
 			{
 				sound->PlayWav("Hit.wav", Volume_Title);
-				bossHp -= 1;
+				bossHp -= 5;
+				bossHpGageSize.x -= 5;
 				if (rushFlag == false)
 				{
 					bossLeg3Hp -= 1;
@@ -1059,7 +1066,8 @@ void GameScreen::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossLeg4WorldPosition, 0.8f, 0.6f) == true)
 			{
 				sound->PlayWav("Hit.wav", Volume_Title);
-				bossHp -= 1;
+				bossHp -= 5;
+				bossHpGageSize.x -= 5;
 				if (rushFlag == false)
 				{
 					bossLeg4Hp -= 1;
@@ -1241,6 +1249,8 @@ void GameScreen::GameUpdate()
 	LoadingBG->SetColor(loadingColor);
 
 	playerHpGage->SetSize(playerHpGageSize);
+
+	bossHpGage->SetSize(bossHpGageSize);
 #pragma endregion
 
 #pragma region 更新処理
@@ -1376,6 +1386,9 @@ void GameScreen::GameDraw()
 	playerHpUI->Draw();
 	playerHpGage->Draw();
 
+	bossHpUI->Draw();
+	bossHpGage->Draw();
+
 	GameFG->Draw();
 
 	LoadingBG->Draw();
@@ -1426,17 +1439,21 @@ void GameScreen::GameInitialize()
 	LoadingBG->SetColor({ 1, 1, 1, 1.0f });
 	//loadingColor.w = 1.0f;
 
-	playerHpGage->SetSize({ 320.0f, 30 });
+	playerHpGage->SetSize({ 320.0f, 30.0f });
+	playerHpGage->SetAnchorPoint({ 1, 0 });
+
+	bossHpGage->SetSize({ 530.0f, 30.0f });
+	bossHpGage->SetAnchorPoint({ 1, 0 });
 
 	// プレイヤー関連
 	playerHp = 320;
 
 	// ボス関連
-	bossHp = 60;
-	bossLeg1Hp = 40;
-	bossLeg2Hp = 40;
-	bossLeg3Hp = 40;
-	bossLeg4Hp = 40;
+	bossHp = 530;
+	bossLeg1Hp = 10;
+	bossLeg2Hp = 10;
+	bossLeg3Hp = 10;
+	bossLeg4Hp = 10;
 
 	bossBreak = false;
 	bossLeg1Break = false;
@@ -1793,9 +1810,9 @@ void GameScreen::GameDebugText()
 	debugText.Print(DodgeRollRotation.str(), 50, 290, 1.0f);*/
 
 	// 自機操作方法
-	debugText.Print("WASD : PlayerMove", 1050, 30, 1.0f);
+	//debugText.Print("WASD : PlayerMove", 1050, 30, 1.0f);
 
-	debugText.Print("SPACE : Shot", 1050, 50, 1.0f);
+	//debugText.Print("SPACE : Shot", 1050, 50, 1.0f);
 }
 // カメラ方向の切り替え
 void GameScreen::CameraSwitching()
@@ -1847,11 +1864,11 @@ void GameScreen::Attack()
 		if (shotRate <= 0)
 		{
 			shotFlag = true;
-			sound->PlayWav("Shot.wav", Volume_Title);
 		}
 
 		if (shotFlag == true)
 		{
+			sound->PlayWav("Shot.wav", Volume_Title);
 			std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
 			newBullet = Bullet::Create(modelBullet, playerWorldPosition, bulletScale, bulletSpeed);
 
@@ -1870,10 +1887,9 @@ void GameScreen::BossAttack()
 
 	bossBullets.push_back(std::move(newBullet));*/
 
-	sound->PlayWav("Bomb.wav", Volume_Title);
-
 	if (playerHp >= 0)
 	{
+		sound->PlayWav("Bomb.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
 		newBullet = BossTargetBullet::Create(modelBullet, bossPosition, bulletScale, playerWorldPosition, bulletSpeed);
 
@@ -1883,9 +1899,9 @@ void GameScreen::BossAttack()
 
 void GameScreen::BossLeg1Attack()
 {
-	sound->PlayWav("Bomb.wav", Volume_Title);
-	if (playerHp >= 0)
+	if ((playerHp >= 0) && (bossLeg1Flag == true))
 	{
+		sound->PlayWav("Bomb.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
 		newBullet = BossTargetBullet::Create(modelBullet, bossLeg1WorldPosition, bulletScale, playerWorldPosition, bulletSpeed);
 
@@ -1895,9 +1911,9 @@ void GameScreen::BossLeg1Attack()
 
 void GameScreen::BossLeg2Attack()
 {
-	sound->PlayWav("Bomb.wav", Volume_Title);
-	if (playerHp >= 0)
+	if ((playerHp >= 0) && (bossLeg2Flag == true))
 	{
+		sound->PlayWav("Bomb.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
 		newBullet = BossTargetBullet::Create(modelBullet, bossLeg2WorldPosition, bulletScale, playerWorldPosition, bulletSpeed);
 
@@ -1907,9 +1923,9 @@ void GameScreen::BossLeg2Attack()
 
 void GameScreen::BossLeg3Attack()
 {
-	sound->PlayWav("Bomb.wav", Volume_Title);
-	if (playerHp >= 0)
+	if ((playerHp >= 0) && (bossLeg3Flag == true))
 	{
+		sound->PlayWav("Bomb.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
 		newBullet = BossTargetBullet::Create(modelBullet, bossLeg3WorldPosition, bulletScale, playerWorldPosition, bulletSpeed);
 
@@ -1919,9 +1935,9 @@ void GameScreen::BossLeg3Attack()
 
 void GameScreen::BossLeg4Attack()
 {
-	sound->PlayWav("Bomb.wav", Volume_Title);
-	if (playerHp >= 0)
+	if ((playerHp >= 0) && (bossLeg4Flag == true))
 	{
+		sound->PlayWav("Bomb.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
 		newBullet = BossTargetBullet::Create(modelBullet, bossLeg4WorldPosition, bulletScale, playerWorldPosition, bulletSpeed);
 
@@ -2003,6 +2019,16 @@ void GameScreen::LoadTextureFunction()
 	}
 
 	if (!Sprite::LoadTexture(6, L"Resources/Sprite/HpUI/playerHpGage.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(7, L"Resources/Sprite/BossHpUI/bossHpUI.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(8, L"Resources/Sprite/BossHpUI/bossHpGage.png")) {
 		assert(0);
 		return;
 	}

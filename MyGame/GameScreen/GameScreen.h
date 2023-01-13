@@ -169,6 +169,10 @@ private: // メンバ変数
 	Sprite* playerHpUI = nullptr;
 	Sprite* playerHpGage = nullptr;
 
+	// ボスのHPUI
+	Sprite* bossHpUI = nullptr;
+	Sprite* bossHpGage = nullptr;
+
 	ParticleManager* particleMan = nullptr;
 
 	ObjModel* modelSkydome = nullptr;
@@ -429,8 +433,6 @@ private: // メンバ変数
 
 	int playerHp;
 
-	XMFLOAT2 playerHpGageSize;
-
 	// 弾関連
 	XMFLOAT3 bulletScale = { 0.3f, 0.3f, 0.3f };
 
@@ -593,4 +595,9 @@ private: // メンバ変数
 
 	//オーディオのボリューム
 	const float Volume_Title = 0.07f;
+
+	// UI関係
+	XMFLOAT2 playerHpGageSize;
+
+	XMFLOAT2 bossHpGageSize;
 };
