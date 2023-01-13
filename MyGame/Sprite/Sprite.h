@@ -95,6 +95,9 @@ public: // メンバ関数
 
 	// 色の設定
 	void SetColor(XMFLOAT4 color);
+
+	// サイズの取得
+	const XMFLOAT2& GetSize() { return size; }
 	
 	// サイズの設定
 	void SetSize(XMFLOAT2 size);

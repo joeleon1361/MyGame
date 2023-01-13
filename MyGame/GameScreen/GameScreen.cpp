@@ -77,13 +77,14 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	TitleLogo = Sprite::Create(1, { 100.0f,100.0f }, { 1, 1, 1, 1 });
 	LoadingBG = Sprite::Create(3, { 0.0f,0.0f }, { 1,1,1,0 });
 	StageSelectBG = Sprite::Create(4, { 0.0f,0.0f });
+
+
 	GameFG = Sprite::Create(26, { 0.0f,0.0f });
 	TitleStartUI = Sprite::Create(27, { 310.0f,630.0f });
 
-	for (int i = 0; i < 21; i++)
-	{
-		playerHpUI[i] = Sprite::Create((i + 5), { 810.0f, 540.0f });
-	}
+	playerHpUI = Sprite::Create(5, { 810.0f, 540.0f });
+	playerHpGage = Sprite::Create(6, { 833.0f, 680.0f });
+
 
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
@@ -466,9 +467,8 @@ void GameScreen::TitleInitialize()
 	camera->SetEye({ 0, 0, 10 });
 	camera->SetUp({ 0, 1, 0 });
 
-	loadingColor.w = 0.0f;
-
-	titleStartUIColor.w = 1.0f;
+	LoadingBG->SetColor({ 1, 1, 1, 0 });
+	TitleStartUI->SetColor({ 1, 1, 1, 1 });
 
 	backTimer = 40.0f;
 	stagingTimer = 60.0f;
@@ -610,7 +610,7 @@ void GameScreen::StageSelectInitialize()
 	camera->SetEye({ 0, 50, 100 });
 	camera->SetUp({ 0, 1, 0 });
 
-	loadingColor.w = 0.0f;
+	LoadingBG->SetColor({ 1, 1, 1, 0 });
 
 	changeColorFlag = false;
 	changeColorTimer = 30.0f;
@@ -652,6 +652,8 @@ void GameScreen::GameUpdate()
 	SkydomPos = objSkydome->GetPosition();
 	SkydomRot = objSkydome->GetRotation();
 
+
+
 	if (bossBreak == false)
 	{
 		bossPosition = SplinePosition(bossCheckPoint, startIndex, timeRate);
@@ -671,6 +673,8 @@ void GameScreen::GameUpdate()
 	specialBulletPosition = { bossPosition.x , bossPosition.y - 5, bossPosition.z };
 
 	loadingColor = LoadingBG->GetColor();
+
+	playerHpGageSize = playerHpGage->GetSize();
 #pragma endregion
 
 	// 暗転を解除
@@ -940,9 +944,12 @@ void GameScreen::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossLeg1WorldPosition, 0.8f, 0.6f) == true)
 			{
-				bossHp -= 1;
 				sound->PlayWav("Hit.wav", Volume_Title);
-				bossLeg1Hp -= 1;
+				bossHp -= 1;
+				if (rushFlag == false)
+				{
+					bossLeg1Hp -= 1;
+				}
 				bullet->deathFlag = true;
 				// パーティクル生成
 				CreateHitParticles(bossLeg1WorldPosition);
@@ -975,9 +982,12 @@ void GameScreen::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossLeg2WorldPosition, 0.8f, 0.6f) == true)
 			{
-				bossHp -= 1;
 				sound->PlayWav("Hit.wav", Volume_Title);
-				bossLeg2Hp -= 1;
+				bossHp -= 1;
+				if (rushFlag == false)
+				{
+					bossLeg2Hp -= 1;
+				}
 				bullet->deathFlag = true;
 				// パーティクル生成
 				CreateHitParticles(bossLeg2WorldPosition);
@@ -1010,9 +1020,12 @@ void GameScreen::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossLeg3WorldPosition, 0.8f, 0.6f) == true)
 			{
-				bossHp -= 1;
 				sound->PlayWav("Hit.wav", Volume_Title);
-				bossLeg3Hp -= 1;
+				bossHp -= 1;
+				if (rushFlag == false)
+				{
+					bossLeg3Hp -= 1;
+				}
 				bullet->deathFlag = true;
 				// パーティクル生成
 				CreateHitParticles(bossLeg3WorldPosition);
@@ -1045,9 +1058,12 @@ void GameScreen::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossLeg4WorldPosition, 0.8f, 0.6f) == true)
 			{
-				bossHp -= 1;
 				sound->PlayWav("Hit.wav", Volume_Title);
-				bossLeg4Hp -= 1;
+				bossHp -= 1;
+				if (rushFlag == false)
+				{
+					bossLeg4Hp -= 1;
+				}
 				bullet->deathFlag = true;
 				// パーティクル生成
 				CreateHitParticles(bossLeg4WorldPosition);
@@ -1077,13 +1093,16 @@ void GameScreen::GameUpdate()
 	{
 		if (OnCollision(bullet->GetPosition(), playerWorldPosition, 0.8f, 0.6f) == true)
 		{
-			playerHp -= 1;
+			playerHp -= 10;
+			playerHpGageSize.x -= 10;
 			sound->PlayWav("Damage.wav", Volume_Title);
 			bullet->deathFlag = true;
 			// パーティクル生成
 			CreateHitParticles(playerWorldPosition);
 		}
 	}
+
+
 #pragma endregion
 
 #pragma endregion
@@ -1220,6 +1239,8 @@ void GameScreen::GameUpdate()
 	bossLeg4->SetPosition(bossLeg4Position);
 
 	LoadingBG->SetColor(loadingColor);
+
+	playerHpGage->SetSize(playerHpGageSize);
 #pragma endregion
 
 #pragma region 更新処理
@@ -1352,93 +1373,8 @@ void GameScreen::GameDraw()
 	Sprite::PreDraw(cmdList);
 
 	// 描画
-	playerHpUI[0]->Draw();
-	switch (playerHp)
-	{
-	case 0:
-		playerHpUI[0]->Draw();
-		break;
-
-	case 1:
-		playerHpUI[1]->Draw();
-		break;
-
-	case 2:
-		playerHpUI[2]->Draw();
-		break;
-
-	case 3:
-		playerHpUI[3]->Draw();
-		break;
-
-	case 4:
-		playerHpUI[4]->Draw();
-		break;
-
-	case 5:
-		playerHpUI[5]->Draw();
-		break;
-
-	case 6:
-		playerHpUI[6]->Draw();
-		break;
-
-	case 7:
-		playerHpUI[7]->Draw();
-		break;
-
-	case 8:
-		playerHpUI[8]->Draw();
-		break;
-
-	case 9:
-		playerHpUI[9]->Draw();
-		break;
-
-	case 10:
-		playerHpUI[10]->Draw();
-		break;
-
-	case 11:
-		playerHpUI[11]->Draw();
-		break;
-
-	case 12:
-		playerHpUI[12]->Draw();
-		break;
-
-	case 13:
-		playerHpUI[13]->Draw();
-		break;
-
-	case 14:
-		playerHpUI[14]->Draw();
-		break;
-
-	case 15:
-		playerHpUI[15]->Draw();
-		break;
-
-	case 16:
-		playerHpUI[16]->Draw();
-		break;
-
-	case 17:
-		playerHpUI[17]->Draw();
-		break;
-
-	case 18:
-		playerHpUI[18]->Draw();
-		break;
-
-	case 19:
-		playerHpUI[19]->Draw();
-		break;
-
-	case 20:
-		playerHpUI[20]->Draw();
-		break;
-	}
+	playerHpUI->Draw();
+	playerHpGage->Draw();
 
 	GameFG->Draw();
 
@@ -1487,8 +1423,13 @@ void GameScreen::GameInitialize()
 	camera->SetEye({ 0, 0, 10 });
 	camera->SetUp({ 0, 1, 0 });
 
+	LoadingBG->SetColor({ 1, 1, 1, 1.0f });
+	//loadingColor.w = 1.0f;
+
+	playerHpGage->SetSize({ 320.0f, 30 });
+
 	// プレイヤー関連
-	playerHp = 20;
+	playerHp = 320;
 
 	// ボス関連
 	bossHp = 60;
@@ -1531,8 +1472,6 @@ void GameScreen::GameInitialize()
 
 	changeSceneFlag = false;
 	changeSceneTimer = 100.0f;
-
-	loadingColor.w = 1.0f;
 
 	sound->PlayWav("Play.wav", Volume_Title, true);
 
@@ -1634,7 +1573,7 @@ void GameScreen::ResultInitialize()
 	camera->SetEye({ 0, 0, 0 });
 	camera->SetUp({ 0, 1, 0 });
 
-	loadingColor.w = 1.0f;
+	LoadingBG->SetColor({ 1, 1, 1, 1 });
 
 	changeColorFlag = false;
 	changeColorTimer = 30.0f;
@@ -1794,7 +1733,7 @@ void GameScreen::GameDebugText()
 	std::ostringstream StartIndex;
 	StartIndex << "StartIndex:("
 		<< std::fixed << std::setprecision(2)
-		<< rushFlag << ")";
+		<< startIndex << ")";
 	debugText.Print(StartIndex.str(), 50, 210, 1.0f);
 
 	// ボスのHP関連
@@ -2058,107 +1997,12 @@ void GameScreen::LoadTextureFunction()
 		return;
 	}
 
-	if (!Sprite::LoadTexture(5, L"Resources/Sprite/HpUI/Hp00UI.png")) {
+	if (!Sprite::LoadTexture(5, L"Resources/Sprite/HpUI/playerHpUI.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(6, L"Resources/Sprite/HpUI/Hp01UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(7, L"Resources/Sprite/HpUI/Hp02UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(8, L"Resources/Sprite/HpUI/Hp03UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(9, L"Resources/Sprite/HpUI/Hp04UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(10, L"Resources/Sprite/HpUI/Hp05UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(11, L"Resources/Sprite/HpUI/Hp06UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(12, L"Resources/Sprite/HpUI/Hp07UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(13, L"Resources/Sprite/HpUI/Hp08UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(14, L"Resources/Sprite/HpUI/Hp09UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(15, L"Resources/Sprite/HpUI/Hp10UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(16, L"Resources/Sprite/HpUI/Hp11UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(17, L"Resources/Sprite/HpUI/Hp12UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(18, L"Resources/Sprite/HpUI/Hp13UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(19, L"Resources/Sprite/HpUI/Hp14UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(20, L"Resources/Sprite/HpUI/Hp15UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(21, L"Resources/Sprite/HpUI/Hp16UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(22, L"Resources/Sprite/HpUI/Hp17UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(23, L"Resources/Sprite/HpUI/Hp18UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(24, L"Resources/Sprite/HpUI/Hp19UI.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(25, L"Resources/Sprite/HpUI/Hp20UI.png")) {
+	if (!Sprite::LoadTexture(6, L"Resources/Sprite/HpUI/playerHpGage.png")) {
 		assert(0);
 		return;
 	}

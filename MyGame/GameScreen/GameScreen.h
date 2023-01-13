@@ -165,7 +165,9 @@ private: // メンバ変数
 
 	Sprite* LoadingBG = nullptr;
 
-	std::array<Sprite*, 21> playerHpUI{ {} };
+	// プレイヤーのHPUI
+	Sprite* playerHpUI = nullptr;
+	Sprite* playerHpGage = nullptr;
 
 	ParticleManager* particleMan = nullptr;
 
@@ -426,6 +428,8 @@ private: // メンバ変数
 	XMFLOAT3 playerWorldPosition;
 
 	int playerHp;
+
+	XMFLOAT2 playerHpGageSize;
 
 	// 弾関連
 	XMFLOAT3 bulletScale = { 0.3f, 0.3f, 0.3f };
