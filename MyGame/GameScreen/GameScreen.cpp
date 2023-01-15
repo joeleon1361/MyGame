@@ -1436,12 +1436,17 @@ void GameScreen::GameInitialize()
 	camera->SetEye({ 0, 0, 10 });
 	camera->SetUp({ 0, 1, 0 });
 
+	// シーン遷移時の画面暗転
 	LoadingBG->SetColor({ 1, 1, 1, 1.0f });
 	//loadingColor.w = 1.0f;
 
+	// プレイヤーのHPゲージ
+	playerHpGage->SetColor({ 0.1, 0.6, 0.1, 1 });
 	playerHpGage->SetSize({ 320.0f, 30.0f });
 	playerHpGage->SetAnchorPoint({ 1, 0 });
 
+	// ボスのHPゲージ
+	bossHpGage->SetColor({ 0.1, 0.6, 0.1, 1 });
 	bossHpGage->SetSize({ 530.0f, 30.0f });
 	bossHpGage->SetAnchorPoint({ 1, 0 });
 
