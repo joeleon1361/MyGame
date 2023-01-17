@@ -81,13 +81,13 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	GameFG = Sprite::Create(26, { 0.0f,0.0f });
 	TitleStartUI = Sprite::Create(27, { 310.0f,630.0f });
 
-	playerHpUI = Sprite::Create(5, { 810.0f, 540.0f });
-	playerHpGage = Sprite::Create(6, { 1153.0f, 710.0f });
-	playerHpUICover = Sprite::Create(9, { 1164.0f, 718.0f });
+	playerHpUI = Sprite::Create(5, { 1164.0f, playerHpUIHigh });
+	playerHpGage = Sprite::Create(6, { 1154.0f, playerHpUIHigh });
+	playerHpUICover = Sprite::Create(9, { 1164.0f, playerHpUIHigh });
 
-	bossHpUI = Sprite::Create(7, { 700.0f, 20.0f });
-	bossHpGage = Sprite::Create(8, { 1254.0f, 59.0f });
-	bossHpUICover = Sprite::Create(9, { 1265.0f, 67.0f });
+	bossHpUI = Sprite::Create(7, { 1265.0f, bossHpUIHigh });
+	bossHpGage = Sprite::Create(8, { 1255.0f, bossHpUIHigh });
+	bossHpUICover = Sprite::Create(9, { 1265.0f, bossHpUIHigh });
 
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
@@ -1447,19 +1447,22 @@ void GameScreen::GameInitialize()
 	// プレイヤーのHPゲージ
 	playerHpGage->SetColor({ 0.1, 0.6, 0.1, 1 });
 	playerHpGage->SetSize({ 320.0f, 30.0f });
-	playerHpGage->SetAnchorPoint({ 1, 0 });
+	playerHpGage->SetAnchorPoint({ 1, 0.5 });
 
-	//playerHpUI->SetColor({ 1.0, 0.2, 0.2, 1});
+	// playerHpUI->SetColor({ 1.0, 0.2, 0.2, 1});
+	playerHpUI->SetAnchorPoint({ 1,0.5 });
 
-	playerHpUICover->SetAnchorPoint({ 1, 0 });
+	playerHpUICover->SetAnchorPoint({ 1, 0.5 });
 	//playerHpUICover->SetColor({ 1.0, 0.2, 0.2, 1 });
 
 	// ボスのHPゲージ
 	bossHpGage->SetColor({ 0.1, 0.6, 0.1, 1 });
 	bossHpGage->SetSize({ 530.0f, 30.0f });
-	bossHpGage->SetAnchorPoint({ 1, 0 });
+	bossHpGage->SetAnchorPoint({ 1, 0.5 });
 
-	bossHpUICover->SetAnchorPoint({ 1, 0 });
+	bossHpUI->SetAnchorPoint({ 1, 0.5 });
+
+	bossHpUICover->SetAnchorPoint({ 1, 0.5 });
 
 	// プレイヤー関連
 	playerHp = 320;

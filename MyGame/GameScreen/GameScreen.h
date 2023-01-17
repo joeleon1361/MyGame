@@ -602,4 +602,8 @@ private: // メンバ変数
 	XMFLOAT2 playerHpGageSize;
 
 	XMFLOAT2 bossHpGageSize;
+
+	float playerHpUIHigh = 680.0f;
+
+	float bossHpUIHigh = 30.0f;
 };
