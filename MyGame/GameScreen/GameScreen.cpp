@@ -83,9 +83,11 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 
 	playerHpUI = Sprite::Create(5, { 810.0f, 540.0f });
 	playerHpGage = Sprite::Create(6, { 1153.0f, 710.0f });
+	playerHpUICover = Sprite::Create(9, { 1164.0f, 718.0f });
 
 	bossHpUI = Sprite::Create(7, { 700.0f, 20.0f });
 	bossHpGage = Sprite::Create(8, { 1254.0f, 59.0f });
+	bossHpUICover = Sprite::Create(9, { 1265.0f, 67.0f });
 
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
@@ -1385,9 +1387,11 @@ void GameScreen::GameDraw()
 	// 描画
 	playerHpUI->Draw();
 	playerHpGage->Draw();
+	playerHpUICover->Draw();
 
 	bossHpUI->Draw();
 	bossHpGage->Draw();
+	bossHpUICover->Draw();
 
 	GameFG->Draw();
 
@@ -1445,10 +1449,17 @@ void GameScreen::GameInitialize()
 	playerHpGage->SetSize({ 320.0f, 30.0f });
 	playerHpGage->SetAnchorPoint({ 1, 0 });
 
+	//playerHpUI->SetColor({ 1.0, 0.2, 0.2, 1});
+
+	playerHpUICover->SetAnchorPoint({ 1, 0 });
+	//playerHpUICover->SetColor({ 1.0, 0.2, 0.2, 1 });
+
 	// ボスのHPゲージ
 	bossHpGage->SetColor({ 0.1, 0.6, 0.1, 1 });
 	bossHpGage->SetSize({ 530.0f, 30.0f });
 	bossHpGage->SetAnchorPoint({ 1, 0 });
+
+	bossHpUICover->SetAnchorPoint({ 1, 0 });
 
 	// プレイヤー関連
 	playerHp = 320;
@@ -2034,6 +2045,11 @@ void GameScreen::LoadTextureFunction()
 	}
 
 	if (!Sprite::LoadTexture(8, L"Resources/Sprite/BossHpUI/bossHpGage.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(9, L"Resources/Sprite/HpUICommon/HpUICover.png")) {
 		assert(0);
 		return;
 	}

@@ -168,10 +168,12 @@ private: // メンバ変数
 	// プレイヤーのHPUI
 	Sprite* playerHpUI = nullptr;
 	Sprite* playerHpGage = nullptr;
+	Sprite* playerHpUICover = nullptr;
 
 	// ボスのHPUI
 	Sprite* bossHpUI = nullptr;
 	Sprite* bossHpGage = nullptr;
+	Sprite* bossHpUICover = nullptr;
 
 	ParticleManager* particleMan = nullptr;
 
