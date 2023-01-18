@@ -6,6 +6,7 @@
 #include "Sprite.h"
 #include "ObjObject.h"
 #include "DebugText.h"
+#include "ScoreText.h"
 #include "Sound.h"
 #include "FbxObject.h"
 #include "ParticleManager.h"
@@ -58,6 +59,8 @@ private: // エイリアス
 
 private: // 静的メンバ変数
 	static const int debugTextTexNumber = 0;
+
+	static const int scoreTextTexNumber = 10;
 
 public: // メンバ関数
 
@@ -149,6 +152,7 @@ private: // メンバ変数
 	Input* input = nullptr;
 	Sound* sound = nullptr;
 	DebugText debugText;
+	ScoreText scoreText;
 	CollisionManager* collisionManager = nullptr;
 
 	// ゲームシーン用

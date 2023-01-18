@@ -177,6 +177,7 @@
     <ClCompile Include="Particle\ParticleManager.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PostEffect\PostEffect.cpp" />
+    <ClCompile Include="ScoreText.cpp" />
     <ClCompile Include="Sound\Sound.cpp" />
     <ClCompile Include="Spline.cpp" />
     <ClCompile Include="Sprite\Sprite.cpp" />
@@ -287,6 +288,7 @@
     <ClInclude Include="Particle\ParticleManager.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PostEffect\PostEffect.h" />
+    <ClInclude Include="ScoreText.h" />
     <ClInclude Include="Sound\Sound.h" />
     <ClInclude Include="Spline.h" />
     <ClInclude Include="Sprite\Sprite.h" />

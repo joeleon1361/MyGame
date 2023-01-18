@@ -65,6 +65,14 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	// デバッグテキスト初期化
 	debugText.Initialize(debugTextTexNumber);
 
+	// スコアテキスト用テクスチャ読み込み
+	if (!Sprite::LoadTexture(scoreTextTexNumber, L"Resources/bluefont.png")) {
+		assert(0);
+		return;
+	}
+	// スコアテキスト初期化
+	scoreText.Initialize(scoreTextTexNumber);
+
 	//音声の読み込み
 	LoadWavFunction();
 
@@ -1295,6 +1303,19 @@ void GameScreen::GameUpdate()
 	// デバックテキスト
 	AllDebugText();
 	GameDebugText();
+
+	// スコアの描画
+	std::ostringstream StartIndex;
+	StartIndex << "SCORE:("
+		<< std::fixed << std::setprecision(2)
+		<< startIndex << ")";
+	scoreText.Print(StartIndex.str(), 50, 300, 0.5f);
+
+	std::ostringstream elapsedCounter;
+	elapsedCounter << "SCORE:("
+		<< std::fixed << std::setprecision(2)
+		<< elapsedCount << ")";
+	scoreText.Print(elapsedCounter.str(), 50, 320, 1.0f);
 }
 
 void GameScreen::GameDraw()
@@ -1399,6 +1420,9 @@ void GameScreen::GameDraw()
 
 	// デバッグテキストの描画
 	debugText.DrawAll(cmdList);
+
+	// スコアテキストの描画
+	scoreText.DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
