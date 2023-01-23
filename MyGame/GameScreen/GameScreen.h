@@ -179,6 +179,9 @@ private: // メンバ変数
 	Sprite* bossHpGage = nullptr;
 	Sprite* bossHpUICover = nullptr;
 
+	// スコアUI
+	Sprite* scoreUI = nullptr;
+
 	ParticleManager* particleMan = nullptr;
 
 	ObjModel* modelSkydome = nullptr;
@@ -610,4 +613,6 @@ private: // メンバ変数
 	float playerHpUIHigh = 680.0f;
 
 	float bossHpUIHigh = 30.0f;
+
+	float gameScore = 0.0f;
 };

@@ -6,6 +6,15 @@
 
 class ScoreText
 {
+protected: // エイリアス
+	// Microsoft::WRL::を省略
+	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+	// DirectX::を省略
+	using XMFLOAT2 = DirectX::XMFLOAT2;
+	using XMFLOAT3 = DirectX::XMFLOAT3;
+	using XMFLOAT4 = DirectX::XMFLOAT4;
+	using XMMATRIX = DirectX::XMMATRIX;
+
 public:
 	// デバッグテキスト用のテクスチャ番号を指定
 	static const int maxCharCount = 256;	// 最大文字数
@@ -18,7 +27,7 @@ public:
 
 	void Initialize(UINT texnumber);
 
-	void Print(const std::string& text, float x, float y, float size);
+	void Print(const std::string& text, float x, float y, XMFLOAT4 color, float size);
 
 	void DrawAll(ID3D12GraphicsCommandList* cmdList);
 

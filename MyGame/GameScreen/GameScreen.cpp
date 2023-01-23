@@ -66,7 +66,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	debugText.Initialize(debugTextTexNumber);
 
 	// スコアテキスト用テクスチャ読み込み
-	if (!Sprite::LoadTexture(scoreTextTexNumber, L"Resources/bluefont.png")) {
+	if (!Sprite::LoadTexture(scoreTextTexNumber, L"Resources/scorefont.png")) {
 		assert(0);
 		return;
 	}
@@ -96,6 +96,8 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	bossHpUI = Sprite::Create(7, { 1265.0f, bossHpUIHigh });
 	bossHpGage = Sprite::Create(8, { 1255.0f, bossHpUIHigh });
 	bossHpUICover = Sprite::Create(9, { 1265.0f, bossHpUIHigh });
+
+	scoreUI = Sprite::Create(11, { 15.0f, bossHpUIHigh + 30.0f });
 
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
@@ -921,6 +923,7 @@ void GameScreen::GameUpdate()
 			{
 				bossHp -= 10;
 				bossHpGageSize.x -= 10;
+				gameScore += 1000;
 				sound->PlayWav("Hit.wav", Volume_Title);
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -961,6 +964,7 @@ void GameScreen::GameUpdate()
 				sound->PlayWav("Hit.wav", Volume_Title);
 				bossHp -= 5;
 				bossHpGageSize.x -= 5;
+				gameScore += 1000;
 				if (rushFlag == false)
 				{
 					bossLeg1Hp -= 1;
@@ -1000,6 +1004,7 @@ void GameScreen::GameUpdate()
 				sound->PlayWav("Hit.wav", Volume_Title);
 				bossHp -= 5;
 				bossHpGageSize.x -= 5;
+				gameScore += 1000;
 				if (rushFlag == false)
 				{
 					bossLeg2Hp -= 1;
@@ -1039,6 +1044,7 @@ void GameScreen::GameUpdate()
 				sound->PlayWav("Hit.wav", Volume_Title);
 				bossHp -= 5;
 				bossHpGageSize.x -= 5;
+				gameScore += 1000;
 				if (rushFlag == false)
 				{
 					bossLeg3Hp -= 1;
@@ -1078,6 +1084,7 @@ void GameScreen::GameUpdate()
 				sound->PlayWav("Hit.wav", Volume_Title);
 				bossHp -= 5;
 				bossHpGageSize.x -= 5;
+				gameScore += 1000;
 				if (rushFlag == false)
 				{
 					bossLeg4Hp -= 1;
@@ -1306,16 +1313,14 @@ void GameScreen::GameUpdate()
 
 	// スコアの描画
 	std::ostringstream StartIndex;
-	StartIndex << "SCORE:("
-		<< std::fixed << std::setprecision(2)
-		<< startIndex << ")";
-	scoreText.Print(StartIndex.str(), 50, 300, 0.5f);
+	StartIndex << std::fixed << std::setprecision(0) << std::setw(7) << gameScore;
+	scoreText.Print(StartIndex.str(), 300, 30, { 0.760f, 0.929f, 1.0f, 1.0f }, 0.6f);
 
 	std::ostringstream elapsedCounter;
-	elapsedCounter << "SCORE:("
+	elapsedCounter << "TIME:("
 		<< std::fixed << std::setprecision(2)
 		<< elapsedCount << ")";
-	scoreText.Print(elapsedCounter.str(), 50, 320, 1.0f);
+	scoreText.Print(elapsedCounter.str(), 200, 60, { 1.0f, 0.882f, 0.768, 1.0f }, 0.6f);
 }
 
 void GameScreen::GameDraw()
@@ -1414,15 +1419,17 @@ void GameScreen::GameDraw()
 	bossHpGage->Draw();
 	bossHpUICover->Draw();
 
+	scoreUI->Draw();
+
 	GameFG->Draw();
+
+	// スコアテキストの描画
+	scoreText.DrawAll(cmdList);
 
 	LoadingBG->Draw();
 
 	// デバッグテキストの描画
 	debugText.DrawAll(cmdList);
-
-	// スコアテキストの描画
-	scoreText.DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -1488,6 +1495,9 @@ void GameScreen::GameInitialize()
 
 	bossHpUICover->SetAnchorPoint({ 1, 0.5 });
 
+	// スコアUI
+	scoreUI->SetAnchorPoint({ 0, 0.5 });
+
 	// プレイヤー関連
 	playerHp = 320;
 
@@ -1532,6 +1542,8 @@ void GameScreen::GameInitialize()
 
 	changeSceneFlag = false;
 	changeSceneTimer = 100.0f;
+
+	gameScore = 0.0f;
 
 	sound->PlayWav("Play.wav", Volume_Title, true);
 
@@ -1801,37 +1813,37 @@ void GameScreen::GameDebugText()
 	BossHp << "BossHp:("
 		<< std::fixed << std::setprecision(2)
 		<< bossHp << ")";
-	debugText.Print(BossHp.str(), 50, 30, 1.0f);
+	debugText.Print(BossHp.str(), 50, 230, 1.0f);
 
 	std::ostringstream BossLeg1Hp;
 	BossLeg1Hp << "BossLeg1Hp:("
 		<< std::fixed << std::setprecision(2)
 		<< bossLeg1Hp << ")";
-	debugText.Print(BossLeg1Hp.str(), 50, 50, 1.0f);
+	debugText.Print(BossLeg1Hp.str(), 50, 250, 1.0f);
 
 	std::ostringstream BossLeg2Hp;
 	BossLeg2Hp << "BossLeg2Hp:("
 		<< std::fixed << std::setprecision(2)
 		<< bossLeg2Hp << ")";
-	debugText.Print(BossLeg2Hp.str(), 50, 70, 1.0f);
+	debugText.Print(BossLeg2Hp.str(), 50, 270, 1.0f);
 
 	std::ostringstream BossLeg3Hp;
 	BossLeg3Hp << "BossLeg3Hp:("
 		<< std::fixed << std::setprecision(2)
 		<< bossLeg3Hp << ")";
-	debugText.Print(BossLeg3Hp.str(), 50, 90, 1.0f);
+	debugText.Print(BossLeg3Hp.str(), 50, 290, 1.0f);
 
 	std::ostringstream BossLeg4Hp;
 	BossLeg4Hp << "BossLeg4Hp:("
 		<< std::fixed << std::setprecision(2)
 		<< bossLeg4Hp << ")";
-	debugText.Print(BossLeg4Hp.str(), 50, 110, 1.0f);
+	debugText.Print(BossLeg4Hp.str(), 50, 310, 1.0f);
 
 	std::ostringstream PlayerHp;
 	PlayerHp << "PlayerHp:("
 		<< std::fixed << std::setprecision(2)
 		<< playerHp << ")";
-	debugText.Print(PlayerHp.str(), 50, 130, 1.0f);
+	debugText.Print(PlayerHp.str(), 50, 330, 1.0f);
 
 	// プレイヤーの回避関連
 	/*std::ostringstream DodgeRollFlag;
@@ -2077,6 +2089,11 @@ void GameScreen::LoadTextureFunction()
 	}
 
 	if (!Sprite::LoadTexture(9, L"Resources/Sprite/HpUICommon/HpUICover.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(11, L"Resources/Sprite/ScoreUI/scoreUI.png")) {
 		assert(0);
 		return;
 	}
