@@ -204,7 +204,11 @@ void GameScreen::Update()
 		break;
 
 	case SCENE::RESULT:
-		ResultUpdata();
+		ResultUpdate();
+		break;
+
+	case SCENE::GAMEOVER:
+		GameOverUpdate();
 		break;
 	}
 }
@@ -227,6 +231,10 @@ void GameScreen::Draw()
 
 	case SCENE::RESULT:
 		ResultDraw();
+		break;
+
+	case SCENE::GAMEOVER:
+		GameOverDraw();
 		break;
 	}
 }
@@ -656,7 +664,9 @@ void GameScreen::GameUpdate()
 	// プレイヤーが撃破されたら遷移
 	if (playerHp <= 0)
 	{
-		changeColorFlag = true;
+		sound->StopWav("Play.wav");
+		GameOverInitialize();
+		scene = GAMEOVER;
 	}
 
 #pragma region 情報を取得
@@ -1607,7 +1617,7 @@ void GameScreen::GameInitialize()
 	startCount = GetTickCount();
 }
 
-void GameScreen::ResultUpdata()
+void GameScreen::ResultUpdate()
 {
 	loadingColor = LoadingBG->GetColor();
 
@@ -1703,6 +1713,82 @@ void GameScreen::ResultInitialize()
 	camera->SetUp({ 0, 1, 0 });
 
 	LoadingBG->SetColor({ 1, 1, 1, 1 });
+
+	changeColorFlag = false;
+	changeColorTimer = 30.0f;
+
+	changeSceneFlag = false;
+	changeSceneTimer = 100.0f;
+}
+
+void GameScreen::GameOverUpdate()
+{
+
+	if (input->TriggerKey(DIK_SPACE))
+	{
+		TitleInitialize();
+		scene = TITLE;
+	}
+
+	camera->Update();
+
+	// デバックテキスト
+	AllDebugText();
+}
+
+void GameScreen::GameOverDraw()
+{
+	// コマンドリストの取得
+	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
+
+#pragma region 背景スプライト描画
+	// 背景スプライト描画前処理
+	Sprite::PreDraw(cmdList);
+	// 背景スプライト描画
+	StageSelectBG->Draw();
+
+	// スプライト描画後処理
+	Sprite::PostDraw();
+	// 深度バッファクリア
+	dxCommon->ClearDepthBuffer();
+#pragma endregion
+
+#pragma region 3Dオブジェクト描画
+	// 3Dオブジェクト描画前処理
+	ObjObject::PreDraw(cmdList);
+
+	// 3Dオブクジェクトの描画
+
+	// パーティクルの描画
+	//particleMan->Draw(cmdList);
+
+	// 3Dオブジェクト描画後処理
+	ObjObject::PostDraw();
+#pragma endregion
+
+#pragma region 前景スプライト描画
+	// 前景スプライト描画前処理
+	Sprite::PreDraw(cmdList);
+
+	// 描画
+
+	LoadingBG->Draw();
+
+	// デバッグテキストの描画
+	//debugText.DrawAll(cmdList);
+
+	// スプライト描画後処理
+	Sprite::PostDraw();
+#pragma endregion
+}
+
+void GameScreen::GameOverInitialize()
+{
+	camera->SetTarget({ 0, 0, 0 });
+	camera->SetEye({ 0, 0, 0 });
+	camera->SetUp({ 0, 1, 0 });
+
+	LoadingBG->SetColor({ 1, 1, 1, 0 });
 
 	changeColorFlag = false;
 	changeColorTimer = 30.0f;

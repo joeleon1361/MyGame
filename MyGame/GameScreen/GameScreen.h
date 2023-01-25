@@ -101,11 +101,18 @@ public: // メンバ関数
 	void GameInitialize();
 
 	// リザルト
-	void ResultUpdata();
+	void ResultUpdate();
 
 	void ResultDraw();
 
 	void ResultInitialize();
+
+	// ゲームオーバー
+	void GameOverUpdate();
+
+	void GameOverDraw();
+
+	void GameOverInitialize();
 
 	// パーティクル生成
 	void CreateHitParticles(XMFLOAT3 position);
@@ -553,7 +560,8 @@ private: // メンバ変数
 		TITLE,
 		STAGESELECT,
 		GAME,
-		RESULT
+		RESULT,
+		GAMEOVER
 	};
 
 	int scene = TITLE;
