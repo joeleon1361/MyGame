@@ -27,7 +27,7 @@ public:
 
 	void Initialize(UINT texnumber);
 
-	void Print(const std::string& text, float x, float y, XMFLOAT4 color, float size);
+	void Print(const std::string& text, XMFLOAT2 position, XMFLOAT4 color, float size);
 
 	void DrawAll(ID3D12GraphicsCommandList* cmdList);
 

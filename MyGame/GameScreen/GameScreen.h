@@ -140,6 +140,10 @@ public: // メンバ関数
 
 	void LoadWavFunction();
 
+	void scoreUIMotion();
+
+	void scoreUIUpdate();
+
 	// 当たり判定
 	bool OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB);
 private:
@@ -181,6 +185,13 @@ private: // メンバ変数
 
 	// スコアUI
 	Sprite* scoreUI = nullptr;
+	Sprite* scoreChar = nullptr;
+	Sprite* scoreNull_1 = nullptr;
+	Sprite* scoreNull_2 = nullptr;
+	Sprite* scoreNull_3 = nullptr;
+	Sprite* scoreNull_4 = nullptr;
+	Sprite* scoreNull_5 = nullptr;
+	Sprite* scoreNull_6 = nullptr;
 
 	ParticleManager* particleMan = nullptr;
 
@@ -614,5 +625,10 @@ private: // メンバ変数
 
 	float bossHpUIHigh = 30.0f;
 
-	float gameScore = 0.0f;
+	float gameScore = 0;
+	float gameScoreMax = 9999999;
+	XMFLOAT2 scoreBasePosition = { 300, 52 };
+
+	float scoreMoveVel = 0;
+	float scoreMoveAcc = 1;
 };

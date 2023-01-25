@@ -98,6 +98,13 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	bossHpUICover = Sprite::Create(9, { 1265.0f, bossHpUIHigh });
 
 	scoreUI = Sprite::Create(11, { 15.0f, bossHpUIHigh + 30.0f });
+	scoreChar = Sprite::Create(12, { 190.0f, 30.0f });
+	scoreNull_1 = Sprite::Create(13, { 403.0f, 27.0f });
+	scoreNull_2 = Sprite::Create(13, { 378.0f, 27.0f });
+	scoreNull_3 = Sprite::Create(13, { 353.0f, 27.0f });
+	scoreNull_4 = Sprite::Create(13, { 327.0f, 27.0f });
+	scoreNull_5 = Sprite::Create(13, { 301.0f, 27.0f });
+	scoreNull_6 = Sprite::Create(13, { 275.0f, 27.0f });
 
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
@@ -666,7 +673,6 @@ void GameScreen::GameUpdate()
 	SkydomRot = objSkydome->GetRotation();
 
 
-
 	if (bossBreak == false)
 	{
 		bossPosition = SplinePosition(bossCheckPoint, startIndex, timeRate);
@@ -924,6 +930,7 @@ void GameScreen::GameUpdate()
 				bossHp -= 10;
 				bossHpGageSize.x -= 10;
 				gameScore += 1000;
+				scoreUIMotion();
 				sound->PlayWav("Hit.wav", Volume_Title);
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -965,6 +972,7 @@ void GameScreen::GameUpdate()
 				bossHp -= 5;
 				bossHpGageSize.x -= 5;
 				gameScore += 1000;
+				scoreUIMotion();
 				if (rushFlag == false)
 				{
 					bossLeg1Hp -= 1;
@@ -1005,6 +1013,7 @@ void GameScreen::GameUpdate()
 				bossHp -= 5;
 				bossHpGageSize.x -= 5;
 				gameScore += 1000;
+				scoreUIMotion();
 				if (rushFlag == false)
 				{
 					bossLeg2Hp -= 1;
@@ -1045,6 +1054,7 @@ void GameScreen::GameUpdate()
 				bossHp -= 5;
 				bossHpGageSize.x -= 5;
 				gameScore += 1000;
+				scoreUIMotion();
 				if (rushFlag == false)
 				{
 					bossLeg3Hp -= 1;
@@ -1085,6 +1095,7 @@ void GameScreen::GameUpdate()
 				bossHp -= 5;
 				bossHpGageSize.x -= 5;
 				gameScore += 1000;
+				scoreUIMotion();
 				if (rushFlag == false)
 				{
 					bossLeg4Hp -= 1;
@@ -1263,6 +1274,11 @@ void GameScreen::GameUpdate()
 	bossLeg3->SetPosition(bossLeg3Position);
 	bossLeg4->SetPosition(bossLeg4Position);
 
+	if (playerHp <= 100)
+	{
+		playerHpGage->SetColor({ 1.0f, 0, 0.2f, 1.0f });
+	}
+
 	LoadingBG->SetColor(loadingColor);
 
 	playerHpGage->SetSize(playerHpGageSize);
@@ -1311,16 +1327,20 @@ void GameScreen::GameUpdate()
 	AllDebugText();
 	GameDebugText();
 
+	//scoreUIMotion();
+
 	// スコアの描画
 	std::ostringstream StartIndex;
 	StartIndex << std::fixed << std::setprecision(0) << std::setw(7) << gameScore;
-	scoreText.Print(StartIndex.str(), 300, 30, { 0.760f, 0.929f, 1.0f, 1.0f }, 0.6f);
+	scoreText.Print(StartIndex.str(),  scoreBasePosition, { 0.760f, 0.929f, 1.0f, 1.0f }, 0.8f);
 
 	std::ostringstream elapsedCounter;
 	elapsedCounter << "TIME:("
 		<< std::fixed << std::setprecision(2)
 		<< elapsedCount << ")";
-	scoreText.Print(elapsedCounter.str(), 200, 60, { 1.0f, 0.882f, 0.768, 1.0f }, 0.6f);
+	scoreText.Print(elapsedCounter.str(), { 240, 82 }, { 1.0f, 0.882f, 0.768, 1.0f }, 0.6f);
+
+	scoreUIUpdate();
 }
 
 void GameScreen::GameDraw()
@@ -1420,11 +1440,37 @@ void GameScreen::GameDraw()
 	bossHpUICover->Draw();
 
 	scoreUI->Draw();
+	scoreChar->Draw();
 
 	GameFG->Draw();
 
 	// スコアテキストの描画
 	scoreText.DrawAll(cmdList);
+
+	if (gameScore < 10)
+	{
+		scoreNull_1->Draw();
+	}
+	if (gameScore < 100)
+	{
+		scoreNull_2->Draw();
+	}
+	if (gameScore < 1000)
+	{
+		scoreNull_3->Draw();
+	}
+	if (gameScore < 10000)
+	{
+		scoreNull_4->Draw();
+	}
+	if (gameScore < 100000)
+	{
+		scoreNull_5->Draw();
+	}
+	if (gameScore < 1000000)
+	{
+		scoreNull_6->Draw();
+	}
 
 	LoadingBG->Draw();
 
@@ -1498,6 +1544,15 @@ void GameScreen::GameInitialize()
 	// スコアUI
 	scoreUI->SetAnchorPoint({ 0, 0.5 });
 
+	scoreChar->SetColor({ 0.760f, 0.929f, 1.0f, 1.0f });
+
+	scoreNull_1->SetSize({ 25.0, 25.0 });
+	scoreNull_2->SetSize({ 25.0, 25.0 });
+	scoreNull_3->SetSize({ 25.0, 25.0 });
+	scoreNull_4->SetSize({ 25.0, 25.0 });
+	scoreNull_5->SetSize({ 25.0, 25.0 });
+	scoreNull_6->SetSize({ 25.0, 25.0 });
+
 	// プレイヤー関連
 	playerHp = 320;
 
@@ -1543,7 +1598,9 @@ void GameScreen::GameInitialize()
 	changeSceneFlag = false;
 	changeSceneTimer = 100.0f;
 
-	gameScore = 0.0f;
+	gameScore = 0;
+
+	gameScoreMax = 9999999;
 
 	sound->PlayWav("Play.wav", Volume_Title, true);
 
@@ -2030,20 +2087,6 @@ void GameScreen::SplineCount()
 			timeRate = 1.0f;
 		}
 	}
-
-	/*if (timeRate >= 1.0f)
-	{
-		if (startIndex < bossCheckPoint.size() - 3)
-		{
-			startIndex += 1;
-			timeRate -= 1.0f;
-			startCount = GetTickCount();
-		}
-		else
-		{
-			timeRate = 1.0f;
-		}
-	}*/
 }
 
 void GameScreen::LoadTextureFunction()
@@ -2098,6 +2141,16 @@ void GameScreen::LoadTextureFunction()
 		return;
 	}
 
+	if (!Sprite::LoadTexture(12, L"Resources/Sprite/ScoreUI/scoreChar.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(13, L"Resources/Sprite/ScoreUI/scoreNull.png")) {
+		assert(0);
+		return;
+	}
+
 	if (!Sprite::LoadTexture(26, L"Resources/Sprite/GameFG.png")) {
 		assert(0);
 		return;
@@ -2118,6 +2171,29 @@ void GameScreen::LoadWavFunction()
 	sound->LoadWav("Hit.wav");
 	sound->LoadWav("Play.wav");
 	sound->LoadWav("Push.wav");
+}
+
+void GameScreen::scoreUIMotion()
+{
+	scoreMoveVel = -8;
+}
+
+void GameScreen::scoreUIUpdate()
+{
+	scoreMoveVel += scoreMoveAcc;
+	scoreBasePosition.y += scoreMoveVel;
+
+	if (scoreBasePosition.y < 45)
+	{
+		scoreBasePosition.y = 45;
+		scoreMoveVel = 0;
+	}
+
+	if (scoreBasePosition.y > 53)
+	{
+		scoreBasePosition.y = 53;
+		scoreMoveVel = 0;
+	}
 }
 
 bool GameScreen::OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB)
