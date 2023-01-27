@@ -171,7 +171,7 @@ private: // メンバ変数
 
 	Sprite* spriteBG = nullptr;
 	Sprite* TitleBG = nullptr;
-	Sprite* ResultBG = nullptr;
+	
 	Sprite* StageSelectBG = nullptr;
 	Sprite* GameFG = nullptr;
 	Sprite* TitleStartUI = nullptr;
@@ -199,6 +199,17 @@ private: // メンバ変数
 	Sprite* scoreNull_4 = nullptr;
 	Sprite* scoreNull_5 = nullptr;
 	Sprite* scoreNull_6 = nullptr;
+
+	// リザルトUI
+	Sprite* ResultBG = nullptr;
+	Sprite* ResultBN_1 = nullptr;
+	Sprite* ResultBN_2 = nullptr;
+	Sprite* ResultBN_3 = nullptr;
+	Sprite* resultGTXT_1 = nullptr;
+	Sprite* resultGTXT_2 = nullptr;
+	Sprite* resultGTXT_3 = nullptr;
+	Sprite* resultGTXT_4 = nullptr;
+	Sprite* resultGTXT_5 = nullptr;
 
 	ParticleManager* particleMan = nullptr;
 
@@ -639,4 +650,28 @@ private: // メンバ変数
 
 	float scoreMoveVel = 0;
 	float scoreMoveAcc = 1;
+
+	XMFLOAT2 resultBN_1Size;
+	XMFLOAT2 resultBN_2Size;
+	XMFLOAT2 resultBN_3Size;
+
+	float resultMoveVelX_1 = 0;
+	float resultMoveAccX_1 = 0;
+
+	float resultMoveVelY_1 = 0;
+	float resultMoveAccY_1 = 0;
+
+	float resultMoveVelX_2 = 0;
+	float resultMoveAccX_2 = 0;
+
+	float resultMoveVelX_3 = 0;
+	float resultMoveAccX_3 = 0;
+
+	XMFLOAT2 scorePosition = { 855, 275 };
+	XMFLOAT2 noDamageBonusPosition = { 855, 305 };
+	XMFLOAT2 totalSconePosition = { 800, 375 };
+
+	float noDamageBonus = 5000;
+
+	float totalScone = 0;
 };

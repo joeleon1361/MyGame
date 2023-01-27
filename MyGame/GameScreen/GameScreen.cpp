@@ -81,7 +81,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 
 	// スプライト生成
 	TitleBG = Sprite::Create(1, { 0.0f,0.0f });
-	ResultBG = Sprite::Create(2, { 0.0f,0.0f });
+	
 	TitleLogo = Sprite::Create(1, { 100.0f,100.0f }, { 1, 1, 1, 1 });
 	LoadingBG = Sprite::Create(3, { 0.0f,0.0f }, { 1,1,1,0 });
 	StageSelectBG = Sprite::Create(4, { 0.0f,0.0f });
@@ -99,12 +99,23 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 
 	scoreUI = Sprite::Create(11, { 15.0f, bossHpUIHigh + 30.0f });
 	scoreChar = Sprite::Create(12, { 190.0f, 30.0f });
-	scoreNull_1 = Sprite::Create(13, { 403.0f, 27.0f });
+	scoreNull_1 = Sprite::Create(13, { 403.5f, 27.0f });
 	scoreNull_2 = Sprite::Create(13, { 378.0f, 27.0f });
-	scoreNull_3 = Sprite::Create(13, { 353.0f, 27.0f });
-	scoreNull_4 = Sprite::Create(13, { 327.0f, 27.0f });
-	scoreNull_5 = Sprite::Create(13, { 301.0f, 27.0f });
+	scoreNull_3 = Sprite::Create(13, { 352.5f, 27.0f });
+	scoreNull_4 = Sprite::Create(13, { 326.5f, 27.0f });
+	scoreNull_5 = Sprite::Create(13, { 300.5f, 27.0f });
 	scoreNull_6 = Sprite::Create(13, { 275.0f, 27.0f });
+
+	ResultBG = Sprite::Create(2, { 0.0f,0.0f });
+	ResultBN_1 = Sprite::Create(14, { 640.0f,360.0f });
+	ResultBN_2 = Sprite::Create(15, { 640.0f,320.0f });
+	ResultBN_3 = Sprite::Create(16, { 640.0f,520.0f });
+
+	resultGTXT_1 = Sprite::Create(17, { 330.0f,270.0f });
+	resultGTXT_2 = Sprite::Create(18, { 330.0f,300.0f });
+	resultGTXT_3 = Sprite::Create(19, { 330.0f,340.0f });
+	resultGTXT_4 = Sprite::Create(20, { 330.0f,330.0f });
+	resultGTXT_4 = Sprite::Create(21, { 330.0f,330.0f });
 
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
@@ -495,7 +506,9 @@ void GameScreen::TitleInitialize()
 	camera->SetEye({ 0, 0, 10 });
 	camera->SetUp({ 0, 1, 0 });
 
-	LoadingBG->SetColor({ 1, 1, 1, 0 });
+	// LoadingBG->SetColor({ 1, 1, 1, 0 });
+	loadingColor.w = 0;
+
 	TitleStartUI->SetColor({ 1, 1, 1, 1 });
 
 	backTimer = 40.0f;
@@ -937,7 +950,7 @@ void GameScreen::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossBody->GetPosition(), 0.8f, 0.8f) == true)
 			{
-				bossHp -= 10;
+				bossHp -= 1000;
 				bossHpGageSize.x -= 10;
 				gameScore += 1000;
 				scoreUIMotion();
@@ -1342,7 +1355,7 @@ void GameScreen::GameUpdate()
 	// スコアの描画
 	std::ostringstream StartIndex;
 	StartIndex << std::fixed << std::setprecision(0) << std::setw(7) << gameScore;
-	scoreText.Print(StartIndex.str(),  scoreBasePosition, { 0.760f, 0.929f, 1.0f, 1.0f }, 0.8f);
+	scoreText.Print(StartIndex.str(), scoreBasePosition, { 0.760f, 0.929f, 1.0f, 1.0f }, 0.8f);
 
 	std::ostringstream elapsedCounter;
 	elapsedCounter << "TIME:("
@@ -1528,8 +1541,8 @@ void GameScreen::GameInitialize()
 	camera->SetUp({ 0, 1, 0 });
 
 	// シーン遷移時の画面暗転
-	LoadingBG->SetColor({ 1, 1, 1, 1.0f });
-	//loadingColor.w = 1.0f;
+	//LoadingBG->SetColor({ 1, 1, 1, 1.0f });
+	loadingColor.w = 1.0f;
 
 	// プレイヤーのHPゲージ
 	playerHpGage->SetColor({ 0.1, 0.6, 0.1, 1 });
@@ -1562,6 +1575,8 @@ void GameScreen::GameInitialize()
 	scoreNull_4->SetSize({ 25.0, 25.0 });
 	scoreNull_5->SetSize({ 25.0, 25.0 });
 	scoreNull_6->SetSize({ 25.0, 25.0 });
+
+	scoreBasePosition = { 300, 52 };
 
 	// プレイヤー関連
 	playerHp = 320;
@@ -1621,12 +1636,72 @@ void GameScreen::ResultUpdate()
 {
 	loadingColor = LoadingBG->GetColor();
 
-	if (changeColorFlag == false)
+	resultBN_1Size = ResultBN_1->GetSize();
+	resultBN_2Size = ResultBN_2->GetSize();
+	resultBN_3Size = ResultBN_3->GetSize();
+
+	/*if (changeColorFlag == false)
 	{
 		if (loadingColor.w > -0.1)
 		{
 			loadingColor.w -= 0.05f;
 		}
+	}*/
+
+	totalScone = gameScore + noDamageBonus;
+
+	resultMoveVelX_1 -= resultMoveAccX_1;
+	resultBN_1Size.x += resultMoveVelX_1;
+
+	resultMoveVelY_1 -= resultMoveAccY_1;
+	resultBN_1Size.y += resultMoveVelY_1;
+
+	resultMoveVelX_2 -= resultMoveAccX_2;
+	resultBN_2Size.x += resultMoveVelX_2;
+
+	resultMoveVelX_3 -= resultMoveAccX_3;
+	resultBN_3Size.x += resultMoveVelX_3;
+
+	if (input->PushKey(DIK_UP))
+	{
+		resultMoveVelX_1 = 60.0f;
+		resultMoveAccX_1 = 1.0f;
+	}
+
+	if (resultBN_1Size.x > 1280)
+	{
+		resultMoveVelY_1 = 40.0f;
+		resultMoveAccY_1 = 1.2f;
+		resultBN_1Size.x = 1280;
+		resultMoveVelX_1 = 0;
+		resultMoveAccX_1 = 0;
+	}
+
+	if (resultBN_1Size.y > 624)
+	{
+		resultMoveVelX_2 = 40.0f;
+		resultMoveAccX_2 = 1.0f;
+
+		resultMoveVelX_3 = 40.0f;
+		resultMoveAccX_3 = 1.0f;
+
+		resultBN_1Size.y = 624;
+		resultMoveVelY_1 = 0;
+		resultMoveAccY_1 = 0;
+	}
+
+	if (resultBN_2Size.x > 704)
+	{
+		resultBN_2Size.x = 704;
+		resultMoveVelX_2 = 0;
+		resultMoveAccX_2 = 0;
+	}
+
+	if (resultBN_3Size.x > 704)
+	{
+		resultBN_3Size.x = 704;
+		resultMoveVelX_3 = 0;
+		resultMoveAccX_3 = 0;
 	}
 
 	if (input->TriggerKey(DIK_SPACE))
@@ -1654,10 +1729,27 @@ void GameScreen::ResultUpdate()
 
 	LoadingBG->SetColor(loadingColor);
 
+	ResultBN_1->SetSize(resultBN_1Size);
+	ResultBN_2->SetSize(resultBN_2Size);
+	ResultBN_3->SetSize(resultBN_3Size);
+
 	camera->Update();
 
 	// デバックテキスト
 	AllDebugText();
+
+	// スコアの描画
+	std::ostringstream StartIndex;
+	StartIndex << std::fixed << std::setprecision(0) << std::setw(7) << gameScore;
+	scoreText.Print(StartIndex.str(), scorePosition, { 0.760f, 0.929f, 1.0f, 1.0f }, 0.5f);
+
+	std::ostringstream NoDamageBonus;
+	NoDamageBonus << std::fixed << std::setprecision(0) << std::setw(7) << noDamageBonus;
+	scoreText.Print(NoDamageBonus.str(), noDamageBonusPosition, { 0.760f, 0.929f, 1.0f, 1.0f }, 0.5f);
+
+	std::ostringstream TotalScone;
+	TotalScone << std::fixed << std::setprecision(0) << std::setw(7) << totalScone;
+	scoreText.Print(TotalScone.str(), totalSconePosition, { 0.760f, 0.929f, 1.0f, 1.0f }, 0.8f);
 }
 
 void GameScreen::ResultDraw()
@@ -1695,11 +1787,21 @@ void GameScreen::ResultDraw()
 	Sprite::PreDraw(cmdList);
 
 	// 描画
+	ResultBN_1->Draw();
+	ResultBN_2->Draw();
+	ResultBN_3->Draw();
+
+	resultGTXT_1->Draw();
+	resultGTXT_2->Draw();
+	resultGTXT_3->Draw();
+
+	// スコアテキストの描画
+	scoreText.DrawAll(cmdList);
 
 	LoadingBG->Draw();
 
 	// デバッグテキストの描画
-	//debugText.DrawAll(cmdList);
+	debugText.DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -1712,7 +1814,28 @@ void GameScreen::ResultInitialize()
 	camera->SetEye({ 0, 0, 0 });
 	camera->SetUp({ 0, 1, 0 });
 
-	LoadingBG->SetColor({ 1, 1, 1, 1 });
+	// LoadingBG->SetColor({ 1, 1, 1, 0 });
+	loadingColor.w = 0;
+
+	totalScone = 0;
+
+	ResultBN_1->SetSize({0.0f, 8.0f});
+	ResultBN_1->SetAnchorPoint({ 0.5f, 0.5f });
+
+	ResultBN_2->SetSize({ 0.0f, 160.0f });
+	ResultBN_2->SetAnchorPoint({ 0.5f, 0.5f });
+
+	ResultBN_3->SetSize({ 0.0f, 192.0f });
+	ResultBN_3->SetAnchorPoint({ 0.5f, 0.5f });
+
+	resultGTXT_1->SetSize({69, 14});
+	resultGTXT_1->SetAnchorPoint({ 0.0f, 0.5f });
+
+	resultGTXT_2->SetSize({ 193, 14 });
+	resultGTXT_2->SetAnchorPoint({ 0.0f, 0.5f });
+
+	resultGTXT_3->SetSize({ 143, 14 });
+	resultGTXT_3->SetAnchorPoint({ 0.0f, 0.5f });
 
 	changeColorFlag = false;
 	changeColorTimer = 30.0f;
@@ -1855,6 +1978,18 @@ void GameScreen::AllDebugText()
 		<< std::fixed << std::setprecision(2)
 		<< scene << ")";
 	debugText.Print(Scene.str(), 50, 10, 1.0f);
+
+	std::ostringstream ResultMoveVel;
+	ResultMoveVel << "ResultMoveVel:("
+		<< std::fixed << std::setprecision(2)
+		<< resultMoveVelY_1 << ")";
+	debugText.Print(ResultMoveVel.str(), 50, 30, 1.0f);
+
+	std::ostringstream ResultMoveAcc;
+	ResultMoveAcc << "ResultMoveAcc:("
+		<< std::fixed << std::setprecision(2)
+		<< resultMoveAccY_1 << ")";
+	debugText.Print(ResultMoveAcc.str(), 50, 50, 1.0f);
 }
 
 void GameScreen::TitleDebugText()
@@ -2182,7 +2317,7 @@ void GameScreen::LoadTextureFunction()
 		return;
 	}
 
-	if (!Sprite::LoadTexture(2, L"Resources/Sprite/ResultBG.png")) {
+	if (!Sprite::LoadTexture(2, L"Resources/Sprite/ResultUI/ResultBG.png")) {
 		assert(0);
 		return;
 	}
@@ -2236,6 +2371,46 @@ void GameScreen::LoadTextureFunction()
 		assert(0);
 		return;
 	}
+
+	if (!Sprite::LoadTexture(14, L"Resources/Sprite/ResultUI/resultBN_1.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(15, L"Resources/Sprite/ResultUI/resultBN_2.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(16, L"Resources/Sprite/ResultUI/resultBN_3.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(17, L"Resources/Sprite/ResultUI/resultGTXT_1.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(18, L"Resources/Sprite/ResultUI/resultGTXT_2.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(19, L"Resources/Sprite/ResultUI/resultGTXT_3.png")) {
+		assert(0);
+		return;
+	}
+
+	/*if (!Sprite::LoadTexture(20, L"Resources/Sprite/ResultUI/resultGTXT_4.png")) {
+		assert(0);
+		return;
+	}*/
+
+	/*if (!Sprite::LoadTexture(21, L"Resources/Sprite/ResultUI/resultGTXT_5.png")) {
+		assert(0);
+		return;
+	}*/
 
 	if (!Sprite::LoadTexture(26, L"Resources/Sprite/GameFG.png")) {
 		assert(0);
