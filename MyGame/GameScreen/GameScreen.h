@@ -190,6 +190,12 @@ private: // メンバ変数
 	Sprite* bossHpGage = nullptr;
 	Sprite* bossHpUICover = nullptr;
 
+	// ゲームUI
+	Sprite* gameGTXT_1 = nullptr;
+	Sprite* gameGTXT_2 = nullptr;
+	Sprite* gameGTXT_3 = nullptr;
+	Sprite* gameGTXT_4 = nullptr;
+
 	// スコアUI
 	Sprite* scoreUI = nullptr;
 	Sprite* scoreChar = nullptr;
@@ -210,6 +216,11 @@ private: // メンバ変数
 	Sprite* resultGTXT_3 = nullptr;
 	Sprite* resultGTXT_4 = nullptr;
 	Sprite* resultGTXT_5 = nullptr;
+	Sprite* resultGTXT_6 = nullptr;
+	Sprite* resultGTXT_7 = nullptr;
+	Sprite* resultGTXT_8 = nullptr;
+	Sprite* resultGTXT_9 = nullptr;
+	Sprite* resultParts_1 = nullptr;
 
 	ParticleManager* particleMan = nullptr;
 
@@ -646,6 +657,7 @@ private: // メンバ変数
 
 	float gameScore = 0;
 	float gameScoreMax = 9999999;
+	float gameScoreAlpha = 1.0f;
 	XMFLOAT2 scoreBasePosition = { 300, 52 };
 
 	float scoreMoveVel = 0;
@@ -667,11 +679,42 @@ private: // メンバ変数
 	float resultMoveVelX_3 = 0;
 	float resultMoveAccX_3 = 0;
 
+	float resultMoveVelX_4 = 0;
+	float resultMoveAccX_4 = 0;
+
+	XMFLOAT2 resultParts_1Size;
+
 	XMFLOAT2 scorePosition = { 855, 275 };
 	XMFLOAT2 noDamageBonusPosition = { 855, 305 };
-	XMFLOAT2 totalSconePosition = { 800, 375 };
+	XMFLOAT2 totalScorePosition = { 800, 385 };
+	XMFLOAT2 rankPosition = { 800, 455 };
+	XMFLOAT2 resultRankPosition = { 850.0f,480.0f };
 
-	float noDamageBonus = 5000;
 
-	float totalScone = 0;
+	XMFLOAT4 scoreColor = { 0.760f, 0.929f, 1.0f, 0.0f };
+	XMFLOAT4 noDamageBonusColor = { 0.760f, 0.929f, 1.0f, 0.0f };
+	XMFLOAT4 totalScoreColor = { 0.760f, 0.929f, 1.0f, 0.0f };
+	XMFLOAT4 rankColor = { 0.760f, 0.929f, 1.0f, 0.0f };
+
+	XMFLOAT4 rankSColor = { 1, 1, 1, 1 };
+	XMFLOAT4 rankAColor = { 1, 1, 1, 1 };
+	XMFLOAT4 rankBColor = { 1, 1, 1, 1 };
+	XMFLOAT4 rankCColor = { 1, 1, 1, 1 };
+
+	float resultChangeAlpha_1 = 0;
+	float resultChangeAlpha_2 = 0;
+	float resultChangeAlpha_3 = 0;
+	float resultChangeAlpha_4 = 0;
+
+	float loadingChangeAlpha = 0;
+
+	float noDamageBonus = 20000;
+
+	float totalScore = 0;
+
+	bool noDamageFlag = true;
+
+	float resultTimer = 5.0f;
+
+	bool canPushKeyFlag = false;
 };
