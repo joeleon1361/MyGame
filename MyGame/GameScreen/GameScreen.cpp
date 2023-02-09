@@ -127,6 +127,8 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	resultGTXT_9 = Sprite::Create(25, { 500.0f,550.0f });
 
 	resultParts_1 = Sprite::Create(28, { 640.0f,320.0f });
+	resultParts_2 = Sprite::Create(29, { 430.0f,480.0f });
+	resultParts_3 = Sprite::Create(30, { 640.0f,320.0f });
 
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
@@ -962,7 +964,7 @@ void GameScreen::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossBody->GetPosition(), 0.8f, 0.8f) == true)
 			{
-				bossHp -= 1000;
+				bossHp -= 7;
 				bossHpGageSize.x -= 7;
 				gameScore += 1000;
 				scoreUIMotion();
@@ -1916,6 +1918,7 @@ void GameScreen::ResultDraw()
 	//resultGTXT_5->Draw();
 
 	resultParts_1->Draw();
+	//resultParts_2->Draw();
 
 	if (gameScore > 100000)
 	{
@@ -1978,6 +1981,10 @@ void GameScreen::ResultInitialize()
 	// Line Parts1
 	resultParts_1->SetSize({ 0.0f, 6.0f });
 	resultParts_1->SetAnchorPoint({ 0.5f, 0.5f });
+
+	// Line Parts2
+	resultParts_2->SetSize({ 128.0f, 6.0f });
+	resultParts_2->SetAnchorPoint({ 0.5f, 0.5f });
 
 	// SCORE
 	resultGTXT_1->SetSize({70, 15});
@@ -2632,6 +2639,16 @@ void GameScreen::LoadTextureFunction()
 		assert(0);
 		return;
 	}
+
+	if (!Sprite::LoadTexture(29, L"Resources/Sprite/ResultUI/result_parts_2.png")) {
+		assert(0);
+		return;
+	}
+
+	/*if (!Sprite::LoadTexture(30, L"Resources/Sprite/ResultUI/result_parts_3.png")) {
+		assert(0);
+		return;
+	}*/
 }
 
 void GameScreen::LoadWavFunction()

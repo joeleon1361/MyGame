@@ -221,6 +221,8 @@ private: // メンバ変数
 	Sprite* resultGTXT_8 = nullptr;
 	Sprite* resultGTXT_9 = nullptr;
 	Sprite* resultParts_1 = nullptr;
+	Sprite* resultParts_2 = nullptr;
+	Sprite* resultParts_3 = nullptr;
 
 	ParticleManager* particleMan = nullptr;
 
@@ -683,6 +685,8 @@ private: // メンバ変数
 	float resultMoveAccX_4 = 0;
 
 	XMFLOAT2 resultParts_1Size;
+	XMFLOAT2 resultParts_2Size;
+	XMFLOAT2 resultParts_3Size;
 
 	XMFLOAT2 scorePosition = { 855, 275 };
 	XMFLOAT2 noDamageBonusPosition = { 855, 305 };
