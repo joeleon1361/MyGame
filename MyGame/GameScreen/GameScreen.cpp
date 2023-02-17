@@ -81,7 +81,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 
 	// スプライト生成
 	TitleBG = Sprite::Create(1, { 0.0f,0.0f });
-	
+
 	TitleLogo = Sprite::Create(1, { 100.0f,100.0f }, { 1, 1, 1, 1 });
 	LoadingBG = Sprite::Create(3, { 0.0f,0.0f }, { 1,1,1,0 });
 	StageSelectBG = Sprite::Create(4, { 0.0f,0.0f });
@@ -120,15 +120,24 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	resultGTXT_2 = Sprite::Create(18, { 330.0f,300.0f });
 	resultGTXT_3 = Sprite::Create(19, { 330.0f,340.0f });
 	resultGTXT_4 = Sprite::Create(20, { 330.0f,455.0f });
-	resultGTXT_5 = Sprite::Create(21, { 330.0f,330.0f });
+	resultGTXT_5 = Sprite::Create(21, { 600.0f,455.0f });
 	resultGTXT_6 = Sprite::Create(22, { 500.0f,550.0f });
 	resultGTXT_7 = Sprite::Create(23, { 500.0f,550.0f });
 	resultGTXT_8 = Sprite::Create(24, { 500.0f,550.0f });
 	resultGTXT_9 = Sprite::Create(25, { 500.0f,550.0f });
+	resultGTXT_12 = Sprite::Create(33, { 600.0f,510.0f });
+	resultGTXT_13 = Sprite::Create(34, { 600.0f,545.0f });
+	resultGTXT_14 = Sprite::Create(35, { 600.0f,580.0f });
 
 	resultParts_1 = Sprite::Create(28, { 640.0f,320.0f });
-	resultParts_2 = Sprite::Create(29, { 430.0f,480.0f });
-	resultParts_3 = Sprite::Create(30, { 640.0f,320.0f });
+	resultParts_2 = Sprite::Create(29, { 435.0f,480.0f });
+	resultParts_3 = Sprite::Create(30, { 775.0f,480.0f });
+	resultParts_4 = Sprite::Create(31, { 930.0f,510.0f });
+	resultParts_5 = Sprite::Create(31, { 930.0f,545.0f });
+	resultParts_6 = Sprite::Create(31, { 930.0f,580.0f });
+	resultParts_7 = Sprite::Create(32, { 930.0f,510.0f });
+	resultParts_8 = Sprite::Create(32, { 930.0f,545.0f });
+	resultParts_9 = Sprite::Create(32, { 930.0f,580.0f });
 
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
@@ -964,7 +973,7 @@ void GameScreen::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossBody->GetPosition(), 0.8f, 0.8f) == true)
 			{
-				bossHp -= 7;
+				bossHp -= 900;
 				bossHpGageSize.x -= 7;
 				gameScore += 1000;
 				scoreUIMotion();
@@ -974,7 +983,7 @@ void GameScreen::GameUpdate()
 				CreateHitParticles(bossPosition);
 			}
 		}
-	}  
+	}
 
 	if (bossHp <= 0)
 	{
@@ -1662,15 +1671,27 @@ void GameScreen::ResultUpdate()
 	resultBN_3Size = ResultBN_3->GetSize();
 
 	resultParts_1Size = resultParts_1->GetSize();
+	resultParts_2Size = resultParts_2->GetSize();
+	resultParts_3Size = resultParts_3->GetSize();
 
 	scoreColor = resultGTXT_1->GetColor();
 	noDamageBonusColor = resultGTXT_2->GetColor();
 	totalScoreColor = resultGTXT_3->GetColor();
 	rankColor = resultGTXT_4->GetColor();
+	missionColor = resultGTXT_5->GetColor();
+
 	rankSColor = resultGTXT_6->GetColor();
 	rankAColor = resultGTXT_7->GetColor();
 	rankBColor = resultGTXT_8->GetColor();
 	rankCColor = resultGTXT_9->GetColor();
+
+	mission1Color = resultGTXT_12->GetColor();
+	mission2Color = resultGTXT_13->GetColor();
+	mission3Color = resultGTXT_14->GetColor();
+
+	missionStar1Color = resultParts_4->GetColor();
+	missionStar2Color = resultParts_5->GetColor();
+	missionStar3Color = resultParts_6->GetColor();
 
 	/*if (changeColorFlag == false)
 	{
@@ -1704,6 +1725,12 @@ void GameScreen::ResultUpdate()
 	resultMoveVelX_4 -= resultMoveAccX_4;
 	resultParts_1Size.x += resultMoveVelX_4;
 
+	resultMoveVelX_5 -= resultMoveAccX_5;
+	resultParts_2Size.x += resultMoveVelX_5;
+
+	resultMoveVelX_6 -= resultMoveAccX_6;
+	resultParts_3Size.x += resultMoveVelX_6;
+
 	scoreColor.w += resultChangeAlpha_1;
 
 	noDamageBonusColor.w += resultChangeAlpha_2;
@@ -1715,6 +1742,14 @@ void GameScreen::ResultUpdate()
 	rankAColor.w += resultChangeAlpha_4;
 	rankBColor.w += resultChangeAlpha_4;
 	rankCColor.w += resultChangeAlpha_4;
+
+	missionColor.w += resultChangeAlpha_5;
+	mission1Color.w += resultChangeAlpha_5;
+	mission2Color.w += resultChangeAlpha_5;
+	mission3Color.w += resultChangeAlpha_5;
+	missionStar1Color.w += resultChangeAlpha_5;
+	missionStar2Color.w += resultChangeAlpha_5;
+	missionStar3Color.w += resultChangeAlpha_5;
 
 	resultTimer -= 1.0f;
 
@@ -1784,20 +1819,54 @@ void GameScreen::ResultUpdate()
 
 	if (totalScoreColor.w > 1.0f)
 	{
-		resultChangeAlpha_4 = 0.05;
+		resultMoveVelX_5 = 20.0f;
+		resultMoveAccX_5 = 0.0f;
 
 		totalScoreColor.w = 1.0f;
 		resultChangeAlpha_3 = 0;
 	}
 
+	if (resultParts_2Size.x > 232)
+	{
+		resultChangeAlpha_4 = 0.05;
+
+		resultParts_2Size.x = 232;
+		resultMoveVelX_5 = 0;
+		resultMoveAccX_5 = 0;
+	}
+
 	if (rankColor.w > 1.0f)
 	{
+		resultMoveVelX_6 = 20.0f;
+		resultMoveAccX_6 = 0.0f;
+
 		rankColor.w = 1.0f;
 		rankSColor.w = 1.0f;
 		rankAColor.w = 1.0f;
 		rankBColor.w = 1.0f;
 		rankCColor.w = 1.0f;
 		resultChangeAlpha_4 = 0;
+	}
+
+	if (resultParts_3Size.x > 372)
+	{
+		resultChangeAlpha_5 = 0.05;
+
+		resultParts_3Size.x = 372;
+		resultMoveVelX_6 = 0;
+		resultMoveAccX_6 = 0;
+	}
+
+	if (missionColor.w > 1.0f)
+	{
+		missionColor.w = 1.0f;
+		mission1Color.w = 1.0f;
+		mission2Color.w = 1.0f;
+		mission3Color.w = 1.0f;
+		missionStar1Color.w = 1.0f;
+		missionStar2Color.w = 1.0f;
+		missionStar3Color.w = 1.0f;
+		resultChangeAlpha_5 = 0;
 
 		canPushKeyFlag = true;
 	}
@@ -1808,6 +1877,8 @@ void GameScreen::ResultUpdate()
 		resultMoveVelX_3 = 0;
 		resultMoveAccX_3 = 0;
 	}
+
+
 
 	// 暗転からシーン遷移
 	if (canPushKeyFlag == true)
@@ -1842,16 +1913,27 @@ void GameScreen::ResultUpdate()
 	ResultBN_1->SetSize(resultBN_1Size);
 	ResultBN_2->SetSize(resultBN_2Size);
 	ResultBN_3->SetSize(resultBN_3Size);
+
 	resultParts_1->SetSize(resultParts_1Size);
+	resultParts_2->SetSize(resultParts_2Size);
+	resultParts_3->SetSize(resultParts_3Size);
+
+	resultParts_4->SetColor(mission1Color);
+	resultParts_5->SetColor(mission2Color);
+	resultParts_6->SetColor(mission3Color);
 
 	resultGTXT_1->SetColor(scoreColor);
 	resultGTXT_2->SetColor(noDamageBonusColor);
 	resultGTXT_3->SetColor(totalScoreColor);
 	resultGTXT_4->SetColor(rankColor);
+	resultGTXT_5->SetColor(missionColor);
 	resultGTXT_6->SetColor(rankSColor);
 	resultGTXT_7->SetColor(rankAColor);
 	resultGTXT_8->SetColor(rankBColor);
 	resultGTXT_9->SetColor(rankCColor);
+	resultGTXT_12->SetColor(mission1Color);
+	resultGTXT_13->SetColor(mission2Color);
+	resultGTXT_14->SetColor(mission3Color);
 
 	camera->Update();
 
@@ -1915,10 +1997,21 @@ void GameScreen::ResultDraw()
 	resultGTXT_2->Draw();
 	resultGTXT_3->Draw();
 	resultGTXT_4->Draw();
-	//resultGTXT_5->Draw();
+	resultGTXT_5->Draw();
+	resultGTXT_12->Draw();
+	resultGTXT_13->Draw();
+	resultGTXT_14->Draw();
 
 	resultParts_1->Draw();
-	//resultParts_2->Draw();
+	resultParts_2->Draw();
+	resultParts_3->Draw();
+	resultParts_4->Draw();
+	resultParts_5->Draw();
+	resultParts_6->Draw();
+	resultParts_7->Draw();
+	resultParts_8->Draw();
+	resultParts_9->Draw();
+
 
 	if (gameScore > 100000)
 	{
@@ -1969,7 +2062,7 @@ void GameScreen::ResultInitialize()
 
 	noDamageBonus = 20000;
 
-	ResultBN_1->SetSize({0.0f, 8.0f});
+	ResultBN_1->SetSize({ 0.0f, 8.0f });
 	ResultBN_1->SetAnchorPoint({ 0.5f, 0.5f });
 
 	ResultBN_2->SetSize({ 0.0f, 160.0f });
@@ -1983,28 +2076,60 @@ void GameScreen::ResultInitialize()
 	resultParts_1->SetAnchorPoint({ 0.5f, 0.5f });
 
 	// Line Parts2
-	resultParts_2->SetSize({ 128.0f, 6.0f });
+	resultParts_2->SetSize({ 0.0f, 6.0f });
 	resultParts_2->SetAnchorPoint({ 0.5f, 0.5f });
 
+	resultParts_3->SetSize({ 0.0f, 6.0f });
+	resultParts_3->SetAnchorPoint({ 0.5f, 0.5f });
+
+	resultParts_4->SetSize({ 28.0f, 28.0f });
+	resultParts_4->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
+	resultParts_4->SetAnchorPoint({ 0.5f, 0.5f });
+
+	resultParts_5->SetSize({ 28.0f, 28.0f });
+	resultParts_5->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
+	resultParts_5->SetAnchorPoint({ 0.5f, 0.5f });
+
+	resultParts_6->SetSize({ 28.0f, 28.0f });
+	resultParts_6->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
+	resultParts_6->SetAnchorPoint({ 0.5f, 0.5f });
+
+	resultParts_7->SetSize({ 28.0f, 28.0f });
+	resultParts_7->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
+	resultParts_7->SetAnchorPoint({ 0.5f, 0.5f });
+
+	resultParts_8->SetSize({ 28.0f, 28.0f });
+	resultParts_8->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
+	resultParts_8->SetAnchorPoint({ 0.5f, 0.5f });
+
+	resultParts_9->SetSize({ 28.0f, 28.0f });
+	resultParts_9->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
+	resultParts_9->SetAnchorPoint({ 0.5f, 0.5f });
+
 	// SCORE
-	resultGTXT_1->SetSize({70, 15});
+	resultGTXT_1->SetSize({ 76, 16 });
 	resultGTXT_1->SetColor({ 0.760f, 0.929f, 1.0f, 0.0f });
 	resultGTXT_1->SetAnchorPoint({ 0.0f, 0.5f });
 
 	// NO DAMAGE BONUS
-	resultGTXT_2->SetSize({ 194, 15 });
+	resultGTXT_2->SetSize({ 213, 16 });
 	resultGTXT_2->SetColor({ 1.0f, 1.0f, 0.0f, 0.0f });
 	resultGTXT_2->SetAnchorPoint({ 0.0f, 0.5f });
 
 	// TOTAL SCORE
-	resultGTXT_3->SetSize({ 144, 15 });
+	resultGTXT_3->SetSize({ 158, 16 });
 	resultGTXT_3->SetColor({ 0.760f, 0.929f, 1.0f, 0.0f });
 	resultGTXT_3->SetAnchorPoint({ 0.0f, 0.5f });
 
 	// RANK
-	resultGTXT_4->SetSize({ 56, 15 });
+	resultGTXT_4->SetSize({ 61, 16 });
 	resultGTXT_4->SetColor({ 0.760f, 0.929f, 1.0f, 0.0f });
 	resultGTXT_4->SetAnchorPoint({ 0.0f, 0.5f });
+
+	// MISSION
+	resultGTXT_5->SetSize({ 103, 16 });
+	resultGTXT_5->SetColor({ 0.760f, 0.929f, 1.0f, 0.0f });
+	resultGTXT_5->SetAnchorPoint({ 0.0f, 0.5f });
 
 	// S
 	resultGTXT_6->SetSize({ 80.0f, 80.0f });
@@ -2025,6 +2150,21 @@ void GameScreen::ResultInitialize()
 	resultGTXT_9->SetSize({ 80.0f, 80.0f });
 	resultGTXT_9->SetColor({ 0.0f, 1.0f, 0.0f, 0.0f });
 	resultGTXT_9->SetAnchorPoint({ 0.5f, 0.5f });
+
+	// 
+	resultGTXT_12->SetSize({ 217, 20 });
+	resultGTXT_12->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
+	resultGTXT_12->SetAnchorPoint({ 0.0f, 0.5f });
+
+	// 
+	resultGTXT_13->SetSize({ 209, 20 });
+	resultGTXT_13->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
+	resultGTXT_13->SetAnchorPoint({ 0.0f, 0.5f });
+
+	// 
+	resultGTXT_14->SetSize({ 198, 20 });
+	resultGTXT_14->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
+	resultGTXT_14->SetAnchorPoint({ 0.0f, 0.5f });
 
 	changeColorFlag = false;
 	changeColorTimer = 30.0f;
@@ -2645,10 +2785,35 @@ void GameScreen::LoadTextureFunction()
 		return;
 	}
 
-	/*if (!Sprite::LoadTexture(30, L"Resources/Sprite/ResultUI/result_parts_3.png")) {
+	if (!Sprite::LoadTexture(30, L"Resources/Sprite/ResultUI/result_parts_3.png")) {
 		assert(0);
 		return;
-	}*/
+	}
+
+	if (!Sprite::LoadTexture(31, L"Resources/Sprite/ResultUI/result_parts_4.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(32, L"Resources/Sprite/ResultUI/result_parts_5.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(33, L"Resources/Sprite/ResultUI/result_gtxt_12.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(34, L"Resources/Sprite/ResultUI/result_gtxt_13.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(35, L"Resources/Sprite/ResultUI/result_gtxt_14.png")) {
+		assert(0);
+		return;
+	}
 }
 
 void GameScreen::LoadWavFunction()

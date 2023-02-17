@@ -220,9 +220,19 @@ private: // メンバ変数
 	Sprite* resultGTXT_7 = nullptr;
 	Sprite* resultGTXT_8 = nullptr;
 	Sprite* resultGTXT_9 = nullptr;
+	Sprite* resultGTXT_12 = nullptr;
+	Sprite* resultGTXT_13 = nullptr;
+	Sprite* resultGTXT_14 = nullptr;
+
 	Sprite* resultParts_1 = nullptr;
 	Sprite* resultParts_2 = nullptr;
 	Sprite* resultParts_3 = nullptr;
+	Sprite* resultParts_4 = nullptr;
+	Sprite* resultParts_5 = nullptr;
+	Sprite* resultParts_6 = nullptr;
+	Sprite* resultParts_7 = nullptr;
+	Sprite* resultParts_8 = nullptr;
+	Sprite* resultParts_9 = nullptr;
 
 	ParticleManager* particleMan = nullptr;
 
@@ -684,6 +694,12 @@ private: // メンバ変数
 	float resultMoveVelX_4 = 0;
 	float resultMoveAccX_4 = 0;
 
+	float resultMoveVelX_5 = 0;
+	float resultMoveAccX_5 = 0;
+
+	float resultMoveVelX_6 = 0;
+	float resultMoveAccX_6 = 0;
+
 	XMFLOAT2 resultParts_1Size;
 	XMFLOAT2 resultParts_2Size;
 	XMFLOAT2 resultParts_3Size;
@@ -699,16 +715,26 @@ private: // メンバ変数
 	XMFLOAT4 noDamageBonusColor = { 0.760f, 0.929f, 1.0f, 0.0f };
 	XMFLOAT4 totalScoreColor = { 0.760f, 0.929f, 1.0f, 0.0f };
 	XMFLOAT4 rankColor = { 0.760f, 0.929f, 1.0f, 0.0f };
+	XMFLOAT4 missionColor = { 0.760f, 0.929f, 1.0f, 0.0f };
 
 	XMFLOAT4 rankSColor = { 1, 1, 1, 1 };
 	XMFLOAT4 rankAColor = { 1, 1, 1, 1 };
 	XMFLOAT4 rankBColor = { 1, 1, 1, 1 };
 	XMFLOAT4 rankCColor = { 1, 1, 1, 1 };
 
+	XMFLOAT4 mission1Color;
+	XMFLOAT4 mission2Color;
+	XMFLOAT4 mission3Color;
+
+	XMFLOAT4 missionStar1Color;
+	XMFLOAT4 missionStar2Color;
+	XMFLOAT4 missionStar3Color;
+
 	float resultChangeAlpha_1 = 0;
 	float resultChangeAlpha_2 = 0;
 	float resultChangeAlpha_3 = 0;
 	float resultChangeAlpha_4 = 0;
+	float resultChangeAlpha_5 = 0;
 
 	float loadingChangeAlpha = 0;
 
