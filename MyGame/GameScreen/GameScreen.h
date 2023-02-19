@@ -223,6 +223,7 @@ private: // メンバ変数
 	Sprite* resultGTXT_12 = nullptr;
 	Sprite* resultGTXT_13 = nullptr;
 	Sprite* resultGTXT_14 = nullptr;
+	Sprite* resultGTXT_15 = nullptr;
 
 	Sprite* resultParts_1 = nullptr;
 	Sprite* resultParts_2 = nullptr;
@@ -233,6 +234,7 @@ private: // メンバ変数
 	Sprite* resultParts_7 = nullptr;
 	Sprite* resultParts_8 = nullptr;
 	Sprite* resultParts_9 = nullptr;
+	Sprite* resultParts_10 = nullptr;
 
 	ParticleManager* particleMan = nullptr;
 
@@ -700,9 +702,13 @@ private: // メンバ変数
 	float resultMoveVelX_6 = 0;
 	float resultMoveAccX_6 = 0;
 
+	float resultMoveVelY_7 = 0;
+
 	XMFLOAT2 resultParts_1Size;
 	XMFLOAT2 resultParts_2Size;
 	XMFLOAT2 resultParts_3Size;
+
+	XMFLOAT2 resultGTXT_15Size;
 
 	XMFLOAT2 scorePosition = { 855, 275 };
 	XMFLOAT2 noDamageBonusPosition = { 855, 305 };
@@ -710,7 +716,8 @@ private: // メンバ変数
 	XMFLOAT2 rankPosition = { 800, 455 };
 	XMFLOAT2 resultRankPosition = { 850.0f,480.0f };
 
-
+	XMFLOAT4 resultColor;
+	XMFLOAT4 resultPartsColor;
 	XMFLOAT4 scoreColor = { 0.760f, 0.929f, 1.0f, 0.0f };
 	XMFLOAT4 noDamageBonusColor = { 0.760f, 0.929f, 1.0f, 0.0f };
 	XMFLOAT4 totalScoreColor = { 0.760f, 0.929f, 1.0f, 0.0f };
@@ -735,6 +742,8 @@ private: // メンバ変数
 	float resultChangeAlpha_3 = 0;
 	float resultChangeAlpha_4 = 0;
 	float resultChangeAlpha_5 = 0;
+	float resultChangeAlpha_6 = 0;
+	float resultChangeAlpha_7 = 0;
 
 	float loadingChangeAlpha = 0;
 
@@ -747,4 +756,6 @@ private: // メンバ変数
 	float resultTimer = 5.0f;
 
 	bool canPushKeyFlag = false;
+
+	bool changeResultSizeFlag = false;
 };

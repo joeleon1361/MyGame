@@ -76,7 +76,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	//音声の読み込み
 	LoadWavFunction();
 
-	// テクスチャ読み込み
+	// テクスチャ読み込みw
 	LoadTextureFunction();
 
 	// スプライト生成
@@ -128,6 +128,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	resultGTXT_12 = Sprite::Create(33, { 600.0f,510.0f });
 	resultGTXT_13 = Sprite::Create(34, { 600.0f,545.0f });
 	resultGTXT_14 = Sprite::Create(35, { 600.0f,580.0f });
+	resultGTXT_15 = Sprite::Create(36, { 640.0f,120.0f });
 
 	resultParts_1 = Sprite::Create(28, { 640.0f,320.0f });
 	resultParts_2 = Sprite::Create(29, { 435.0f,480.0f });
@@ -138,6 +139,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	resultParts_7 = Sprite::Create(32, { 930.0f,510.0f });
 	resultParts_8 = Sprite::Create(32, { 930.0f,545.0f });
 	resultParts_9 = Sprite::Create(32, { 930.0f,580.0f });
+	resultParts_10 = Sprite::Create(37, { 640.0f,120.0f });
 
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
@@ -775,6 +777,12 @@ void GameScreen::GameUpdate()
 #pragma region 弾関連
 	Attack();
 
+	if (input->TriggerKey(DIK_C))
+	{
+		bossHp -= 1000;
+		gameScore += 100000;
+	}
+
 	// 弾を更新
 	for (std::unique_ptr<Bullet>& bullet : bullets)
 	{
@@ -973,7 +981,7 @@ void GameScreen::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossBody->GetPosition(), 0.8f, 0.8f) == true)
 			{
-				bossHp -= 900;
+				bossHp -= 7;
 				bossHpGageSize.x -= 7;
 				gameScore += 1000;
 				scoreUIMotion();
@@ -996,7 +1004,7 @@ void GameScreen::GameUpdate()
 		CreateBossParticles(bossPosition);
 	}
 
-	if (bossPosition.y <= -20.0f)
+	if (bossPosition.y <= -10.0f)
 	{
 		bossBreak == false;
 
@@ -1674,6 +1682,10 @@ void GameScreen::ResultUpdate()
 	resultParts_2Size = resultParts_2->GetSize();
 	resultParts_3Size = resultParts_3->GetSize();
 
+	resultGTXT_15Size = resultGTXT_15->GetSize();
+
+	resultColor = resultGTXT_15->GetColor();
+	resultPartsColor = resultParts_10->GetColor();
 	scoreColor = resultGTXT_1->GetColor();
 	noDamageBonusColor = resultGTXT_2->GetColor();
 	totalScoreColor = resultGTXT_3->GetColor();
@@ -1709,7 +1721,7 @@ void GameScreen::ResultUpdate()
 
 	totalScore = gameScore + noDamageBonus;
 
-	// 値の計算
+	// サイズ値の計算
 	resultMoveVelX_1 -= resultMoveAccX_1;
 	resultBN_1Size.x += resultMoveVelX_1;
 
@@ -1730,6 +1742,14 @@ void GameScreen::ResultUpdate()
 
 	resultMoveVelX_6 -= resultMoveAccX_6;
 	resultParts_3Size.x += resultMoveVelX_6;
+
+	//
+	resultGTXT_15Size.y += resultMoveVelY_7;
+	resultGTXT_15Size.x += resultMoveVelY_7 * 5.5f;
+
+	// アルファ値の計算
+	resultColor.w += resultChangeAlpha_6;
+	resultPartsColor.w += resultChangeAlpha_7;
 
 	scoreColor.w += resultChangeAlpha_1;
 
@@ -1756,15 +1776,18 @@ void GameScreen::ResultUpdate()
 	// 値の制御
 	if (resultTimer > 0.0f)
 	{
+		// 値の設定
 		resultMoveVelX_1 = 60.0f;
 		resultMoveAccX_1 = 1.0f;
 	}
 
 	if (resultBN_1Size.x > 1280)
 	{
+		// 値の設定
 		resultMoveVelY_1 = 40.0f;
 		resultMoveAccY_1 = 1.2f;
 
+		// 値の初期化
 		resultBN_1Size.x = 1280;
 		resultMoveVelX_1 = 0;
 		resultMoveAccX_1 = 0;
@@ -1772,6 +1795,7 @@ void GameScreen::ResultUpdate()
 
 	if (resultBN_1Size.y > 624)
 	{
+		// 値の設定
 		resultMoveVelX_2 = 40.0f;
 		resultMoveAccX_2 = 1.0f;
 		resultMoveVelX_4 = 40.0f;
@@ -1779,13 +1803,55 @@ void GameScreen::ResultUpdate()
 
 		resultChangeAlpha_1 = 0.05;
 
+		resultChangeAlpha_6 = 0.05;
+		resultMoveVelY_7 = -3.0f;
+
+		// 値の初期化
 		resultBN_1Size.y = 624;
 		resultMoveVelY_1 = 0;
 		resultMoveAccY_1 = 0;
 	}
 
+	if (resultGTXT_15Size.y < 30)
+	{
+		// 値の設定
+		resultGTXT_15Size.x = 165.0f;
+		resultGTXT_15Size.y = 30.0f;
+		resultMoveVelY_7 = 1.0f;
+
+		resultChangeAlpha_7 = 0.05;
+
+		changeResultSizeFlag = true;
+	}
+
+	if (resultGTXT_15Size.y > 40)
+	{
+		// 値の初期化
+		if (changeResultSizeFlag == true)
+		{
+			resultGTXT_15Size.x = 220.0f;
+			resultGTXT_15Size.y = 40.0f;
+			resultMoveVelY_7 = 0.0f;
+		}
+	}
+
+	if (resultColor.w > 1.0f)
+	{
+		// 値の初期化
+		resultColor.w = 1.0f;
+		resultChangeAlpha_6 = 0.0f;
+	}
+
+	if (resultPartsColor.w > 1.0f)
+	{
+		// 値の初期化
+		resultPartsColor.w = 1.0f;
+		resultChangeAlpha_7 = 0.0f;
+	}
+
 	if (resultParts_1Size.x > 646)
 	{
+		// 値の初期化
 		resultParts_1Size.x = 646;
 		resultMoveVelX_4 = 0;
 		resultMoveAccX_4 = 0;
@@ -1793,9 +1859,11 @@ void GameScreen::ResultUpdate()
 
 	if (resultBN_2Size.x > 704)
 	{
+		// 値の設定
 		resultMoveVelX_3 = 40.0f;
 		resultMoveAccX_3 = 1.0f;
 
+		// 値の初期化
 		resultBN_2Size.x = 704;
 		resultMoveVelX_2 = 0;
 		resultMoveAccX_2 = 0;
@@ -1803,33 +1871,41 @@ void GameScreen::ResultUpdate()
 
 	if (scoreColor.w > 1.0f)
 	{
+		// 値の設定
 		resultChangeAlpha_2 = 0.05;
 
+		// 値の初期化
 		scoreColor.w = 1.0f;
 		resultChangeAlpha_1 = 0;
 	}
 
 	if (noDamageBonusColor.w > 1.0f)
 	{
+		// 値の設定
 		resultChangeAlpha_3 = 0.05;
 
+		// 値の初期化
 		noDamageBonusColor.w = 1.0f;
 		resultChangeAlpha_2 = 0;
 	}
 
 	if (totalScoreColor.w > 1.0f)
 	{
+		// 値の設定
 		resultMoveVelX_5 = 20.0f;
 		resultMoveAccX_5 = 0.0f;
 
+		// 値の初期化
 		totalScoreColor.w = 1.0f;
 		resultChangeAlpha_3 = 0;
 	}
 
 	if (resultParts_2Size.x > 232)
 	{
+		// 値の設定
 		resultChangeAlpha_4 = 0.05;
 
+		// 値の初期化
 		resultParts_2Size.x = 232;
 		resultMoveVelX_5 = 0;
 		resultMoveAccX_5 = 0;
@@ -1837,9 +1913,11 @@ void GameScreen::ResultUpdate()
 
 	if (rankColor.w > 1.0f)
 	{
+		// 値の設定
 		resultMoveVelX_6 = 20.0f;
 		resultMoveAccX_6 = 0.0f;
 
+		// 値の初期化
 		rankColor.w = 1.0f;
 		rankSColor.w = 1.0f;
 		rankAColor.w = 1.0f;
@@ -1850,8 +1928,10 @@ void GameScreen::ResultUpdate()
 
 	if (resultParts_3Size.x > 372)
 	{
+		// 値の設定
 		resultChangeAlpha_5 = 0.05;
 
+		// 値の初期化
 		resultParts_3Size.x = 372;
 		resultMoveVelX_6 = 0;
 		resultMoveAccX_6 = 0;
@@ -1859,6 +1939,7 @@ void GameScreen::ResultUpdate()
 
 	if (missionColor.w > 1.0f)
 	{
+		// 値の初期化
 		missionColor.w = 1.0f;
 		mission1Color.w = 1.0f;
 		mission2Color.w = 1.0f;
@@ -1873,12 +1954,11 @@ void GameScreen::ResultUpdate()
 
 	if (resultBN_3Size.x > 704)
 	{
+		// 値の初期化
 		resultBN_3Size.x = 704;
 		resultMoveVelX_3 = 0;
 		resultMoveAccX_3 = 0;
 	}
-
-
 
 	// 暗転からシーン遷移
 	if (canPushKeyFlag == true)
@@ -1918,9 +1998,18 @@ void GameScreen::ResultUpdate()
 	resultParts_2->SetSize(resultParts_2Size);
 	resultParts_3->SetSize(resultParts_3Size);
 
+	resultGTXT_6->SetSize({ 80.0f, 80.0f });
+	resultGTXT_7->SetSize({ 80.0f, 80.0f });
+	resultGTXT_8->SetSize({ 80.0f, 80.0f });
+	resultGTXT_9->SetSize({ 80.0f, 80.0f });
+
+	resultGTXT_15->SetSize(resultGTXT_15Size);
+
 	resultParts_4->SetColor(mission1Color);
 	resultParts_5->SetColor(mission2Color);
 	resultParts_6->SetColor(mission3Color);
+
+	resultParts_10->SetColor(resultPartsColor);
 
 	resultGTXT_1->SetColor(scoreColor);
 	resultGTXT_2->SetColor(noDamageBonusColor);
@@ -1934,6 +2023,7 @@ void GameScreen::ResultUpdate()
 	resultGTXT_12->SetColor(mission1Color);
 	resultGTXT_13->SetColor(mission2Color);
 	resultGTXT_14->SetColor(mission3Color);
+	resultGTXT_15->SetColor(resultColor);
 
 	camera->Update();
 
@@ -1993,15 +2083,6 @@ void GameScreen::ResultDraw()
 	ResultBN_2->Draw();
 	ResultBN_3->Draw();
 
-	resultGTXT_1->Draw();
-	resultGTXT_2->Draw();
-	resultGTXT_3->Draw();
-	resultGTXT_4->Draw();
-	resultGTXT_5->Draw();
-	resultGTXT_12->Draw();
-	resultGTXT_13->Draw();
-	resultGTXT_14->Draw();
-
 	resultParts_1->Draw();
 	resultParts_2->Draw();
 	resultParts_3->Draw();
@@ -2011,19 +2092,30 @@ void GameScreen::ResultDraw()
 	resultParts_7->Draw();
 	resultParts_8->Draw();
 	resultParts_9->Draw();
+	resultParts_10->Draw();
+
+	resultGTXT_1->Draw();
+	resultGTXT_2->Draw();
+	resultGTXT_3->Draw();
+	resultGTXT_4->Draw();
+	resultGTXT_5->Draw();
+	resultGTXT_12->Draw();
+	resultGTXT_13->Draw();
+	resultGTXT_14->Draw();
+	resultGTXT_15->Draw();
 
 
-	if (gameScore > 100000)
+	if (gameScore > 99999)
 	{
 		// S
 		resultGTXT_6->Draw();
 	}
-	else if (gameScore > 50000)
+	else if (gameScore > 49999)
 	{
 		// A
 		resultGTXT_7->Draw();
 	}
-	else if (gameScore > 25000)
+	else if (gameScore > 24999)
 	{
 		// B
 		resultGTXT_8->Draw();
@@ -2106,6 +2198,9 @@ void GameScreen::ResultInitialize()
 	resultParts_9->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 	resultParts_9->SetAnchorPoint({ 0.5f, 0.5f });
 
+	resultParts_10->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
+	resultParts_10->SetAnchorPoint({ 0.5f, 0.5f });
+
 	// SCORE
 	resultGTXT_1->SetSize({ 76, 16 });
 	resultGTXT_1->SetColor({ 0.760f, 0.929f, 1.0f, 0.0f });
@@ -2151,20 +2246,25 @@ void GameScreen::ResultInitialize()
 	resultGTXT_9->SetColor({ 0.0f, 1.0f, 0.0f, 0.0f });
 	resultGTXT_9->SetAnchorPoint({ 0.5f, 0.5f });
 
-	// 
+	// MISSIOM_1
 	resultGTXT_12->SetSize({ 217, 20 });
 	resultGTXT_12->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 	resultGTXT_12->SetAnchorPoint({ 0.0f, 0.5f });
 
-	// 
+	// MISSIOM_2
 	resultGTXT_13->SetSize({ 209, 20 });
 	resultGTXT_13->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 	resultGTXT_13->SetAnchorPoint({ 0.0f, 0.5f });
 
-	// 
+	// MISSIOM_3
 	resultGTXT_14->SetSize({ 198, 20 });
 	resultGTXT_14->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 	resultGTXT_14->SetAnchorPoint({ 0.0f, 0.5f });
+
+	// RESULT
+	resultGTXT_15->SetSize({ 330.0f, 60.0f });
+	resultGTXT_15->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
+	resultGTXT_15->SetAnchorPoint({ 0.5f, 0.5f });
 
 	changeColorFlag = false;
 	changeColorTimer = 30.0f;
@@ -2175,6 +2275,8 @@ void GameScreen::ResultInitialize()
 	resultTimer = 5.0f;
 
 	canPushKeyFlag = false;
+
+	changeResultSizeFlag = false;
 }
 
 void GameScreen::GameOverUpdate()
@@ -2480,6 +2582,7 @@ void GameScreen::GameDebugText()
 
 	//debugText.Print("SPACE : Shot", 1050, 50, 1.0f);
 }
+
 // カメラ方向の切り替え
 void GameScreen::CameraSwitching()
 {
@@ -2535,6 +2638,7 @@ void GameScreen::Attack()
 		if (shotFlag == true)
 		{
 			sound->PlayWav("Shot.wav", Volume_Title);
+
 			std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
 			newBullet = Bullet::Create(modelBullet, playerWorldPosition, bulletScale, bulletSpeed);
 
@@ -2811,6 +2915,16 @@ void GameScreen::LoadTextureFunction()
 	}
 
 	if (!Sprite::LoadTexture(35, L"Resources/Sprite/ResultUI/result_gtxt_14.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(36, L"Resources/Sprite/ResultUI/result_gtxt_15.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(37, L"Resources/Sprite/ResultUI/result_parts_6.png")) {
 		assert(0);
 		return;
 	}
