@@ -702,13 +702,27 @@ private: // メンバ変数
 	float resultMoveVelX_6 = 0;
 	float resultMoveAccX_6 = 0;
 
-	float resultMoveVelY_7 = 0;
+	float resultMoveVel_7 = 0;
+
+	float resultMoveVel_8 = 0;
+
+	float resultMoveVel_9 = 0;
+	float resultMoveVel_10 = 0;
+	float resultMoveVel_11 = 0;
 
 	XMFLOAT2 resultParts_1Size;
 	XMFLOAT2 resultParts_2Size;
 	XMFLOAT2 resultParts_3Size;
 
+	XMFLOAT2 rankSSize;
+	XMFLOAT2 rankASize;
+	XMFLOAT2 rankBSize;
+	XMFLOAT2 rankCSize;
 	XMFLOAT2 resultGTXT_15Size;
+
+	XMFLOAT2 missionStar1Size;
+	XMFLOAT2 missionStar2Size;
+	XMFLOAT2 missionStar3Size;
 
 	XMFLOAT2 scorePosition = { 855, 275 };
 	XMFLOAT2 noDamageBonusPosition = { 855, 305 };
@@ -737,6 +751,10 @@ private: // メンバ変数
 	XMFLOAT4 missionStar2Color;
 	XMFLOAT4 missionStar3Color;
 
+	XMFLOAT4 missionStar4Color;
+	XMFLOAT4 missionStar5Color;
+	XMFLOAT4 missionStar6Color;
+
 	float resultChangeAlpha_1 = 0;
 	float resultChangeAlpha_2 = 0;
 	float resultChangeAlpha_3 = 0;
@@ -744,6 +762,10 @@ private: // メンバ変数
 	float resultChangeAlpha_5 = 0;
 	float resultChangeAlpha_6 = 0;
 	float resultChangeAlpha_7 = 0;
+	float resultChangeAlpha_8 = 0;
+	float resultChangeAlpha_9 = 0;
+	float resultChangeAlpha_10 = 0;
+	float resultChangeAlpha_11 = 0;
 
 	float loadingChangeAlpha = 0;
 
@@ -752,6 +774,7 @@ private: // メンバ変数
 	float totalScore = 0;
 
 	bool noDamageFlag = true;
+	bool targetScoreFlag = false;
 
 	float resultTimer = 5.0f;
 

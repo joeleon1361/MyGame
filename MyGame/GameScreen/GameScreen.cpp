@@ -707,6 +707,11 @@ void GameScreen::GameUpdate()
 		changeColorFlag = true;
 	}
 
+	if (gameScore > 49999)
+	{
+		targetScoreFlag = true;
+	}
+
 #pragma region 情報を取得
 	playerPosition = player->GetPosition();
 	playerRotation = player->GetRotation();
@@ -780,7 +785,7 @@ void GameScreen::GameUpdate()
 	if (input->TriggerKey(DIK_C))
 	{
 		bossHp -= 1000;
-		gameScore += 100000;
+		gameScore += 49999;
 	}
 
 	// 弾を更新
@@ -1664,6 +1669,7 @@ void GameScreen::GameInitialize()
 	gameScoreAlpha = 1.0f;
 
 	noDamageFlag = true;
+	targetScoreFlag = false;
 
 	sound->PlayWav("Play.wav", Volume_Title, true);
 
@@ -1681,6 +1687,15 @@ void GameScreen::ResultUpdate()
 	resultParts_1Size = resultParts_1->GetSize();
 	resultParts_2Size = resultParts_2->GetSize();
 	resultParts_3Size = resultParts_3->GetSize();
+
+	missionStar1Size = resultParts_7->GetSize();
+	missionStar2Size = resultParts_8->GetSize();
+	missionStar3Size = resultParts_9->GetSize();
+
+	rankSSize = resultGTXT_6->GetSize();
+	rankASize = resultGTXT_7->GetSize();
+	rankBSize = resultGTXT_8->GetSize();
+	rankCSize = resultGTXT_9->GetSize();
 
 	resultGTXT_15Size = resultGTXT_15->GetSize();
 
@@ -1704,6 +1719,9 @@ void GameScreen::ResultUpdate()
 	missionStar1Color = resultParts_4->GetColor();
 	missionStar2Color = resultParts_5->GetColor();
 	missionStar3Color = resultParts_6->GetColor();
+	missionStar4Color = resultParts_7->GetColor();
+	missionStar5Color = resultParts_8->GetColor();
+	missionStar6Color = resultParts_9->GetColor();
 
 	/*if (changeColorFlag == false)
 	{
@@ -1743,9 +1761,30 @@ void GameScreen::ResultUpdate()
 	resultMoveVelX_6 -= resultMoveAccX_6;
 	resultParts_3Size.x += resultMoveVelX_6;
 
+	rankSSize.x += resultMoveVel_8;
+	rankSSize.y += resultMoveVel_8;
+
+	rankASize.x += resultMoveVel_8;
+	rankASize.y += resultMoveVel_8;
+
+	rankBSize.x += resultMoveVel_8;
+	rankBSize.y += resultMoveVel_8;
+
+	rankCSize.x += resultMoveVel_8;
+	rankCSize.y += resultMoveVel_8;
+
+	missionStar1Size.x += resultMoveVel_9;
+	missionStar1Size.y += resultMoveVel_9;
+
+	missionStar2Size.x += resultMoveVel_10;
+	missionStar2Size.y += resultMoveVel_10;
+
+	missionStar3Size.x += resultMoveVel_11;
+	missionStar3Size.y += resultMoveVel_11;
+
 	//
-	resultGTXT_15Size.y += resultMoveVelY_7;
-	resultGTXT_15Size.x += resultMoveVelY_7 * 5.5f;
+	resultGTXT_15Size.y += resultMoveVel_7;
+	resultGTXT_15Size.x += resultMoveVel_7 * 5.5f;
 
 	// アルファ値の計算
 	resultColor.w += resultChangeAlpha_6;
@@ -1758,10 +1797,11 @@ void GameScreen::ResultUpdate()
 	totalScoreColor.w += resultChangeAlpha_3;
 
 	rankColor.w += resultChangeAlpha_4;
-	rankSColor.w += resultChangeAlpha_4;
-	rankAColor.w += resultChangeAlpha_4;
-	rankBColor.w += resultChangeAlpha_4;
-	rankCColor.w += resultChangeAlpha_4;
+
+	rankSColor.w += resultChangeAlpha_8;
+	rankAColor.w += resultChangeAlpha_8;
+	rankBColor.w += resultChangeAlpha_8;
+	rankCColor.w += resultChangeAlpha_8;
 
 	missionColor.w += resultChangeAlpha_5;
 	mission1Color.w += resultChangeAlpha_5;
@@ -1770,8 +1810,16 @@ void GameScreen::ResultUpdate()
 	missionStar1Color.w += resultChangeAlpha_5;
 	missionStar2Color.w += resultChangeAlpha_5;
 	missionStar3Color.w += resultChangeAlpha_5;
+	missionStar4Color.w += resultChangeAlpha_9;
+	missionStar5Color.w += resultChangeAlpha_10;
+	missionStar6Color.w += resultChangeAlpha_11;
 
 	resultTimer -= 1.0f;
+
+	if (input->TriggerKey(DIK_Q))
+	{
+		resultMoveVel_8 = 1.0f;
+	}
 
 	// 値の制御
 	if (resultTimer > 0.0f)
@@ -1781,6 +1829,7 @@ void GameScreen::ResultUpdate()
 		resultMoveAccX_1 = 1.0f;
 	}
 
+	// バナー1の横幅の制御
 	if (resultBN_1Size.x > 1280)
 	{
 		// 値の設定
@@ -1793,6 +1842,7 @@ void GameScreen::ResultUpdate()
 		resultMoveAccX_1 = 0;
 	}
 
+	// バナー1の縦幅の制御
 	if (resultBN_1Size.y > 624)
 	{
 		// 値の設定
@@ -1804,7 +1854,7 @@ void GameScreen::ResultUpdate()
 		resultChangeAlpha_1 = 0.05;
 
 		resultChangeAlpha_6 = 0.05;
-		resultMoveVelY_7 = -3.0f;
+		resultMoveVel_7 = -3.0f;
 
 		// 値の初期化
 		resultBN_1Size.y = 624;
@@ -1812,12 +1862,13 @@ void GameScreen::ResultUpdate()
 		resultMoveAccY_1 = 0;
 	}
 
+	// RESULTのサイズ制御
 	if (resultGTXT_15Size.y < 30)
 	{
 		// 値の設定
 		resultGTXT_15Size.x = 165.0f;
 		resultGTXT_15Size.y = 30.0f;
-		resultMoveVelY_7 = 1.0f;
+		resultMoveVel_7 = 1.0f;
 
 		resultChangeAlpha_7 = 0.05;
 
@@ -1831,10 +1882,11 @@ void GameScreen::ResultUpdate()
 		{
 			resultGTXT_15Size.x = 220.0f;
 			resultGTXT_15Size.y = 40.0f;
-			resultMoveVelY_7 = 0.0f;
+			resultMoveVel_7 = 0.0f;
 		}
 	}
 
+	// RESULTの色制御
 	if (resultColor.w > 1.0f)
 	{
 		// 値の初期化
@@ -1842,6 +1894,7 @@ void GameScreen::ResultUpdate()
 		resultChangeAlpha_6 = 0.0f;
 	}
 
+	// RESULTの背景パーツの色制御
 	if (resultPartsColor.w > 1.0f)
 	{
 		// 値の初期化
@@ -1849,6 +1902,7 @@ void GameScreen::ResultUpdate()
 		resultChangeAlpha_7 = 0.0f;
 	}
 
+	// ラインパーツ1のサイズ制御
 	if (resultParts_1Size.x > 646)
 	{
 		// 値の初期化
@@ -1857,6 +1911,7 @@ void GameScreen::ResultUpdate()
 		resultMoveAccX_4 = 0;
 	}
 
+	// バナー2の横幅の制御 
 	if (resultBN_2Size.x > 704)
 	{
 		// 値の設定
@@ -1869,6 +1924,7 @@ void GameScreen::ResultUpdate()
 		resultMoveAccX_2 = 0;
 	}
 
+	// SCOREの色制御
 	if (scoreColor.w > 1.0f)
 	{
 		// 値の設定
@@ -1879,6 +1935,7 @@ void GameScreen::ResultUpdate()
 		resultChangeAlpha_1 = 0;
 	}
 
+	// NO DAMAGE BONUSの色制御
 	if (noDamageBonusColor.w > 1.0f)
 	{
 		// 値の設定
@@ -1889,6 +1946,7 @@ void GameScreen::ResultUpdate()
 		resultChangeAlpha_2 = 0;
 	}
 
+	// TOTAL SCOREの色制御
 	if (totalScoreColor.w > 1.0f)
 	{
 		// 値の設定
@@ -1900,6 +1958,7 @@ void GameScreen::ResultUpdate()
 		resultChangeAlpha_3 = 0;
 	}
 
+	// ラインパーツ2のサイズ制御
 	if (resultParts_2Size.x > 232)
 	{
 		// 値の設定
@@ -1911,21 +1970,53 @@ void GameScreen::ResultUpdate()
 		resultMoveAccX_5 = 0;
 	}
 
+	// RANKの色制御
 	if (rankColor.w > 1.0f)
+	{
+		// 値の設定
+		resultChangeAlpha_8 = 0.05;
+		resultMoveVel_8 = -6.0f;
+
+		// 値の初期化
+		rankColor.w = 1.0f;
+		resultChangeAlpha_4 = 0;
+	}
+
+	// 各RANKのサイズ制御
+	if (rankSSize.x < 80.0f)
 	{
 		// 値の設定
 		resultMoveVelX_6 = 20.0f;
 		resultMoveAccX_6 = 0.0f;
 
 		// 値の初期化
-		rankColor.w = 1.0f;
+		rankSSize.x = 80.0f;
+		rankSSize.y = 80.0f;
+
+		rankASize.x = 80.0f;
+		rankASize.y = 80.0f;
+
+		rankBSize.x = 80.0f;
+		rankBSize.y = 80.0f;
+
+		rankCSize.x = 80.0f;
+		rankCSize.y = 80.0f;
+
+		resultMoveVel_8 = 0.0f;
+	}
+
+	// 各RANKの色制御
+	if (rankSColor.w > 1.0f)
+	{
+		// 値の初期化
 		rankSColor.w = 1.0f;
 		rankAColor.w = 1.0f;
 		rankBColor.w = 1.0f;
 		rankCColor.w = 1.0f;
-		resultChangeAlpha_4 = 0;
+		resultChangeAlpha_8 = 0;
 	}
 
+	// ラインパーツ3のサイズ制御
 	if (resultParts_3Size.x > 372)
 	{
 		// 値の設定
@@ -1937,8 +2028,16 @@ void GameScreen::ResultUpdate()
 		resultMoveAccX_6 = 0;
 	}
 
+	// MISSIONの色制御
 	if (missionColor.w > 1.0f)
 	{
+		// 値の設定
+		resultMoveVel_9 = -4.0f;
+		if (noDamageFlag == true)
+		{
+			resultChangeAlpha_9 = 0.05f;
+		}
+
 		// 値の初期化
 		missionColor.w = 1.0f;
 		mission1Color.w = 1.0f;
@@ -1948,10 +2047,72 @@ void GameScreen::ResultUpdate()
 		missionStar2Color.w = 1.0f;
 		missionStar3Color.w = 1.0f;
 		resultChangeAlpha_5 = 0;
+	}
 
+	// 星1のサイズ制御
+	if (missionStar1Size.x < 28.0f)
+	{
+		// 値の設定
+		resultMoveVel_10 = -4.0f;
+		resultChangeAlpha_10 = 0.05f;
+
+		// 値の初期化
+		missionStar1Size.x = 28.0f;
+		missionStar1Size.y = 28.0f;
+		resultMoveVel_9 = 0.0f;
+	}
+
+	// 星1の色制御
+	if (missionStar4Color.w > 1.0f)
+	{
+		// 値の初期化
+		missionStar4Color.w = 1.0f;
+		resultChangeAlpha_9 = 0.0f;
+	}
+
+	// 星2のサイズ制御
+	if (missionStar2Size.x < 28.0f)
+	{
+		// 値の設定
+		resultMoveVel_11 = -4.0f;
+		if (targetScoreFlag == true)
+		{
+			resultChangeAlpha_11 = 0.05f;
+		}
+
+		// 値の初期化
+		missionStar2Size.x = 28.0f;
+		missionStar2Size.y = 28.0f;
+		resultMoveVel_10 = 0.0f;
+	}
+
+	// 星2の色制御
+	if (missionStar5Color.w > 1.0f)
+	{
+		// 値の初期化
+		missionStar5Color.w = 1.0f;
+		resultChangeAlpha_10 = 0.0f;
+	}
+
+	// 星3のサイズ制御
+	if (missionStar3Size.x < 28.0f)
+	{
+		// 値の初期化
+		missionStar3Size.x = 28.0f;
+		missionStar3Size.y = 28.0f;
+		resultMoveVel_11 = 0.0f;
 		canPushKeyFlag = true;
 	}
 
+	// 星3の色制御
+	if (missionStar6Color.w > 1.0f)
+	{
+		// 値の初期化
+		missionStar6Color.w = 1.0f;
+		resultChangeAlpha_11 = 0.0f;
+	}
+
+	// バナー3の横幅の制御  
 	if (resultBN_3Size.x > 704)
 	{
 		// 値の初期化
@@ -1998,16 +2159,22 @@ void GameScreen::ResultUpdate()
 	resultParts_2->SetSize(resultParts_2Size);
 	resultParts_3->SetSize(resultParts_3Size);
 
-	resultGTXT_6->SetSize({ 80.0f, 80.0f });
-	resultGTXT_7->SetSize({ 80.0f, 80.0f });
-	resultGTXT_8->SetSize({ 80.0f, 80.0f });
-	resultGTXT_9->SetSize({ 80.0f, 80.0f });
+	resultParts_7->SetSize(missionStar1Size);
+	resultParts_8->SetSize(missionStar2Size);
+	resultParts_9->SetSize(missionStar3Size);
 
+	resultGTXT_6->SetSize(rankSSize);
+	resultGTXT_7->SetSize(rankASize);
+	resultGTXT_8->SetSize(rankBSize);
+	resultGTXT_9->SetSize(rankCSize);
 	resultGTXT_15->SetSize(resultGTXT_15Size);
 
-	resultParts_4->SetColor(mission1Color);
-	resultParts_5->SetColor(mission2Color);
-	resultParts_6->SetColor(mission3Color);
+	resultParts_4->SetColor(missionStar1Color);
+	resultParts_5->SetColor(missionStar2Color);
+	resultParts_6->SetColor(missionStar3Color);
+	resultParts_7->SetColor(missionStar4Color);
+	resultParts_8->SetColor(missionStar5Color);
+	resultParts_9->SetColor(missionStar6Color);
 
 	resultParts_10->SetColor(resultPartsColor);
 
@@ -2186,15 +2353,15 @@ void GameScreen::ResultInitialize()
 	resultParts_6->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 	resultParts_6->SetAnchorPoint({ 0.5f, 0.5f });
 
-	resultParts_7->SetSize({ 28.0f, 28.0f });
+	resultParts_7->SetSize({ 84.0f, 84.0f });
 	resultParts_7->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 	resultParts_7->SetAnchorPoint({ 0.5f, 0.5f });
 
-	resultParts_8->SetSize({ 28.0f, 28.0f });
+	resultParts_8->SetSize({ 84.0f, 84.0f });
 	resultParts_8->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 	resultParts_8->SetAnchorPoint({ 0.5f, 0.5f });
 
-	resultParts_9->SetSize({ 28.0f, 28.0f });
+	resultParts_9->SetSize({ 84.0f, 84.0f });
 	resultParts_9->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 	resultParts_9->SetAnchorPoint({ 0.5f, 0.5f });
 
@@ -2227,22 +2394,22 @@ void GameScreen::ResultInitialize()
 	resultGTXT_5->SetAnchorPoint({ 0.0f, 0.5f });
 
 	// S
-	resultGTXT_6->SetSize({ 80.0f, 80.0f });
+	resultGTXT_6->SetSize({ 160.0f, 160.0f });
 	resultGTXT_6->SetColor({ 1.0f, 1.0f, 0.0f, 0.0f });
 	resultGTXT_6->SetAnchorPoint({ 0.5f, 0.5f });
 
 	// A
-	resultGTXT_7->SetSize({ 80.0f, 80.0f });
+	resultGTXT_7->SetSize({ 160.0f, 160.0f });
 	resultGTXT_7->SetColor({ 1.0f, 0.4f, 0.0f, 0.0f });
 	resultGTXT_7->SetAnchorPoint({ 0.5f, 0.5f });
 
 	// B
-	resultGTXT_8->SetSize({ 80.0f, 80.0f });
+	resultGTXT_8->SetSize({ 160.0f, 160.0f });
 	resultGTXT_8->SetColor({ 0.0f, 1.0f, 1.0f, 0.0f });
 	resultGTXT_8->SetAnchorPoint({ 0.5f, 0.5f });
 
 	// C
-	resultGTXT_9->SetSize({ 80.0f, 80.0f });
+	resultGTXT_9->SetSize({ 160.0f, 160.0f });
 	resultGTXT_9->SetColor({ 0.0f, 1.0f, 0.0f, 0.0f });
 	resultGTXT_9->SetAnchorPoint({ 0.5f, 0.5f });
 
