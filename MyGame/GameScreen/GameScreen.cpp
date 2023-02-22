@@ -95,7 +95,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 
 	bossHpUI = Sprite::Create(7, { 1265.0f, bossHpUIHigh });
 	bossHpGage = Sprite::Create(8, { 1255.0f, bossHpUIHigh });
-	bossHpUICover = Sprite::Create(9, { 1265.0f, bossHpUIHigh });
+	bossHpUICover = Sprite::Create(38, { 1265.0f, bossHpUIHigh });
 
 	scoreUI = Sprite::Create(11, { 15.0f, bossHpUIHigh + 30.0f });
 	scoreChar = Sprite::Create(12, { 190.0f, 30.0f });
@@ -2046,7 +2046,7 @@ void GameScreen::ResultUpdate()
 		missionStar1Color.w = 1.0f;
 		missionStar2Color.w = 1.0f;
 		missionStar3Color.w = 1.0f;
-		resultChangeAlpha_5 = 0;
+		resultChangeAlpha_5 = 0.0f;
 	}
 
 	// 星1のサイズ制御
@@ -2054,7 +2054,7 @@ void GameScreen::ResultUpdate()
 	{
 		// 値の設定
 		resultMoveVel_10 = -4.0f;
-		resultChangeAlpha_10 = 0.05f;
+		// resultChangeAlpha_10 = 0.05f;
 
 		// 値の初期化
 		missionStar1Size.x = 28.0f;
@@ -2956,7 +2956,7 @@ void GameScreen::LoadTextureFunction()
 		return;
 	}
 
-	if (!Sprite::LoadTexture(9, L"Resources/Sprite/HpUICommon/HpUICover.png")) {
+	if (!Sprite::LoadTexture(9, L"Resources/Sprite/HpUI/playerHpFrame.png")) {
 		assert(0);
 		return;
 	}
@@ -3092,6 +3092,11 @@ void GameScreen::LoadTextureFunction()
 	}
 
 	if (!Sprite::LoadTexture(37, L"Resources/Sprite/ResultUI/result_parts_6.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(38, L"Resources/Sprite/BossHpUI/bossHpFrame.png")) {
 		assert(0);
 		return;
 	}
