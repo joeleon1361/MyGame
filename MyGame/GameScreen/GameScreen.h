@@ -525,6 +525,9 @@ private: // メンバ変数
 	XMFLOAT3 bossLeg1Velocity = { 0,0,0 };
 
 	float bossHp;
+	float bossHpMax;
+	float bossHpRatio;
+
 	float bossLeg1Hp;
 	float bossLeg2Hp;
 	float bossLeg3Hp;

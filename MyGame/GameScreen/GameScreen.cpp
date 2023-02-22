@@ -781,14 +781,18 @@ void GameScreen::GameUpdate()
 
 	// プレイヤーのHP計算
 	playerHpRatio = playerHp / playerHpMax;
-	playerHpGageSize.x = playerHpRatio * 320;
+	playerHpGageSize.x = playerHpRatio * 320.0f;
+
+	// ボスのHP計算
+	bossHpRatio = bossHp / bossHpMax;
+	bossHpGageSize.x = bossHpRatio * 530.0f;
 
 #pragma region 弾関連
 	Attack();
 
 	if (input->TriggerKey(DIK_C))
 	{
-		bossHp -= 1000.0f;
+		bossHp -= bossHpMax;
 		gameScore += 49999.0f;
 	}
 
@@ -990,8 +994,7 @@ void GameScreen::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossBody->GetPosition(), 0.8f, 0.8f) == true)
 			{
-				bossHp -= 7.0f;
-				bossHpGageSize.x -= 7.0f;
+				bossHp -= 10.0f;
 				gameScore += 1000.0f;
 				scoreUIMotion();
 				sound->PlayWav("Hit.wav", Volume_Title);
@@ -1033,7 +1036,6 @@ void GameScreen::GameUpdate()
 			{
 				sound->PlayWav("Hit.wav", Volume_Title);
 				bossHp -= 5.0f;
-				bossHpGageSize.x -= 5.0f;
 				gameScore += 250.0f;
 				scoreUIMotion();
 				if (rushFlag == false)
@@ -1074,7 +1076,6 @@ void GameScreen::GameUpdate()
 			{
 				sound->PlayWav("Hit.wav", Volume_Title);
 				bossHp -= 5.0f;
-				bossHpGageSize.x -= 5.0f;
 				gameScore += 250.0f;
 				scoreUIMotion();
 				if (rushFlag == false)
@@ -1115,7 +1116,6 @@ void GameScreen::GameUpdate()
 			{
 				sound->PlayWav("Hit.wav", Volume_Title);
 				bossHp -= 5.0f;
-				bossHpGageSize.x -= 5.0f;
 				gameScore += 250.0f;
 				scoreUIMotion();
 				if (rushFlag == false)
@@ -1156,7 +1156,6 @@ void GameScreen::GameUpdate()
 			{
 				sound->PlayWav("Hit.wav", Volume_Title);
 				bossHp -= 5.0f;
-				bossHpGageSize.x -= 5.0f;
 				gameScore += 250.0f;
 				scoreUIMotion();
 				if (rushFlag == false)
@@ -1625,11 +1624,12 @@ void GameScreen::GameInitialize()
 	playerHp = playerHpMax;
 
 	// ボス関連
-	bossHp = 530;
-	bossLeg1Hp = 10;
-	bossLeg2Hp = 10;
-	bossLeg3Hp = 10;
-	bossLeg4Hp = 10;
+	bossHpMax = 500.0f;
+	bossHp = bossHpMax;
+	bossLeg1Hp = 10.0f;
+	bossLeg2Hp = 10.0f;
+	bossLeg3Hp = 10.0f;
+	bossLeg4Hp = 10.0f;
 
 	bossBreak = false;
 	bossLeg1Break = false;
