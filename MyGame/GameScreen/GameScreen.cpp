@@ -792,7 +792,7 @@ void GameScreen::GameUpdate()
 
 	if (input->TriggerKey(DIK_C))
 	{
-		bossHp -= bossHpMax;
+		bossHp = 0.0f;
 		gameScore += 49999.0f;
 	}
 
@@ -1511,27 +1511,27 @@ void GameScreen::GameDraw()
 	// スコアテキストの描画
 	scoreText.DrawAll(cmdList);
 
-	if (gameScore < 10)
+	if (gameScore < 10.0f)
 	{
 		scoreNull_1->Draw();
 	}
-	if (gameScore < 100)
+	if (gameScore < 100.0f)
 	{
 		scoreNull_2->Draw();
 	}
-	if (gameScore < 1000)
+	if (gameScore < 1000.0f)
 	{
 		scoreNull_3->Draw();
 	}
-	if (gameScore < 10000)
+	if (gameScore < 10000.0f)
 	{
 		scoreNull_4->Draw();
 	}
-	if (gameScore < 100000)
+	if (gameScore < 100000.0f)
 	{
 		scoreNull_5->Draw();
 	}
-	if (gameScore < 1000000)
+	if (gameScore < 1000000.0f)
 	{
 		scoreNull_6->Draw();
 	}
@@ -1549,75 +1549,75 @@ void GameScreen::GameDraw()
 void GameScreen::GameInitialize()
 {
 	// 座標のセット
-	player->SetPosition({ 0,0,0 });
-	player->SetRotation({ 0, 90, 0 });
+	player->SetPosition({ 0.0f,0.0f,0.0f });
+	player->SetRotation({ 0.0f, 90.0f, 0.0f });
 	player->SetScale({ 1.0f, 1.0f, 1.0f });
 
 	objSkydome->SetPosition({ 0.0f, 0.0f, 0.0f });
 	objSkydome->SetRotation({ 0.0f,0.0f,0.0f, });
 	objSkydome->SetScale({ 5.0f, 5.0f, 5.0f });
 
-	frontCamera->SetPosition({ 0,0,-20.0f });
-	rightCamera->SetPosition({ -20,0,0.0f });
-	backCamera->SetPosition({ 0,0,20.0f });
-	leftCamera->SetPosition({ 20,0,0.0f });
+	frontCamera->SetPosition({ 0.0f,0.0f,-20.0f });
+	rightCamera->SetPosition({ -20.0f,0.0f,0.0f });
+	backCamera->SetPosition({ 0.0f,0.0f,20.0f });
+	leftCamera->SetPosition({ 20.0f,0.0f,0.0f });
 
-	objCenter->SetPosition({ 0,0,0 });
+	objCenter->SetPosition({ 0.0f,0.0f,0.0f });
 	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
 
-	bossBody->SetPosition({ 0,0,20 });
-	bossLeg1->SetPosition({ 2,-2,2 });
-	bossLeg2->SetPosition({ 2,-2,-2 });
-	bossLeg3->SetPosition({ -2,-2,2 });
-	bossLeg4->SetPosition({ -2,-2,-2 });
+	bossBody->SetPosition({ 0.0f,0.0f,20.0f });
+	bossLeg1->SetPosition({ 2.0f,-2.0f,2.0f });
+	bossLeg2->SetPosition({ 2.0f,-2.0f,-2.0f });
+	bossLeg3->SetPosition({ -2.0f,-2.0f,2.0f });
+	bossLeg4->SetPosition({ -2.0f,-2.0f,-2.0f });
 
-	bossBody->SetRotation({ 0,0,0 });
-	bossLeg1->SetRotation({ 0,0,0 });
-	bossLeg2->SetRotation({ 0,0,0 });
-	bossLeg3->SetRotation({ 0,0,0 });
-	bossLeg4->SetRotation({ 0,0,0 });
+	bossBody->SetRotation({ 0.0f,0.0f,0.0f });
+	bossLeg1->SetRotation({ 0.0f,0.0f,0.0f });
+	bossLeg2->SetRotation({ 0.0f,0.0f,0.0f });
+	bossLeg3->SetRotation({ 0.0f,0.0f,0.0f });
+	bossLeg4->SetRotation({ 0.0f,0.0f,0.0f });
 
-	camera->SetTarget({ 0, 0, 0 });
-	camera->SetEye({ 0, 0, 10 });
-	camera->SetUp({ 0, 1, 0 });
+	camera->SetTarget({ 0.0f, 0.0f, 0.0f });
+	camera->SetEye({ 0.0f, 0.0f, 10.0f });
+	camera->SetUp({ 0.0f, 1.0f, 0.0f });
 
 	// シーン遷移時の画面暗転
 	//LoadingBG->SetColor({ 1, 1, 1, 1.0f });
 	loadingColor.w = 1.0f;
 
 	// プレイヤーのHPゲージ
-	playerHpGage->SetColor({ 0.1, 0.6, 0.1, 1 });
+	playerHpGage->SetColor({ 0.1f, 0.6f, 0.1f, 1.0f });
 	playerHpGage->SetSize({ 320.0f, 30.0f });
-	playerHpGage->SetAnchorPoint({ 1, 0.5 });
+	playerHpGage->SetAnchorPoint({ 1.0f, 0.5f });
 
 	// playerHpUI->SetColor({ 1.0, 0.2, 0.2, 1});
-	playerHpUI->SetAnchorPoint({ 1,0.5 });
+	playerHpUI->SetAnchorPoint({ 1.0f,0.5f });
 
-	playerHpUICover->SetAnchorPoint({ 1, 0.5 });
+	playerHpUICover->SetAnchorPoint({ 1.0f, 0.5f });
 	//playerHpUICover->SetColor({ 1.0, 0.2, 0.2, 1 });
 
 	// ボスのHPゲージ
-	bossHpGage->SetColor({ 0.1, 0.6, 0.1, 1 });
+	bossHpGage->SetColor({ 0.1f, 0.6f, 0.1f, 1.0f });
 	bossHpGage->SetSize({ 530.0f, 30.0f });
-	bossHpGage->SetAnchorPoint({ 1, 0.5 });
+	bossHpGage->SetAnchorPoint({ 1.0f, 0.5f });
 
-	bossHpUI->SetAnchorPoint({ 1, 0.5 });
+	bossHpUI->SetAnchorPoint({ 1.0f, 0.5f });
 
-	bossHpUICover->SetAnchorPoint({ 1, 0.5 });
+	bossHpUICover->SetAnchorPoint({ 1.0f, 0.5f });
 
 	// スコアUI
-	scoreUI->SetAnchorPoint({ 0, 0.5 });
+	scoreUI->SetAnchorPoint({ 0.0f, 0.5f });
 
 	scoreChar->SetColor({ 0.760f, 0.929f, 1.0f, 1.0f });
 
-	scoreNull_1->SetSize({ 25.0, 25.0 });
-	scoreNull_2->SetSize({ 25.0, 25.0 });
-	scoreNull_3->SetSize({ 25.0, 25.0 });
-	scoreNull_4->SetSize({ 25.0, 25.0 });
-	scoreNull_5->SetSize({ 25.0, 25.0 });
-	scoreNull_6->SetSize({ 25.0, 25.0 });
+	scoreNull_1->SetSize({ 25.0f, 25.0f });
+	scoreNull_2->SetSize({ 25.0f, 25.0f });
+	scoreNull_3->SetSize({ 25.0f, 25.0f });
+	scoreNull_4->SetSize({ 25.0f, 25.0f });
+	scoreNull_5->SetSize({ 25.0f, 25.0f });
+	scoreNull_6->SetSize({ 25.0f, 25.0f });
 
-	scoreBasePosition = { 300, 52 };
+	scoreBasePosition = { 300.0f, 52.0f };
 
 	// プレイヤー関連
 	playerHpMax = 300.0f;
@@ -1668,7 +1668,7 @@ void GameScreen::GameInitialize()
 
 	gameScore = 0;
 
-	gameScoreMax = 9999999;
+	gameScoreMax = 9999999.0f;
 
 	gameScoreAlpha = 1.0f;
 
