@@ -494,7 +494,9 @@ private: // メンバ変数
 
 	XMFLOAT3 playerWorldPosition;
 
-	int playerHp;
+	float playerHp;
+	float playerHpMax;
+	float playerHpRatio;
 
 	// 弾関連
 	XMFLOAT3 bulletScale = { 0.3f, 0.3f, 0.3f };
@@ -522,11 +524,11 @@ private: // メンバ変数
 
 	XMFLOAT3 bossLeg1Velocity = { 0,0,0 };
 
-	int bossHp;
-	int bossLeg1Hp;
-	int bossLeg2Hp;
-	int bossLeg3Hp;
-	int bossLeg4Hp;
+	float bossHp;
+	float bossLeg1Hp;
+	float bossLeg2Hp;
+	float bossLeg3Hp;
+	float bossLeg4Hp;
 
 	bool bossBreak = false;
 	bool bossLeg1Break = false;
@@ -573,7 +575,7 @@ private: // メンバ変数
 	XMFLOAT3 specialBulletPosition;
 
 	// スピード
-	float specialBulletSpeed = 0;
+	float specialBulletSpeed = 0.0;
 
 #pragma endregion
 
@@ -669,46 +671,46 @@ private: // メンバ変数
 
 	float bossHpUIHigh = 30.0f;
 
-	float gameScore = 0;
+	float gameScore = 0.0f;
 	float gameScoreMax = 9999999;
 	float gameScoreAlpha = 1.0f;
-	XMFLOAT2 scoreBasePosition = { 300, 52 };
+	XMFLOAT2 scoreBasePosition = { 300.0f, 52.0f };
 
-	float scoreMoveVel = 0;
-	float scoreMoveAcc = 1;
+	float scoreMoveVel = 0.0f;
+	float scoreMoveAcc = 1.0f;
 
 	XMFLOAT2 resultBN_1Size;
 	XMFLOAT2 resultBN_2Size;
 	XMFLOAT2 resultBN_3Size;
 
-	float resultMoveVelX_1 = 0;
-	float resultMoveAccX_1 = 0;
+	float resultMoveVelX_1 = 0.0f;
+	float resultMoveAccX_1 = 0.0f;
 
-	float resultMoveVelY_1 = 0;
-	float resultMoveAccY_1 = 0;
+	float resultMoveVelY_1 = 0.0f;
+	float resultMoveAccY_1 = 0.0f;
 
-	float resultMoveVelX_2 = 0;
-	float resultMoveAccX_2 = 0;
+	float resultMoveVelX_2 = 0.0f;
+	float resultMoveAccX_2 = 0.0f;
 
-	float resultMoveVelX_3 = 0;
-	float resultMoveAccX_3 = 0;
+	float resultMoveVelX_3 = 0.0f;
+	float resultMoveAccX_3 = 0.0f;
 
-	float resultMoveVelX_4 = 0;
-	float resultMoveAccX_4 = 0;
+	float resultMoveVelX_4 = 0.0f;
+	float resultMoveAccX_4 = 0.0f;
 
-	float resultMoveVelX_5 = 0;
-	float resultMoveAccX_5 = 0;
+	float resultMoveVelX_5 = 0.0f;
+	float resultMoveAccX_5 = 0.0f;
 
-	float resultMoveVelX_6 = 0;
-	float resultMoveAccX_6 = 0;
+	float resultMoveVelX_6 = 0.0f;
+	float resultMoveAccX_6 = 0.0f;
 
-	float resultMoveVel_7 = 0;
+	float resultMoveVel_7 = 0.0f;
 
-	float resultMoveVel_8 = 0;
+	float resultMoveVel_8 = 0.0f;
 
-	float resultMoveVel_9 = 0;
-	float resultMoveVel_10 = 0;
-	float resultMoveVel_11 = 0;
+	float resultMoveVel_9 = 0.0f;
+	float resultMoveVel_10 = 0.0f;
+	float resultMoveVel_11 = 0.0f;
 
 	XMFLOAT2 resultParts_1Size;
 	XMFLOAT2 resultParts_2Size;
@@ -755,23 +757,23 @@ private: // メンバ変数
 	XMFLOAT4 missionStar5Color;
 	XMFLOAT4 missionStar6Color;
 
-	float resultChangeAlpha_1 = 0;
-	float resultChangeAlpha_2 = 0;
-	float resultChangeAlpha_3 = 0;
-	float resultChangeAlpha_4 = 0;
-	float resultChangeAlpha_5 = 0;
-	float resultChangeAlpha_6 = 0;
-	float resultChangeAlpha_7 = 0;
-	float resultChangeAlpha_8 = 0;
-	float resultChangeAlpha_9 = 0;
-	float resultChangeAlpha_10 = 0;
-	float resultChangeAlpha_11 = 0;
+	float resultChangeAlpha_1 = 0.0f;
+	float resultChangeAlpha_2 = 0.0f;
+	float resultChangeAlpha_3 = 0.0f;
+	float resultChangeAlpha_4 = 0.0f;
+	float resultChangeAlpha_5 = 0.0f;
+	float resultChangeAlpha_6 = 0.0f;
+	float resultChangeAlpha_7 = 0.0f;
+	float resultChangeAlpha_8 = 0.0f;
+	float resultChangeAlpha_9 = 0.0f;
+	float resultChangeAlpha_10 = 0.0f;
+	float resultChangeAlpha_11 = 0.0f;
 
-	float loadingChangeAlpha = 0;
+	float loadingChangeAlpha = 0.0f;
 
-	float noDamageBonus = 20000;
+	float noDamageBonus = 20000.0f;
 
-	float totalScore = 0;
+	float totalScore = 0.0f;
 
 	bool noDamageFlag = true;
 	bool targetScoreFlag = false;

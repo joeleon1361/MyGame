@@ -699,7 +699,7 @@ void GameScreen::GameUpdate()
 	}
 
 	// プレイヤーが撃破されたら遷移
-	if (playerHp <= 0)
+	if (playerHp <= 0.0f)
 	{
 		/*sound->StopWav("Play.wav");
 		GameOverInitialize();
@@ -707,7 +707,7 @@ void GameScreen::GameUpdate()
 		changeColorFlag = true;
 	}
 
-	if (gameScore > 49999)
+	if (gameScore > 49999.0f)
 	{
 		targetScoreFlag = true;
 	}
@@ -779,13 +779,17 @@ void GameScreen::GameUpdate()
 		scene = RESULT;
 	}
 
+	// プレイヤーのHP計算
+	playerHpRatio = playerHp / playerHpMax;
+	playerHpGageSize.x = playerHpRatio * 320;
+
 #pragma region 弾関連
 	Attack();
 
 	if (input->TriggerKey(DIK_C))
 	{
-		bossHp -= 1000;
-		gameScore += 49999;
+		bossHp -= 1000.0f;
+		gameScore += 49999.0f;
 	}
 
 	// 弾を更新
@@ -986,9 +990,9 @@ void GameScreen::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossBody->GetPosition(), 0.8f, 0.8f) == true)
 			{
-				bossHp -= 7;
-				bossHpGageSize.x -= 7;
-				gameScore += 1000;
+				bossHp -= 7.0f;
+				bossHpGageSize.x -= 7.0f;
+				gameScore += 1000.0f;
 				scoreUIMotion();
 				sound->PlayWav("Hit.wav", Volume_Title);
 				bullet->deathFlag = true;
@@ -998,7 +1002,7 @@ void GameScreen::GameUpdate()
 		}
 	}
 
-	if (bossHp <= 0)
+	if (bossHp <= 0.0f)
 	{
 		bossBreak = true;
 	}
@@ -1028,13 +1032,13 @@ void GameScreen::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossLeg1WorldPosition, 0.8f, 0.6f) == true)
 			{
 				sound->PlayWav("Hit.wav", Volume_Title);
-				bossHp -= 5;
-				bossHpGageSize.x -= 5;
-				gameScore += 250;
+				bossHp -= 5.0f;
+				bossHpGageSize.x -= 5.0f;
+				gameScore += 250.0f;
 				scoreUIMotion();
 				if (rushFlag == false)
 				{
-					bossLeg1Hp -= 1;
+					bossLeg1Hp -= 1.0f;
 				}
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -1043,7 +1047,7 @@ void GameScreen::GameUpdate()
 		}
 	}
 
-	if (bossLeg1Hp <= 0)
+	if (bossLeg1Hp <= 0.0f)
 	{
 		bossLeg1Break = true;
 	}
@@ -1069,13 +1073,13 @@ void GameScreen::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossLeg2WorldPosition, 0.8f, 0.6f) == true)
 			{
 				sound->PlayWav("Hit.wav", Volume_Title);
-				bossHp -= 5;
-				bossHpGageSize.x -= 5;
-				gameScore += 250;
+				bossHp -= 5.0f;
+				bossHpGageSize.x -= 5.0f;
+				gameScore += 250.0f;
 				scoreUIMotion();
 				if (rushFlag == false)
 				{
-					bossLeg2Hp -= 1;
+					bossLeg2Hp -= 1.0f;
 				}
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -1084,7 +1088,7 @@ void GameScreen::GameUpdate()
 		}
 	}
 
-	if (bossLeg2Hp <= 0)
+	if (bossLeg2Hp <= 0.0f)
 	{
 		bossLeg2Break = true;
 	}
@@ -1110,13 +1114,13 @@ void GameScreen::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossLeg3WorldPosition, 0.8f, 0.6f) == true)
 			{
 				sound->PlayWav("Hit.wav", Volume_Title);
-				bossHp -= 5;
-				bossHpGageSize.x -= 5;
-				gameScore += 250;
+				bossHp -= 5.0f;
+				bossHpGageSize.x -= 5.0f;
+				gameScore += 250.0f;
 				scoreUIMotion();
 				if (rushFlag == false)
 				{
-					bossLeg3Hp -= 1;
+					bossLeg3Hp -= 1.0f;
 				}
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -1125,7 +1129,7 @@ void GameScreen::GameUpdate()
 		}
 	}
 
-	if (bossLeg3Hp <= 0)
+	if (bossLeg3Hp <= 0.0f)
 	{
 		bossLeg3Break = true;
 	}
@@ -1151,13 +1155,13 @@ void GameScreen::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossLeg4WorldPosition, 0.8f, 0.6f) == true)
 			{
 				sound->PlayWav("Hit.wav", Volume_Title);
-				bossHp -= 5;
-				bossHpGageSize.x -= 5;
-				gameScore += 250;
+				bossHp -= 5.0f;
+				bossHpGageSize.x -= 5.0f;
+				gameScore += 250.0f;
 				scoreUIMotion();
 				if (rushFlag == false)
 				{
-					bossLeg4Hp -= 1;
+					bossLeg4Hp -= 1.0f;
 				}
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -1166,7 +1170,7 @@ void GameScreen::GameUpdate()
 		}
 	}
 
-	if (bossLeg4Hp <= 0)
+	if (bossLeg4Hp <= 0.0f)
 	{
 		bossLeg4Break = true;
 	}
@@ -1188,8 +1192,7 @@ void GameScreen::GameUpdate()
 	{
 		if (OnCollision(bullet->GetPosition(), playerWorldPosition, 0.8f, 0.6f) == true)
 		{
-			playerHp -= 10;
-			playerHpGageSize.x -= 10;
+			playerHp -= 10.0f;
 			noDamageFlag = false;
 			sound->PlayWav("Damage.wav", Volume_Title);
 			bullet->deathFlag = true;
@@ -1334,7 +1337,7 @@ void GameScreen::GameUpdate()
 	bossLeg3->SetPosition(bossLeg3Position);
 	bossLeg4->SetPosition(bossLeg4Position);
 
-	if (playerHp <= 100)
+	if (playerHp <= 100.0f)
 	{
 		playerHpGage->SetColor({ 1.0f, 0, 0.2f, 1.0f });
 	}
@@ -1537,7 +1540,7 @@ void GameScreen::GameDraw()
 	LoadingBG->Draw();
 
 	// デバッグテキストの描画
-	//debugText.DrawAll(cmdList);
+	debugText.DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -1618,7 +1621,8 @@ void GameScreen::GameInitialize()
 	scoreBasePosition = { 300, 52 };
 
 	// プレイヤー関連
-	playerHp = 320;
+	playerHpMax = 300.0f;
+	playerHp = playerHpMax;
 
 	// ボス関連
 	bossHp = 530;
@@ -2722,7 +2726,7 @@ void GameScreen::GameDebugText()
 	std::ostringstream PlayerHp;
 	PlayerHp << "PlayerHp:("
 		<< std::fixed << std::setprecision(2)
-		<< playerHp << ")";
+		<< playerHpRatio << ")";
 	debugText.Print(PlayerHp.str(), 50, 330, 1.0f);
 
 	// プレイヤーの回避関連
@@ -2824,7 +2828,7 @@ void GameScreen::BossAttack()
 
 	bossBullets.push_back(std::move(newBullet));*/
 
-	if (playerHp >= 0)
+	if (playerHp >= 0.0f)
 	{
 		sound->PlayWav("Bomb.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
@@ -2836,7 +2840,7 @@ void GameScreen::BossAttack()
 
 void GameScreen::BossLeg1Attack()
 {
-	if ((playerHp >= 0) && (bossLeg1Flag == true))
+	if ((playerHp >= 0.0f) && (bossLeg1Flag == true))
 	{
 		sound->PlayWav("Bomb.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
@@ -2848,7 +2852,7 @@ void GameScreen::BossLeg1Attack()
 
 void GameScreen::BossLeg2Attack()
 {
-	if ((playerHp >= 0) && (bossLeg2Flag == true))
+	if ((playerHp >= 0.0f) && (bossLeg2Flag == true))
 	{
 		sound->PlayWav("Bomb.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
@@ -2860,7 +2864,7 @@ void GameScreen::BossLeg2Attack()
 
 void GameScreen::BossLeg3Attack()
 {
-	if ((playerHp >= 0) && (bossLeg3Flag == true))
+	if ((playerHp >= 0.0f) && (bossLeg3Flag == true))
 	{
 		sound->PlayWav("Bomb.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
@@ -2872,7 +2876,7 @@ void GameScreen::BossLeg3Attack()
 
 void GameScreen::BossLeg4Attack()
 {
-	if ((playerHp >= 0) && (bossLeg4Flag == true))
+	if ((playerHp >= 0.0f) && (bossLeg4Flag == true))
 	{
 		sound->PlayWav("Bomb.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
