@@ -91,10 +91,12 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 
 	playerHpUI = Sprite::Create(5, { 1164.0f, playerHpUIHigh });
 	playerHpGage = Sprite::Create(6, { 1154.0f, playerHpUIHigh });
+	playerDamageGage = Sprite::Create(6, { 1154.0f, playerHpUIHigh });
 	playerHpUICover = Sprite::Create(9, { 1164.0f, playerHpUIHigh });
 
 	bossHpUI = Sprite::Create(7, { 1265.0f, bossHpUIHigh });
 	bossHpGage = Sprite::Create(8, { 1255.0f, bossHpUIHigh });
+	bossDamageGage = Sprite::Create(8, { 1255.0f, bossHpUIHigh });
 	bossHpUICover = Sprite::Create(38, { 1265.0f, bossHpUIHigh });
 
 	scoreUI = Sprite::Create(11, { 15.0f, bossHpUIHigh + 30.0f });
@@ -140,6 +142,8 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	resultParts_8 = Sprite::Create(32, { 930.0f,545.0f });
 	resultParts_9 = Sprite::Create(32, { 930.0f,580.0f });
 	resultParts_10 = Sprite::Create(37, { 640.0f,120.0f });
+
+	damageEffect = Sprite::Create(39, { 0.0f, 0.0 });
 
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
@@ -940,7 +944,7 @@ void GameScreen::GameUpdate()
 #pragma endregion
 
 #pragma region 特定のルート通過でパターン変化
-	if (startIndex == 4)
+	if (startIndex == 5)
 	{
 		bossPattern = NORMAL;
 	}
@@ -1021,10 +1025,10 @@ void GameScreen::GameUpdate()
 		bossBreak == false;
 
 		bossFlag = false;
-		bossLeg1Flag == false;
-		bossLeg2Flag == false;
-		bossLeg3Flag == false;
-		bossLeg4Flag == false;
+		bossLeg1Flag = false;
+		bossLeg2Flag = false;
+		bossLeg3Flag = false;
+		bossLeg4Flag = false;
 	}
 
 	// ボス部位1の当たり判定
@@ -1191,6 +1195,8 @@ void GameScreen::GameUpdate()
 	{
 		if (OnCollision(bullet->GetPosition(), playerWorldPosition, 0.8f, 0.6f) == true)
 		{
+			damageEffectAlpha = 1.0f;
+			damageEffectAlphaVel = -0.06f;
 			playerHp -= 10.0f;
 			noDamageFlag = false;
 			sound->PlayWav("Damage.wav", Volume_Title);
@@ -1200,6 +1206,13 @@ void GameScreen::GameUpdate()
 		}
 	}
 
+	damageEffectAlpha += damageEffectAlphaVel;
+
+	if (damageEffectAlpha < 0.0f)
+	{
+		damageEffectAlphaVel = 0.0f;
+		damageEffectAlpha = 0.0f;
+	}
 
 #pragma endregion
 
@@ -1336,12 +1349,9 @@ void GameScreen::GameUpdate()
 	bossLeg3->SetPosition(bossLeg3Position);
 	bossLeg4->SetPosition(bossLeg4Position);
 
-	if (playerHp <= 100.0f)
-	{
-		playerHpGage->SetColor({ 1.0f, 0, 0.2f, 1.0f });
-	}
-
 	LoadingBG->SetColor(loadingColor);
+
+	damageEffect->SetColor({ 1.0f, 1.0f, 1.0f, damageEffectAlpha });
 
 	playerHpGage->SetSize(playerHpGageSize);
 
@@ -1491,13 +1501,16 @@ void GameScreen::GameDraw()
 #pragma region 前景スプライト描画
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
+	damageEffect->Draw();
 
 	// 描画
 	playerHpUI->Draw();
+	playerDamageGage->Draw();
 	playerHpGage->Draw();
 	playerHpUICover->Draw();
 
 	bossHpUI->Draw();
+	bossDamageGage->Draw();
 	bossHpGage->Draw();
 	bossHpUICover->Draw();
 
@@ -1590,6 +1603,10 @@ void GameScreen::GameInitialize()
 	playerHpGage->SetSize({ 320.0f, 30.0f });
 	playerHpGage->SetAnchorPoint({ 1.0f, 0.5f });
 
+	playerDamageGage->SetColor({ 1.0f, 0, 0.2f, 1.0f });
+	playerDamageGage->SetSize({ 320.0f, 30.0f });
+	playerDamageGage->SetAnchorPoint({ 1.0f, 0.5f });
+
 	// playerHpUI->SetColor({ 1.0, 0.2, 0.2, 1});
 	playerHpUI->SetAnchorPoint({ 1.0f,0.5f });
 
@@ -1600,6 +1617,10 @@ void GameScreen::GameInitialize()
 	bossHpGage->SetColor({ 0.1f, 0.6f, 0.1f, 1.0f });
 	bossHpGage->SetSize({ 530.0f, 30.0f });
 	bossHpGage->SetAnchorPoint({ 1.0f, 0.5f });
+
+	bossDamageGage->SetColor({ 1.0f, 0, 0.2f, 1.0f });
+	bossDamageGage->SetSize({ 530.0f, 30.0f });
+	bossDamageGage->SetAnchorPoint({ 1.0f, 0.5f });
 
 	bossHpUI->SetAnchorPoint({ 1.0f, 0.5f });
 
@@ -1674,6 +1695,9 @@ void GameScreen::GameInitialize()
 
 	noDamageFlag = true;
 	targetScoreFlag = false;
+
+	damageEffectAlpha = 0.0f;
+	damageEffectAlphaVel = 0.0f;
 
 	sound->PlayWav("Play.wav", Volume_Title, true);
 
@@ -3101,6 +3125,11 @@ void GameScreen::LoadTextureFunction()
 	}
 
 	if (!Sprite::LoadTexture(38, L"Resources/Sprite/BossHpUI/bossHpFrame.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(39, L"Resources/Sprite/Effect/damage_effect_1.png")) {
 		assert(0);
 		return;
 	}

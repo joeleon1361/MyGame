@@ -183,11 +183,13 @@ private: // メンバ変数
 	// プレイヤーのHPUI
 	Sprite* playerHpUI = nullptr;
 	Sprite* playerHpGage = nullptr;
+	Sprite* playerDamageGage = nullptr;
 	Sprite* playerHpUICover = nullptr;
 
 	// ボスのHPUI
 	Sprite* bossHpUI = nullptr;
 	Sprite* bossHpGage = nullptr;
+	Sprite* bossDamageGage = nullptr;
 	Sprite* bossHpUICover = nullptr;
 
 	// ゲームUI
@@ -235,6 +237,8 @@ private: // メンバ変数
 	Sprite* resultParts_8 = nullptr;
 	Sprite* resultParts_9 = nullptr;
 	Sprite* resultParts_10 = nullptr;
+
+	Sprite* damageEffect = nullptr;
 
 	ParticleManager* particleMan = nullptr;
 
@@ -522,7 +526,7 @@ private: // メンバ変数
 	XMFLOAT3 bossLeg3WorldPosition;
 	XMFLOAT3 bossLeg4WorldPosition;
 
-	XMFLOAT3 bossLeg1Velocity = { 0,0,0 };
+	XMFLOAT3 bossLeg1Velocity = { 0.0f,0.0f,0.0f };
 
 	float bossHp;
 	float bossHpMax;
@@ -566,9 +570,9 @@ private: // メンバ変数
 
 	int bossPattern = STAY;
 
-	float moveValue = 0;
+	float moveValue = 0.0f;
 
-	float rushOrder = 0;
+	float rushOrder = 0.0f;
 
 	// スペシャル攻撃
 	// 弾のサイズ
@@ -729,10 +733,10 @@ private: // メンバ変数
 	XMFLOAT2 missionStar2Size;
 	XMFLOAT2 missionStar3Size;
 
-	XMFLOAT2 scorePosition = { 855, 275 };
-	XMFLOAT2 noDamageBonusPosition = { 855, 305 };
-	XMFLOAT2 totalScorePosition = { 800, 385 };
-	XMFLOAT2 rankPosition = { 800, 455 };
+	XMFLOAT2 scorePosition = { 855.0f, 275.0f };
+	XMFLOAT2 noDamageBonusPosition = { 855.0f, 305.0f };
+	XMFLOAT2 totalScorePosition = { 800.0f, 385.0f };
+	XMFLOAT2 rankPosition = { 800.0f, 455.0f };
 	XMFLOAT2 resultRankPosition = { 850.0f,480.0f };
 
 	XMFLOAT4 resultColor;
@@ -743,10 +747,10 @@ private: // メンバ変数
 	XMFLOAT4 rankColor = { 0.760f, 0.929f, 1.0f, 0.0f };
 	XMFLOAT4 missionColor = { 0.760f, 0.929f, 1.0f, 0.0f };
 
-	XMFLOAT4 rankSColor = { 1, 1, 1, 1 };
-	XMFLOAT4 rankAColor = { 1, 1, 1, 1 };
-	XMFLOAT4 rankBColor = { 1, 1, 1, 1 };
-	XMFLOAT4 rankCColor = { 1, 1, 1, 1 };
+	XMFLOAT4 rankSColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+	XMFLOAT4 rankAColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+	XMFLOAT4 rankBColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+	XMFLOAT4 rankCColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 	XMFLOAT4 mission1Color;
 	XMFLOAT4 mission2Color;
@@ -773,6 +777,9 @@ private: // メンバ変数
 	float resultChangeAlpha_11 = 0.0f;
 
 	float loadingChangeAlpha = 0.0f;
+
+	float damageEffectAlpha = 0.0f;
+	float damageEffectAlphaVel = 0.0f;
 
 	float noDamageBonus = 20000.0f;
 
