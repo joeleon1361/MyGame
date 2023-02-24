@@ -331,7 +331,7 @@ void Player::DodgeRoll()
 		if (input->TriggerKey(DIK_V))
 		{
 			dodgeRollFlag = 1;
-			dodgeRollVelocity = 0.4;
+			dodgeRollVelocity = 0.4f;
 			// dodgeRollRotation = 5.0;
 		}
 	}

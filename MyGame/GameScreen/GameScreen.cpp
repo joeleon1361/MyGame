@@ -308,9 +308,9 @@ void GameScreen::TitleUpdate()
 
 	if (subSpeedY == true)
 	{
-		moveY -= 0.001;
+		moveY -= 0.001f;
 
-		if (moveY <= -0.01)
+		if (moveY <= -0.01f)
 		{
 			subSpeedY = false;
 		}
@@ -318,9 +318,9 @@ void GameScreen::TitleUpdate()
 	}
 	if (addSpeedY == true)
 	{
-		moveY += 0.001;
+		moveY += 0.001f;
 
-		if (moveY >= 0.01)
+		if (moveY >= 0.01f)
 		{
 			addSpeedY = false;
 		}
@@ -344,9 +344,9 @@ void GameScreen::TitleUpdate()
 
 		if (subSpeedX == true)
 		{
-			moveX -= 0.001;
+			moveX -= 0.001f;
 
-			if (moveX <= -0.05)
+			if (moveX <= -0.05f)
 			{
 				subSpeedX = false;
 			}
@@ -354,9 +354,9 @@ void GameScreen::TitleUpdate()
 		}
 		if (addSpeedX == true)
 		{
-			moveX += 0.001;
+			moveX += 0.001f;
 
-			if (moveX >= 0.05)
+			if (moveX >= 0.05f)
 			{
 				addSpeedX = false;
 			}
@@ -385,13 +385,13 @@ void GameScreen::TitleUpdate()
 		stagingTimer--;
 		titleStartUIColor.w -= 0.02f;
 
-		if (moveX >= 0)
+		if (moveX >= 0.0f)
 		{
-			moveX -= 0.001;
+			moveX -= 0.001f;
 		}
-		if (moveX <= 0)
+		if (moveX <= 0.0f)
 		{
-			moveX += 0.001;
+			moveX += 0.001f;
 		}
 
 		if (stagingTimer <= 0.0f)
@@ -407,7 +407,7 @@ void GameScreen::TitleUpdate()
 		if (stagingFlag == true)
 		{
 			backTimer--;
-			moveX -= 0.005;
+			moveX -= 0.005f;
 			if (backTimer <= 0.0f)
 			{
 				stagingFlag = false;
@@ -416,7 +416,7 @@ void GameScreen::TitleUpdate()
 
 		if (stagingFlag == false)
 		{
-			if (TitlePlayerPosition.x <= 50)
+			if (TitlePlayerPosition.x <= 50.0f)
 			{
 				moveX += 0.05f;
 			}
@@ -1016,13 +1016,13 @@ void GameScreen::GameUpdate()
 
 	if (bossBreak == true)
 	{
-		bossPosition.y -= 0.2f;
+		bossPosition.y -= 0.3f;
 		CreateBossParticles(bossPosition);
 	}
 
-	if (bossPosition.y <= -10.0f)
+	if (bossPosition.y <= -15.0f)
 	{
-		bossBreak == false;
+		// bossBreak == false;
 
 		bossFlag = false;
 		bossLeg1Flag = false;
@@ -1552,7 +1552,7 @@ void GameScreen::GameDraw()
 	LoadingBG->Draw();
 
 	// デバッグテキストの描画
-	debugText.DrawAll(cmdList);
+	// debugText.DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -1879,31 +1879,31 @@ void GameScreen::ResultUpdate()
 		resultMoveVelX_4 = 40.0f;
 		resultMoveAccX_4 = 1.0f;
 
-		resultChangeAlpha_1 = 0.05;
+		resultChangeAlpha_1 = 0.05f;
 
-		resultChangeAlpha_6 = 0.05;
+		resultChangeAlpha_6 = 0.05f;
 		resultMoveVel_7 = -3.0f;
 
 		// 値の初期化
-		resultBN_1Size.y = 624;
-		resultMoveVelY_1 = 0;
-		resultMoveAccY_1 = 0;
+		resultBN_1Size.y = 624.0f;
+		resultMoveVelY_1 = 0.0f;
+		resultMoveAccY_1 = 0.0f;
 	}
 
 	// RESULTのサイズ制御
-	if (resultGTXT_15Size.y < 30)
+	if (resultGTXT_15Size.y < 30.0f)
 	{
 		// 値の設定
 		resultGTXT_15Size.x = 165.0f;
 		resultGTXT_15Size.y = 30.0f;
 		resultMoveVel_7 = 1.0f;
 
-		resultChangeAlpha_7 = 0.05;
+		resultChangeAlpha_7 = 0.05f;
 
 		changeResultSizeFlag = true;
 	}
 
-	if (resultGTXT_15Size.y > 40)
+	if (resultGTXT_15Size.y > 40.0f)
 	{
 		// 値の初期化
 		if (changeResultSizeFlag == true)
@@ -1931,47 +1931,47 @@ void GameScreen::ResultUpdate()
 	}
 
 	// ラインパーツ1のサイズ制御
-	if (resultParts_1Size.x > 646)
+	if (resultParts_1Size.x > 646.0f)
 	{
 		// 値の初期化
-		resultParts_1Size.x = 646;
-		resultMoveVelX_4 = 0;
-		resultMoveAccX_4 = 0;
+		resultParts_1Size.x = 646.0f;
+		resultMoveVelX_4 = 0.0f;
+		resultMoveAccX_4 = 0.0f;
 	}
 
 	// バナー2の横幅の制御 
-	if (resultBN_2Size.x > 704)
+	if (resultBN_2Size.x > 704.0f)
 	{
 		// 値の設定
 		resultMoveVelX_3 = 40.0f;
 		resultMoveAccX_3 = 1.0f;
 
 		// 値の初期化
-		resultBN_2Size.x = 704;
-		resultMoveVelX_2 = 0;
-		resultMoveAccX_2 = 0;
+		resultBN_2Size.x = 704.0f;
+		resultMoveVelX_2 = 0.0f;
+		resultMoveAccX_2 = 0.0f;
 	}
 
 	// SCOREの色制御
 	if (scoreColor.w > 1.0f)
 	{
 		// 値の設定
-		resultChangeAlpha_2 = 0.05;
+		resultChangeAlpha_2 = 0.05f;
 
 		// 値の初期化
 		scoreColor.w = 1.0f;
-		resultChangeAlpha_1 = 0;
+		resultChangeAlpha_1 = 0.0f;
 	}
 
 	// NO DAMAGE BONUSの色制御
 	if (noDamageBonusColor.w > 1.0f)
 	{
 		// 値の設定
-		resultChangeAlpha_3 = 0.05;
+		resultChangeAlpha_3 = 0.05f;
 
 		// 値の初期化
 		noDamageBonusColor.w = 1.0f;
-		resultChangeAlpha_2 = 0;
+		resultChangeAlpha_2 = 0.0f;
 	}
 
 	// TOTAL SCOREの色制御
@@ -1983,31 +1983,31 @@ void GameScreen::ResultUpdate()
 
 		// 値の初期化
 		totalScoreColor.w = 1.0f;
-		resultChangeAlpha_3 = 0;
+		resultChangeAlpha_3 = 0.0f;
 	}
 
 	// ラインパーツ2のサイズ制御
-	if (resultParts_2Size.x > 232)
+	if (resultParts_2Size.x > 232.0f)
 	{
 		// 値の設定
-		resultChangeAlpha_4 = 0.05;
+		resultChangeAlpha_4 = 0.05f;
 
 		// 値の初期化
-		resultParts_2Size.x = 232;
-		resultMoveVelX_5 = 0;
-		resultMoveAccX_5 = 0;
+		resultParts_2Size.x = 232.0f;
+		resultMoveVelX_5 = 0.0f;
+		resultMoveAccX_5 = 0.0f;
 	}
 
 	// RANKの色制御
 	if (rankColor.w > 1.0f)
 	{
 		// 値の設定
-		resultChangeAlpha_8 = 0.05;
+		resultChangeAlpha_8 = 0.05f;
 		resultMoveVel_8 = -6.0f;
 
 		// 値の初期化
 		rankColor.w = 1.0f;
-		resultChangeAlpha_4 = 0;
+		resultChangeAlpha_4 = 0.0f;
 	}
 
 	// 各RANKのサイズ制御
@@ -2041,19 +2041,19 @@ void GameScreen::ResultUpdate()
 		rankAColor.w = 1.0f;
 		rankBColor.w = 1.0f;
 		rankCColor.w = 1.0f;
-		resultChangeAlpha_8 = 0;
+		resultChangeAlpha_8 = 0.0f;
 	}
 
 	// ラインパーツ3のサイズ制御
-	if (resultParts_3Size.x > 372)
+	if (resultParts_3Size.x > 372.0f)
 	{
 		// 値の設定
-		resultChangeAlpha_5 = 0.05;
+		resultChangeAlpha_5 = 0.05f;
 
 		// 値の初期化
-		resultParts_3Size.x = 372;
-		resultMoveVelX_6 = 0;
-		resultMoveAccX_6 = 0;
+		resultParts_3Size.x = 372.0f;
+		resultMoveVelX_6 = 0.0f;
+		resultMoveAccX_6 = 0.0f;
 	}
 
 	// MISSIONの色制御
@@ -2141,12 +2141,12 @@ void GameScreen::ResultUpdate()
 	}
 
 	// バナー3の横幅の制御  
-	if (resultBN_3Size.x > 704)
+	if (resultBN_3Size.x > 704.0f)
 	{
 		// 値の初期化
-		resultBN_3Size.x = 704;
-		resultMoveVelX_3 = 0;
-		resultMoveAccX_3 = 0;
+		resultBN_3Size.x = 704.0f;
+		resultMoveVelX_3 = 0.0f;
+		resultMoveAccX_3 = 0.0f;
 	}
 
 	// 暗転からシーン遷移
@@ -2169,7 +2169,7 @@ void GameScreen::ResultUpdate()
 		changeSceneTimer--;
 	}
 
-	if (changeSceneTimer <= 0)
+	if (changeSceneTimer <= 0.0f)
 	{
 		loadingColor.w = 0.0f;
 		TitleInitialize();
