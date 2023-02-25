@@ -153,6 +153,10 @@ public: // メンバ関数
 
 	void SplineCount();
 
+	void Lerp1Count();
+
+	void Lerp2Count();
+
 	void LoadTextureFunction();
 
 	void LoadWavFunction();
@@ -167,6 +171,8 @@ private:
 	XMFLOAT3 SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t);
 
 	XMFLOAT3 lerp(const XMFLOAT3& start, const XMFLOAT3& end, const float t);
+
+	XMFLOAT2 lerp2(const XMFLOAT2& start, const  XMFLOAT2& end, const float t);
 
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
@@ -249,6 +255,8 @@ private: // メンバ変数
 	Sprite* resultParts_10 = nullptr;
 
 	Sprite* damageEffect = nullptr;
+
+	Sprite* lerpTest = nullptr;
 
 	ParticleManager* particleMan = nullptr;
 
@@ -491,7 +499,7 @@ private: // メンバ変数
 
 	size_t startIndex = 1;
 
-	// 時間計測に必要なデータ
+	// Soline時間計測に必要なデータ
 	int startCount = 0;
 	int nowCount = 0;
 	int elapsedCount = 0;
@@ -499,6 +507,24 @@ private: // メンバ変数
 
 	float maxTime = 2000.0f;
 	float timeRate;
+
+	// Lerp1
+	int L1startCount = 0;
+	int L1nowCount = 0;
+	int L1elapsedCount = 0;
+	float L1elapsedTime;
+
+	float L1maxTime = 2000.0f;
+	float L1timeRate;
+
+	// Lerp2
+	int L2startCount = 0;
+	int L2nowCount = 0;
+	int L2elapsedCount = 0;
+	float L2elapsedTime;
+
+	float L2maxTime = 2000.0f;
+	float L2timeRate;
 #pragma endregion
 
 #pragma region プレイヤー関連

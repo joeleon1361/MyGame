@@ -145,6 +145,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 
 	damageEffect = Sprite::Create(39, { 0.0f, 0.0 });
 
+	lerpTest = Sprite::Create(13, { 0.0f, 0.0 });
+
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
 
@@ -729,7 +731,6 @@ void GameScene::GameUpdate()
 	SkydomPos = objSkydome->GetPosition();
 	SkydomRot = objSkydome->GetRotation();
 
-
 	if (bossBreak == false)
 	{
 		bossPosition = SplinePosition(bossCheckPoint, startIndex, timeRate);
@@ -751,10 +752,14 @@ void GameScene::GameUpdate()
 	loadingColor = LoadingBG->GetColor();
 
 	playerHpGageSize = playerHpGage->GetSize();
-	playerDamageGageSize = playerDamageGage->GetSize();
+	//playerDamageGageSize = playerDamageGage->GetSize();
 
 	bossHpGageSize = bossHpGage->GetSize();
-	bossDamageGageSize = bossDamageGage->GetSize();
+	//bossDamageGageSize = bossDamageGage->GetSize();
+
+	playerDamageGageSize = lerp2(playerDamageGage->GetSize(), playerHpGageSize, L1timeRate);
+	bossDamageGageSize = lerp2(bossDamageGage->GetSize(), bossHpGageSize, L2timeRate);
+
 #pragma endregion
 
 	// 暗転を解除
@@ -1001,6 +1006,7 @@ void GameScene::GameUpdate()
 			if (OnCollision(bullet->GetPosition(), bossBody->GetPosition(), 0.8f, 0.8f) == true)
 			{
 				bossHp -= 10.0f;
+				L2startCount = GetTickCount();
 				gameScore += 1000.0f;
 				scoreUIMotion();
 				sound->PlayWav("Hit.wav", Volume_Title);
@@ -1042,6 +1048,7 @@ void GameScene::GameUpdate()
 			{
 				sound->PlayWav("Hit.wav", Volume_Title);
 				bossHp -= 5.0f;
+				L2startCount = GetTickCount();
 				gameScore += 250.0f;
 				scoreUIMotion();
 				if (rushFlag == false)
@@ -1082,6 +1089,7 @@ void GameScene::GameUpdate()
 			{
 				sound->PlayWav("Hit.wav", Volume_Title);
 				bossHp -= 5.0f;
+				L2startCount = GetTickCount();
 				gameScore += 250.0f;
 				scoreUIMotion();
 				if (rushFlag == false)
@@ -1122,6 +1130,7 @@ void GameScene::GameUpdate()
 			{
 				sound->PlayWav("Hit.wav", Volume_Title);
 				bossHp -= 5.0f;
+				L2startCount = GetTickCount();
 				gameScore += 250.0f;
 				scoreUIMotion();
 				if (rushFlag == false)
@@ -1162,6 +1171,7 @@ void GameScene::GameUpdate()
 			{
 				sound->PlayWav("Hit.wav", Volume_Title);
 				bossHp -= 5.0f;
+				L2startCount = GetTickCount();
 				gameScore += 250.0f;
 				scoreUIMotion();
 				if (rushFlag == false)
@@ -1200,6 +1210,7 @@ void GameScene::GameUpdate()
 			damageEffectAlpha = 1.0f;
 			damageEffectAlphaVel = -0.06f;
 			playerHp -= 10.0f;
+			L1startCount = GetTickCount();
 			noDamageFlag = false;
 			sound->PlayWav("Damage.wav", Volume_Title);
 			bullet->deathFlag = true;
@@ -1337,8 +1348,7 @@ void GameScene::GameUpdate()
 #pragma region スプライン曲線関係
 	if (input->PushKey(DIK_R))
 	{
-		startCount = GetTickCount();
-		startIndex = 1;
+		L1startCount = GetTickCount();
 	}
 
 	if (railCountFlag == true)
@@ -1351,6 +1361,8 @@ void GameScene::GameUpdate()
 		//railCountFlag = false;
 	}
 
+	Lerp1Count();
+	Lerp2Count();
 #pragma endregion
 
 #pragma region 座標変換
@@ -1690,8 +1702,10 @@ void GameScene::GameDraw()
 
 	LoadingBG->Draw();
 
+	lerpTest->Draw();
+
 	// デバッグテキストの描画
-	// debugText.DrawAll(cmdList);
+	debugText.DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -3092,6 +3106,26 @@ void GameScene::SplineCount()
 	}
 }
 
+void GameScene::Lerp1Count()
+{
+	L1nowCount = GetTickCount();
+
+	L1elapsedCount = L1nowCount - L1startCount;
+	L1elapsedTime = static_cast<float> (L1elapsedCount) / 1000.0f;
+
+	L1timeRate = min(L1elapsedCount / L1maxTime, 1.0f);
+}
+
+void GameScene::Lerp2Count()
+{
+	L2nowCount = GetTickCount();
+
+	L2elapsedCount = L2nowCount - L2startCount;
+	L2elapsedTime = static_cast<float> (L2elapsedCount) / 1000.0f;
+
+	L2timeRate = min(L2elapsedCount / L2maxTime, 1.0f);
+}
+
 void GameScene::LoadTextureFunction()
 {
 	if (!Sprite::LoadTexture(1, L"Resources/Sprite/Title.png")) {
@@ -3386,5 +3420,16 @@ XMFLOAT3 GameScene::lerp(const XMFLOAT3& start, const XMFLOAT3& end, const float
 
 	XMFLOAT3 Position;
 	Position = XMFLOAT3(A.x + B.x, A.y + B.y, A.z + B.z);
+	return Position;
+}
+
+XMFLOAT2 GameScene::lerp2(const XMFLOAT2& start, const XMFLOAT2& end, const float t)
+{
+	XMFLOAT2 A, B;
+	A = XMFLOAT2(start.x * (1.0f - t), start.y * (1.0f - t));
+	B = XMFLOAT2(end.x * t, end.y * t);
+
+	XMFLOAT2 Position;
+	Position = XMFLOAT2(A.x + B.x, A.y + B.y);
 	return Position;
 }
