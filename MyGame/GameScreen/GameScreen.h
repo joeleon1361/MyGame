@@ -680,7 +680,6 @@ private: // メンバ変数
 
 	float gameScore = 0.0f;
 	float gameScoreMax = 9999999;
-	float gameScoreAlpha = 1.0f;
 	XMFLOAT2 scoreBasePosition = { 300.0f, 52.0f };
 
 	float scoreMoveVel = 0.0f;
@@ -781,6 +780,21 @@ private: // メンバ変数
 	float damageEffectAlpha = 0.0f;
 	float damageEffectAlphaVel = 0.0f;
 
+	float scoreUIAlpha = 0.0f;
+	float scoreUIAlphaVel = 0.0f;
+
+	float playerHpUIAlpha = 0.0f;
+	float playerHpUIAlphaVel = 0.0f;
+
+	float playerDamageUIAlpha = 0.0f;
+	float playerDamageUIAlphaVel = 0.0f;
+
+	float bossHpUIAlpha = 0.0f;
+	float bossHpUIAlphaVel = 0.0f;
+
+	float bossDamageUIAlpha = 0.0f;
+	float bossDamageUIAlphaVel = 0.0f;
+
 	float noDamageBonus = 20000.0f;
 
 	float totalScore = 0.0f;
@@ -793,4 +807,6 @@ private: // メンバ変数
 	bool canPushKeyFlag = false;
 
 	bool changeResultSizeFlag = false;
+
+
 };

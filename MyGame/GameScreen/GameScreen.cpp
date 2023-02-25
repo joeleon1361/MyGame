@@ -82,8 +82,8 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	// スプライト生成
 	TitleBG = Sprite::Create(1, { 0.0f,0.0f });
 
-	TitleLogo = Sprite::Create(1, { 100.0f,100.0f }, { 1, 1, 1, 1 });
-	LoadingBG = Sprite::Create(3, { 0.0f,0.0f }, { 1,1,1,0 });
+	TitleLogo = Sprite::Create(1, { 100.0f,100.0f }, { 1.0f, 1.0f, 1.0f, 1.0f });
+	LoadingBG = Sprite::Create(3, { 0.0f,0.0f }, { 1.0f,1.0f,1.0f,0.0f });
 	StageSelectBG = Sprite::Create(4, { 0.0f,0.0f });
 
 	GameFG = Sprite::Create(26, { 0.0f,0.0f });
@@ -1206,12 +1206,126 @@ void GameScreen::GameUpdate()
 		}
 	}
 
+	// ダメージエフェクトの計算
 	damageEffectAlpha += damageEffectAlphaVel;
 
 	if (damageEffectAlpha < 0.0f)
 	{
 		damageEffectAlphaVel = 0.0f;
 		damageEffectAlpha = 0.0f;
+	}
+
+	// スコアUIのAlpha値計算
+	scoreUIAlpha += scoreUIAlphaVel;
+	if (input->PushKey(DIK_P))
+	{
+		scoreUIAlphaVel = -0.06f;
+	}
+	else
+	{
+		scoreUIAlphaVel = 0.06f;
+	}
+
+	if (scoreUIAlpha < 0.3f)
+	{
+		scoreUIAlphaVel = 0.0f;
+		scoreUIAlpha = 0.3f;
+	}
+
+	if (scoreUIAlpha > 1.0f)
+	{
+		scoreUIAlphaVel = 0.0f;
+		scoreUIAlpha = 1.0f;
+	}
+
+	// プレイヤーHPUIのAlpha値計算
+	playerHpUIAlpha += playerHpUIAlphaVel;
+	if (input->PushKey(DIK_P))
+	{
+		playerHpUIAlphaVel = -0.06f;
+	}
+	else
+	{
+		playerHpUIAlphaVel = 0.06f;
+	}
+
+	if (playerHpUIAlpha < 0.3f)
+	{
+		playerHpUIAlphaVel = 0.0f;
+		playerHpUIAlpha = 0.3f;
+	}
+
+	if (playerHpUIAlpha > 1.0f)
+	{
+		playerHpUIAlphaVel = 0.0f;
+		playerHpUIAlpha = 1.0f;
+	}
+
+	playerDamageUIAlpha += playerDamageUIAlphaVel;
+	if (input->PushKey(DIK_P))
+	{
+		playerDamageUIAlphaVel = -0.08f;
+	}
+	else
+	{
+		playerDamageUIAlphaVel = 0.08f;
+	}
+
+	if (playerDamageUIAlpha < 0.0f)
+	{
+		playerDamageUIAlphaVel = 0.0f;
+		playerDamageUIAlpha = 0.0f;
+	}
+
+	if (playerDamageUIAlpha > 1.0f)
+	{
+		playerDamageUIAlphaVel = 0.0f;
+		playerDamageUIAlpha = 1.0f;
+	}
+
+	// ボスHPUIのAlpha値計算
+	bossHpUIAlpha += bossHpUIAlphaVel;
+	if (input->PushKey(DIK_P))
+	{
+		bossHpUIAlphaVel = -0.06f;
+	}
+	else
+	{
+		bossHpUIAlphaVel = 0.06f;
+	}
+
+	if (bossHpUIAlpha < 0.3f)
+	{
+		bossHpUIAlphaVel = 0.0f;
+		bossHpUIAlpha = 0.3f;
+	}
+
+	if (bossHpUIAlpha > 1.0f)
+	{
+		bossHpUIAlphaVel = 0.0f;
+		bossHpUIAlpha = 1.0f;
+	}
+
+	bossDamageUIAlpha += bossDamageUIAlphaVel;
+	if (input->PushKey(DIK_P))
+	{
+		bossDamageUIAlphaVel = -0.08f;
+	}
+	else
+	{
+		bossDamageUIAlphaVel = 0.08f;
+	}
+
+	if (bossDamageUIAlpha < 0.0f)
+	{
+		bossDamageUIAlphaVel = 0.0f;
+		bossDamageUIAlpha = 0.0f;
+	}
+
+	if (bossDamageUIAlpha > 1.0f)
+	{
+		bossDamageUIAlphaVel = 0.0f;
+		bossDamageUIAlpha = 1.0f;
 	}
 
 #pragma endregion
@@ -1351,11 +1465,40 @@ void GameScreen::GameUpdate()
 
 	LoadingBG->SetColor(loadingColor);
 
+	// ダメージエフェクト
 	damageEffect->SetColor({ 1.0f, 1.0f, 1.0f, damageEffectAlpha });
 
+	// スコアUI
+	scoreUI->SetColor({ 1.0f, 1.0f, 1.0f, scoreUIAlpha });
+
+	scoreChar->SetColor({ 0.760f, 0.929f, 1.0f, scoreUIAlpha });
+
+	scoreNull_1->SetColor({ 1.0f, 1.0f, 1.0f, scoreUIAlpha });
+	scoreNull_2->SetColor({ 1.0f, 1.0f, 1.0f, scoreUIAlpha });
+	scoreNull_3->SetColor({ 1.0f, 1.0f, 1.0f, scoreUIAlpha });
+	scoreNull_4->SetColor({ 1.0f, 1.0f, 1.0f, scoreUIAlpha });
+	scoreNull_5->SetColor({ 1.0f, 1.0f, 1.0f, scoreUIAlpha });
+	scoreNull_6->SetColor({ 1.0f, 1.0f, 1.0f, scoreUIAlpha });
+
+	// プレイヤーのHPゲージ
+	playerHpGage->SetColor({ 0.1f, 0.6f, 0.1f, playerHpUIAlpha });
 	playerHpGage->SetSize(playerHpGageSize);
 
+	playerDamageGage->SetColor({ 1.0f, 0, 0.2f, playerDamageUIAlpha });
+
+	playerHpUI->SetColor({ 1.0f, 1.0f, 1.0f, playerHpUIAlpha });
+
+	playerHpUICover->SetColor({ 1.0f, 1.0f, 1.0f, playerHpUIAlpha });
+
+	// ボスのHPゲージ
+	bossHpGage->SetColor({ 0.1f, 0.6f, 0.1f, bossHpUIAlpha });
 	bossHpGage->SetSize(bossHpGageSize);
+
+	bossDamageGage->SetColor({ 1.0f, 0, 0.2f, bossDamageUIAlpha });
+
+	bossHpUI->SetColor({ 1.0f, 1.0f, 1.0f, bossHpUIAlpha });
+
+	bossHpUICover->SetColor({ 1.0f, 1.0f, 1.0f, bossHpUIAlpha });
 #pragma endregion
 
 #pragma region 更新処理
@@ -1399,18 +1542,10 @@ void GameScreen::GameUpdate()
 	AllDebugText();
 	GameDebugText();
 
-	//scoreUIMotion();
-
 	// スコアの描画
 	std::ostringstream StartIndex;
 	StartIndex << std::fixed << std::setprecision(0) << std::setw(7) << gameScore;
-	scoreText.Print(StartIndex.str(), scoreBasePosition, { 0.760f, 0.929f, 1.0f, gameScoreAlpha }, 0.8f);
-
-	/*std::ostringstream elapsedCounter;
-	elapsedCounter << "TIME:("
-		<< std::fixed << std::setprecision(2)
-		<< elapsedCount << ")";
-	scoreText.Print(elapsedCounter.str(), { 240, 82 }, { 1.0f, 0.882f, 0.768, gameScoreAlpha }, 0.6f);*/
+	scoreText.Print(StartIndex.str(), scoreBasePosition, { 0.760f, 0.929f, 1.0f, scoreUIAlpha }, 0.8f);
 
 	scoreUIUpdate();
 }
@@ -1691,13 +1826,26 @@ void GameScreen::GameInitialize()
 
 	gameScoreMax = 9999999.0f;
 
-	gameScoreAlpha = 1.0f;
-
 	noDamageFlag = true;
 	targetScoreFlag = false;
 
 	damageEffectAlpha = 0.0f;
 	damageEffectAlphaVel = 0.0f;
+
+	scoreUIAlpha = 1.0f;
+	scoreUIAlphaVel = 0.0f;
+
+	playerHpUIAlpha = 1.0f;
+	playerHpUIAlphaVel = 0.0f;
+
+	playerDamageUIAlpha = 1.0f;
+	playerDamageUIAlphaVel = 0.0f;
+
+	bossHpUIAlpha = 1.0f;
+	bossHpUIAlphaVel = 0.0f;
+
+	bossDamageUIAlpha = 1.0f;
+	bossDamageUIAlphaVel = 0.0f;
 
 	sound->PlayWav("Play.wav", Volume_Title, true);
 
@@ -2341,13 +2489,11 @@ void GameScreen::ResultInitialize()
 	camera->SetUp({ 0, 1, 0 });
 
 	// LoadingBG->SetColor({ 1, 1, 1, 0 });
-	loadingColor.w = 0;
+	loadingColor.w = 0.0f;
 
-	gameScoreAlpha = 0;
+	totalScore = 0.0f;
 
-	totalScore = 0;
-
-	noDamageBonus = 20000;
+	noDamageBonus = 20000.0f;
 
 	ResultBN_1->SetSize({ 0.0f, 8.0f });
 	ResultBN_1->SetAnchorPoint({ 0.5f, 0.5f });
@@ -3227,13 +3373,14 @@ XMFLOAT3 GameScreen::SplinePosition(const std::vector<XMFLOAT3>& points, size_t 
 	return position;
 }
 
+// lerp関数の計算
 XMFLOAT3 GameScreen::lerp(const XMFLOAT3& start, const XMFLOAT3& end, const float t)
 {
 	XMFLOAT3 A, B;
 	A = XMFLOAT3(start.x * (1.0f - t), start.y * (1.0f - t), start.z * (1.0f - t));
 	B = XMFLOAT3(end.x * t, end.y * t, end.z * t);
 
-	XMFLOAT3 C;
-	C = XMFLOAT3(A.x + B.x, A.y + B.y, A.z + B.z);
-	return C;
+	XMFLOAT3 Position;
+	Position = XMFLOAT3(A.x + B.x, A.y + B.y, A.z + B.z);
+	return Position;
 }
