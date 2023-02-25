@@ -1,7 +1,7 @@
 ﻿#include "WinApp.h"
 #include "DirectXCommon.h"
 #include "Sound.h"
-#include "GameScreen.h"
+#include "GameScene.h"
 #include "fbxsdk.h"
 #include "PostEffect.h"
 #include "FbxLoader.h"
@@ -14,7 +14,7 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 	DirectXCommon *dxCommon = nullptr;
 	Input *input = nullptr;
 	Sound *sound = nullptr;
-	GameScreen *gameScene = nullptr;
+	GameScene *gameScene = nullptr;
 	PostEffect* postEffect = nullptr;
 	FbxManager *fbxManager = FbxManager::Create();
 
@@ -57,7 +57,7 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 #pragma endregion
 
 	// ゲームシーンの初期化
-	gameScene = new GameScreen();
+	gameScene = new GameScene();
 	gameScene->Initialize( dxCommon, input, sound );
 
 	// メインループ

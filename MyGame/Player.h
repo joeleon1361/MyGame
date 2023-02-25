@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ObjObject.h"
-#include "GameScreen.h"
+#include "GameScene.h"
 #include "Input.h"
 
 class Player :

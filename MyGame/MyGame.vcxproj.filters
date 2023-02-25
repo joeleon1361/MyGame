@@ -127,7 +127,7 @@
     <ClCompile Include="Sound\Sound.cpp">
       <Filter>Sound</Filter>
     </ClCompile>
-    <ClCompile Include="GameScreen\GameScreen.cpp">
+    <ClCompile Include="GameScreen\GameScene.cpp">
       <Filter>GameScreen</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
@@ -271,7 +271,7 @@
     <ClInclude Include="Sound\Sound.h">
       <Filter>Sound</Filter>
     </ClInclude>
-    <ClInclude Include="GameScreen\GameScreen.h">
+    <ClInclude Include="GameScreen\GameScene.h">
       <Filter>GameScreen</Filter>
     </ClInclude>
     <ClInclude Include="Player.h" />

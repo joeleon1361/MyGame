@@ -46,7 +46,7 @@ class BossBullet;
 class BossTargetBullet;
 
 // ゲームシーン
-class GameScreen
+class GameScene
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -65,10 +65,10 @@ private: // 静的メンバ変数
 public: // メンバ関数
 
 	// コンストクラタ
-	GameScreen();
+	GameScene();
 
 	// デストラクタ
-	~GameScreen();
+	~GameScene();
 
 	// 初期化
 	void Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound);
@@ -79,39 +79,49 @@ public: // メンバ関数
 	// 描画
 	void Draw();
 
-	// タイトル
+	// タイトル更新
 	void TitleUpdate();
 
+	// タイトル描画
 	void TitleDraw();
 
+	// タイトル初期化
 	void TitleInitialize();
 
-	// ステージセレクト
+	// ステージセレクト更新
 	void StageSelectUpdate();
 
+	// ステージセレクト描画
 	void StageSelectDraw();
 
+	// ステージセレクト初期化
 	void StageSelectInitialize();
 
-	// ゲーム
+	// ゲーム更新
 	void GameUpdate();
 
+	// ゲーム描画
 	void GameDraw();
 
+	// ゲーム初期化
 	void GameInitialize();
 
-	// リザルト
+	// リザルト更新
 	void ResultUpdate();
 
+	// リザルト描画
 	void ResultDraw();
 
+	// リザルト初期化
 	void ResultInitialize();
 
-	// ゲームオーバー
+	// ゲームオーバー更新
 	void GameOverUpdate();
 
+	// ゲームオーバー描画
 	void GameOverDraw();
 
+	// ゲームオーバー初期化
 	void GameOverInitialize();
 
 	// パーティクル生成
@@ -671,8 +681,10 @@ private: // メンバ変数
 
 	// UI関係
 	XMFLOAT2 playerHpGageSize;
+	XMFLOAT2 playerDamageGageSize;
 
 	XMFLOAT2 bossHpGageSize;
+	XMFLOAT2 bossDamageGageSize;
 
 	float playerHpUIHigh = 680.0f;
 

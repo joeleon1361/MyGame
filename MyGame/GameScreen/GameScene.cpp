@@ -1,14 +1,14 @@
-﻿#include "GameScreen.h"
+﻿#include "GameScene.h"
 
 extern int cameraMode = 0;
 
 using namespace DirectX;
 
-GameScreen::GameScreen()
+GameScene::GameScene()
 {
 }
 
-GameScreen::~GameScreen()
+GameScene::~GameScene()
 {
 	safe_delete(spriteBG);
 	safe_delete(objSkydome);
@@ -25,7 +25,7 @@ GameScreen::~GameScreen()
 	sound->Finalize();
 }
 
-void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
+void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 {
 	// nullptrチェック
 	assert(dxCommon);
@@ -226,7 +226,7 @@ void GameScreen::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	TitleInitialize();
 }
 
-void GameScreen::Update()
+void GameScene::Update()
 {
 	switch (scene)
 	{
@@ -252,7 +252,7 @@ void GameScreen::Update()
 	}
 }
 
-void GameScreen::Draw()
+void GameScene::Draw()
 {
 	switch (scene)
 	{
@@ -278,7 +278,7 @@ void GameScreen::Draw()
 	}
 }
 
-void GameScreen::TitleUpdate()
+void GameScene::TitleUpdate()
 {
 #pragma region 情報の取得
 	SkydomRot = objSkydome->GetRotation();
@@ -469,7 +469,7 @@ void GameScreen::TitleUpdate()
 	TitleDebugText();
 }
 
-void GameScreen::TitleDraw()
+void GameScene::TitleDraw()
 {
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
@@ -521,7 +521,7 @@ void GameScreen::TitleDraw()
 #pragma endregion
 }
 
-void GameScreen::TitleInitialize()
+void GameScene::TitleInitialize()
 {
 	objTitlePlayer->SetPosition({ -4.0f,-2.0f,0 });
 	objTitlePlayer->SetRotation({ 0, 180, 0 });
@@ -564,7 +564,7 @@ void GameScreen::TitleInitialize()
 	sound->PlayWav("Title.wav", Volume_Title, true);
 }
 
-void GameScreen::StageSelectUpdate()
+void GameScene::StageSelectUpdate()
 {
 	//SkydomRot = objSkydome->GetRotation();
 
@@ -610,7 +610,7 @@ void GameScreen::StageSelectUpdate()
 	objStage3->Update();
 }
 
-void GameScreen::StageSelectDraw()
+void GameScene::StageSelectDraw()
 {
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
@@ -662,7 +662,7 @@ void GameScreen::StageSelectDraw()
 #pragma endregion
 }
 
-void GameScreen::StageSelectInitialize()
+void GameScene::StageSelectInitialize()
 {
 	objSkydome->SetPosition({ 0.0f, 0.0f, 0.0f });
 
@@ -688,7 +688,7 @@ void GameScreen::StageSelectInitialize()
 	changeSceneTimer = 100.0f;
 }
 
-void GameScreen::GameUpdate()
+void GameScene::GameUpdate()
 {
 	// ルートを完走したら遷移
 	if (startIndex >= 39)
@@ -751,8 +751,10 @@ void GameScreen::GameUpdate()
 	loadingColor = LoadingBG->GetColor();
 
 	playerHpGageSize = playerHpGage->GetSize();
+	playerDamageGageSize = playerDamageGage->GetSize();
 
 	bossHpGageSize = bossHpGage->GetSize();
+	bossDamageGageSize = bossDamageGage->GetSize();
 #pragma endregion
 
 	// 暗転を解除
@@ -1485,6 +1487,7 @@ void GameScreen::GameUpdate()
 	playerHpGage->SetSize(playerHpGageSize);
 
 	playerDamageGage->SetColor({ 1.0f, 0, 0.2f, playerDamageUIAlpha });
+	playerDamageGage->SetSize(playerDamageGageSize);
 
 	playerHpUI->SetColor({ 1.0f, 1.0f, 1.0f, playerHpUIAlpha });
 
@@ -1495,6 +1498,7 @@ void GameScreen::GameUpdate()
 	bossHpGage->SetSize(bossHpGageSize);
 
 	bossDamageGage->SetColor({ 1.0f, 0, 0.2f, bossDamageUIAlpha });
+	bossDamageGage->SetSize(bossDamageGageSize);
 
 	bossHpUI->SetColor({ 1.0f, 1.0f, 1.0f, bossHpUIAlpha });
 
@@ -1550,7 +1554,7 @@ void GameScreen::GameUpdate()
 	scoreUIUpdate();
 }
 
-void GameScreen::GameDraw()
+void GameScene::GameDraw()
 {
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
@@ -1694,7 +1698,7 @@ void GameScreen::GameDraw()
 #pragma endregion
 }
 
-void GameScreen::GameInitialize()
+void GameScene::GameInitialize()
 {
 	// 座標のセット
 	player->SetPosition({ 0.0f,0.0f,0.0f });
@@ -1852,7 +1856,7 @@ void GameScreen::GameInitialize()
 	startCount = GetTickCount();
 }
 
-void GameScreen::ResultUpdate()
+void GameScene::ResultUpdate()
 {
 	loadingColor = LoadingBG->GetColor();
 
@@ -2387,7 +2391,7 @@ void GameScreen::ResultUpdate()
 	scoreText.Print(TotalScone.str(), totalScorePosition, { 0.760f, 0.929f, 1.0f, totalScoreColor.w }, 0.8f);
 }
 
-void GameScreen::ResultDraw()
+void GameScene::ResultDraw()
 {
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
@@ -2482,7 +2486,7 @@ void GameScreen::ResultDraw()
 #pragma endregion
 }
 
-void GameScreen::ResultInitialize()
+void GameScene::ResultInitialize()
 {
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 0, 0 });
@@ -2620,7 +2624,7 @@ void GameScreen::ResultInitialize()
 	changeResultSizeFlag = false;
 }
 
-void GameScreen::GameOverUpdate()
+void GameScene::GameOverUpdate()
 {
 
 	if (input->TriggerKey(DIK_SPACE))
@@ -2635,7 +2639,7 @@ void GameScreen::GameOverUpdate()
 	AllDebugText();
 }
 
-void GameScreen::GameOverDraw()
+void GameScene::GameOverDraw()
 {
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
@@ -2681,7 +2685,7 @@ void GameScreen::GameOverDraw()
 #pragma endregion
 }
 
-void GameScreen::GameOverInitialize()
+void GameScene::GameOverInitialize()
 {
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetEye({ 0, 0, 0 });
@@ -2696,7 +2700,7 @@ void GameScreen::GameOverInitialize()
 	changeSceneTimer = 100.0f;
 }
 
-void GameScreen::CreateHitParticles(XMFLOAT3 position)
+void GameScene::CreateHitParticles(XMFLOAT3 position)
 {
 	for (int i = 0; i < 10; i++) {
 		// X,Y,Z全て[-20.0f,+20.0f]でランダムに分布
@@ -2721,7 +2725,7 @@ void GameScreen::CreateHitParticles(XMFLOAT3 position)
 	}
 }
 
-void GameScreen::CreateBossParticles(XMFLOAT3 position)
+void GameScene::CreateBossParticles(XMFLOAT3 position)
 {
 	for (int i = 0; i < 10; i++) {
 		// X,Y,Z全て[-20.0f,+20.0f]でランダムに分布
@@ -2747,7 +2751,7 @@ void GameScreen::CreateBossParticles(XMFLOAT3 position)
 }
 
 // デバックテキスト
-void GameScreen::AllDebugText()
+void GameScene::AllDebugText()
 {
 	std::ostringstream Scene;
 	Scene << "Scene:("
@@ -2768,7 +2772,7 @@ void GameScreen::AllDebugText()
 	debugText.Print(ResultMoveAcc.str(), 50, 50, 1.0f);
 }
 
-void GameScreen::TitleDebugText()
+void GameScene::TitleDebugText()
 {
 	std::ostringstream MoveX;
 	MoveX << "MoveX:("
@@ -2791,7 +2795,7 @@ void GameScreen::TitleDebugText()
 	debugText.Print(titlePlayerPos.str(), 50, 70, 1.0f);
 }
 
-void GameScreen::GameDebugText()
+void GameScene::GameDebugText()
 {
 	// プレイヤーの座標を表示
 	//std::ostringstream PlayerPos;
@@ -2925,7 +2929,7 @@ void GameScreen::GameDebugText()
 }
 
 // カメラ方向の切り替え
-void GameScreen::CameraSwitching()
+void GameScene::CameraSwitching()
 {
 	if (cameraMode == 0)
 	{
@@ -2963,7 +2967,7 @@ void GameScreen::CameraSwitching()
 	}
 }
 
-void GameScreen::Attack()
+void GameScene::Attack()
 {
 	shotRate -= 0.1f;
 
@@ -2991,7 +2995,7 @@ void GameScreen::Attack()
 	}
 }
 
-void GameScreen::BossAttack()
+void GameScene::BossAttack()
 {
 	/*std::unique_ptr<BossBullet> newBullet = std::make_unique<BossBullet>();
 	newBullet = BossBullet::Create(modelBullet, bossPosition, bulletScale, bulletVelocity);
@@ -3008,7 +3012,7 @@ void GameScreen::BossAttack()
 	}
 }
 
-void GameScreen::BossLeg1Attack()
+void GameScene::BossLeg1Attack()
 {
 	if ((playerHp >= 0.0f) && (bossLeg1Flag == true))
 	{
@@ -3020,7 +3024,7 @@ void GameScreen::BossLeg1Attack()
 	}
 }
 
-void GameScreen::BossLeg2Attack()
+void GameScene::BossLeg2Attack()
 {
 	if ((playerHp >= 0.0f) && (bossLeg2Flag == true))
 	{
@@ -3032,7 +3036,7 @@ void GameScreen::BossLeg2Attack()
 	}
 }
 
-void GameScreen::BossLeg3Attack()
+void GameScene::BossLeg3Attack()
 {
 	if ((playerHp >= 0.0f) && (bossLeg3Flag == true))
 	{
@@ -3044,7 +3048,7 @@ void GameScreen::BossLeg3Attack()
 	}
 }
 
-void GameScreen::BossLeg4Attack()
+void GameScene::BossLeg4Attack()
 {
 	if ((playerHp >= 0.0f) && (bossLeg4Flag == true))
 	{
@@ -3056,7 +3060,7 @@ void GameScreen::BossLeg4Attack()
 	}
 }
 
-void GameScreen::BossSpecialAttack()
+void GameScene::BossSpecialAttack()
 {
 	std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
 	newBullet = BossTargetBullet::Create(modelBullet, specialBulletPosition, bulletScale, playerWorldPosition, specialBulletSpeed);
@@ -3064,7 +3068,7 @@ void GameScreen::BossSpecialAttack()
 	bossTargetBullets.push_back(std::move(newBullet));
 }
 
-void GameScreen::SplineCount()
+void GameScene::SplineCount()
 {
 	nowCount = GetTickCount();
 
@@ -3088,7 +3092,7 @@ void GameScreen::SplineCount()
 	}
 }
 
-void GameScreen::LoadTextureFunction()
+void GameScene::LoadTextureFunction()
 {
 	if (!Sprite::LoadTexture(1, L"Resources/Sprite/Title.png")) {
 		assert(0);
@@ -3281,7 +3285,7 @@ void GameScreen::LoadTextureFunction()
 	}
 }
 
-void GameScreen::LoadWavFunction()
+void GameScene::LoadWavFunction()
 {
 	sound->LoadWav("Title.wav");
 	sound->LoadWav("Shot.wav");
@@ -3292,12 +3296,12 @@ void GameScreen::LoadWavFunction()
 	sound->LoadWav("Push.wav");
 }
 
-void GameScreen::scoreUIMotion()
+void GameScene::scoreUIMotion()
 {
 	scoreMoveVel = -8;
 }
 
-void GameScreen::scoreUIUpdate()
+void GameScene::scoreUIUpdate()
 {
 	scoreMoveVel += scoreMoveAcc;
 	scoreBasePosition.y += scoreMoveVel;
@@ -3315,7 +3319,7 @@ void GameScreen::scoreUIUpdate()
 	}
 }
 
-bool GameScreen::OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB)
+bool GameScene::OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB)
 {
 	float Check = sqrtf((sphereA.x - sphereB.x) * (sphereA.x - sphereB.x) + (sphereA.y - sphereB.y) * (sphereA.y - sphereB.y) + (sphereA.z - sphereB.z) * (sphereA.z - sphereB.z));
 	if (Check <= radiusA - radiusB || Check <= radiusB - radiusA || Check < radiusA + radiusB)
@@ -3328,7 +3332,7 @@ bool GameScreen::OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, 
 	}
 }
 // スプライン曲線の計算
-XMFLOAT3 GameScreen::SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t)
+XMFLOAT3 GameScene::SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t)
 {
 	size_t n = points.size() - 2;
 
@@ -3374,7 +3378,7 @@ XMFLOAT3 GameScreen::SplinePosition(const std::vector<XMFLOAT3>& points, size_t 
 }
 
 // lerp関数の計算
-XMFLOAT3 GameScreen::lerp(const XMFLOAT3& start, const XMFLOAT3& end, const float t)
+XMFLOAT3 GameScene::lerp(const XMFLOAT3& start, const XMFLOAT3& end, const float t)
 {
 	XMFLOAT3 A, B;
 	A = XMFLOAT3(start.x * (1.0f - t), start.y * (1.0f - t), start.z * (1.0f - t));

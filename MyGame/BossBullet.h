@@ -1,6 +1,6 @@
 #pragma once
 #include "ObjObject.h"
-#include "GameScreen.h"
+#include "GameScene.h"
 
 class BossBullet :
     public ObjObject
