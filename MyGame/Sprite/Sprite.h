@@ -85,7 +85,7 @@ public: // メンバ関数
 	void SetPosition(XMFLOAT2 position);
 
 	// 角度の取得
-	const float& GetRosition() { return rotation; }
+	const float& GetRotation() { return rotation; }
 
 	// 角度の設定
 	void SetRotation(float rotation);

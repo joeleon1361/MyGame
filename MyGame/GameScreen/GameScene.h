@@ -157,6 +157,8 @@ public: // メンバ関数
 
 	void Lerp2Count();
 
+	void Lerp3Count();
+
 	void LoadTextureFunction();
 
 	void LoadWavFunction();
@@ -214,6 +216,10 @@ private: // メンバ変数
 	Sprite* gameGTXT_3 = nullptr;
 	Sprite* gameGTXT_4 = nullptr;
 
+	Sprite* gameParts_1 = nullptr;
+	Sprite* gameParts_2 = nullptr;
+	Sprite* gameParts_3 = nullptr;
+
 	// スコアUI
 	Sprite* scoreUI = nullptr;
 	Sprite* scoreChar = nullptr;
@@ -256,8 +262,6 @@ private: // メンバ変数
 
 	Sprite* damageEffect = nullptr;
 
-	Sprite* lerpTest = nullptr;
-
 	ParticleManager* particleMan = nullptr;
 
 	ObjModel* modelSkydome = nullptr;
@@ -295,9 +299,9 @@ private: // メンバ変数
 	ObjObject* objCenter = nullptr;
 
 	ObjObject* frontCamera = nullptr;
-	ObjObject* rightCamera = nullptr;
+	/*ObjObject* rightCamera = nullptr;
 	ObjObject* backCamera = nullptr;
-	ObjObject* leftCamera = nullptr;
+	ObjObject* leftCamera = nullptr;*/
 
 	FbxObject3d* testobject = nullptr;
 
@@ -525,6 +529,15 @@ private: // メンバ変数
 
 	float L2maxTime = 2000.0f;
 	float L2timeRate;
+
+	// Lerp3
+	float L3addCount = 0.0f;
+	float L3nowCount = 0.1f;
+	float L3elapsedCount = 0;
+	float L3elapsedTime;
+
+	float L3maxTime = 1.0f;
+	float L3timeRate;
 #pragma endregion
 
 #pragma region プレイヤー関連
@@ -723,6 +736,19 @@ private: // メンバ変数
 	float scoreMoveVel = 0.0f;
 	float scoreMoveAcc = 1.0f;
 
+	XMFLOAT4 gameParts1Color;
+	XMFLOAT4 gameParts2Color;
+	XMFLOAT4 gameParts3Color;
+
+	int backFlashingCount = 0;
+	bool backFlashingFlag = false;
+
+	int rightFlashingCount = 0;
+	bool rightFlashingFlag = false;
+
+	int leftFlashingCount = 0;
+	bool leftFlashingFlag = false;
+
 	XMFLOAT2 resultBN_1Size;
 	XMFLOAT2 resultBN_2Size;
 	XMFLOAT2 resultBN_3Size;
@@ -846,5 +872,7 @@ private: // メンバ変数
 
 	bool changeResultSizeFlag = false;
 
+	XMFLOAT3 cameraLocal;
 
+	XMFLOAT3 nextCamera;
 };
