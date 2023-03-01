@@ -298,10 +298,7 @@ private: // メンバ変数
 
 	ObjObject* objCenter = nullptr;
 
-	ObjObject* frontCamera = nullptr;
-	/*ObjObject* rightCamera = nullptr;
-	ObjObject* backCamera = nullptr;
-	ObjObject* leftCamera = nullptr;*/
+	ObjObject* objCamera = nullptr;
 
 	FbxObject3d* testobject = nullptr;
 

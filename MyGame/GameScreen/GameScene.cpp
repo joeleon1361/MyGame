@@ -165,10 +165,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 
 	objCenter = ObjObject::Create();
 
-	frontCamera = ObjObject::Create();
-	/*rightCamera = ObjObject::Create();
-	backCamera = ObjObject::Create();
-	leftCamera = ObjObject::Create();*/
+	objCamera = ObjObject::Create();
 
 	bossBody = Boss::Create();
 	bossLeg1 = Boss::Create();
@@ -189,10 +186,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	player->SetModel(modelPlayer);
 
 	objCenter->SetModel(modelBullet);
-	frontCamera->SetModel(modelBullet);
-	/*rightCamera->SetModel(modelBullet);
-	backCamera->SetModel(modelBullet);
-	leftCamera->SetModel(modelBullet);*/
+	objCamera->SetModel(modelBullet);
 
 	objStage1->SetModel(modelBullet);
 	objStage2->SetModel(modelBullet);
@@ -209,10 +203,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	// 親子関係を結ぶ
 	player->SetParent(objCenter);
 
-	frontCamera->SetParent(objCenter);
-	/*rightCamera->SetParent(objCenter);
-	backCamera->SetParent(objCenter);
-	leftCamera->SetParent(objCenter);*/
+	objCamera->SetParent(objCenter);
 
 	bossLeg1->SetParent(bossBody);
 	bossLeg2->SetParent(bossBody);
@@ -763,8 +754,8 @@ void GameScene::GameUpdate()
 	playerDamageGageSize = lerp2(playerDamageGage->GetSize(), playerHpGageSize, L1timeRate);
 	bossDamageGageSize = lerp2(bossDamageGage->GetSize(), bossHpGageSize, L2timeRate);
 
-	//cameraLocal = frontCamera->GetPosition();
-	cameraLocal = lerp(frontCamera->GetPosition(), nextCamera, L3nowCount);
+	//cameraLocal = objCamera->GetPosition();
+	cameraLocal = lerp(objCamera->GetPosition(), nextCamera, L3nowCount);
 
 	gameParts1Color = gameParts_1->GetColor();
 	gameParts2Color = gameParts_2->GetColor();
@@ -1495,29 +1486,11 @@ void GameScene::GameUpdate()
 #pragma region 座標変換
 	// カメラの座標変換
 	XMVECTOR cameraFrontPositionV;
-	/*XMVECTOR cameraRightPositionV;
-	XMVECTOR cameraBackPositionV;
-	XMVECTOR cameraLeftPositionV;*/
 
-	cameraFrontPositionV = DirectX::XMLoadFloat3(&frontCamera->GetPosition());
+	cameraFrontPositionV = DirectX::XMLoadFloat3(&objCamera->GetPosition());
 	cameraFrontPositionV.m128_f32[3] = 1.0f;
 	cameraFrontPositionV = DirectX::XMVector3Transform(cameraFrontPositionV, objCenter->GetMatWorld());
 	DirectX::XMStoreFloat3(&cameraFrontPosition, cameraFrontPositionV);
-
-	/*cameraRightPositionV = DirectX::XMLoadFloat3(&rightCamera->GetPosition());
-	cameraRightPositionV.m128_f32[3] = 1.0f;
-	cameraRightPositionV = DirectX::XMVector3Transform(cameraRightPositionV, objCenter->GetMatWorld());
-	DirectX::XMStoreFloat3(&cameraRightPosition, cameraRightPositionV);
-
-	cameraBackPositionV = DirectX::XMLoadFloat3(&backCamera->GetPosition());
-	cameraBackPositionV.m128_f32[3] = 1.0f;
-	cameraBackPositionV = DirectX::XMVector3Transform(cameraBackPositionV, objCenter->GetMatWorld());
-	DirectX::XMStoreFloat3(&cameraBackPosition, cameraBackPositionV);
-
-	cameraLeftPositionV = DirectX::XMLoadFloat3(&leftCamera->GetPosition());
-	cameraLeftPositionV.m128_f32[3] = 1.0f;
-	cameraLeftPositionV = DirectX::XMVector3Transform(cameraLeftPositionV, objCenter->GetMatWorld());
-	DirectX::XMStoreFloat3(&cameraLeftPosition, cameraLeftPositionV);*/
 
 	// プレイヤーの座標変換
 	XMVECTOR playerPositionV;
@@ -1627,7 +1600,7 @@ void GameScene::GameUpdate()
 
 	bossHpUICover->SetColor({ 1.0f, 1.0f, 1.0f, bossHpUIAlpha });
 
-	frontCamera->SetPosition(cameraLocal);
+	objCamera->SetPosition(cameraLocal);
 
 	gameParts_1->SetColor(gameParts1Color);
 	gameParts_2->SetColor(gameParts2Color);
@@ -1657,10 +1630,7 @@ void GameScene::GameUpdate()
 	// プレイヤーの更新
 	player->Update();
 
-	frontCamera->Update();
-	/*rightCamera->Update();
-	backCamera->Update();
-	leftCamera->Update();*/
+	objCamera->Update();
 
 	// レール中心オブジェクトの更新
 	objCenter->Update();
@@ -1757,10 +1727,7 @@ void GameScene::GameDraw()
 
 	// objCenter->Draw();
 
-	/*frontCamera->Draw();
-	rightCamera->Draw();
-	backCamera->Draw();
-	leftCamera->Draw();*/
+	//objCamera->Draw();
 
 	// パーティクルの描画
 	particleMan->Draw(cmdList);
@@ -1856,10 +1823,7 @@ void GameScene::GameInitialize()
 	objSkydome->SetRotation({ 0.0f,0.0f,0.0f, });
 	objSkydome->SetScale({ 5.0f, 5.0f, 5.0f });
 
-	frontCamera->SetPosition({ 0.0f,0.0f,-20.0f });
-	/*rightCamera->SetPosition({ -20.0f,0.0f,0.0f });
-	backCamera->SetPosition({ 0.0f,0.0f,20.0f });
-	leftCamera->SetPosition({ 20.0f,0.0f,0.0f });*/
+	objCamera->SetPosition({ 0.0f,0.0f,-20.0f });
 
 	objCenter->SetPosition({ 0.0f,0.0f,0.0f });
 	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
