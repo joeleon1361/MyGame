@@ -90,24 +90,24 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	GameFG = Sprite::Create(26, { 0.0f,0.0f });
 	TitleStartUI = Sprite::Create(27, { 310.0f,630.0f });
 
-	playerHpUI = Sprite::Create(5, { 1164.0f, playerHpUIHigh });
-	playerHpGage = Sprite::Create(6, { 1154.0f, playerHpUIHigh });
-	playerDamageGage = Sprite::Create(6, { 1154.0f, playerHpUIHigh });
-	playerHpUICover = Sprite::Create(9, { 1164.0f, playerHpUIHigh });
+	playerHpUI = Sprite::Create(5, { playerHpUIPosition.x + 10.0f, playerHpUIPosition.y });
+	playerHpGage = Sprite::Create(6, playerHpUIPosition);
+	playerDamageGage = Sprite::Create(6, playerHpUIPosition);
+	playerHpUICover = Sprite::Create(9, { playerHpUIPosition.x + 10.0f, playerHpUIPosition.y });
 
-	bossHpUI = Sprite::Create(7, { 1265.0f, bossHpUIHigh });
-	bossHpGage = Sprite::Create(8, { 1255.0f, bossHpUIHigh });
-	bossDamageGage = Sprite::Create(8, { 1255.0f, bossHpUIHigh });
-	bossHpUICover = Sprite::Create(38, { 1265.0f, bossHpUIHigh });
+	bossHpUI = Sprite::Create(7, { bossHpUIPosition.x + 10.0f, bossHpUIPosition.y });
+	bossHpGage = Sprite::Create(8, bossHpUIPosition);
+	bossDamageGage = Sprite::Create(8, bossHpUIPosition);
+	bossHpUICover = Sprite::Create(38, { bossHpUIPosition.x + 10.0f, bossHpUIPosition.y });
 
-	scoreUI = Sprite::Create(11, { 15.0f, bossHpUIHigh + 30.0f });
-	scoreChar = Sprite::Create(12, { 190.0f, 30.0f });
-	scoreNull_1 = Sprite::Create(13, { 403.5f, 27.0f });
-	scoreNull_2 = Sprite::Create(13, { 378.0f, 27.0f });
-	scoreNull_3 = Sprite::Create(13, { 352.5f, 27.0f });
-	scoreNull_4 = Sprite::Create(13, { 326.5f, 27.0f });
-	scoreNull_5 = Sprite::Create(13, { 300.5f, 27.0f });
-	scoreNull_6 = Sprite::Create(13, { 275.0f, 27.0f });
+	scoreUI = Sprite::Create(11, scoreUIPosition);
+	scoreChar = Sprite::Create(12, { 190.0f, scoreUIPosition.y - 30.0f });
+	scoreNull_1 = Sprite::Create(13, { 403.5f, scoreUIPosition.y - 33.0f });
+	scoreNull_2 = Sprite::Create(13, { 378.0f, scoreUIPosition.y - 33.0f });
+	scoreNull_3 = Sprite::Create(13, { 352.5f, scoreUIPosition.y - 33.0f });
+	scoreNull_4 = Sprite::Create(13, { 326.5f, scoreUIPosition.y - 33.0f });
+	scoreNull_5 = Sprite::Create(13, { 300.5f, scoreUIPosition.y - 33.0f });
+	scoreNull_6 = Sprite::Create(13, { 275.0f, scoreUIPosition.y - 33.0f });
 
 	gameGTXT_1 = Sprite::Create(22, { 50.0f,50.0f });
 	gameGTXT_2 = Sprite::Create(23, { 50.0f,50.0f });
@@ -791,96 +791,21 @@ void GameScene::GameUpdate()
 		scene = RESULT;
 	}
 
-	// プレイヤーのHP計算
-	playerHpRatio = playerHp / playerHpMax;
-	playerHpGageSize.x = playerHpRatio * 320.0f;
-
-	// ボスのHP計算
-	bossHpRatio = bossHp / bossHpMax;
-	bossHpGageSize.x = bossHpRatio * 530.0f;
-
-	// UIの点滅
-	if (backFlashingFlag == true)
-	{
-		gameParts1Color.w -= 0.02f;
-
-		if (backFlashingCount != 2)
-		{
-			if (gameParts1Color.w <= 0.3f)
-			{
-				backFlashingCount += 1;
-				gameParts1Color.w = 1.0f;
-			}
-		}
-		else if (backFlashingCount == 2)
-		{
-			if (gameParts1Color.w <= 0.0f)
-			{
-				backFlashingFlag = false;
-				backFlashingCount = 0;
-				gameParts1Color.w = 1.0f;
-			}
-		}
-	}
-
-	// UIの点滅
-	if (rightFlashingFlag == true)
-	{
-		gameParts2Color.w -= 0.02f;
-
-		if (rightFlashingCount != 2)
-		{
-			if (gameParts2Color.w <= 0.3f)
-			{
-				rightFlashingCount += 1;
-				gameParts2Color.w = 1.0f;
-			}
-		}
-		else if (rightFlashingCount == 2)
-		{
-			if (gameParts2Color.w <= 0.0f)
-			{
-				rightFlashingFlag = false;
-				rightFlashingCount = 0;
-				gameParts2Color.w = 1.0f;
-			}
-		}
-	}
-
-	// UIの点滅
-	if (leftFlashingFlag == true)
-	{
-		gameParts3Color.w -= 0.02f;
-
-		if (leftFlashingCount != 2)
-		{
-			if (gameParts3Color.w <= 0.3f)
-			{
-				leftFlashingCount += 1;
-				gameParts3Color.w = 1.0f;
-			}
-		}
-		else if (leftFlashingCount == 2)
-		{
-			if (gameParts3Color.w <= 0.0f)
-			{
-				leftFlashingFlag = false;
-				leftFlashingCount = 0;
-				gameParts3Color.w = 1.0f;
-			}
-		}
-	}
-	
-
-#pragma region 弾関連
-	Attack();
-
 	if (input->TriggerKey(DIK_C))
 	{
 		bossHp = 0.0f;
 		L2startCount = GetTickCount();
 		gameScore += 49999.0f;
 	}
+
+	playerHpCalc();
+
+	bossHpCalc();
+
+	alertUIUpdate();
+
+#pragma region 弾関連
+	Attack();
 
 	// 弾を更新
 	for (std::unique_ptr<Bullet>& bullet : bullets)
@@ -1294,178 +1219,20 @@ void GameScene::GameUpdate()
 		}
 	}
 
-	
+
 
 #pragma endregion
 
 #pragma endregion
 
-	// ダメージエフェクトの計算
-	damageEffectAlpha += damageEffectAlphaVel;
+	damageEffectUpdate();
 
-	if (damageEffectAlpha < 0.0f)
-	{
-		damageEffectAlphaVel = 0.0f;
-		damageEffectAlpha = 0.0f;
-	}
-
-	if (cameraMode == 0)
-	{
-		if (playerPosition.x < -3.2f && playerPosition.y > 6.0f)
-		{
-			scoreUIAlphaVel = -0.06f;
-		}
-
-		if (playerPosition.x > 3.6f && playerPosition.y < -8.8f)
-		{
-			playerHpUIAlphaVel = -0.06f;
-			playerDamageUIAlphaVel = -0.08f;
-		}
-
-		if (playerPosition.x > 0.4f && playerPosition.y > 8.8f)
-		{
-			bossHpUIAlphaVel = -0.06f;
-			bossDamageUIAlphaVel = -0.08f;
-		}
-	}
-	if (cameraMode == 2)
-	{
-		if (playerPosition.x > 3.2f && playerPosition.y > 6.0f)
-		{
-			scoreUIAlphaVel = -0.06f;
-		}
-
-		if (playerPosition.x < -3.6f && playerPosition.y < -8.8f)
-		{
-			playerHpUIAlphaVel = -0.06f;
-			playerDamageUIAlphaVel = -0.08f;
-		}
-
-		if (playerPosition.x < -0.4f && playerPosition.y > 8.8f)
-		{
-			bossHpUIAlphaVel = -0.06f;
-			bossDamageUIAlphaVel = -0.08f;
-		}
-	}
-
-	// スコアUIのAlpha値計算
-	scoreUIAlpha += scoreUIAlphaVel;
-	if (input->PushKey(DIK_P))
-	{
-		scoreUIAlphaVel = -0.06f;
-	}
-	else
-	{
-		scoreUIAlphaVel = 0.06f;
-	}
-
-	if (scoreUIAlpha < 0.3f)
-	{
-		scoreUIAlphaVel = 0.0f;
-		scoreUIAlpha = 0.3f;
-	}
-
-	if (scoreUIAlpha > 1.0f)
-	{
-		scoreUIAlphaVel = 0.0f;
-		scoreUIAlpha = 1.0f;
-	}
-
-	// プレイヤーHPUIのAlpha値計算
-	playerHpUIAlpha += playerHpUIAlphaVel;
-	if (input->PushKey(DIK_P))
-	{
-		playerHpUIAlphaVel = -0.06f;
-	}
-	else
-	{
-		playerHpUIAlphaVel = 0.06f;
-	}
-
-	if (playerHpUIAlpha < 0.3f)
-	{
-		playerHpUIAlphaVel = 0.0f;
-		playerHpUIAlpha = 0.3f;
-	}
-
-	if (playerHpUIAlpha > 1.0f)
-	{
-		playerHpUIAlphaVel = 0.0f;
-		playerHpUIAlpha = 1.0f;
-	}
-
-	playerDamageUIAlpha += playerDamageUIAlphaVel;
-	if (input->PushKey(DIK_P))
-	{
-		playerDamageUIAlphaVel = -0.08f;
-	}
-	else
-	{
-		playerDamageUIAlphaVel = 0.08f;
-	}
-
-	if (playerDamageUIAlpha < 0.0f)
-	{
-		playerDamageUIAlphaVel = 0.0f;
-		playerDamageUIAlpha = 0.0f;
-	}
-
-	if (playerDamageUIAlpha > 1.0f)
-	{
-		playerDamageUIAlphaVel = 0.0f;
-		playerDamageUIAlpha = 1.0f;
-	}
-
-	// ボスHPUIのAlpha値計算
-	bossHpUIAlpha += bossHpUIAlphaVel;
-	if (input->PushKey(DIK_P))
-	{
-		bossHpUIAlphaVel = -0.06f;
-	}
-	else
-	{
-		bossHpUIAlphaVel = 0.06f;
-	}
-
-	if (bossHpUIAlpha < 0.3f)
-	{
-		bossHpUIAlphaVel = 0.0f;
-		bossHpUIAlpha = 0.3f;
-	}
-
-	if (bossHpUIAlpha > 1.0f)
-	{
-		bossHpUIAlphaVel = 0.0f;
-		bossHpUIAlpha = 1.0f;
-	}
-
-	bossDamageUIAlpha += bossDamageUIAlphaVel;
-	if (input->PushKey(DIK_P))
-	{
-		bossDamageUIAlphaVel = -0.08f;
-	}
-	else
-	{
-		bossDamageUIAlphaVel = 0.08f;
-	}
-
-	if (bossDamageUIAlpha < 0.0f)
-	{
-		bossDamageUIAlphaVel = 0.0f;
-		bossDamageUIAlpha = 0.0f;
-	}
-
-	if (bossDamageUIAlpha > 1.0f)
-	{
-		bossDamageUIAlphaVel = 0.0f;
-		bossDamageUIAlpha = 1.0f;
-	}
+	changeGameUIAlpha();
 
 #pragma region スプライン曲線関係
 	if (input->PushKey(DIK_R))
 	{
-		L3addCount = 0.01f;
-		L3nowCount = 0.0f;
+		
 	}
 
 	if (railCountFlag == true)
@@ -1527,11 +1294,18 @@ void GameScene::GameUpdate()
 	DirectX::XMStoreFloat3(&bossLeg4WorldPosition, bossLeg4PositionV);
 #pragma endregion
 
-	// レールの進行方向へ自機の角度を向ける
-	testX = playerTargetPosition.x - centerPosition.x;
-	testZ = playerTargetPosition.z - centerPosition.z;
-	testRadians = atan2(testZ, testX);
-	testDegrees = XMConvertToDegrees(testRadians);
+	railTargetCalc();
+
+	if (input->PushKey(DIK_P))
+	{
+		playerHpUIVel = -2.0f;;
+		bossHpUIVel = 2.0f;
+		scoreUIVel = 2.0f;
+	}
+
+	playerHpUIPosition.y += playerHpUIVel;
+	bossHpUIPosition.y += bossHpUIVel;
+	scoreUIPosition.y += scoreUIVel;
 
 #pragma region 座標のセット
 	// カメラ座標のセット
@@ -1567,37 +1341,58 @@ void GameScene::GameUpdate()
 	damageEffect->SetColor({ 1.0f, 1.0f, 1.0f, damageEffectAlpha });
 
 	// スコアUI
+	scoreUI->SetPosition(scoreUIPosition);
 	scoreUI->SetColor({ 1.0f, 1.0f, 1.0f, scoreUIAlpha });
 
+	scoreChar->SetPosition({ 190.0f, scoreUIPosition.y - 30.0f });
 	scoreChar->SetColor({ 0.760f, 0.929f, 1.0f, scoreUIAlpha });
 
+	scoreNull_1->SetPosition({ 403.5f, scoreUIPosition.y - 33.0f });
 	scoreNull_1->SetColor({ 1.0f, 1.0f, 1.0f, scoreUIAlpha });
+
+	scoreNull_2->SetPosition({ 378.0f, scoreUIPosition.y - 33.0f });
 	scoreNull_2->SetColor({ 1.0f, 1.0f, 1.0f, scoreUIAlpha });
+
+	scoreNull_3->SetPosition({ 352.5f, scoreUIPosition.y - 33.0f });
 	scoreNull_3->SetColor({ 1.0f, 1.0f, 1.0f, scoreUIAlpha });
+
+	scoreNull_4->SetPosition({ 326.5f, scoreUIPosition.y - 33.0f });
 	scoreNull_4->SetColor({ 1.0f, 1.0f, 1.0f, scoreUIAlpha });
+
+	scoreNull_5->SetPosition({ 300.5f, scoreUIPosition.y - 33.0f });
 	scoreNull_5->SetColor({ 1.0f, 1.0f, 1.0f, scoreUIAlpha });
+
+	scoreNull_6->SetPosition({ 275.0f, scoreUIPosition.y - 33.0f });
 	scoreNull_6->SetColor({ 1.0f, 1.0f, 1.0f, scoreUIAlpha });
 
 	// プレイヤーのHPゲージ
+	playerHpGage->SetPosition(playerHpUIPosition);
 	playerHpGage->SetColor({ 0.1f, 0.6f, 0.1f, playerHpUIAlpha });
 	playerHpGage->SetSize(playerHpGageSize);
 
+	playerDamageGage->SetPosition(playerHpUIPosition);
 	playerDamageGage->SetColor({ 1.0f, 0, 0.2f, playerDamageUIAlpha });
 	playerDamageGage->SetSize(playerDamageGageSize);
 
+	playerHpUI->SetPosition({ playerHpUIPosition.x + 10.0f, playerHpUIPosition.y });
 	playerHpUI->SetColor({ 1.0f, 1.0f, 1.0f, playerHpUIAlpha });
 
+	playerHpUICover->SetPosition({ playerHpUIPosition.x + 10.0f, playerHpUIPosition.y });
 	playerHpUICover->SetColor({ 1.0f, 1.0f, 1.0f, playerHpUIAlpha });
 
 	// ボスのHPゲージ
+	bossHpGage->SetPosition(bossHpUIPosition);
 	bossHpGage->SetColor({ 0.1f, 0.6f, 0.1f, bossHpUIAlpha });
 	bossHpGage->SetSize(bossHpGageSize);
 
+	bossDamageGage->SetPosition(bossHpUIPosition);
 	bossDamageGage->SetColor({ 1.0f, 0, 0.2f, bossDamageUIAlpha });
 	bossDamageGage->SetSize(bossDamageGageSize);
 
+	bossHpUI->SetPosition({ bossHpUIPosition.x + 10.0f, bossHpUIPosition.y });
 	bossHpUI->SetColor({ 1.0f, 1.0f, 1.0f, bossHpUIAlpha });
 
+	bossHpUICover->SetPosition({ bossHpUIPosition.x + 10.0f, bossHpUIPosition.y });
 	bossHpUICover->SetColor({ 1.0f, 1.0f, 1.0f, bossHpUIAlpha });
 
 	objCamera->SetPosition(cameraLocal);
@@ -1648,7 +1443,7 @@ void GameScene::GameUpdate()
 	// スコアの描画
 	std::ostringstream StartIndex;
 	StartIndex << std::fixed << std::setprecision(0) << std::setw(7) << gameScore;
-	scoreText.Print(StartIndex.str(), scoreBasePosition, { 0.760f, 0.929f, 1.0f, scoreUIAlpha }, 0.8f);
+	scoreText.Print(StartIndex.str(), { 300.0f , scoreUIPosition.y + -7.0f + scoreBasePosition.y }, { 0.760f, 0.929f, 1.0f, scoreUIAlpha }, 0.8f);
 
 	scoreUIUpdate();
 }
@@ -1888,15 +1683,21 @@ void GameScene::GameInitialize()
 	scoreNull_5->SetSize({ 25.0f, 25.0f });
 	scoreNull_6->SetSize({ 25.0f, 25.0f });
 
-	scoreBasePosition = { 300.0f, 52.0f };
+	scoreBasePosition = { 0.0f, 0.0f };
 
 	gameParts_1->SetAnchorPoint({ 0.5f, 0.5f });
 
-	gameParts_2->SetRotation({270.0f});
+	gameParts_2->SetRotation({ 270.0f });
 	gameParts_2->SetAnchorPoint({ 0.5f, 0.5f });
 
 	gameParts_3->SetRotation({ 90.0f });
 	gameParts_3->SetAnchorPoint({ 0.5f, 0.5f });
+
+	playerHpUIPosition = { 1154.0f, 680.0f };
+
+	bossHpUIPosition = { 1255.0f , 30.0f };
+
+	scoreUIPosition = { 15.0f, 60.0f };
 
 	// プレイヤー関連
 	playerHpMax = 300.0f;
@@ -3113,7 +2914,7 @@ void GameScene::CameraSwitching()
 		backFlashingFlag = true;
 		L3nowCount = 0.0f;
 		L3addCount = 0.001f;
-		
+
 	}
 }
 
@@ -3275,8 +3076,8 @@ void GameScene::Lerp3Count()
 		L3nowCount = 0.1f;
 		L3addCount = 0.0f;
 	}
-	
-	if (L3nowCount < 0.1f) 
+
+	if (L3nowCount < 0.1f)
 	{
 		playerUpdateFlag = false;
 	}
@@ -3501,17 +3302,277 @@ void GameScene::scoreUIUpdate()
 	scoreMoveVel += scoreMoveAcc;
 	scoreBasePosition.y += scoreMoveVel;
 
-	if (scoreBasePosition.y < 45)
+	if (scoreBasePosition.y < -8.0f)
 	{
-		scoreBasePosition.y = 45;
 		scoreMoveVel = 0;
+		scoreBasePosition.y = -8.0f;
 	}
 
-	if (scoreBasePosition.y > 53)
+	if (scoreBasePosition.y > 0.0f)
 	{
-		scoreBasePosition.y = 53;
 		scoreMoveVel = 0;
+		scoreBasePosition.y = 0.0f;
 	}
+}
+
+// プレイヤーとUIが重なった際のアルファ値計算
+void GameScene::changeGameUIAlpha()
+{
+	if (cameraMode == 0)
+	{
+		if (playerPosition.x < -3.2f && playerPosition.y > 6.0f)
+		{
+			scoreUIAlphaVel = -0.06f;
+		}
+		else
+		{
+			scoreUIAlphaVel = 0.06f;
+		}
+
+		if (playerPosition.x > 3.6f && playerPosition.y < -8.8f)
+		{
+			playerHpUIAlphaVel = -0.06f;
+			playerDamageUIAlphaVel = -0.08f;
+		}
+		else
+		{
+			playerHpUIAlphaVel = 0.06f;
+			playerDamageUIAlphaVel = 0.08f;
+		}
+
+		if (playerPosition.x > 0.4f && playerPosition.y > 8.8f)
+		{
+			bossHpUIAlphaVel = -0.06f;
+			bossDamageUIAlphaVel = -0.08f;
+		}
+		else
+		{
+			bossHpUIAlphaVel = 0.06f;
+			bossDamageUIAlphaVel = 0.08f;
+		}
+	}
+
+	if (cameraMode == 2)
+	{
+		if (playerPosition.x > 3.2f && playerPosition.y > 6.0f)
+		{
+			scoreUIAlphaVel = -0.06f;
+		}
+		else
+		{
+			scoreUIAlphaVel = 0.06f;
+		}
+
+		if (playerPosition.x < -3.6f && playerPosition.y < -8.8f)
+		{
+			playerHpUIAlphaVel = -0.06f;
+			playerDamageUIAlphaVel = -0.08f;
+		}
+		else
+		{
+			playerHpUIAlphaVel = 0.06f;
+			playerDamageUIAlphaVel = 0.08f;
+		}
+
+		if (playerPosition.x < -0.4f && playerPosition.y > 8.8f)
+		{
+			bossHpUIAlphaVel = -0.06f;
+			bossDamageUIAlphaVel = -0.08f;
+		}
+		else
+		{
+			bossHpUIAlphaVel = 0.06f;
+			bossDamageUIAlphaVel = 0.08f;
+		}
+	}
+
+	// スコアUIのAlpha値計算
+	scoreUIAlpha += scoreUIAlphaVel;
+
+	if (scoreUIAlpha < 0.3f)
+	{
+		scoreUIAlphaVel = 0.0f;
+		scoreUIAlpha = 0.3f;
+	}
+
+	if (scoreUIAlpha > 1.0f)
+	{
+		scoreUIAlphaVel = 0.0f;
+		scoreUIAlpha = 1.0f;
+	}
+
+	// プレイヤーHPUIのAlpha値計算
+	playerHpUIAlpha += playerHpUIAlphaVel;
+
+	if (playerHpUIAlpha < 0.3f)
+	{
+		playerHpUIAlphaVel = 0.0f;
+		playerHpUIAlpha = 0.3f;
+	}
+
+	if (playerHpUIAlpha > 1.0f)
+	{
+		playerHpUIAlphaVel = 0.0f;
+		playerHpUIAlpha = 1.0f;
+	}
+
+	playerDamageUIAlpha += playerDamageUIAlphaVel;
+
+	if (playerDamageUIAlpha < 0.0f)
+	{
+		playerDamageUIAlphaVel = 0.0f;
+		playerDamageUIAlpha = 0.0f;
+	}
+
+	if (playerDamageUIAlpha > 1.0f)
+	{
+		playerDamageUIAlphaVel = 0.0f;
+		playerDamageUIAlpha = 1.0f;
+	}
+
+	// ボスHPUIのAlpha値計算
+	bossHpUIAlpha += bossHpUIAlphaVel;
+
+	if (bossHpUIAlpha < 0.3f)
+	{
+		bossHpUIAlphaVel = 0.0f;
+		bossHpUIAlpha = 0.3f;
+	}
+
+	if (bossHpUIAlpha > 1.0f)
+	{
+		bossHpUIAlphaVel = 0.0f;
+		bossHpUIAlpha = 1.0f;
+	}
+
+	bossDamageUIAlpha += bossDamageUIAlphaVel;
+
+	if (bossDamageUIAlpha < 0.0f)
+	{
+		bossDamageUIAlphaVel = 0.0f;
+		bossDamageUIAlpha = 0.0f;
+	}
+
+	if (bossDamageUIAlpha > 1.0f)
+	{
+		bossDamageUIAlphaVel = 0.0f;
+		bossDamageUIAlpha = 1.0f;
+	}
+}
+
+// ダメージエフェクトの挙動管理
+void GameScene::damageEffectUpdate()
+{
+	// ダメージエフェクトの計算
+	damageEffectAlpha += damageEffectAlphaVel;
+
+	if (damageEffectAlpha < 0.0f)
+	{
+		damageEffectAlphaVel = 0.0f;
+		damageEffectAlpha = 0.0f;
+	}
+}
+
+// カメラ切り替え時のUI挙動管理
+void GameScene::alertUIUpdate()
+{
+	// UIの点滅
+	if (backFlashingFlag == true)
+	{
+		gameParts1Color.w -= 0.02f;
+
+		if (backFlashingCount != 2)
+		{
+			if (gameParts1Color.w <= 0.3f)
+			{
+				backFlashingCount += 1;
+				gameParts1Color.w = 1.0f;
+			}
+		}
+		else if (backFlashingCount == 2)
+		{
+			if (gameParts1Color.w <= 0.0f)
+			{
+				backFlashingFlag = false;
+				backFlashingCount = 0;
+				gameParts1Color.w = 1.0f;
+			}
+		}
+	}
+
+	// UIの点滅
+	if (rightFlashingFlag == true)
+	{
+		gameParts2Color.w -= 0.02f;
+
+		if (rightFlashingCount != 2)
+		{
+			if (gameParts2Color.w <= 0.3f)
+			{
+				rightFlashingCount += 1;
+				gameParts2Color.w = 1.0f;
+			}
+		}
+		else if (rightFlashingCount == 2)
+		{
+			if (gameParts2Color.w <= 0.0f)
+			{
+				rightFlashingFlag = false;
+				rightFlashingCount = 0;
+				gameParts2Color.w = 1.0f;
+			}
+		}
+	}
+
+	// UIの点滅
+	if (leftFlashingFlag == true)
+	{
+		gameParts3Color.w -= 0.02f;
+
+		if (leftFlashingCount != 2)
+		{
+			if (gameParts3Color.w <= 0.3f)
+			{
+				leftFlashingCount += 1;
+				gameParts3Color.w = 1.0f;
+			}
+		}
+		else if (leftFlashingCount == 2)
+		{
+			if (gameParts3Color.w <= 0.0f)
+			{
+				leftFlashingFlag = false;
+				leftFlashingCount = 0;
+				gameParts3Color.w = 1.0f;
+			}
+		}
+	}
+}
+
+// レールオブジェクトの角度計算
+void GameScene::railTargetCalc()
+{
+	// レールの進行方向へ自機の角度を向ける
+	testX = playerTargetPosition.x - centerPosition.x;
+	testZ = playerTargetPosition.z - centerPosition.z;
+	testRadians = atan2(testZ, testX);
+	testDegrees = XMConvertToDegrees(testRadians);
+}
+
+// プレイヤーHPの計算
+void GameScene::playerHpCalc()
+{
+	// プレイヤーのHP計算
+	playerHpRatio = playerHp / playerHpMax;
+	playerHpGageSize.x = playerHpRatio * 320.0f;
+}
+
+// ボスHPの計算
+void GameScene::bossHpCalc()
+{
+	// ボスのHP計算
+	bossHpRatio = bossHp / bossHpMax;
+	bossHpGageSize.x = bossHpRatio * 530.0f;
 }
 
 bool GameScene::OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB)

@@ -167,6 +167,24 @@ public: // メンバ関数
 
 	void scoreUIUpdate();
 
+	// プレイヤーとUIが重なった際のアルファ値計算
+	void changeGameUIAlpha();
+
+	// ダメージエフェクトの挙動管理
+	void damageEffectUpdate();
+
+	// カメラ切り替え時のUI挙動管理
+	void alertUIUpdate();
+
+	// レールオブジェクトの角度計算
+	void railTargetCalc();
+
+	// プレイヤーHPの計算
+	void playerHpCalc();
+
+	// ボスHPの計算
+	void bossHpCalc();
+
 	// 当たり判定
 	bool OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB);
 private:
@@ -189,7 +207,7 @@ private: // メンバ変数
 
 	Sprite* spriteBG = nullptr;
 	Sprite* TitleBG = nullptr;
-	
+
 	Sprite* StageSelectBG = nullptr;
 	Sprite* GameFG = nullptr;
 	Sprite* TitleStartUI = nullptr;
@@ -722,16 +740,22 @@ private: // メンバ変数
 	XMFLOAT2 bossHpGageSize;
 	XMFLOAT2 bossDamageGageSize;
 
-	float playerHpUIHigh = 680.0f;
+	XMFLOAT2 playerHpUIPosition = { 1154.0f, 680.0f };
 
-	float bossHpUIHigh = 30.0f;
+	XMFLOAT2 bossHpUIPosition = { 1255.0f , 30.0f };
+
+	XMFLOAT2 scoreUIPosition = { 15.0f, 60.0f };
 
 	float gameScore = 0.0f;
 	float gameScoreMax = 9999999;
-	XMFLOAT2 scoreBasePosition = { 300.0f, 52.0f };
+	XMFLOAT2 scoreBasePosition = { 0.0f, 0.0f };
 
 	float scoreMoveVel = 0.0f;
 	float scoreMoveAcc = 1.0f;
+
+	float playerHpUIVel = 0.0f;
+	float bossHpUIVel = 0.0f;
+	float scoreUIVel = 0.0f;
 
 	XMFLOAT4 gameParts1Color;
 	XMFLOAT4 gameParts2Color;
