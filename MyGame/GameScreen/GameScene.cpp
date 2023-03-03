@@ -59,20 +59,20 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	FbxObject3d::CreateGraphicsPipeline();
 
 	// デバッグテキスト用テクスチャ読み込み
-	if (!Sprite::LoadTexture(debugTextTexNumber, L"Resources/debugfont.png")) {
+	if (!Sprite::LoadTexture(common_dtxt_1, L"Resources/Sprite/Common/common_dtxt_1.png")) {
 		assert(0);
 		return;
 	}
 	// デバッグテキスト初期化
-	debugText.Initialize(debugTextTexNumber);
+	debugText.Initialize(common_dtxt_1);
 
 	// スコアテキスト用テクスチャ読み込み
-	if (!Sprite::LoadTexture(scoreTextTexNumber, L"Resources/scorefont.png")) {
+	if (!Sprite::LoadTexture(common_dtxt_2, L"Resources/Sprite/Common/common_dtxt_2.png")) {
 		assert(0);
 		return;
 	}
 	// スコアテキスト初期化
-	scoreText.Initialize(scoreTextTexNumber);
+	scoreText.Initialize(common_dtxt_2);
 
 	//音声の読み込み
 	LoadWavFunction();
@@ -81,74 +81,77 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	LoadTextureFunction();
 
 	// スプライト生成
-	TitleBG = Sprite::Create(1, { 0.0f,0.0f });
 
-	TitleLogo = Sprite::Create(1, { 100.0f,100.0f }, { 1.0f, 1.0f, 1.0f, 1.0f });
-	LoadingBG = Sprite::Create(3, { 0.0f,0.0f }, { 1.0f,1.0f,1.0f,0.0f });
-	StageSelectBG = Sprite::Create(4, { 0.0f,0.0f });
+	// タイトル
+	TitleLogo = Sprite::Create(TextureNumber::title_gtxt_1, { 100.0f,100.0f }, { 1.0f, 1.0f, 1.0f, 1.0f });
+	TitleStartUI = Sprite::Create(TextureNumber::title_parts_1, { 310.0f,630.0f });
 
-	GameFG = Sprite::Create(26, { 0.0f,0.0f });
-	TitleStartUI = Sprite::Create(27, { 310.0f,630.0f });
+	// ゲーム
+	gameParts_1 = Sprite::Create(TextureNumber::game_parts_1, { 640.0f,600.0f });
+	gameParts_2 = Sprite::Create(TextureNumber::game_parts_1, { 1160.0f,360.0f });
+	gameParts_3 = Sprite::Create(TextureNumber::game_parts_1, { 120.0f,360.0f });
 
-	playerHpUI = Sprite::Create(5, { playerHpUIPosition.x + 10.0f, playerHpUIPosition.y });
-	playerHpGage = Sprite::Create(6, playerHpUIPosition);
-	playerDamageGage = Sprite::Create(6, playerHpUIPosition);
-	playerHpUICover = Sprite::Create(9, { playerHpUIPosition.x + 10.0f, playerHpUIPosition.y });
+	// プレイヤー
+	playerHpUI = Sprite::Create(TextureNumber::game_player_frame_1, { playerHpUIPosition.x + 10.0f, playerHpUIPosition.y });
+	playerHpGage = Sprite::Create(TextureNumber::game_player_gauge, playerHpUIPosition);
+	playerDamageGage = Sprite::Create(TextureNumber::game_player_gauge, playerHpUIPosition);
+	playerHpUICover = Sprite::Create(TextureNumber::game_player_frame_2, { playerHpUIPosition.x + 10.0f, playerHpUIPosition.y });
 
-	bossHpUI = Sprite::Create(7, { bossHpUIPosition.x + 10.0f, bossHpUIPosition.y });
-	bossHpGage = Sprite::Create(8, bossHpUIPosition);
-	bossDamageGage = Sprite::Create(8, bossHpUIPosition);
-	bossHpUICover = Sprite::Create(38, { bossHpUIPosition.x + 10.0f, bossHpUIPosition.y });
+	// ボス
+	bossHpUI = Sprite::Create(TextureNumber::game_boss_frame_1, { bossHpUIPosition.x + 10.0f, bossHpUIPosition.y });
+	bossHpGage = Sprite::Create(TextureNumber::game_boss_gauge, bossHpUIPosition);
+	bossDamageGage = Sprite::Create(TextureNumber::game_boss_gauge, bossHpUIPosition);
+	bossHpUICover = Sprite::Create(TextureNumber::game_boss_frame_2, { bossHpUIPosition.x + 10.0f, bossHpUIPosition.y });
 
-	scoreUI = Sprite::Create(11, scoreUIPosition);
-	scoreChar = Sprite::Create(12, { 190.0f, scoreUIPosition.y - 30.0f });
-	scoreNull_1 = Sprite::Create(13, { 403.5f, scoreUIPosition.y - 33.0f });
-	scoreNull_2 = Sprite::Create(13, { 378.0f, scoreUIPosition.y - 33.0f });
-	scoreNull_3 = Sprite::Create(13, { 352.5f, scoreUIPosition.y - 33.0f });
-	scoreNull_4 = Sprite::Create(13, { 326.5f, scoreUIPosition.y - 33.0f });
-	scoreNull_5 = Sprite::Create(13, { 300.5f, scoreUIPosition.y - 33.0f });
-	scoreNull_6 = Sprite::Create(13, { 275.0f, scoreUIPosition.y - 33.0f });
+	// スコア
+	scoreUI = Sprite::Create(TextureNumber::game_score_frame, scoreUIPosition);
+	scoreChar = Sprite::Create(TextureNumber::game_score_gtxt, { 190.0f, scoreUIPosition.y - 30.0f });
+	scoreNull_1 = Sprite::Create(TextureNumber::game_score_parts, { 403.5f, scoreUIPosition.y - 33.0f });
+	scoreNull_2 = Sprite::Create(TextureNumber::game_score_parts, { 378.0f, scoreUIPosition.y - 33.0f });
+	scoreNull_3 = Sprite::Create(TextureNumber::game_score_parts, { 352.5f, scoreUIPosition.y - 33.0f });
+	scoreNull_4 = Sprite::Create(TextureNumber::game_score_parts, { 326.5f, scoreUIPosition.y - 33.0f });
+	scoreNull_5 = Sprite::Create(TextureNumber::game_score_parts, { 300.5f, scoreUIPosition.y - 33.0f });
+	scoreNull_6 = Sprite::Create(TextureNumber::game_score_parts, { 275.0f, scoreUIPosition.y - 33.0f });
 
-	gameGTXT_1 = Sprite::Create(22, { 50.0f,50.0f });
+	/*gameGTXT_1 = Sprite::Create(22, { 50.0f,50.0f });
 	gameGTXT_2 = Sprite::Create(23, { 50.0f,50.0f });
 	gameGTXT_3 = Sprite::Create(24, { 50.0f,50.0f });
-	gameGTXT_4 = Sprite::Create(25, { 50.0f,50.0f });
+	gameGTXT_4 = Sprite::Create(25, { 50.0f,50.0f });*/
 
-	gameParts_1 = Sprite::Create(40, { 640.0f,600.0f });
-	gameParts_2 = Sprite::Create(40, { 1160.0f,360.0f });
-	gameParts_3 = Sprite::Create(40, { 120.0f,360.0f });
+	// エフェクト
+	LoadingBG = Sprite::Create(TextureNumber::loading_effect_1, { 0.0f,0.0f }, { 1.0f,1.0f,1.0f,0.0f });
+	damageEffect = Sprite::Create(TextureNumber::damage_effect_1, { 0.0f, 0.0 });
 
-	ResultBG = Sprite::Create(2, { 0.0f,0.0f });
-	ResultBN_1 = Sprite::Create(14, { 640.0f,360.0f });
-	ResultBN_2 = Sprite::Create(15, { 640.0f,320.0f });
-	ResultBN_3 = Sprite::Create(16, { 640.0f,520.0f });
+	// リザルト
+	ResultBG = Sprite::Create(TextureNumber::result_bg, { 0.0f,0.0f });
+	ResultBN_1 = Sprite::Create(TextureNumber::result_frame_1, { 640.0f,360.0f });
+	ResultBN_2 = Sprite::Create(TextureNumber::result_frame_2, { 640.0f,320.0f });
+	ResultBN_3 = Sprite::Create(TextureNumber::result_frame_3, { 640.0f,520.0f });
 
-	resultGTXT_1 = Sprite::Create(17, { 330.0f,270.0f });
-	resultGTXT_2 = Sprite::Create(18, { 330.0f,300.0f });
-	resultGTXT_3 = Sprite::Create(19, { 330.0f,340.0f });
-	resultGTXT_4 = Sprite::Create(20, { 330.0f,455.0f });
-	resultGTXT_5 = Sprite::Create(21, { 600.0f,455.0f });
-	resultGTXT_6 = Sprite::Create(22, { 500.0f,550.0f });
-	resultGTXT_7 = Sprite::Create(23, { 500.0f,550.0f });
-	resultGTXT_8 = Sprite::Create(24, { 500.0f,550.0f });
-	resultGTXT_9 = Sprite::Create(25, { 500.0f,550.0f });
-	resultGTXT_12 = Sprite::Create(33, { 600.0f,510.0f });
-	resultGTXT_13 = Sprite::Create(34, { 600.0f,545.0f });
-	resultGTXT_14 = Sprite::Create(35, { 600.0f,580.0f });
-	resultGTXT_15 = Sprite::Create(36, { 640.0f,120.0f });
+	resultGTXT_1 = Sprite::Create(TextureNumber::result_gtxt_1, { 330.0f,270.0f });
+	resultGTXT_2 = Sprite::Create(TextureNumber::result_gtxt_2, { 330.0f,300.0f });
+	resultGTXT_3 = Sprite::Create(TextureNumber::result_gtxt_3, { 330.0f,340.0f });
+	resultGTXT_4 = Sprite::Create(TextureNumber::result_gtxt_4, { 330.0f,455.0f });
+	resultGTXT_5 = Sprite::Create(TextureNumber::result_gtxt_5, { 600.0f,455.0f });
+	resultGTXT_6 = Sprite::Create(TextureNumber::result_gtxt_6, { 500.0f,550.0f });
+	resultGTXT_7 = Sprite::Create(TextureNumber::result_gtxt_7, { 500.0f,550.0f });
+	resultGTXT_8 = Sprite::Create(TextureNumber::result_gtxt_8, { 500.0f,550.0f });
+	resultGTXT_9 = Sprite::Create(TextureNumber::result_gtxt_9, { 500.0f,550.0f });
+	resultGTXT_12 = Sprite::Create(TextureNumber::result_gtxt_12, { 600.0f,510.0f });
+	resultGTXT_13 = Sprite::Create(TextureNumber::result_gtxt_13, { 600.0f,545.0f });
+	resultGTXT_14 = Sprite::Create(TextureNumber::result_gtxt_14, { 600.0f,580.0f });
+	resultGTXT_15 = Sprite::Create(TextureNumber::result_gtxt_15, { 640.0f,120.0f });
 
-	resultParts_1 = Sprite::Create(28, { 640.0f,320.0f });
-	resultParts_2 = Sprite::Create(29, { 435.0f,480.0f });
-	resultParts_3 = Sprite::Create(30, { 775.0f,480.0f });
-	resultParts_4 = Sprite::Create(31, { 930.0f,510.0f });
-	resultParts_5 = Sprite::Create(31, { 930.0f,545.0f });
-	resultParts_6 = Sprite::Create(31, { 930.0f,580.0f });
-	resultParts_7 = Sprite::Create(32, { 930.0f,510.0f });
-	resultParts_8 = Sprite::Create(32, { 930.0f,545.0f });
-	resultParts_9 = Sprite::Create(32, { 930.0f,580.0f });
-	resultParts_10 = Sprite::Create(37, { 640.0f,120.0f });
-
-	damageEffect = Sprite::Create(39, { 0.0f, 0.0 });
+	resultParts_1 = Sprite::Create(TextureNumber::result_parts_1, { 640.0f,320.0f });
+	resultParts_2 = Sprite::Create(TextureNumber::result_parts_2, { 435.0f,480.0f });
+	resultParts_3 = Sprite::Create(TextureNumber::result_parts_3, { 775.0f,480.0f });
+	resultParts_4 = Sprite::Create(TextureNumber::result_parts_4, { 930.0f,510.0f });
+	resultParts_5 = Sprite::Create(TextureNumber::result_parts_4, { 930.0f,545.0f });
+	resultParts_6 = Sprite::Create(TextureNumber::result_parts_4, { 930.0f,580.0f });
+	resultParts_7 = Sprite::Create(TextureNumber::result_parts_5, { 930.0f,510.0f });
+	resultParts_8 = Sprite::Create(TextureNumber::result_parts_5, { 930.0f,545.0f });
+	resultParts_9 = Sprite::Create(TextureNumber::result_parts_5, { 930.0f,580.0f });
+	resultParts_10 = Sprite::Create(TextureNumber::result_parts_6, { 640.0f,120.0f });
 
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
@@ -719,6 +722,7 @@ void GameScene::GameUpdate()
 	playerTargetPosition = SplinePosition(playerTargetCheckPoint, startIndex, timeRate);
 
 	centerPosition = SplinePosition(playerCheckPoint, startIndex, timeRate);
+	//centerPosition.z += 0.2f;
 
 	//CameraPos = camera->GetEye();
 
@@ -1232,7 +1236,7 @@ void GameScene::GameUpdate()
 #pragma region スプライン曲線関係
 	if (input->PushKey(DIK_R))
 	{
-		
+
 	}
 
 	if (railCountFlag == true)
@@ -1296,7 +1300,7 @@ void GameScene::GameUpdate()
 
 	railTargetCalc();
 
-	if (input->PushKey(DIK_P))
+	if (input->TriggerKey(DIK_P))
 	{
 		playerHpUIVel = -2.0f;;
 		bossHpUIVel = 2.0f;
@@ -1321,6 +1325,7 @@ void GameScene::GameUpdate()
 	// レール中心オブジェクト座標のセット
 	objCenter->SetPosition(centerPosition);
 	objCenter->SetRotation({ centerRotation.x, -testDegrees + 90.0f, centerRotation.z });
+	//objCenter->SetRotation({ centerRotation.x, centerRotation.y, centerRotation.z });
 
 	// 背景天球座標のセット
 	/*objSkydome->SetPosition(SkydomPos);
@@ -2916,6 +2921,30 @@ void GameScene::CameraSwitching()
 		L3addCount = 0.001f;
 
 	}
+
+	if (input->TriggerKey(DIK_RIGHT))
+	{
+		cameraMode = 3;
+		rightFlashingFlag = true;
+		L3nowCount = 0.0f;
+		L3addCount = 0.001f;
+	}
+
+	if (input->TriggerKey(DIK_DOWN))
+	{
+		cameraMode = 0;
+		backFlashingFlag = true;
+		L3nowCount = 0.0f;
+		L3addCount = 0.001f;
+	}
+
+	if (input->TriggerKey(DIK_LEFT))
+	{
+		cameraMode = 1;
+		leftFlashingFlag = true;
+		L3nowCount = 0.0f;
+		L3addCount = 0.001f;
+	}
 }
 
 void GameScene::Attack()
@@ -3085,197 +3114,196 @@ void GameScene::Lerp3Count()
 
 void GameScene::LoadTextureFunction()
 {
-	if (!Sprite::LoadTexture(1, L"Resources/Sprite/Title.png")) {
+	// 共通
+
+	// タイトル
+	if (!Sprite::LoadTexture(TextureNumber::title_gtxt_1, L"Resources/Sprite/TitleUI/title_gtxt_1.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(2, L"Resources/Sprite/ResultUI/result_bg.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::title_parts_1, L"Resources/Sprite/TitleUI/title_parts_1.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(3, L"Resources/Sprite/Loading.png")) {
+	// ゲーム
+	if (!Sprite::LoadTexture(TextureNumber::game_parts_1, L"Resources/Sprite/GameUI/game_parts_1.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(4, L"Resources/Sprite/StageSelect.png")) {
+	// プレイヤー
+	if (!Sprite::LoadTexture(TextureNumber::game_player_frame_1, L"Resources/Sprite/GameUI/PlayerHpUI/game_player_frame_1.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(5, L"Resources/Sprite/HpUI/playerHpUI.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::game_player_frame_2, L"Resources/Sprite/GameUI/PlayerHpUI/game_player_frame_2.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(6, L"Resources/Sprite/HpUI/playerHpGage.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::game_player_gauge, L"Resources/Sprite/GameUI/PlayerHpUI/game_player_gauge.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(7, L"Resources/Sprite/BossHpUI/bossHpUI.png")) {
+	// ボス
+	if (!Sprite::LoadTexture(TextureNumber::game_boss_frame_1, L"Resources/Sprite/GameUI/BossHpUI/game_boss_frame_1.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(8, L"Resources/Sprite/BossHpUI/bossHpGage.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::game_boss_frame_2, L"Resources/Sprite/GameUI/BossHpUI/game_boss_frame_2.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(9, L"Resources/Sprite/HpUI/playerHpFrame.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::game_boss_gauge, L"Resources/Sprite/GameUI/BossHpUI/game_boss_gauge.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(11, L"Resources/Sprite/ScoreUI/scoreUI.png")) {
+	// スコア
+	if (!Sprite::LoadTexture(TextureNumber::game_score_frame, L"Resources/Sprite/GameUI/ScoreUI/game_score_frame.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(12, L"Resources/Sprite/ScoreUI/scoreChar.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::game_score_gtxt, L"Resources/Sprite/GameUI/ScoreUI/game_score_gtxt.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(13, L"Resources/Sprite/ScoreUI/scoreNull.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::game_score_parts, L"Resources/Sprite/GameUI/ScoreUI/game_score_parts.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(14, L"Resources/Sprite/ResultUI/result_frame_1.png")) {
+	// エフェクト
+	if (!Sprite::LoadTexture(TextureNumber::loading_effect_1, L"Resources/Sprite/Effect/loading_effect_1.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(15, L"Resources/Sprite/ResultUI/result_frame_2.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::damage_effect_1, L"Resources/Sprite/Effect/damage_effect_1.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(16, L"Resources/Sprite/ResultUI/result_frame_3.png")) {
+	// リザルト
+	if (!Sprite::LoadTexture(TextureNumber::result_bg, L"Resources/Sprite/ResultUI/result_bg.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(17, L"Resources/Sprite/ResultUI/result_gtxt_1.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_frame_1, L"Resources/Sprite/ResultUI/result_frame_1.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(18, L"Resources/Sprite/ResultUI/result_gtxt_2.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_frame_2, L"Resources/Sprite/ResultUI/result_frame_2.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(19, L"Resources/Sprite/ResultUI/result_gtxt_3.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_frame_3, L"Resources/Sprite/ResultUI/result_frame_3.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(20, L"Resources/Sprite/ResultUI/result_gtxt_4.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_gtxt_1, L"Resources/Sprite/ResultUI/result_gtxt_1.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(21, L"Resources/Sprite/ResultUI/result_gtxt_5.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_gtxt_2, L"Resources/Sprite/ResultUI/result_gtxt_2.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(22, L"Resources/Sprite/ResultUI/result_gtxt_6.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_gtxt_3, L"Resources/Sprite/ResultUI/result_gtxt_3.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(23, L"Resources/Sprite/ResultUI/result_gtxt_7.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_gtxt_4, L"Resources/Sprite/ResultUI/result_gtxt_4.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(24, L"Resources/Sprite/ResultUI/result_gtxt_8.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_gtxt_5, L"Resources/Sprite/ResultUI/result_gtxt_5.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(25, L"Resources/Sprite/ResultUI/result_gtxt_9.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_gtxt_6, L"Resources/Sprite/ResultUI/result_gtxt_6.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(26, L"Resources/Sprite/GameFG.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_gtxt_7, L"Resources/Sprite/ResultUI/result_gtxt_7.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(27, L"Resources/Sprite/TitleStartUI.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_gtxt_8, L"Resources/Sprite/ResultUI/result_gtxt_8.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(28, L"Resources/Sprite/ResultUI/result_parts_1.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_gtxt_9, L"Resources/Sprite/ResultUI/result_gtxt_9.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(29, L"Resources/Sprite/ResultUI/result_parts_2.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_gtxt_12, L"Resources/Sprite/ResultUI/result_gtxt_12.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(30, L"Resources/Sprite/ResultUI/result_parts_3.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_gtxt_13, L"Resources/Sprite/ResultUI/result_gtxt_13.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(31, L"Resources/Sprite/ResultUI/result_parts_4.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_gtxt_14, L"Resources/Sprite/ResultUI/result_gtxt_14.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(32, L"Resources/Sprite/ResultUI/result_parts_5.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_gtxt_15, L"Resources/Sprite/ResultUI/result_gtxt_15.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(33, L"Resources/Sprite/ResultUI/result_gtxt_12.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_parts_1, L"Resources/Sprite/ResultUI/result_parts_1.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(34, L"Resources/Sprite/ResultUI/result_gtxt_13.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_parts_2, L"Resources/Sprite/ResultUI/result_parts_2.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(35, L"Resources/Sprite/ResultUI/result_gtxt_14.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_parts_3, L"Resources/Sprite/ResultUI/result_parts_3.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(36, L"Resources/Sprite/ResultUI/result_gtxt_15.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_parts_4, L"Resources/Sprite/ResultUI/result_parts_4.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(37, L"Resources/Sprite/ResultUI/result_parts_6.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_parts_5, L"Resources/Sprite/ResultUI/result_parts_5.png")) {
 		assert(0);
 		return;
 	}
 
-	if (!Sprite::LoadTexture(38, L"Resources/Sprite/BossHpUI/bossHpFrame.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(39, L"Resources/Sprite/Effect/damage_effect_1.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(40, L"Resources/Sprite/game_parts_1.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::result_parts_6, L"Resources/Sprite/ResultUI/result_parts_6.png")) {
 		assert(0);
 		return;
 	}

@@ -58,9 +58,9 @@ private: // エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 
 private: // 静的メンバ変数
-	static const int debugTextTexNumber = 0;
+	/*static const int debugTextTexNumber = 0;
 
-	static const int scoreTextTexNumber = 10;
+	static const int scoreTextTexNumber = 10;*/
 
 public: // メンバ関数
 
@@ -896,4 +896,63 @@ private: // メンバ変数
 	XMFLOAT3 cameraLocal;
 
 	XMFLOAT3 nextCamera;
+
+	enum TextureNumber
+	{
+		// 共通
+		common_dtxt_1,
+		common_dtxt_2,
+
+		// タイトル
+		title_gtxt_1,
+		title_parts_1,
+
+		// ゲーム
+		game_parts_1,
+
+		// プレイヤー
+		game_player_frame_1,
+		game_player_frame_2,
+		game_player_gauge,
+		game_player_icon,
+
+		// ボス
+		game_boss_frame_1,
+		game_boss_frame_2,
+		game_boss_gauge,
+
+		// スコア
+		game_score_frame,
+		game_score_gtxt,
+		game_score_parts,
+
+		// エフェクト
+		damage_effect_1,
+		loading_effect_1,
+
+		// リザルト
+		result_bg,
+		result_frame_1,
+		result_frame_2,
+		result_frame_3,
+		result_gtxt_1,
+		result_gtxt_2,
+		result_gtxt_3,
+		result_gtxt_4,
+		result_gtxt_5,
+		result_gtxt_6,
+		result_gtxt_7,
+		result_gtxt_8,
+		result_gtxt_9,
+		result_gtxt_12,
+		result_gtxt_13,
+		result_gtxt_14,
+		result_gtxt_15,
+		result_parts_1,
+		result_parts_2,
+		result_parts_3,
+		result_parts_4,
+		result_parts_5,
+		result_parts_6
+	};
 };
