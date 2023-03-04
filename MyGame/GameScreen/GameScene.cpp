@@ -373,7 +373,7 @@ void GameScene::TitleUpdate()
 		// 特定のキーを押してシーン遷移開始
 		if (input->TriggerKey(DIK_SPACE) || input->TriggerKey(DIK_W) || input->TriggerKey(DIK_A) || input->TriggerKey(DIK_S) || input->TriggerKey(DIK_D))
 		{
-			sound->PlayWav("Push.wav", Volume_Title);
+			sound->PlayWav("SE/Title/title_start.wav", Volume_Title);
 			titleStartUIColor.w = 1.0f;
 			titleScene = STAGING;
 		}
@@ -439,7 +439,7 @@ void GameScene::TitleUpdate()
 
 		if (changeSceneTimer <= 0)
 		{
-			sound->StopWav("Title.wav");
+			sound->StopWav("BGM/Title/title_bgm.wav");
 			GameInitialize();
 			scene = GAME;
 		}
@@ -560,7 +560,7 @@ void GameScene::TitleInitialize()
 	changeSceneFlag = false;
 	changeSceneTimer = 100.0f;
 
-	sound->PlayWav("Title.wav", Volume_Title, true);
+	sound->PlayWav("BGM/Title/title_bgm.wav", Volume_Title, true);
 }
 
 void GameScene::StageSelectUpdate()
@@ -790,7 +790,7 @@ void GameScene::GameUpdate()
 
 	if (changeSceneTimer <= 0)
 	{
-		sound->StopWav("Play.wav");
+		sound->StopWav("BGM/Game/game_bgm.wav");
 		ResultInitialize();
 		scene = RESULT;
 	}
@@ -1013,7 +1013,7 @@ void GameScene::GameUpdate()
 				L2startCount = GetTickCount();
 				gameScore += 1000.0f;
 				scoreUIMotion();
-				sound->PlayWav("Hit.wav", Volume_Title);
+				sound->PlayWav("SE/Game/game_boss_damage.wav", Volume_Title);
 				bullet->deathFlag = true;
 				// パーティクル生成
 				CreateHitParticles(bossPosition);
@@ -1050,7 +1050,7 @@ void GameScene::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossLeg1WorldPosition, 0.8f, 0.6f) == true)
 			{
-				sound->PlayWav("Hit.wav", Volume_Title);
+				sound->PlayWav("SE/Game/game_boss_damage.wav", Volume_Title);
 				bossHp -= 5.0f;
 				L2startCount = GetTickCount();
 				gameScore += 250.0f;
@@ -1091,7 +1091,7 @@ void GameScene::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossLeg2WorldPosition, 0.8f, 0.6f) == true)
 			{
-				sound->PlayWav("Hit.wav", Volume_Title);
+				sound->PlayWav("SE/Game/game_boss_damage.wav", Volume_Title);
 				bossHp -= 5.0f;
 				L2startCount = GetTickCount();
 				gameScore += 250.0f;
@@ -1132,7 +1132,7 @@ void GameScene::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossLeg3WorldPosition, 0.8f, 0.6f) == true)
 			{
-				sound->PlayWav("Hit.wav", Volume_Title);
+				sound->PlayWav("SE/Game/game_boss_damage.wav", Volume_Title);
 				bossHp -= 5.0f;
 				L2startCount = GetTickCount();
 				gameScore += 250.0f;
@@ -1173,7 +1173,7 @@ void GameScene::GameUpdate()
 		{
 			if (OnCollision(bullet->GetPosition(), bossLeg4WorldPosition, 0.8f, 0.6f) == true)
 			{
-				sound->PlayWav("Hit.wav", Volume_Title);
+				sound->PlayWav("SE/Game/game_boss_damage.wav", Volume_Title);
 				bossHp -= 5.0f;
 				L2startCount = GetTickCount();
 				gameScore += 250.0f;
@@ -1216,7 +1216,7 @@ void GameScene::GameUpdate()
 			playerHp -= 10.0f;
 			L1startCount = GetTickCount();
 			noDamageFlag = false;
-			sound->PlayWav("Damage.wav", Volume_Title);
+			sound->PlayWav("SE/Game/game_player_damage.wav", Volume_Title);
 			bullet->deathFlag = true;
 			// パーティクル生成
 			CreateHitParticles(playerWorldPosition);
@@ -1691,12 +1691,15 @@ void GameScene::GameInitialize()
 	scoreBasePosition = { 0.0f, 0.0f };
 
 	gameParts_1->SetAnchorPoint({ 0.5f, 0.5f });
+	gameParts_1->SetColor({ 1.0f,1.0f,1.0f,0.0f });
 
 	gameParts_2->SetRotation({ 270.0f });
 	gameParts_2->SetAnchorPoint({ 0.5f, 0.5f });
+	gameParts_2->SetColor({ 1.0f,1.0f,1.0f,0.0f });
 
 	gameParts_3->SetRotation({ 90.0f });
 	gameParts_3->SetAnchorPoint({ 0.5f, 0.5f });
+	gameParts_3->SetColor({ 1.0f,1.0f,1.0f,0.0f });
 
 	playerHpUIPosition = { 1154.0f, 680.0f };
 
@@ -1778,7 +1781,7 @@ void GameScene::GameInitialize()
 	bossDamageUIAlpha = 1.0f;
 	bossDamageUIAlphaVel = 0.0f;
 
-	sound->PlayWav("Play.wav", Volume_Title, true);
+	sound->PlayWav("BGM/Game/game_bgm.wav", Volume_Title, true);
 
 	startCount = GetTickCount();
 }
@@ -1934,6 +1937,7 @@ void GameScene::ResultUpdate()
 		// 値の設定
 		resultMoveVelX_1 = 60.0f;
 		resultMoveAccX_1 = 1.0f;
+		sound->PlayWav("SE/Result/result_open_1.wav", Volume_Title);
 	}
 
 	// バナー1の横幅の制御
@@ -1957,6 +1961,7 @@ void GameScene::ResultUpdate()
 		resultMoveAccX_2 = 1.0f;
 		resultMoveVelX_4 = 40.0f;
 		resultMoveAccX_4 = 1.0f;
+		sound->PlayWav("SE/Result/result_open_2.wav", Volume_Title);
 
 		resultChangeAlpha_1 = 0.05f;
 
@@ -2024,6 +2029,7 @@ void GameScene::ResultUpdate()
 		// 値の設定
 		resultMoveVelX_3 = 40.0f;
 		resultMoveAccX_3 = 1.0f;
+		//sound->PlayWav("SE/Result/result_open2.wav", Volume_Title);
 
 		// 値の初期化
 		resultBN_2Size.x = 704.0f;
@@ -2096,6 +2102,8 @@ void GameScene::ResultUpdate()
 		resultMoveVelX_6 = 20.0f;
 		resultMoveAccX_6 = 0.0f;
 
+		sound->PlayWav("SE/Result/result_rank.wav", Volume_Title);
+
 		// 値の初期化
 		rankSSize.x = 80.0f;
 		rankSSize.y = 80.0f;
@@ -2162,6 +2170,10 @@ void GameScene::ResultUpdate()
 		// 値の設定
 		resultMoveVel_10 = -4.0f;
 		// resultChangeAlpha_10 = 0.05f;
+		if (noDamageFlag == true)
+		{
+			sound->PlayWav("SE/Result/result_mission.wav", Volume_Title);
+		}
 
 		// 値の初期化
 		missionStar1Size.x = 28.0f;
@@ -2187,6 +2199,8 @@ void GameScene::ResultUpdate()
 			resultChangeAlpha_11 = 0.05f;
 		}
 
+		//sound->PlayWav("SE/Result/result_mission.wav", Volume_Title);
+
 		// 値の初期化
 		missionStar2Size.x = 28.0f;
 		missionStar2Size.y = 28.0f;
@@ -2204,6 +2218,11 @@ void GameScene::ResultUpdate()
 	// 星3のサイズ制御
 	if (missionStar3Size.x < 28.0f)
 	{
+		if (targetScoreFlag == true)
+		{
+			sound->PlayWav("SE/Result/result_mission.wav", Volume_Title);
+		}
+
 		// 値の初期化
 		missionStar3Size.x = 28.0f;
 		missionStar3Size.y = 28.0f;
@@ -2964,7 +2983,7 @@ void GameScene::Attack()
 
 			if (shotFlag == true)
 			{
-				sound->PlayWav("Shot.wav", Volume_Title);
+				sound->PlayWav("SE/Game/game_player_shot.wav", Volume_Title);
 
 				std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
 				newBullet = Bullet::Create(modelBullet, playerWorldPosition, bulletScale, bulletSpeed);
@@ -2987,7 +3006,7 @@ void GameScene::BossAttack()
 
 	if (playerHp >= 0.0f)
 	{
-		sound->PlayWav("Bomb.wav", Volume_Title);
+		sound->PlayWav("SE/Game/game_boss_shot.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
 		newBullet = BossTargetBullet::Create(modelBullet, bossPosition, bulletScale, playerWorldPosition, bulletSpeed);
 
@@ -2999,7 +3018,7 @@ void GameScene::BossLeg1Attack()
 {
 	if ((playerHp >= 0.0f) && (bossLeg1Flag == true))
 	{
-		sound->PlayWav("Bomb.wav", Volume_Title);
+		sound->PlayWav("SE/Game/game_boss_shot.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
 		newBullet = BossTargetBullet::Create(modelBullet, bossLeg1WorldPosition, bulletScale, playerWorldPosition, bulletSpeed);
 
@@ -3011,7 +3030,7 @@ void GameScene::BossLeg2Attack()
 {
 	if ((playerHp >= 0.0f) && (bossLeg2Flag == true))
 	{
-		sound->PlayWav("Bomb.wav", Volume_Title);
+		sound->PlayWav("SE/Game/game_boss_shot.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
 		newBullet = BossTargetBullet::Create(modelBullet, bossLeg2WorldPosition, bulletScale, playerWorldPosition, bulletSpeed);
 
@@ -3023,7 +3042,7 @@ void GameScene::BossLeg3Attack()
 {
 	if ((playerHp >= 0.0f) && (bossLeg3Flag == true))
 	{
-		sound->PlayWav("Bomb.wav", Volume_Title);
+		sound->PlayWav("SE/Game/game_boss_shot.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
 		newBullet = BossTargetBullet::Create(modelBullet, bossLeg3WorldPosition, bulletScale, playerWorldPosition, bulletSpeed);
 
@@ -3035,7 +3054,7 @@ void GameScene::BossLeg4Attack()
 {
 	if ((playerHp >= 0.0f) && (bossLeg4Flag == true))
 	{
-		sound->PlayWav("Bomb.wav", Volume_Title);
+		sound->PlayWav("SE/Game/game_boss_shot.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
 		newBullet = BossTargetBullet::Create(modelBullet, bossLeg4WorldPosition, bulletScale, playerWorldPosition, bulletSpeed);
 
@@ -3311,13 +3330,18 @@ void GameScene::LoadTextureFunction()
 
 void GameScene::LoadWavFunction()
 {
-	sound->LoadWav("Title.wav");
-	sound->LoadWav("Shot.wav");
-	sound->LoadWav("Bomb.wav");
-	sound->LoadWav("Damage.wav");
-	sound->LoadWav("Hit.wav");
-	sound->LoadWav("Play.wav");
-	sound->LoadWav("Push.wav");
+	sound->LoadWav("BGM/Title/title_bgm.wav");
+	sound->LoadWav("SE/Game/game_player_shot.wav");
+	sound->LoadWav("SE/Game/game_boss_shot.wav");
+	sound->LoadWav("SE/Game/game_player_damage.wav");
+	sound->LoadWav("SE/Game/game_boss_damage.wav");
+	sound->LoadWav("BGM/Game/game_bgm.wav");
+	sound->LoadWav("SE/Title/title_start.wav");
+	sound->LoadWav("SE/Result/result_open_1.wav");
+	sound->LoadWav("SE/Result/result_open_2.wav");
+	sound->LoadWav("SE/Result/result_mission.wav");
+	sound->LoadWav("SE/Result/result_rank.wav");
+	sound->LoadWav("SE/Game/game_alert.wav");
 }
 
 void GameScene::scoreUIMotion()
@@ -3509,21 +3533,22 @@ void GameScene::alertUIUpdate()
 	{
 		gameParts1Color.w -= 0.02f;
 
-		if (backFlashingCount != 2)
+		if (backFlashingCount != 3)
 		{
 			if (gameParts1Color.w <= 0.3f)
 			{
 				backFlashingCount += 1;
+				sound->PlayWav("SE/Game/game_alert.wav", 0.3);
 				gameParts1Color.w = 1.0f;
 			}
 		}
-		else if (backFlashingCount == 2)
+		else if (backFlashingCount == 3)
 		{
 			if (gameParts1Color.w <= 0.0f)
 			{
 				backFlashingFlag = false;
 				backFlashingCount = 0;
-				gameParts1Color.w = 1.0f;
+				gameParts1Color.w = 0.0f;
 			}
 		}
 	}
@@ -3533,21 +3558,22 @@ void GameScene::alertUIUpdate()
 	{
 		gameParts2Color.w -= 0.02f;
 
-		if (rightFlashingCount != 2)
+		if (rightFlashingCount != 3)
 		{
 			if (gameParts2Color.w <= 0.3f)
 			{
 				rightFlashingCount += 1;
+				sound->PlayWav("SE/Game/game_alert.wav", 0.3);
 				gameParts2Color.w = 1.0f;
 			}
 		}
-		else if (rightFlashingCount == 2)
+		else if (rightFlashingCount == 3)
 		{
 			if (gameParts2Color.w <= 0.0f)
 			{
 				rightFlashingFlag = false;
 				rightFlashingCount = 0;
-				gameParts2Color.w = 1.0f;
+				gameParts2Color.w = 0.0f;
 			}
 		}
 	}
@@ -3557,21 +3583,22 @@ void GameScene::alertUIUpdate()
 	{
 		gameParts3Color.w -= 0.02f;
 
-		if (leftFlashingCount != 2)
+		if (leftFlashingCount != 3)
 		{
 			if (gameParts3Color.w <= 0.3f)
 			{
 				leftFlashingCount += 1;
+				sound->PlayWav("SE/Game/game_alert.wav", 0.3);
 				gameParts3Color.w = 1.0f;
 			}
 		}
-		else if (leftFlashingCount == 2)
+		else if (leftFlashingCount == 3)
 		{
 			if (gameParts3Color.w <= 0.0f)
 			{
 				leftFlashingFlag = false;
 				leftFlashingCount = 0;
-				gameParts3Color.w = 1.0f;
+				gameParts3Color.w = 0.0f;
 			}
 		}
 	}

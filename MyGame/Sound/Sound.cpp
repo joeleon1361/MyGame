@@ -31,8 +31,6 @@ void Sound::Initialize(const std::string& directoryPath)
 	}
 }
 
-
-
 void Sound::Finalize()
 {
 	//XAudio2解放
