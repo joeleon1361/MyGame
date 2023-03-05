@@ -813,6 +813,8 @@ void GameScene::GameUpdate()
 
 	alertUIUpdate();
 
+	
+
 #pragma region 弾関連
 	Attack();
 
@@ -1306,15 +1308,7 @@ void GameScene::GameUpdate()
 
 	railTargetCalc();
 
-	if (input->TriggerKey(DIK_P))
-	{
-		L4addCount = 0.05f;
-	}
-
-	if (input->TriggerKey(DIK_L))
-	{
-		L4addCount = -0.05f;
-	}
+	CreatePlayerJetParticles(playerWorldPosition);
 
 #pragma region 座標のセット
 	// カメラ座標のセット
@@ -2698,6 +2692,28 @@ void GameScene::CreateBossParticles(XMFLOAT3 position)
 
 		// 追加
 		particleMan->Add(30, pos, vel, acc, 2.0f, 0.0f);
+	}
+}
+
+void GameScene::CreatePlayerJetParticles(XMFLOAT3 position)
+{
+	for (int i = 0; i < 10; i++) {
+		const float rnd_pos = 0.1f;
+		XMFLOAT3 pos{};
+		pos.x = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.x;
+		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos/ 2.0f) + position.y;
+		pos.z = position.z + -0.8f;
+
+		const float rnd_vel = -0.2f;
+		XMFLOAT3 vel{};
+		vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+
+		XMFLOAT3 acc{};
+		const float rnd_acc = -0.1f;
+		acc.z = -0.1f;
+
+		// 追加
+		particleMan->Add(5, pos, vel, acc, 0.3f, 0.0f);
 	}
 }
 

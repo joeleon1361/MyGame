@@ -129,6 +129,8 @@ public: // メンバ関数
 
 	void CreateBossParticles(XMFLOAT3 position);
 
+	void CreatePlayerJetParticles(XMFLOAT3 position);
+
 	void AllDebugText();
 
 	void TitleDebugText();
