@@ -765,6 +765,10 @@ void GameScene::GameUpdate()
 	gameParts2Color = gameParts_2->GetColor();
 	gameParts3Color = gameParts_3->GetColor();
 
+	playerHpUIPosition = lerp2(offPlayerHpUIPosition, onPlayerHpUIPosition, L4nowCount);
+	bossHpUIPosition = lerp2(offBossHpUIPosition, onBossHpUIPosition, L4nowCount);
+	scoreUIPosition = lerp2(offScoreUIPosition, onScoreUIPosition, L4nowCount);
+
 #pragma endregion
 
 	// 暗転を解除
@@ -779,6 +783,7 @@ void GameScene::GameUpdate()
 	// 暗転させてからシーン遷移
 	if (changeColorFlag == true)
 	{
+		L4addCount = -moveUIVel;
 		loadingColor.w += 0.05f;
 		changeSceneFlag = true;
 	}
@@ -1252,6 +1257,7 @@ void GameScene::GameUpdate()
 	Lerp1Count();
 	Lerp2Count();
 	Lerp3Count();
+	Lerp4Count();
 #pragma endregion
 
 #pragma region 座標変換
@@ -1302,14 +1308,13 @@ void GameScene::GameUpdate()
 
 	if (input->TriggerKey(DIK_P))
 	{
-		playerHpUIVel = -2.0f;;
-		bossHpUIVel = 2.0f;
-		scoreUIVel = 2.0f;
+		L4addCount = 0.05f;
 	}
 
-	playerHpUIPosition.y += playerHpUIVel;
-	bossHpUIPosition.y += bossHpUIVel;
-	scoreUIPosition.y += scoreUIVel;
+	if (input->TriggerKey(DIK_L))
+	{
+		L4addCount = -0.05f;
+	}
 
 #pragma region 座標のセット
 	// カメラ座標のセット
@@ -1605,7 +1610,7 @@ void GameScene::GameDraw()
 	LoadingBG->Draw();
 
 	// デバッグテキストの描画
-	//debugText.DrawAll(cmdList);
+	debugText.DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -2752,6 +2757,27 @@ void GameScene::GameDebugText()
 		<< playerPosition.z << ") Local"; // z
 	debugText.Print(PlayerPos.str(), 50, 70, 1.0f);
 
+	std::ostringstream HPUIPos;
+	HPUIPos << "playerHpUIPosition:("
+		<< std::fixed << std::setprecision(2)
+		<< playerHpUIPosition.x << "," // x
+		<< playerHpUIPosition.y << ")";// y
+	debugText.Print(HPUIPos.str(), 50, 90, 1.0f);
+
+	std::ostringstream BOSSUIPos;
+	BOSSUIPos << "bossHpUIPosition:("
+		<< std::fixed << std::setprecision(2)
+		<< bossHpUIPosition.x << "," // x
+		<< bossHpUIPosition.y << ")";// y
+	debugText.Print(BOSSUIPos.str(), 50, 110, 1.0f);
+
+	std::ostringstream SCOREUIPos;
+	SCOREUIPos << "SCOREUIPosition:("
+		<< std::fixed << std::setprecision(2)
+		<< scoreUIPosition.x << "," // x
+		<< scoreUIPosition.y << ")";// y
+	debugText.Print(SCOREUIPos.str(), 50, 130, 1.0f);
+
 	//std::ostringstream bossPos;
 	//bossPos << "BossPos:("
 	//	<< std::fixed << std::setprecision(2)
@@ -2809,7 +2835,7 @@ void GameScene::GameDebugText()
 	std::ostringstream StartIndex;
 	StartIndex << "StartIndex:("
 		<< std::fixed << std::setprecision(2)
-		<< L3nowCount << ")";
+		<< L4nowCount << ")";
 	debugText.Print(StartIndex.str(), 50, 210, 1.0f);
 
 	// ボスのHP関連
@@ -2911,6 +2937,11 @@ void GameScene::CameraSwitching()
 		nextCamera = { 20.0f,0.0f,0.0f };
 	}
 
+	if (startIndex == 3)
+	{
+		L4addCount = moveUIVel;
+	}
+	
 	if (startIndex == 4)
 	{
 		playerUpdateFlag = true;
@@ -3128,6 +3159,23 @@ void GameScene::Lerp3Count()
 	if (L3nowCount < 0.1f)
 	{
 		playerUpdateFlag = false;
+	}
+}
+
+void GameScene::Lerp4Count()
+{
+	L4nowCount += L4addCount;
+
+	if (L4nowCount > 1.0f)
+	{
+		L4nowCount = 1.0f;
+		L4addCount = 0.0f;
+	}
+
+	if (L4nowCount < 0.0f)
+	{
+		L4nowCount = 0.0f;
+		L4addCount = 0.0f;
 	}
 }
 

@@ -159,6 +159,8 @@ public: // メンバ関数
 
 	void Lerp3Count();
 
+	void Lerp4Count();
+
 	void LoadTextureFunction();
 
 	void LoadWavFunction();
@@ -548,11 +550,11 @@ private: // メンバ変数
 	// Lerp3
 	float L3addCount = 0.0f;
 	float L3nowCount = 0.1f;
-	float L3elapsedCount = 0;
-	float L3elapsedTime;
 
-	float L3maxTime = 1.0f;
-	float L3timeRate;
+	// Lerp4
+	float L4addCount = 0.0f;
+	float L4nowCount = 0.0f;
+	 
 #pragma endregion
 
 #pragma region プレイヤー関連
@@ -746,6 +748,15 @@ private: // メンバ変数
 
 	XMFLOAT2 scoreUIPosition = { 15.0f, 60.0f };
 
+	XMFLOAT2 onPlayerHpUIPosition = { 1154.0f, 680.0f };
+	XMFLOAT2 offPlayerHpUIPosition = { 1154.0f, 780.0f };
+
+	XMFLOAT2 onBossHpUIPosition = { 1255.0f , 30.0f };
+	XMFLOAT2 offBossHpUIPosition = { 1255.0f , -30.0f };
+
+	XMFLOAT2 onScoreUIPosition = { 15.0f, 60.0f };
+	XMFLOAT2 offScoreUIPosition = { 15.0f, -60.0f };
+
 	float gameScore = 0.0f;
 	float gameScoreMax = 9999999;
 	XMFLOAT2 scoreBasePosition = { 0.0f, 0.0f };
@@ -753,9 +764,7 @@ private: // メンバ変数
 	float scoreMoveVel = 0.0f;
 	float scoreMoveAcc = 1.0f;
 
-	float playerHpUIVel = 0.0f;
-	float bossHpUIVel = 0.0f;
-	float scoreUIVel = 0.0f;
+	float moveUIVel = 0.04f;
 
 	XMFLOAT4 gameParts1Color;
 	XMFLOAT4 gameParts2Color;
