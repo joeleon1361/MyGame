@@ -155,8 +155,10 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera);
+	playerJetParticle = ParticleManager::Create(dxCommon->GetDevice(), camera);
 
 	// 3Dオブジェクト生成
+
 	objSkydome = ObjObject::Create();
 	objGround = ObjObject::Create();
 
@@ -207,6 +209,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	player->SetParent(objCenter);
 
 	objCamera->SetParent(objCenter);
+
+	bossBody->SetParent(objCenter);
 
 	bossLeg1->SetParent(bossBody);
 	bossLeg2->SetParent(bossBody);
@@ -690,9 +694,9 @@ void GameScene::StageSelectInitialize()
 void GameScene::GameUpdate()
 {
 	// ルートを完走したら遷移
-	if (startIndex >= 39)
+	if (startIndex >= 59)
 	{
-		changeColorFlag = true;
+		startIndex = 4;
 	}
 
 	// ボスが撃破されたら遷移
@@ -716,15 +720,16 @@ void GameScene::GameUpdate()
 	}
 
 #pragma region 情報を取得
+
 	playerPosition = player->GetPosition();
+	//playerPosition = lerp(startPlayerPosition, {0.0f,0.0f,0.0f}, L5nowCount);
+
 	playerRotation = player->GetRotation();
 
-	playerTargetPosition = SplinePosition(playerTargetCheckPoint, startIndex, timeRate);
+	// playerTargetPosition = SplinePosition(playerTargetCheckPoint, startIndex, timeRate);
 
-	centerPosition = SplinePosition(playerCheckPoint, startIndex, timeRate);
-	//centerPosition.z += 0.2f;
-
-	//CameraPos = camera->GetEye();
+	//centerPosition = SplinePosition(playerCheckPoint, startIndex, timeRate);
+	
 
 	SkydomPos = objSkydome->GetPosition();
 	SkydomRot = objSkydome->GetRotation();
@@ -750,16 +755,18 @@ void GameScene::GameUpdate()
 	loadingColor = LoadingBG->GetColor();
 
 	playerHpGageSize = playerHpGage->GetSize();
-	//playerDamageGageSize = playerDamageGage->GetSize();
 
 	bossHpGageSize = bossHpGage->GetSize();
-	//bossDamageGageSize = bossDamageGage->GetSize();
 
 	playerDamageGageSize = lerp2(playerDamageGage->GetSize(), playerHpGageSize, L1timeRate);
 	bossDamageGageSize = lerp2(bossDamageGage->GetSize(), bossHpGageSize, L2timeRate);
 
 	//cameraLocal = objCamera->GetPosition();
 	cameraLocal = lerp(objCamera->GetPosition(), nextCamera, L3nowCount);
+
+	moveCameraPosition_1 = lerp({ 5.0f, 0.0f,-1.0f }, { 4.0f, 3.0f,2.0f }, L5nowCount);
+	moveCameraPosition_2 = lerp({ 2.0f, -1.0f,-5.0f }, { -4.0f, 3.0f,-2.0f }, L5nowCount);
+	moveCameraPosition_3 = lerp({ 0.0f, 2.0f,-10.0f }, { 0.0f,0.0f,-20.0f }, L5nowCount);
 
 	gameParts1Color = gameParts_1->GetColor();
 	gameParts2Color = gameParts_2->GetColor();
@@ -768,6 +775,8 @@ void GameScene::GameUpdate()
 	playerHpUIPosition = lerp2(offPlayerHpUIPosition, onPlayerHpUIPosition, L4nowCount);
 	bossHpUIPosition = lerp2(offBossHpUIPosition, onBossHpUIPosition, L4nowCount);
 	scoreUIPosition = lerp2(offScoreUIPosition, onScoreUIPosition, L4nowCount);
+
+	centerPosition.z += centorVel;
 
 #pragma endregion
 
@@ -856,6 +865,56 @@ void GameScene::GameUpdate()
 			return bullet->GetDeathFlag();
 		}
 	);
+#pragma endregion
+
+#pragma region 座標変換
+	// カメラの座標変換
+	XMVECTOR cameraPositionV;
+
+	cameraPositionV = DirectX::XMLoadFloat3(&objCamera->GetPosition());
+	cameraPositionV.m128_f32[3] = 1.0f;
+	cameraPositionV = DirectX::XMVector3Transform(cameraPositionV, objCenter->GetMatWorld());
+	DirectX::XMStoreFloat3(&cameraPosition, cameraPositionV);
+
+	// プレイヤーの座標変換
+	XMVECTOR playerPositionV;
+
+	playerPositionV = DirectX::XMLoadFloat3(&playerPosition);
+	playerPositionV.m128_f32[3] = 1.0f;
+	playerPositionV = DirectX::XMVector3Transform(playerPositionV, objCenter->GetMatWorld());
+	DirectX::XMStoreFloat3(&playerWorldPosition, playerPositionV);
+
+	// ボスの座標変換
+	XMVECTOR bossBodyPositionV;
+	XMVECTOR bossLeg1PositionV;
+	XMVECTOR bossLeg2PositionV;
+	XMVECTOR bossLeg3PositionV;
+	XMVECTOR bossLeg4PositionV;
+
+	bossBodyPositionV = DirectX::XMLoadFloat3(&bossPosition);
+	bossBodyPositionV.m128_f32[3] = 1.0f;
+	bossBodyPositionV = DirectX::XMVector3Transform(bossBodyPositionV, objCenter->GetMatWorld());
+	DirectX::XMStoreFloat3(&bossBodyWorldPosition, bossBodyPositionV);
+
+	bossLeg1PositionV = DirectX::XMLoadFloat3(&bossLeg1Position);
+	bossLeg1PositionV.m128_f32[3] = 1.0f;
+	bossLeg1PositionV = DirectX::XMVector3Transform(bossLeg1PositionV, bossBody->GetMatWorld());
+	DirectX::XMStoreFloat3(&bossLeg1WorldPosition, bossLeg1PositionV);
+
+	bossLeg2PositionV = DirectX::XMLoadFloat3(&bossLeg2Position);
+	bossLeg2PositionV.m128_f32[3] = 1.0f;
+	bossLeg2PositionV = DirectX::XMVector3Transform(bossLeg2PositionV, bossBody->GetMatWorld());
+	DirectX::XMStoreFloat3(&bossLeg2WorldPosition, bossLeg2PositionV);
+
+	bossLeg3PositionV = DirectX::XMLoadFloat3(&bossLeg3Position);
+	bossLeg3PositionV.m128_f32[3] = 1.0f;
+	bossLeg3PositionV = DirectX::XMVector3Transform(bossLeg3PositionV, bossBody->GetMatWorld());
+	DirectX::XMStoreFloat3(&bossLeg3WorldPosition, bossLeg3PositionV);
+
+	bossLeg4PositionV = DirectX::XMLoadFloat3(&bossLeg4Position);
+	bossLeg4PositionV.m128_f32[3] = 1.0f;
+	bossLeg4PositionV = DirectX::XMVector3Transform(bossLeg4PositionV, bossBody->GetMatWorld());
+	DirectX::XMStoreFloat3(&bossLeg4WorldPosition, bossLeg4PositionV);
 #pragma endregion
 
 #pragma region ボス関連
@@ -980,11 +1039,11 @@ void GameScene::GameUpdate()
 		moveValue = 180.0f;
 		bossPattern = BODYLEFT;
 	}
-	else if (startIndex == 15)
+	else if (startIndex == 16)
 	{
 		bossPattern = BODYUP;
 	}
-	else if (startIndex == 19)
+	else if (startIndex == 20)
 	{
 		bossPattern = BODYDOWN;
 	}
@@ -1014,7 +1073,7 @@ void GameScene::GameUpdate()
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
 		{
-			if (OnCollision(bullet->GetPosition(), bossBody->GetPosition(), 0.8f, 0.8f) == true)
+			if (OnCollision(bullet->GetPosition(), bossBodyWorldPosition, 0.6f, 0.4f) == true)
 			{
 				bossHp -= 10.0f;
 				L2startCount = GetTickCount();
@@ -1023,7 +1082,7 @@ void GameScene::GameUpdate()
 				sound->PlayWav("SE/Game/game_boss_damage.wav", Volume_Title);
 				bullet->deathFlag = true;
 				// パーティクル生成
-				CreateHitParticles(bossPosition);
+				CreateHitParticles(bossBodyWorldPosition);
 			}
 		}
 	}
@@ -1036,7 +1095,7 @@ void GameScene::GameUpdate()
 	if (bossBreak == true)
 	{
 		bossPosition.y -= 0.3f;
-		CreateBossParticles(bossPosition);
+		CreateBossParticles(bossBodyWorldPosition);
 	}
 
 	if (bossPosition.y <= -15.0f)
@@ -1055,7 +1114,7 @@ void GameScene::GameUpdate()
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
 		{
-			if (OnCollision(bullet->GetPosition(), bossLeg1WorldPosition, 0.8f, 0.6f) == true)
+			if (OnCollision(bullet->GetPosition(), bossLeg1WorldPosition, 0.6f, 0.4f) == true)
 			{
 				sound->PlayWav("SE/Game/game_boss_damage.wav", Volume_Title);
 				bossHp -= 5.0f;
@@ -1096,7 +1155,7 @@ void GameScene::GameUpdate()
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
 		{
-			if (OnCollision(bullet->GetPosition(), bossLeg2WorldPosition, 0.8f, 0.6f) == true)
+			if (OnCollision(bullet->GetPosition(), bossLeg2WorldPosition, 0.6f, 0.4f) == true)
 			{
 				sound->PlayWav("SE/Game/game_boss_damage.wav", Volume_Title);
 				bossHp -= 5.0f;
@@ -1137,7 +1196,7 @@ void GameScene::GameUpdate()
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
 		{
-			if (OnCollision(bullet->GetPosition(), bossLeg3WorldPosition, 0.8f, 0.6f) == true)
+			if (OnCollision(bullet->GetPosition(), bossLeg3WorldPosition, 0.6f, 0.4f) == true)
 			{
 				sound->PlayWav("SE/Game/game_boss_damage.wav", Volume_Title);
 				bossHp -= 5.0f;
@@ -1178,7 +1237,7 @@ void GameScene::GameUpdate()
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
 		{
-			if (OnCollision(bullet->GetPosition(), bossLeg4WorldPosition, 0.8f, 0.6f) == true)
+			if (OnCollision(bullet->GetPosition(), bossLeg4WorldPosition, 0.6f, 0.4f) == true)
 			{
 				sound->PlayWav("SE/Game/game_boss_damage.wav", Volume_Title);
 				bossHp -= 5.0f;
@@ -1216,7 +1275,7 @@ void GameScene::GameUpdate()
 	// プレイヤーの当たり判定
 	for (std::unique_ptr<BossTargetBullet>& bullet : bossTargetBullets)
 	{
-		if (OnCollision(bullet->GetPosition(), playerWorldPosition, 0.8f, 0.6f) == true)
+		if (OnCollision(bullet->GetPosition(), playerWorldPosition, 0.6f, 0.6f) == true)
 		{
 			damageEffectAlpha = 1.0f;
 			damageEffectAlphaVel = -0.06f;
@@ -1243,6 +1302,8 @@ void GameScene::GameUpdate()
 #pragma region スプライン曲線関係
 	if (input->PushKey(DIK_R))
 	{
+		L5nowCount = 0.0f;
+		L5addCount = 0.02f;
 
 	}
 
@@ -1251,60 +1312,15 @@ void GameScene::GameUpdate()
 		SplineCount();
 	}
 
-	if (startIndex == 12)
-	{
-		//railCountFlag = false;
-	}
-
 	Lerp1Count();
 	Lerp2Count();
 	Lerp3Count();
 	Lerp4Count();
+	Lerp5Count();
+
 #pragma endregion
 
-#pragma region 座標変換
-	// カメラの座標変換
-	XMVECTOR cameraFrontPositionV;
 
-	cameraFrontPositionV = DirectX::XMLoadFloat3(&objCamera->GetPosition());
-	cameraFrontPositionV.m128_f32[3] = 1.0f;
-	cameraFrontPositionV = DirectX::XMVector3Transform(cameraFrontPositionV, objCenter->GetMatWorld());
-	DirectX::XMStoreFloat3(&cameraFrontPosition, cameraFrontPositionV);
-
-	// プレイヤーの座標変換
-	XMVECTOR playerPositionV;
-
-	playerPositionV = DirectX::XMLoadFloat3(&playerPosition);
-	playerPositionV.m128_f32[3] = 1.0f;
-	playerPositionV = DirectX::XMVector3Transform(playerPositionV, objCenter->GetMatWorld());
-	DirectX::XMStoreFloat3(&playerWorldPosition, playerPositionV);
-
-	// ボスの座標変換
-	XMVECTOR bossLeg1PositionV;
-	XMVECTOR bossLeg2PositionV;
-	XMVECTOR bossLeg3PositionV;
-	XMVECTOR bossLeg4PositionV;
-
-	bossLeg1PositionV = DirectX::XMLoadFloat3(&bossLeg1Position);
-	bossLeg1PositionV.m128_f32[3] = 1.0f;
-	bossLeg1PositionV = DirectX::XMVector3Transform(bossLeg1PositionV, bossBody->GetMatWorld());
-	DirectX::XMStoreFloat3(&bossLeg1WorldPosition, bossLeg1PositionV);
-
-	bossLeg2PositionV = DirectX::XMLoadFloat3(&bossLeg2Position);
-	bossLeg2PositionV.m128_f32[3] = 1.0f;
-	bossLeg2PositionV = DirectX::XMVector3Transform(bossLeg2PositionV, bossBody->GetMatWorld());
-	DirectX::XMStoreFloat3(&bossLeg2WorldPosition, bossLeg2PositionV);
-
-	bossLeg3PositionV = DirectX::XMLoadFloat3(&bossLeg3Position);
-	bossLeg3PositionV.m128_f32[3] = 1.0f;
-	bossLeg3PositionV = DirectX::XMVector3Transform(bossLeg3PositionV, bossBody->GetMatWorld());
-	DirectX::XMStoreFloat3(&bossLeg3WorldPosition, bossLeg3PositionV);
-
-	bossLeg4PositionV = DirectX::XMLoadFloat3(&bossLeg4Position);
-	bossLeg4PositionV.m128_f32[3] = 1.0f;
-	bossLeg4PositionV = DirectX::XMVector3Transform(bossLeg4PositionV, bossBody->GetMatWorld());
-	DirectX::XMStoreFloat3(&bossLeg4WorldPosition, bossLeg4PositionV);
-#pragma endregion
 
 	railTargetCalc();
 
@@ -1312,7 +1328,6 @@ void GameScene::GameUpdate()
 
 #pragma region 座標のセット
 	// カメラ座標のセット
-	//camera->SetEye(cameraFrontPosition);
 	CameraSwitching();
 	camera->SetTarget(centerPosition);
 
@@ -1323,12 +1338,11 @@ void GameScene::GameUpdate()
 
 	// レール中心オブジェクト座標のセット
 	objCenter->SetPosition(centerPosition);
-	objCenter->SetRotation({ centerRotation.x, -testDegrees + 90.0f, centerRotation.z });
-	//objCenter->SetRotation({ centerRotation.x, centerRotation.y, centerRotation.z });
+	// objCenter->SetRotation({ centerRotation.x, -testDegrees + 90.0f, centerRotation.z });
+	objCenter->SetRotation({ centerRotation.x, centerRotation.y, centerRotation.z });
 
 	// 背景天球座標のセット
-	/*objSkydome->SetPosition(SkydomPos);
-	objSkydome->SetRotation(SkydomRot);*/
+	objSkydome->SetPosition(centerPosition);
 
 	// ボス関連座標のセット
 	bossBody->SetPosition(bossPosition);
@@ -1399,8 +1413,6 @@ void GameScene::GameUpdate()
 	bossHpUICover->SetPosition({ bossHpUIPosition.x + 10.0f, bossHpUIPosition.y });
 	bossHpUICover->SetColor({ 1.0f, 1.0f, 1.0f, bossHpUIAlpha });
 
-	objCamera->SetPosition(cameraLocal);
-
 	gameParts_1->SetColor(gameParts1Color);
 	gameParts_2->SetColor(gameParts2Color);
 	gameParts_3->SetColor(gameParts3Color);
@@ -1416,6 +1428,7 @@ void GameScene::GameUpdate()
 
 	// パーティクルの更新
 	particleMan->Update();
+	playerJetParticle->Update();
 
 	// 背景天球
 	objSkydome->Update();
@@ -1530,6 +1543,7 @@ void GameScene::GameDraw()
 
 	// パーティクルの描画
 	particleMan->Draw(cmdList);
+	playerJetParticle->Draw(cmdList);
 
 	// 3Dオブジェクト描画後処理
 	ObjObject::PostDraw();
@@ -1604,7 +1618,7 @@ void GameScene::GameDraw()
 	LoadingBG->Draw();
 
 	// デバッグテキストの描画
-	debugText.DrawAll(cmdList);
+	//debugText.DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -1737,6 +1751,8 @@ void GameScene::GameInitialize()
 
 	cameraMode = 0;
 
+	cameraType = START;
+
 	playerUpdateFlag = false;
 
 	bossPattern = STAY;
@@ -1779,6 +1795,10 @@ void GameScene::GameInitialize()
 
 	bossDamageUIAlpha = 1.0f;
 	bossDamageUIAlphaVel = 0.0f;
+
+	moveCameraNumber = 0;
+
+	//railCountFlag = false;
 
 	sound->PlayWav("BGM/Game/game_bgm.wav", Volume_Title, true);
 
@@ -2713,7 +2733,7 @@ void GameScene::CreatePlayerJetParticles(XMFLOAT3 position)
 		acc.z = -0.1f;
 
 		// 追加
-		particleMan->Add(5, pos, vel, acc, 0.3f, 0.0f);
+		playerJetParticle->Add(5, pos, vel, acc, 0.3f, 0.0f);
 	}
 }
 
@@ -2768,47 +2788,39 @@ void GameScene::GameDebugText()
 	std::ostringstream PlayerPos;
 	PlayerPos << "PlayerPos:("
 		<< std::fixed << std::setprecision(2)
-		<< playerPosition.x << "," // x
-		<< playerPosition.y << "," // y
-		<< playerPosition.z << ") Local"; // z
+		<< cameraPosition.x << "," // x
+		<< cameraPosition.y << "," // y
+		<< cameraPosition.z << ") Local"; // z
 	debugText.Print(PlayerPos.str(), 50, 70, 1.0f);
 
-	std::ostringstream HPUIPos;
-	HPUIPos << "playerHpUIPosition:("
-		<< std::fixed << std::setprecision(2)
-		<< playerHpUIPosition.x << "," // x
-		<< playerHpUIPosition.y << ")";// y
-	debugText.Print(HPUIPos.str(), 50, 90, 1.0f);
-
-	std::ostringstream BOSSUIPos;
-	BOSSUIPos << "bossHpUIPosition:("
-		<< std::fixed << std::setprecision(2)
-		<< bossHpUIPosition.x << "," // x
-		<< bossHpUIPosition.y << ")";// y
-	debugText.Print(BOSSUIPos.str(), 50, 110, 1.0f);
-
-	std::ostringstream SCOREUIPos;
-	SCOREUIPos << "SCOREUIPosition:("
-		<< std::fixed << std::setprecision(2)
-		<< scoreUIPosition.x << "," // x
-		<< scoreUIPosition.y << ")";// y
-	debugText.Print(SCOREUIPos.str(), 50, 130, 1.0f);
-
-	//std::ostringstream bossPos;
-	//bossPos << "BossPos:("
+	//std::ostringstream HPUIPos;
+	//HPUIPos << "playerHpUIPosition:("
 	//	<< std::fixed << std::setprecision(2)
-	//	<< BossPos.x << "," // x
-	//	<< BossPos.y << "," // y
-	//	<< BossPos.z << ")"; // z
-	//debugText.Print(bossPos.str(), 50, 50, 1.0f);
+	//	<< playerHpUIPosition.x << "," // x
+	//	<< playerHpUIPosition.y << ")";// y
+	//debugText.Print(HPUIPos.str(), 50, 90, 1.0f);
 
-	//std::ostringstream cameraPos;
-	//cameraPos << "CameraPos:("
+	//std::ostringstream BOSSUIPos;
+	//BOSSUIPos << "bossHpUIPosition:("
 	//	<< std::fixed << std::setprecision(2)
-	//	<< CameraPos.x << "," // x
-	//	<< CameraPos.y << "," // y
-	//	<< CameraPos.z << ")"; // z
-	//debugText.Print(cameraPos.str(), 50, 70, 1.0f);
+	//	<< bossHpUIPosition.x << "," // x
+	//	<< bossHpUIPosition.y << ")";// y
+	//debugText.Print(BOSSUIPos.str(), 50, 110, 1.0f);
+
+	//std::ostringstream SCOREUIPos;
+	//SCOREUIPos << "SCOREUIPosition:("
+	//	<< std::fixed << std::setprecision(2)
+	//	<< scoreUIPosition.x << "," // x
+	//	<< scoreUIPosition.y << ")";// y
+	//debugText.Print(SCOREUIPos.str(), 50, 130, 1.0f);
+
+	std::ostringstream bossPos;
+	bossPos << "BossPos:("
+		<< std::fixed << std::setprecision(2)
+		<< bossBodyWorldPosition.x << "," // x
+		<< bossBodyWorldPosition.y << "," // y
+		<< bossBodyWorldPosition.z << ")"; // z
+	debugText.Print(bossPos.str(), 50, 90, 1.0f);
 
 	//std::ostringstream CenterPos;
 	//CenterPos << "CenterPos:("
@@ -2851,7 +2863,7 @@ void GameScene::GameDebugText()
 	std::ostringstream StartIndex;
 	StartIndex << "StartIndex:("
 		<< std::fixed << std::setprecision(2)
-		<< L4nowCount << ")";
+		<< L5nowCount << ")";
 	debugText.Print(StartIndex.str(), 50, 210, 1.0f);
 
 	// ボスのHP関連
@@ -2909,17 +2921,41 @@ void GameScene::GameDebugText()
 		<< std::fixed << std::setprecision(2)
 		<< dodgeRollRotation << ")";
 	debugText.Print(DodgeRollRotation.str(), 50, 290, 1.0f);*/
-
-	// 自機操作方法
-	//debugText.Print("WASD : PlayerMove", 1050, 30, 1.0f);
-
-	//debugText.Print("SPACE : Shot", 1050, 50, 1.0f);
 }
 
 // カメラ方向の切り替え
 void GameScene::CameraSwitching()
 {
-	camera->SetEye(cameraFrontPosition);
+	switch (cameraType)
+	{
+	case CAMERAMODE::START:
+		L5nowCount = 0.0f;
+		L5addCount = 0.02f;
+		cameraType = FIGHT;
+		
+		break;
+
+	case CAMERAMODE::FIGHT:
+		if (moveCameraNumber == 0)
+		{
+			objCamera->SetPosition(moveCameraPosition_1);
+		}
+		if (moveCameraNumber == 1)
+		{
+			objCamera->SetPosition(moveCameraPosition_2);
+		}
+		if (moveCameraNumber == 2)
+		{
+			objCamera->SetPosition(moveCameraPosition_3);
+		}
+		if (moveCameraNumber == 3)
+		{
+			objCamera->SetPosition(cameraLocal);
+		}
+		break;
+	}
+	
+	camera->SetEye(cameraPosition);
 
 	// 前方向
 	if (cameraMode == 0)
@@ -2952,7 +2988,7 @@ void GameScene::CameraSwitching()
 
 		nextCamera = { 20.0f,0.0f,0.0f };
 	}
-
+	
 	if (startIndex == 3)
 	{
 		L4addCount = moveUIVel;
@@ -2962,14 +2998,6 @@ void GameScene::CameraSwitching()
 	{
 		playerUpdateFlag = true;
 	}
-
-	/*if (startIndex == 12)
-	{
-		cameraMode = 3;
-		rightFlashingFlag = true;
-		L3nowCount = 0.0f;
-		L3addCount = 0.001f;
-	}*/
 
 	if (startIndex == 12)
 	{
@@ -2983,6 +3011,33 @@ void GameScene::CameraSwitching()
 	{
 		cameraMode = 0;
 		backFlashingFlag = true;
+		L3nowCount = 0.0f;
+		L3addCount = 0.001f;
+
+	}
+
+	else if (startIndex == 41)
+	{
+		cameraMode = 1;
+		rightFlashingFlag = true;
+		L3nowCount = 0.0f;
+		L3addCount = 0.001f;
+
+	}
+
+	else if (startIndex == 49)
+	{
+		cameraMode = 3;
+		backFlashingFlag = true;
+		L3nowCount = 0.0f;
+		L3addCount = 0.001f;
+
+	}
+
+	else if (startIndex == 57)
+	{
+		cameraMode = 0;
+		rightFlashingFlag = true;
 		L3nowCount = 0.0f;
 		L3addCount = 0.001f;
 
@@ -3055,7 +3110,7 @@ void GameScene::BossAttack()
 	{
 		sound->PlayWav("SE/Game/game_boss_shot.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-		newBullet = BossTargetBullet::Create(modelBullet, bossPosition, bulletScale, playerWorldPosition, bulletSpeed);
+		newBullet = BossTargetBullet::Create(modelBullet, bossBodyWorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
 
 		bossTargetBullets.push_back(std::move(newBullet));
 	}
@@ -3067,7 +3122,7 @@ void GameScene::BossLeg1Attack()
 	{
 		sound->PlayWav("SE/Game/game_boss_shot.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-		newBullet = BossTargetBullet::Create(modelBullet, bossLeg1WorldPosition, bulletScale, playerWorldPosition, bulletSpeed);
+		newBullet = BossTargetBullet::Create(modelBullet, bossLeg1WorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
 
 		bossTargetBullets.push_back(std::move(newBullet));
 	}
@@ -3079,7 +3134,7 @@ void GameScene::BossLeg2Attack()
 	{
 		sound->PlayWav("SE/Game/game_boss_shot.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-		newBullet = BossTargetBullet::Create(modelBullet, bossLeg2WorldPosition, bulletScale, playerWorldPosition, bulletSpeed);
+		newBullet = BossTargetBullet::Create(modelBullet, bossLeg2WorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
 
 		bossTargetBullets.push_back(std::move(newBullet));
 	}
@@ -3091,7 +3146,7 @@ void GameScene::BossLeg3Attack()
 	{
 		sound->PlayWav("SE/Game/game_boss_shot.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-		newBullet = BossTargetBullet::Create(modelBullet, bossLeg3WorldPosition, bulletScale, playerWorldPosition, bulletSpeed);
+		newBullet = BossTargetBullet::Create(modelBullet, bossLeg3WorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
 
 		bossTargetBullets.push_back(std::move(newBullet));
 	}
@@ -3103,7 +3158,7 @@ void GameScene::BossLeg4Attack()
 	{
 		sound->PlayWav("SE/Game/game_boss_shot.wav", Volume_Title);
 		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-		newBullet = BossTargetBullet::Create(modelBullet, bossLeg4WorldPosition, bulletScale, playerWorldPosition, bulletSpeed);
+		newBullet = BossTargetBullet::Create(modelBullet, bossLeg4WorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
 
 		bossTargetBullets.push_back(std::move(newBullet));
 	}
@@ -3128,7 +3183,7 @@ void GameScene::SplineCount()
 
 	if (timeRate >= 1.0f)
 	{
-		if (startIndex < playerCheckPoint.size() - 3)
+		if (startIndex < bossCheckPoint.size() - 3)
 		{
 			startIndex += 1;
 			timeRate -= 1.0f;
@@ -3192,6 +3247,33 @@ void GameScene::Lerp4Count()
 	{
 		L4nowCount = 0.0f;
 		L4addCount = 0.0f;
+	}
+}
+
+void GameScene::Lerp5Count()
+{
+	L5nowCount += L5addCount;
+	moveCameraTimer += moveCameraTimerVel;
+
+	if (L5nowCount > 1.0f)
+	{
+		L5addCount = 0.0f;
+		moveCameraTimerVel = -0.1f;
+		if (moveCameraTimer < 0)
+		{
+			moveCameraTimer = 3.0f;
+			moveCameraTimerVel = 0.0f;
+			moveCameraNumber++;
+			L5nowCount = 0.0f;
+			L5addCount = 0.02f;
+		}
+	}
+
+	if (moveCameraNumber > 3)
+	{
+		moveCameraNumber = 3;
+		L5nowCount = 1.0f;
+		L5addCount = 0.0f;
 	}
 }
 

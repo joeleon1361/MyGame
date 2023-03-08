@@ -163,6 +163,8 @@ public: // メンバ関数
 
 	void Lerp4Count();
 
+	void Lerp5Count();
+
 	void LoadTextureFunction();
 
 	void LoadWavFunction();
@@ -285,6 +287,7 @@ private: // メンバ変数
 	Sprite* damageEffect = nullptr;
 
 	ParticleManager* particleMan = nullptr;
+	ParticleManager* playerJetParticle = nullptr;
 
 	ObjModel* modelSkydome = nullptr;
 	ObjModel* modelGround = nullptr;
@@ -325,13 +328,30 @@ private: // メンバ変数
 	FbxObject3d* testobject = nullptr;
 
 #pragma region カメラ関連
-	enum CAMERAMODE
+	enum CAMERADIRECTION
 	{
 		FRONT,
 		RIGHT,
 		BACK,
 		LEFT
 	};
+
+	enum CAMERAMODE
+	{
+		START,
+		FIGHT
+	};
+
+	XMFLOAT3 moveCameraPosition_1;
+	XMFLOAT3 moveCameraPosition_2;
+	XMFLOAT3 moveCameraPosition_3;
+
+	int moveCameraNumber = 0;
+
+	float moveCameraTimer = 3.0f;
+	float moveCameraTimerVel = 0.0f;
+
+	int cameraType = START;
 
 	bool breakCameraFlag = false;
 #pragma endregion
@@ -340,185 +360,73 @@ private: // メンバ変数
 
 #pragma region スプライン曲線関連
 	// スプライン曲線関連
-	// プレイヤー制御点
-	/*XMFLOAT3 start = { 0.0f, 0.0f, -70.0f };
-	XMFLOAT3 p2 = { 0.0f, 0.0f, -60.0f };
-	XMFLOAT3 p3 = { 0.0f, 0.0f, -50.0f };
-	XMFLOAT3 p4 = { 0.0f, 0.0f, -40.0f };
-	XMFLOAT3 p5 = { 0.0f, 0.0f, -30.0f };
-	XMFLOAT3 p6 = { 0.0f, 0.0f, -20.0f };
-	XMFLOAT3 p7 = { 0.0f, 0.0f, -10.0f };
-	XMFLOAT3 p8 = { 10.0f, 0.0f, 0.0f };
-	XMFLOAT3 p9 = { 20.0f, 0.0f, 0.0f };
-	XMFLOAT3 p10 = { 30.0f, 0.0f, 0.0f };
-	XMFLOAT3 p11 = { 50.0f, 0.0f, 10.0f };
-	XMFLOAT3 p12 = { 60.0f, 0.0f, 20.0f };
-	XMFLOAT3 p13 = { 60.0f, 0.0f, 40.0f };
-	XMFLOAT3 p14 = { 50.0f, 0.0f, 50.0f };
-	XMFLOAT3 p15 = { 30.0f, 0.0f, 60.0f };
-	XMFLOAT3 p16 = { 20.0f, 0.0f, 60.0f };
-	XMFLOAT3 p17 = { 10.0f, 0.0f, 60.0f };
-	XMFLOAT3 p18 = { 0.0f, 0.0f, 60.0f };
-	XMFLOAT3 p19 = { -10.0f, 0.0f, 60.0f };
-	XMFLOAT3 p20 = { -20.0f, 0.0f, 60.0f };
-	XMFLOAT3 p21 = { -30.0f, 0.0f, 60.0f };
-	XMFLOAT3 p22 = { -60.0f, 0.0f, 40.0f };
-	XMFLOAT3 p23 = { -60.0f, 0.0f, 30.0f };
-	XMFLOAT3 p24 = { -60.0f, 0.0f, 20.0f };
-	XMFLOAT3 p25 = { -60.0f, 0.0f, 10.0f };
-	XMFLOAT3 p26 = { -60.0f, 0.0f, 0.0f };
-	XMFLOAT3 p27 = { -60.0f, 0.0f, -10.0f };
-	XMFLOAT3 p28 = { -60.0f, 0.0f, -20.0f };
-	XMFLOAT3 p29 = { -60.0f, 0.0f, -30.0f };
-	XMFLOAT3 p30 = { -60.0f, 0.0f, -40.0f };
-	XMFLOAT3 p31 = { -50.0f, 0.0f, -40.0f };
-	XMFLOAT3 p32 = { -40.0f, 0.0f, -40.0f };
-	XMFLOAT3 p33 = { -30.0f, 0.0f, -40.0f };
-	XMFLOAT3 p34 = { -20.0f, 0.0f, -40.0f };
-	XMFLOAT3 p35 = { -10.0f, 0.0f, -40.0f };
-	XMFLOAT3 p36 = { 0.0f, 0.0f, -40.0f };
-	XMFLOAT3 p37 = { 10.0f, 0.0f, -40.0f };
-	XMFLOAT3 p38 = { 20.0f, 0.0f, -40.0f };
-	XMFLOAT3 p39 = { 30.0f, 0.0f, -40.0f };
-	XMFLOAT3 end = { 40.0f, 0.0f, -40.0f };
-	XMFLOAT3 end2 = { 50.0f, 0.0f, -40.0f };*/
-
-	XMFLOAT3 start = { 0.0f, 0.0f, -200.0f };
-	XMFLOAT3 p2 = { 0.0f, 0.0f, -190.0f };
-	XMFLOAT3 p3 = { 0.0f, 0.0f, -180.0f };
-	XMFLOAT3 p4 = { 0.0f, 0.0f, -170.0f };
-	XMFLOAT3 p5 = { 0.0f, 0.0f, -160.0f };
-	XMFLOAT3 p6 = { 0.0f, 0.0f, -150.0f };
-	XMFLOAT3 p7 = { 0.0f, 0.0f, -140.0f };
-	XMFLOAT3 p8 = { 0.0f, 0.0f, -130.0f };
-	XMFLOAT3 p9 = { 0.0f, 0.0f, -120.0f };
-	XMFLOAT3 p10 = { 0.0f, 0.0f, -110.0f };
-	XMFLOAT3 p11 = { 0.0f, 0.0f, -90.0f };
-	XMFLOAT3 p12 = { 0.0f, 0.0f, -80.0f };
-	XMFLOAT3 p13 = { 0.0f, 0.0f, -70.0f };
-	XMFLOAT3 p14 = { 0.0f, 0.0f, -60.0f };
-	XMFLOAT3 p15 = { 0.0f, 0.0f, -50.0f };
-	XMFLOAT3 p16 = { 0.0f, 0.0f, -40.0f };
-	XMFLOAT3 p17 = { 0.0f, 0.0f, -30.0f };
-	XMFLOAT3 p18 = { 0.0f, 0.0f, -20.0f };
-	XMFLOAT3 p19 = { 0.0f, 0.0f, -10.0f };
-	XMFLOAT3 p20 = { 0.0f, 0.0f, 0.0f };
-	XMFLOAT3 p21 = { 0.0f, 0.0f, 10.0f };
-	XMFLOAT3 p22 = { 0.0f, 0.0f, 20.0f };
-	XMFLOAT3 p23 = { 0.0f, 0.0f, 30.0f };
-	XMFLOAT3 p24 = { 0.0f, 0.0f, 40.0f };
-	XMFLOAT3 p25 = { 0.0f, 0.0f, 50.0f };
-	XMFLOAT3 p26 = { 0.0f, 0.0f, 60.0f };
-	XMFLOAT3 p27 = { 0.0f, 0.0f, 70.0f };
-	XMFLOAT3 p28 = { 0.0f, 0.0f, 80.0f };
-	XMFLOAT3 p29 = { 0.0f, 0.0f, 90.0f };
-	XMFLOAT3 p30 = { 0.0f, 0.0f, 100.0f };
-	XMFLOAT3 p31 = { 0.0f, 0.0f, 110.0f };
-	XMFLOAT3 p32 = { 0.0f, 0.0f, 120.0f };
-	XMFLOAT3 p33 = { 0.0f, 0.0f, 130.0f };
-	XMFLOAT3 p34 = { 0.0f, 0.0f, 140.0f };
-	XMFLOAT3 p35 = { 0.0f, 0.0f, 150.0f };
-	XMFLOAT3 p36 = { 0.0f, 0.0f, 160.0f };
-	XMFLOAT3 p37 = { 0.0f, 0.0f, 170.0f };
-	XMFLOAT3 p38 = { 0.0f, 0.0f, 180.0f };
-	XMFLOAT3 p39 = { 0.0f, 0.0f, 190.0f };
-	XMFLOAT3 end = { 0.0f, 0.0f, 200.0f };
-	XMFLOAT3 end2 = { 0.0f, 0.0f, 210.0f };
-
-	std::vector<XMFLOAT3> playerCheckPoint{ start, start, p2, p3, p4, p5, p6, p7, p8, p9, p10,
-		p11,p12, p13, p14, p15, p16, p17, p18, p19, p20, p21,p22, p23, p24, p25, p26, p27, p28,
-	p29,p30,p31,p32, p33, p34, p35, p36, p37, p38,p39, end, end };
-
-	std::vector<XMFLOAT3> playerTargetCheckPoint{ p2, p2, p3, p4, p5, p6, p7, p8, p9, p10,
-		p11,p12, p13, p14, p15, p16, p17, p18, p19, p20, p21,p22, p23, p24, p25, p26, p27, p28,
-	p29,p30,p31,p32, p33, p34, p35, p36, p37, p38,p39, end, end2, end2 };
 
 	// ボス制御点
-	/*XMFLOAT3 Bstart = { 0.0f, 40.0f, -30.0f };
-	XMFLOAT3 Bp2 = { 0.0f, 20.0f, -30.0f };
-	XMFLOAT3 Bp3 = { 0.0f, 0.0f, -30.0f };
-	XMFLOAT3 Bp4 = { 5.0f, 0.0f, -20.0f };
-	XMFLOAT3 Bp5 = { 0.0f, -5.0f, -10.0f };
-	XMFLOAT3 Bp6 = { -5.0f, 0.0f, 0.0f };
-	XMFLOAT3 Bp7 = { 0.0f, 5.0f, 10.0f };
-	XMFLOAT3 Bp8 = { 10.0f, 0.0f, 20.0f };
-	XMFLOAT3 Bp9 = { 20.0f, -5.0f, 20.0f };
-	XMFLOAT3 Bp10 = { 30.0f, 0.0f, 20.0f };
-	XMFLOAT3 Bp11 = { 40.0f, 5.0f, 20.0f };
-	XMFLOAT3 Bp12 = { 40.0f, 10.0f, 20.0f };
-	XMFLOAT3 Bp13 = { 40.0f, 10.0f, 40.0f };
-	XMFLOAT3 Bp14 = { 40.0f, 5.0f, 40.0f };
-	XMFLOAT3 Bp15 = { 30.0f, 0.0f, 40.0f };
-	XMFLOAT3 Bp16 = { 20.0f, -5.0f, 40.0f };
-	XMFLOAT3 Bp17 = { 10.0f, 0.0f, 40.0f };
-	XMFLOAT3 Bp18 = { 0.0f, 5.0f, 40.0f };
-	XMFLOAT3 Bp19 = { -10.0f, 0.0f, 40.0f };
-	XMFLOAT3 Bp20 = { -20.0f, -5.0f, 40.0f };
-	XMFLOAT3 Bp21 = { -30.0f, 0.0f, 30.0f };
-	XMFLOAT3 Bp22 = { -55.0f, 5.0f, 20.0f };
-	XMFLOAT3 Bp23 = { -60.0f, 0.0f, 10.0f };
-	XMFLOAT3 Bp24 = { -70.0f, -5.0f, 0.0f };
-	XMFLOAT3 Bp25 = { -60.0f, 0.0f, -10.0f };
-	XMFLOAT3 Bp26 = { -50.0f, 5.0f, -20.0f };
-	XMFLOAT3 Bp27 = { -60.0f, 0.0f, -30.0f };
-	XMFLOAT3 Bp28 = { -65.0f, 0.0f, -40.0f };
-	XMFLOAT3 Bp29 = { -60.0f, 15.0f, -40.0f };
-	XMFLOAT3 Bp30 = { -50.0f, 0.0f, -40.0f };
-	XMFLOAT3 Bp31 = { -40.0f, 0.0f, -40.0f };
-	XMFLOAT3 Bp32 = { -30.0f, 0.0f, -40.0f };
-	XMFLOAT3 Bp33 = { -20.0f, 0.0f, -40.0f };
-	XMFLOAT3 Bp34 = { -10.0f, 0.0f, -40.0f };
-	XMFLOAT3 Bp35 = { 0.0f, 0.0f, -40.0f };
-	XMFLOAT3 Bp36 = { 10.0f, 0.0f, -40.0f };
-	XMFLOAT3 Bp37 = { 20.0f, 0.0f, -40.0f };
-	XMFLOAT3 Bp38 = { 30.0f, 0.0f, -40.0f };
-	XMFLOAT3 Bp39 = { 40.0f, 0.0f, -40.0f };
-	XMFLOAT3 Bend = { 50.0f, 0.0f, -40.0f };*/
-
-	XMFLOAT3 Bstart = { 0.0f, 40.0f, -170.0f };
-	XMFLOAT3 Bp2 = { 0.0f, 40.0f, -160.0f };
-	XMFLOAT3 Bp3 = { 0.0f, 20.0f, -150.0f };
-	XMFLOAT3 Bp4 = { 0.0f, 0.0f, -140.0f };
-	XMFLOAT3 Bp5 = { 0.0f, 5.0f, -130.0f };
-	XMFLOAT3 Bp6 = { -7.0f, 0.0f, -120.0f };
-	XMFLOAT3 Bp7 = { 0.0f, -5.0f, -110.0f };
-	XMFLOAT3 Bp8 = { 7.0f, 0.0f, -100.0f };
-	XMFLOAT3 Bp9 = { 0.0f, 5.0f, -90.0f };
-	XMFLOAT3 Bp10 = { -7.0f, 0.0f, -80.0f };
-	XMFLOAT3 Bp11 = { 0.0f, -5.0f, -70.0f };
-	XMFLOAT3 Bp12 = { 0.0f, 20.0f, -70.0f };
-	XMFLOAT3 Bp13 = { 0.0f, 40.0f, -70.0f };
-	XMFLOAT3 Bp14 = { 0.0f, 20.0f, -70.0f };
-	XMFLOAT3 Bp15 = { 0.0f, 0.0f, -70.0f };
-	XMFLOAT3 Bp16 = { 0.0f, 0.0f, -70.0f };
-	XMFLOAT3 Bp17 = { 0.0f, 0.0f, -60.0f };
-	XMFLOAT3 Bp18 = { 0.0f, 0.0f, -50.0f };
-	XMFLOAT3 Bp19 = { 0.0f, 0.0f, -40.0f };
+	XMFLOAT3 Bstart = { 0.0f, 40.0f, 30.0f };
+	XMFLOAT3 Bp2 = { 0.0f, 40.0f, 30.0f };
+	XMFLOAT3 Bp3 = { 0.0f, 20.0f, 30.0f };
+	XMFLOAT3 Bp4 = { 0.0f, 0.0f, 30.0f };
+	XMFLOAT3 Bp5 = { 0.0f, 5.0f, 30.0f };
+	XMFLOAT3 Bp6 = { -7.0f, 0.0f, 30.0f };
+	XMFLOAT3 Bp7 = { 0.0f, -5.0f, 30.0f };
+	XMFLOAT3 Bp8 = { 7.0f, 0.0f, 30.0f };
+	XMFLOAT3 Bp9 = { 0.0f, 5.0f, 30.0f };
+	XMFLOAT3 Bp10 = { -7.0f, 0.0f, 30.0f };
+	XMFLOAT3 Bp11 = { 0.0f, 0.0f, 30.0f };
+	XMFLOAT3 Bp12 = { 0.0f, 30.0f, 0.0f };
+	XMFLOAT3 Bp13 = { 0.0f, 60.0f, -10.0f };
+	XMFLOAT3 Bp14 = { 0.0f, 60.0f, -30.0f };
+	XMFLOAT3 Bp15 = { 0.0f, 30.0f, -30.0f };
+	XMFLOAT3 Bp16 = { 0.0f, 0.0f, -30.0f };
+	XMFLOAT3 Bp17 = { 0.0f, 0.0f, -30.0f };
+	XMFLOAT3 Bp18 = { 0.0f, 0.0f, -30.0f };
+	XMFLOAT3 Bp19 = { 0.0f, 0.0f, -30.0f };
 	XMFLOAT3 Bp20 = { 0.0f, 0.0f, -30.0f };
-	XMFLOAT3 Bp21 = { 15.0f, 0.0f, -10.0f };
-	XMFLOAT3 Bp22 = { 0.0f, 0.0f, 0.0f };
-	XMFLOAT3 Bp23 = { -15.0f, 0.0f, 10.0f };
-	XMFLOAT3 Bp24 = { 0.0f, 0.0f, 20.0f };
-	XMFLOAT3 Bp25 = { 15.0f, 0.0f, 30.0f };
-	XMFLOAT3 Bp26 = { 0.0f, 0.0f, 30.0f };
-	XMFLOAT3 Bp27 = { 0.0f, -10.0f, 30.0f };
-	XMFLOAT3 Bp28 = { 0.0f, 30.0f, 60.0f };
-	XMFLOAT3 Bp29 = { 0.0f, 50.0f, 90.0f };
-	XMFLOAT3 Bp30 = { 0.0f, 50.0f, 120.0f };
-	XMFLOAT3 Bp31 = { 0.0f, 50.0f, 150.0f };
-	XMFLOAT3 Bp32 = { 0.0f, 0.0f, 150.0f };
-	XMFLOAT3 Bp33 = { 5.0f, 5.0f, 160.0f };
-	XMFLOAT3 Bp34 = { 5.0f, -5.0f, 170.0f };
-	XMFLOAT3 Bp35 = { -5.0f, -5.0f, 180.0f };
-	XMFLOAT3 Bp36 = { -5.0f, 5.0f, 190.0f };
-	XMFLOAT3 Bp37 = { 0.0f, -10.0f, 200.0f };
-	XMFLOAT3 Bp38 = { 0.0f, 20.0f, 210.0f };
-	XMFLOAT3 Bp39 = { 0.0f, 40.0f, 220.0f };
-	XMFLOAT3 Bend = { 0.0f, 60.0f, 230.0f };
+	XMFLOAT3 Bp21 = { 15.0f, 0.0f, -30.0f };
+	XMFLOAT3 Bp22 = { 0.0f, 0.0f, -30.0f };
+	XMFLOAT3 Bp23 = { -15.0f, 0.0f, -30.0f };
+	XMFLOAT3 Bp24 = { 0.0f, 0.0f, -30.0f };
+	XMFLOAT3 Bp25 = { 15.0f, 0.0f, -30.0f };
+	XMFLOAT3 Bp26 = { 0.0f, 0.0f, -30.0f };
+	XMFLOAT3 Bp27 = { 0.0f, -10.0f, -20.0f };
+	XMFLOAT3 Bp28 = { 0.0f, 30.0f, -10.0f };
+	XMFLOAT3 Bp29 = { 0.0f, 50.0f, 00.0f };
+	XMFLOAT3 Bp30 = { 0.0f, 50.0f, 10.0f };
+	XMFLOAT3 Bp31 = { 0.0f, 50.0f, 20.0f };
+	XMFLOAT3 Bp32 = { 0.0f, 0.0f, 30.0f };
+	XMFLOAT3 Bp33 = { 5.0f, 5.0f, 30.0f };
+	XMFLOAT3 Bp34 = { 5.0f, -5.0f, 30.0f };
+	XMFLOAT3 Bp35 = { -5.0f, -5.0f, 30.0f };
+	XMFLOAT3 Bp36 = { -5.0f, 5.0f, 30.0f };
+	XMFLOAT3 Bp37 = { 0.0f, -10.0f, 30.0f };
+	XMFLOAT3 Bp38 = { 0.0f, 0.0f, 30.0f };
+	XMFLOAT3 Bp39 = { 10.0f, 0.0f, 20.0f };
+	XMFLOAT3 Bp40 = { 20.0f, 0.0f, 10.0f };
+	XMFLOAT3 Bp41 = { 30.0f, 0.0f, 0.0f };
+	XMFLOAT3 Bp42 = { 30.0f, 0.0f, 0.0f };
+	XMFLOAT3 Bp43 = { 30.0f, 0.0f, 0.0f };
+	XMFLOAT3 Bp44 = { 30.0f, 0.0f, 0.0f };
+	XMFLOAT3 Bp45 = { 30.0f, -10.0f, 0.0f };
+	XMFLOAT3 Bp46 = { 20.0f, -10.0f, 0.0f };
+	XMFLOAT3 Bp47 = { 10.0f, -10.0f, 0.0f };
+	XMFLOAT3 Bp48 = { -10.0f, -10.0f, 0.0f };
+	XMFLOAT3 Bp49 = { -20.0f, -10.0f, 0.0f };
+	XMFLOAT3 Bp50 = { -30.0f, -10.0f, 0.0f };
+	XMFLOAT3 Bp51 = { -30.0f, 0.0f, 0.0f };
+	XMFLOAT3 Bp52 = { -30.0f, 0.0f, 0.0f };
+	XMFLOAT3 Bp53 = { -30.0f, 0.0f, 0.0f };
+	XMFLOAT3 Bp54 = { -30.0f, 0.0f, 0.0f };
+	XMFLOAT3 Bp55 = { -30.0f, 0.0f, 10.0f };
+	XMFLOAT3 Bp56 = { -20.0f, 0.0f, 20.0f };
+	XMFLOAT3 Bp57 = { -10.0f, 0.0f, 30.0f };
+	XMFLOAT3 Bp58 = { 0.0f, 0.0f, 30.0f };
+	XMFLOAT3 Bp59 = { 0.0f, 0.0f, 30.0f };
+	XMFLOAT3 Bend = { 0.0f, 0.0f, 30.0f };
 
 	std::vector<XMFLOAT3> bossCheckPoint{ Bstart, Bstart, Bp2, Bp3, Bp4, Bp5, Bp6, Bp7, Bp8, Bp9, Bp10,
 		Bp11,Bp12, Bp13, Bp14, Bp15, Bp16, Bp17, Bp18, Bp19, Bp20, Bp21,Bp22, Bp23, Bp24, Bp25, Bp26, Bp27, Bp28,
-	Bp29,Bp30,Bp31,Bp32, Bp33, Bp34, Bp35, Bp36, Bp37, Bp38,Bp39,Bend, Bend };
+	Bp29,Bp30,Bp31,Bp32, Bp33, Bp34, Bp35, Bp36, Bp37, Bp38,Bp39,Bp40,Bp41,Bp42,Bp43,Bp44,Bp45,Bp46,Bp47,Bp48,Bp49,
+		Bp50,Bp51,Bp52,Bp53,Bp54,Bp55,Bp56,Bp57,Bp58,Bp59,Bend, Bend };
 
 	size_t startIndex = 1;
 
@@ -556,13 +464,19 @@ private: // メンバ変数
 	// Lerp4
 	float L4addCount = 0.0f;
 	float L4nowCount = 0.0f;
-	 
+
+	// Lerp5
+	float L5addCount = 0.0f;
+	float L5nowCount = 0.0f;
+
 #pragma endregion
 
 #pragma region プレイヤー関連
 	// プレイヤー関連
 	XMFLOAT3 playerPosition;
 	XMFLOAT3 playerRotation;
+
+	XMFLOAT3 startPlayerPosition = {0.0f,0.0f,-30.0f};
 
 	XMFLOAT3 playerWorldPosition;
 
@@ -574,6 +488,7 @@ private: // メンバ変数
 	XMFLOAT3 bulletScale = { 0.3f, 0.3f, 0.3f };
 
 	float bulletSpeed = 1.8f;
+	float bossBulletSpeed = 1.2f;
 
 	float shotRate = 1.5f;
 	bool shotFlag = false;
@@ -589,6 +504,7 @@ private: // メンバ変数
 	XMFLOAT3 bossLeg3Position;
 	XMFLOAT3 bossLeg4Position;
 
+	XMFLOAT3 bossBodyWorldPosition;
 	XMFLOAT3 bossLeg1WorldPosition;
 	XMFLOAT3 bossLeg2WorldPosition;
 	XMFLOAT3 bossLeg3WorldPosition;
@@ -657,12 +573,7 @@ private: // メンバ変数
 	XMFLOAT3 centerPosition;
 	XMFLOAT3 centerRotation;
 
-	XMFLOAT3 CameraPos;
-
-	XMFLOAT3 cameraFrontPosition;
-	XMFLOAT3 cameraRightPosition;
-	XMFLOAT3 cameraBackPosition;
-	XMFLOAT3 cameraLeftPosition;
+	XMFLOAT3 cameraPosition;
 
 	XMFLOAT3 SkydomPos;
 	XMFLOAT3 SkydomRot;
@@ -903,6 +814,8 @@ private: // メンバ変数
 	bool canPushKeyFlag = false;
 
 	bool changeResultSizeFlag = false;
+
+	float centorVel = 0.1f;
 
 	XMFLOAT3 cameraLocal;
 

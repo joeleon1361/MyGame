@@ -37,7 +37,7 @@ private: // メンバ変数
 	// デスタイマー 
 	int32_t deathTimer = LifeTime;
 
-	enum CAMERAMODE
+	enum CAMERADIRECTION
 	{
 		FRONT,
 		RIGHT,

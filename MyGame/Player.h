@@ -51,7 +51,7 @@ public: // ƒƒ“ƒoŠÖ”
 private: // ƒƒ“ƒo•Ï”
 	ObjModel* modelBullet = nullptr;
 
-	enum CAMERAMODE
+	enum CAMERADIRECTION
 	{
 		FRONT,
 		RIGHT,
