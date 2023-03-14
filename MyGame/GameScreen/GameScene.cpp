@@ -153,7 +153,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 
 	// パーティクルマネージャー
 	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect4.png");
-	playerJetParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect4.png");
+	playerJetParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect1.png");
 
 	// 3Dオブジェクト生成
 	objSkydome = ObjObject::Create();
