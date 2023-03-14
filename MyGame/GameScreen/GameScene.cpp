@@ -152,8 +152,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	resultParts_10 = Sprite::Create(TextureNumber::result_parts_6, { 640.0f,120.0f });
 
 	// パーティクルマネージャー
-	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect4.png");
-	playerJetParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect1.png");
+	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect1.png");
+	playerJetParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect2.png");
 
 	// 3Dオブジェクト生成
 	objSkydome = ObjObject::Create();
@@ -724,7 +724,7 @@ void GameScene::GameUpdate()
 	// playerTargetPosition = SplinePosition(playerTargetCheckPoint, startIndex, timeRate);
 
 	//centerPosition = SplinePosition(playerCheckPoint, startIndex, timeRate);
-	
+
 
 	SkydomPosition = objSkydome->GetPosition();
 	SkydomRotation = objSkydome->GetRotation();
@@ -815,7 +815,7 @@ void GameScene::GameUpdate()
 
 	alertUIUpdate();
 
-	
+
 
 #pragma region 弾関連
 	Attack();
@@ -2676,7 +2676,7 @@ void GameScene::CreateHitParticles(XMFLOAT3 position)
 		acc.y = -(float)rand() / RAND_MAX * rnd_acc;
 
 		// 追加
-		particleMan->Add(20, pos, vel, acc, 3.0f, 0.0f);
+		particleMan->Add(20, pos, vel, acc, { 0.874f,0.443f, 0.149f, 1.000f }, { 0.874f,0.443f, 0.149f, 1.000f }, 3.0f, 0.0f);
 	}
 }
 
@@ -2701,7 +2701,7 @@ void GameScene::CreateBossParticles(XMFLOAT3 position)
 		acc.y = +(float)rand() / RAND_MAX * rnd_acc;
 
 		// 追加
-		particleMan->Add(30, pos, vel, acc, 2.0f, 0.0f);
+		particleMan->Add(30, pos, vel, acc, { 0.874f,0.443f, 0.149f, 1.000f }, { 0.874f,0.443f, 0.149f, 1.000f }, 2.0f, 0.0f);
 	}
 }
 
@@ -2711,7 +2711,7 @@ void GameScene::CreatePlayerJetParticles(XMFLOAT3 position)
 		const float rnd_pos = 0.1f;
 		XMFLOAT3 pos{};
 		pos.x = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.x;
-		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos/ 2.0f) + position.y;
+		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.y;
 		pos.z = position.z + -0.8f;
 
 		const float rnd_vel = -0.2f;
@@ -2723,7 +2723,7 @@ void GameScene::CreatePlayerJetParticles(XMFLOAT3 position)
 		acc.z = -0.1f;
 
 		// 追加
-		playerJetParticle->Add(5, pos, vel, acc, 0.3f, 0.0f);
+		playerJetParticle->Add(5, pos, vel, acc, { 0.874f,0.443f, 0.149f, 1.000f }, { 0.874f,0.443f, 0.149f, 1.000f }, 0.3f, 0.0f);
 	}
 }
 
@@ -2922,7 +2922,7 @@ void GameScene::CameraSwitching()
 		L5nowCount = 0.0f;
 		L5addCount = 0.02f;
 		cameraType = FIGHT;
-		
+
 		break;
 
 	case CAMERAMODE::FIGHT:
@@ -2944,7 +2944,7 @@ void GameScene::CameraSwitching()
 		}
 		break;
 	}
-	
+
 	camera->SetEye(cameraWorldPosition);
 
 	// 前方向
@@ -2978,12 +2978,12 @@ void GameScene::CameraSwitching()
 
 		nextCamera = { 20.0f,0.0f,0.0f };
 	}
-	
+
 	if (startIndex == 3)
 	{
 		L4addCount = moveUIVel;
 	}
-	
+
 	if (startIndex == 4)
 	{
 		playerUpdateFlag = true;

@@ -104,7 +104,17 @@ void ParticleManager::Update()
 		it->position = it->position + it->velocity;
 
 		// カラーの線形補間
-		it->color = it->s_color + (it->e_color - it->s_color) / f;
+		it->color.x = (it->e_color.x - it->s_color.x) / f;
+		it->color.x += it->s_color.x;
+
+		it->color.y = (it->e_color.y - it->s_color.y) / f;
+		it->color.y += it->s_color.y;
+
+		it->color.z = (it->e_color.z - it->s_color.z) / f;
+		it->color.z += it->s_color.z;
+
+		it->color.w = (it->e_color.w - it->s_color.w) / f;
+		it->color.w += it->s_color.w;
 
 		// スケールの線形補間
 		it->scale = it->s_scale + (it->e_scale - it->s_scale) / f;
@@ -126,6 +136,8 @@ void ParticleManager::Update()
 			vertMap->pos = it->position;
 			// スケール
 			vertMap->scale = it->scale;
+			//色
+			vertMap->color = it->color;
 			// 次の頂点へ
 			vertMap++;
 			if (++vertCount >= vertexCount) {
@@ -180,7 +192,7 @@ void ParticleManager::Draw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->DrawInstanced(drawNum, 1, 0, 0);
 }
 
-void ParticleManager::Add(int life, const XMFLOAT3& position, const XMFLOAT3& velocity, const XMFLOAT3& accel, float start_scale, float end_scale)
+void ParticleManager::Add(int life, const XMFLOAT3& position, const XMFLOAT3& velocity, const XMFLOAT3& accel, const XMFLOAT4& start_color, const XMFLOAT4& end_color, float start_scale, float end_scale)
 {
 	// リストに要素を追加
 	particles.emplace_front();
@@ -189,6 +201,8 @@ void ParticleManager::Add(int life, const XMFLOAT3& position, const XMFLOAT3& ve
 	p.position = position;
 	p.velocity = velocity;
 	p.accel = accel;
+	p.s_color = start_color;
+	p.e_color = end_color;
 	p.s_scale = start_scale;
 	p.e_scale = end_scale;
 	p.num_frame = life;
@@ -301,6 +315,11 @@ void ParticleManager::InitializeGraphicsPipeline()
 			D3D12_APPEND_ALIGNED_ELEMENT,
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 		},
+		{	//色
+			"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+		},
 	};
 
 	// グラフィックスパイプラインの流れを設定
@@ -331,14 +350,14 @@ void ParticleManager::InitializeGraphicsPipeline()
 	blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;
 
 	//半透明合成
-	blenddesc.BlendOp = D3D12_BLEND_OP_ADD;                           //加算
-	blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;                       //ソースのアルファ値
-	blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	//blenddesc.BlendOp = D3D12_BLEND_OP_ADD;                           //加算
+	//blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;                       //ソースのアルファ値
+	//blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
 
 	// 加算ブレンディング
-	//blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
-	//blenddesc.SrcBlend = D3D12_BLEND_ONE;
-	//blenddesc.DestBlend = D3D12_BLEND_ONE;
+	blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
+	blenddesc.SrcBlend = D3D12_BLEND_ONE;
+	blenddesc.DestBlend = D3D12_BLEND_ONE;
 
 	// 減算ブレンディング
 	//blenddesc.BlendOp = D3D12_BLEND_OP_REV_SUBTRACT;
