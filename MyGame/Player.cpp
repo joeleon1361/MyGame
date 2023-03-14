@@ -254,12 +254,12 @@ void Player::FrontRolling()
 		// ŒX‚«‚ð–ß‚·
 		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && rotation.x != 0.0f)
 		{
-			if (rotation.x >= 0.0f)
+			if (rotation.x > 0.0f)
 			{
 				rotation.x -= 5.0f;
 			}
 
-			if (rotation.x <= 0.0f)
+			if (rotation.x < 0.0f)
 			{
 				rotation.x += 5.0f;
 			}
@@ -270,12 +270,12 @@ void Player::FrontRolling()
 		// ŒX‚«‚ð–ß‚·
 		if (rotation.x != 0.0f)
 		{
-			if (rotation.x >= 0.0f)
+			if (rotation.x > 0.0f)
 			{
 				rotation.x -= 5.0f;
 			}
 
-			if (rotation.x <= 0.0f)
+			if (rotation.x < 0.0f)
 			{
 				rotation.x += 5.0f;
 			}
@@ -292,12 +292,12 @@ void Player::RightRolling()
 		// ŒX‚«‚ð–ß‚·
 		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && rotation.x != 0.0f)
 		{
-			if (rotation.x >= 0.0f)
+			if (rotation.x > 0.0f)
 			{
 				rotation.x -= 5.0f;
 			}
 
-			if (rotation.x <= 0.0f)
+			if (rotation.x < 0.0f)
 			{
 				rotation.x += 5.0f;
 			}
@@ -305,12 +305,12 @@ void Player::RightRolling()
 	}
 	else
 	{
-		if (rotation.x >= 0.0f)
+		if (rotation.x > 0.0f)
 		{
 			rotation.x -= 5.0f;
 		}
 
-		if (rotation.x <= 0.0f)
+		if (rotation.x < 0.0f)
 		{
 			rotation.x += 5.0f;
 		}
@@ -341,12 +341,12 @@ void Player::BackRolling()
 		// ŒX‚«‚ð–ß‚·
 		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && rotation.x != 0.0f)
 		{
-			if (rotation.x >= 0.0f)
+			if (rotation.x > 0.0f)
 			{
 				rotation.x -= 5.0f;
 			}
 
-			if (rotation.x <= 0.0f)
+			if (rotation.x < 0.0f)
 			{
 				rotation.x += 5.0f;
 			}
@@ -357,12 +357,12 @@ void Player::BackRolling()
 		// ŒX‚«‚ð–ß‚·
 		if (rotation.x != 0.0f)
 		{
-			if (rotation.x >= 0.0f)
+			if (rotation.x > 0.0f)
 			{
 				rotation.x -= 5.0f;
 			}
 
-			if (rotation.x <= 0.0f)
+			if (rotation.x < 0.0f)
 			{
 				rotation.x += 5.0f;
 			}
@@ -379,12 +379,12 @@ void Player::LeftRolling()
 		// ŒX‚«‚ð–ß‚·
 		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && rotation.x != 0.0f)
 		{
-			if (rotation.x >= 0.0f)
+			if (rotation.x > 0.0f)
 			{
 				rotation.x -= 5.0f;
 			}
 
-			if (rotation.x <= 0.0f)
+			if (rotation.x < 0.0f)
 			{
 				rotation.x += 5.0f;
 			}
@@ -392,12 +392,12 @@ void Player::LeftRolling()
 	}
 	else
 	{
-		if (rotation.x >= 0.0f)
+		if (rotation.x > 0.0f)
 		{
 			rotation.x -= 5.0f;
 		}
 
-		if (rotation.x <= 0.0f)
+		if (rotation.x < 0.0f)
 		{
 			rotation.x += 5.0f;
 		}

@@ -58,9 +58,65 @@ private: // エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 
 private: // 静的メンバ変数
-	/*static const int debugTextTexNumber = 0;
+	// スプライトのテクスチャ番号
+	static enum TextureNumber
+	{
+		// 共通
+		common_dtxt_1,
+		common_dtxt_2,
 
-	static const int scoreTextTexNumber = 10;*/
+		// タイトル
+		title_gtxt_1,
+		title_parts_1,
+
+		// ゲーム
+		game_parts_1,
+
+		// プレイヤー
+		game_player_frame_1,
+		game_player_frame_2,
+		game_player_gauge,
+		game_player_icon,
+
+		// ボス
+		game_boss_frame_1,
+		game_boss_frame_2,
+		game_boss_gauge,
+
+		// スコア
+		game_score_frame,
+		game_score_gtxt,
+		game_score_parts,
+
+		// エフェクト
+		damage_effect_1,
+		loading_effect_1,
+
+		// リザルト
+		result_bg,
+		result_frame_1,
+		result_frame_2,
+		result_frame_3,
+		result_gtxt_1,
+		result_gtxt_2,
+		result_gtxt_3,
+		result_gtxt_4,
+		result_gtxt_5,
+		result_gtxt_6,
+		result_gtxt_7,
+		result_gtxt_8,
+		result_gtxt_9,
+		result_gtxt_12,
+		result_gtxt_13,
+		result_gtxt_14,
+		result_gtxt_15,
+		result_parts_1,
+		result_parts_2,
+		result_parts_3,
+		result_parts_4,
+		result_parts_5,
+		result_parts_6
+	};
 
 public: // メンバ関数
 
@@ -124,35 +180,46 @@ public: // メンバ関数
 	// ゲームオーバー初期化
 	void GameOverInitialize();
 
-	// パーティクル生成
+	// 弾が当たった際のパーティクル生成
 	void CreateHitParticles(XMFLOAT3 position);
 
+	// ボス撃破時のパーティクル生成
 	void CreateBossParticles(XMFLOAT3 position);
 
+	// プレイヤーのジェットパーティクル生成
 	void CreatePlayerJetParticles(XMFLOAT3 position);
 
+	// 全シーン共通のデバックテキスト
 	void AllDebugText();
 
+	// タイトル画面で使用するのデバックテキスト
 	void TitleDebugText();
 
+	// ゲーム画面で使用するのデバックテキスト
 	void GameDebugText();
-	//
+
+	// カメラモードの切り替え
 	void CameraSwitching();
 
+	// プレイヤーの攻撃
 	void Attack();
 
+	// ボスの攻撃
 	void BossAttack();
 
+	// ボスの部位1の攻撃
 	void BossLeg1Attack();
 
+	// ボスの部位2の攻撃
 	void BossLeg2Attack();
 
+	// ボスの部位3の攻撃
 	void BossLeg3Attack();
 
+	// ボスの部位4の攻撃
 	void BossLeg4Attack();
 
-	void BossSpecialAttack();
-
+	// スプライン曲線の計算
 	void SplineCount();
 
 	void Lerp1Count();
@@ -165,12 +232,16 @@ public: // メンバ関数
 
 	void Lerp5Count();
 
+	// テクスチャのロード
 	void LoadTextureFunction();
 
+	// Wavデータのロード
 	void LoadWavFunction();
 
+	// 得点加算時のUI演出
 	void scoreUIMotion();
 
+	// 得点加算時のUI演出の更新
 	void scoreUIUpdate();
 
 	// プレイヤーとUIが重なった際のアルファ値計算
@@ -193,6 +264,7 @@ public: // メンバ関数
 
 	// 当たり判定
 	bool OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB);
+
 private:
 	XMFLOAT3 SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t);
 
@@ -210,9 +282,6 @@ private: // メンバ変数
 
 	// ゲームシーン用
 	Camera* camera = nullptr;
-
-	Sprite* spriteBG = nullptr;
-	Sprite* TitleBG = nullptr;
 
 	Sprite* StageSelectBG = nullptr;
 	Sprite* GameFG = nullptr;
@@ -327,37 +396,6 @@ private: // メンバ変数
 
 	FbxObject3d* testobject = nullptr;
 
-#pragma region カメラ関連
-	enum CAMERADIRECTION
-	{
-		FRONT,
-		RIGHT,
-		BACK,
-		LEFT
-	};
-
-	enum CAMERAMODE
-	{
-		START,
-		FIGHT
-	};
-
-	XMFLOAT3 moveCameraPosition_1;
-	XMFLOAT3 moveCameraPosition_2;
-	XMFLOAT3 moveCameraPosition_3;
-
-	int moveCameraNumber = 0;
-
-	float moveCameraTimer = 3.0f;
-	float moveCameraTimerVel = 0.0f;
-
-	int cameraType = START;
-
-	bool breakCameraFlag = false;
-#pragma endregion
-
-	bool railCountFlag = true;
-
 #pragma region スプライン曲線関連
 	// スプライン曲線関連
 
@@ -430,6 +468,8 @@ private: // メンバ変数
 
 	size_t startIndex = 1;
 
+	bool railCountFlag = true;
+
 	// Soline時間計測に必要なデータ
 	int startCount = 0;
 	int nowCount = 0;
@@ -471,114 +511,8 @@ private: // メンバ変数
 
 #pragma endregion
 
-#pragma region プレイヤー関連
-	// プレイヤー関連
-	XMFLOAT3 playerPosition;
-	XMFLOAT3 playerRotation;
-
-	XMFLOAT3 startPlayerPosition = {0.0f,0.0f,-30.0f};
-
-	XMFLOAT3 playerWorldPosition;
-
-	float playerHp;
-	float playerHpMax;
-	float playerHpRatio;
-
-	// 弾関連
-	XMFLOAT3 bulletScale = { 0.3f, 0.3f, 0.3f };
-
-	float bulletSpeed = 1.8f;
-	float bossBulletSpeed = 1.2f;
-
-	float shotRate = 1.5f;
-	bool shotFlag = false;
-#pragma endregion
-
-#pragma region ボス関連
-	// ボス関連
-	XMFLOAT3 bossPosition;
-	XMFLOAT3 bossRotation;
-
-	XMFLOAT3 bossLeg1Position;
-	XMFLOAT3 bossLeg2Position;
-	XMFLOAT3 bossLeg3Position;
-	XMFLOAT3 bossLeg4Position;
-
-	XMFLOAT3 bossBodyWorldPosition;
-	XMFLOAT3 bossLeg1WorldPosition;
-	XMFLOAT3 bossLeg2WorldPosition;
-	XMFLOAT3 bossLeg3WorldPosition;
-	XMFLOAT3 bossLeg4WorldPosition;
-
-	XMFLOAT3 bossLeg1Velocity = { 0.0f,0.0f,0.0f };
-
-	float bossHp;
-	float bossHpMax;
-	float bossHpRatio;
-
-	float bossLeg1Hp;
-	float bossLeg2Hp;
-	float bossLeg3Hp;
-	float bossLeg4Hp;
-
-	bool bossBreak = false;
-	bool bossLeg1Break = false;
-	bool bossLeg2Break = false;
-	bool bossLeg3Break = false;
-	bool bossLeg4Break = false;
-
-	bool bossFlag = true;
-	bool bossLeg1Flag = true;
-	bool bossLeg2Flag = true;
-	bool bossLeg3Flag = true;
-	bool bossLeg4Flag = true;
-
-	// デスフラグ
-	bool bossDeathFlag = false;
-
-	enum BOSSPATTERN
-	{
-		STAY,
-		NORMAL,
-		BODYUP,
-		BODYDOWN,
-		BODYRIGHT,
-		BODYLEFT,
-		RUSH,
-		GUARDON,
-		GUARDOFF,
-		FOURWAYRUSH
-	};
-
-	bool rushFlag = false;
-
-	int bossPattern = STAY;
-
-	float moveValue = 0.0f;
-
-	float rushOrder = 0.0f;
-
-	// スペシャル攻撃
-	// 弾のサイズ
-	XMFLOAT3 specialBulletScale = { 0.0f,0.0f,0.0f };
-
-	// 生成位置
-	XMFLOAT3 specialBulletPosition;
-
-	// スピード
-	float specialBulletSpeed = 0.0;
-
-#pragma endregion
-
-	XMFLOAT3 centerPosition;
-	XMFLOAT3 centerRotation;
-
-	XMFLOAT3 cameraPosition;
-
-	XMFLOAT3 SkydomPos;
-	XMFLOAT3 SkydomRot;
-
 #pragma region シーン遷移関連
+	// シーンパターン
 	enum SCENE
 	{
 		TITLE,
@@ -588,9 +522,16 @@ private: // メンバ変数
 		GAMEOVER
 	};
 
+	// シーンパターン
 	int scene = TITLE;
+#pragma endregion
 
+#pragma region 共通
+	// ローディングの暗転色
 	XMFLOAT4 loadingColor;
+
+	// シーン遷移時の暗転アルファ値
+	float loadingChangeAlpha = 0.0f;
 
 	bool changeColorFlag = false;
 	float changeColorTimer = 30.0f;
@@ -599,13 +540,8 @@ private: // メンバ変数
 	float changeSceneTimer = 100.0f;
 #pragma endregion
 
-#pragma region ステージセレクト関連
-	XMFLOAT3 stage1Position;
-	XMFLOAT3 stage2Position;
-	XMFLOAT3 stage3Position;
-#pragma endregion
-
-#pragma region タイトル画面で使う変数
+#pragma region タイトル画面
+	// プレイヤー関連
 	XMFLOAT3 TitlePlayerPosition;
 	XMFLOAT3 TitlePlayerRotation;
 
@@ -638,50 +574,277 @@ private: // メンバ変数
 	};
 #pragma endregion
 
+#pragma region ステージセレクト関連
+	XMFLOAT3 stage1Position;
+	XMFLOAT3 stage2Position;
+	XMFLOAT3 stage3Position;
+#pragma endregion
+
+#pragma region ゲーム画面
+	// コアオブジェクトの座標
+	XMFLOAT3 centerPosition;
+	// コアオブジェクトの角度
+	XMFLOAT3 centerRotation;
+
+	// スカイドームの座標
+	XMFLOAT3 SkydomPosition;
+	// スカイドームの角度
+	XMFLOAT3 SkydomRotation;
+
+	// コアオブジェクトに加算する値
+	float centorVel = 0.1f;
+
+	float gameScore = 0.0f;
+	float gameScoreMax = 9999999;
+
+	//オーディオのボリューム
+	const float Volume = 0.07f;
+
+#pragma region カメラ関連
+	// カメラの方向パターン
+	enum CAMERADIRECTION
+	{
+		FRONT,
+		RIGHT,
+		BACK,
+		LEFT
+	};
+
+	// カメラのモード
+	enum CAMERAMODE
+	{
+		START,
+		FIGHT
+	};
+
+	XMFLOAT3 moveCameraPosition_1;
+	XMFLOAT3 moveCameraPosition_2;
+	XMFLOAT3 moveCameraPosition_3;
+
+	int moveCameraNumber = 0;
+
+	float moveCameraTimer = 3.0f;
+	float moveCameraTimerVel = 0.0f;
+
+	int cameraType = START;
+
+	bool breakCameraFlag = false;
+
+	// カメラのワールド座標
+	XMFLOAT3 cameraWorldPosition;
+	// カメラのローカル座標
+	XMFLOAT3 cameraLocalPosition;
+
+	// 切り替え先のカメラ座標
+	XMFLOAT3 nextCamera;
+#pragma endregion
+
+#pragma region プレイヤー関連
+	// プレイヤーのローカル座標
+	XMFLOAT3 playerLocalPosition;
+	// プレイヤーの角度
+	XMFLOAT3 playerRotation;
+
+	// ゲーム開始時の演出プレイヤーの座標
+	XMFLOAT3 startPlayerPosition = { 0.0f,0.0f,-30.0f };
+
+	// プレイヤーのワールド座標
+	XMFLOAT3 playerWorldPosition;
+
+	// プレイヤーのHP
+	float playerHp;
+	// プレイヤーの最大HP
+	float playerHpMax;
+	// プレイヤーの最大HPから現HPを割った値
+	float playerHpRatio;
+
+	// プレイヤーの弾のサイズ
+	XMFLOAT3 bulletScale = { 0.3f, 0.3f, 0.3f };
+
+	// プレイヤーの弾の速度
+	float playerBulletSpeed = 1.8f;
+	// ボスの弾の速度
+	float bossBulletSpeed = 1.2f;
+
+	// プレイヤーの弾の発射間隔
+	float shotRate = 1.5f;
+	// プレイヤーの弾の発射フラグ
+	bool shotFlag = false;
+
+	// プレイヤーの注視点計算
+	XMFLOAT3 playerTargetPosition;
 	float testX;
 	float testZ;
 	float testRadians;
 	float testDegrees;
+#pragma endregion
 
-	XMFLOAT3 playerTargetPosition;
+#pragma region ボス関連
+	// ボスのローカル座標
+	XMFLOAT3 bossLocalPosition;
+	// ボスの角度
+	XMFLOAT3 bossRotation;
 
-	//オーディオのボリューム
-	const float Volume_Title = 0.07f;
+	// ボス部位1のローカル座標
+	XMFLOAT3 bossLeg1LocalPosition;
+	// ボス部位2のローカル座標
+	XMFLOAT3 bossLeg2LocalPosition;
+	// ボス部位3のローカル座標
+	XMFLOAT3 bossLeg3LocalPosition;
+	// ボス部位4のローカル座標
+	XMFLOAT3 bossLeg4LocalPosition;
 
-	// UI関係
+	// ボスのワールド座標
+	XMFLOAT3 bossWorldPosition;
+	// ボス部位1のローカル座標
+	XMFLOAT3 bossLeg1WorldPosition;
+	// ボス部位2のローカル座標
+	XMFLOAT3 bossLeg2WorldPosition;
+	// ボス部位3のローカル座標
+	XMFLOAT3 bossLeg3WorldPosition;
+	// ボス部位4のローカル座標
+	XMFLOAT3 bossLeg4WorldPosition;
+
+	// ボスのHP
+	float bossHp;
+	// ボスの最大HP
+	float bossHpMax;
+	// ボスの最大HPから現HPを割った値
+	float bossHpRatio;
+
+	// ボス部位1のHP
+	float bossLeg1Hp;
+	// ボス部位2のHP
+	float bossLeg2Hp;
+	// ボス部位3のHP
+	float bossLeg3Hp;
+	// ボス部位4のHP
+	float bossLeg4Hp;
+
+	// ボスの撃破フラグ
+	bool bossBreak = false;
+	// ボス部位1の撃破フラグ
+	bool bossLeg1Break = false;
+	// ボス部位2の撃破フラグ
+	bool bossLeg2Break = false;
+	// ボス部位3の撃破フラグ
+	bool bossLeg3Break = false;
+	// ボス部位4の撃破フラグ
+	bool bossLeg4Break = false;
+
+	// ボスの生存フラグ
+	bool bossFlag = true;
+	// ボス部位1の生存フラグ
+	bool bossLeg1Flag = true;
+	// ボス部位2の生存フラグ
+	bool bossLeg2Flag = true;
+	// ボス部位3の生存フラグ
+	bool bossLeg3Flag = true;
+	// ボス部位4の生存フラグ
+	bool bossLeg4Flag = true;
+
+	// ボスのデスフラグ
+	bool bossDeathFlag = false;
+
+	// ボスの行動パターン
+	enum BOSSPATTERN
+	{
+		STAY,
+		NORMAL,
+		BODYUP,
+		BODYDOWN,
+		BODYRIGHT,
+		BODYLEFT,
+		RUSH,
+		GUARDON,
+		GUARDOFF,
+		FOURWAYRUSH
+	};
+
+	// ボスのガトリング攻撃フラグ
+	bool rushFlag = false;
+
+	// ボスの行動パターン
+	int bossPattern = STAY;
+
+	// ボスがどれだけ回転するかの値
+	float bossRotateVel = 0.0f;
+
+	// ボスのガトリング攻撃番号
+	int rushOrder = 0;
+#pragma endregion
+
+#pragma region UI関係
+	// プレイヤーのHPバーのサイズ
 	XMFLOAT2 playerHpGageSize;
+	// プレイヤーのダメージバーのサイズ
 	XMFLOAT2 playerDamageGageSize;
 
+	// ボスのHPバーのサイズ
 	XMFLOAT2 bossHpGageSize;
+	// ボスのダメージバーのサイズ
 	XMFLOAT2 bossDamageGageSize;
 
+	// プレイヤーのHPバーの座標
 	XMFLOAT2 playerHpUIPosition = { 1154.0f, 680.0f };
 
+	// ボスのHPバーの座標
 	XMFLOAT2 bossHpUIPosition = { 1255.0f , 30.0f };
 
+	// スコアUIの座標
 	XMFLOAT2 scoreUIPosition = { 15.0f, 60.0f };
 
+	// プレイヤーのHPバーの表示座標
 	XMFLOAT2 onPlayerHpUIPosition = { 1154.0f, 680.0f };
+	// プレイヤーのHPバーの非表示座標
 	XMFLOAT2 offPlayerHpUIPosition = { 1154.0f, 780.0f };
 
+	// ボスのHPバーの表示座標
 	XMFLOAT2 onBossHpUIPosition = { 1255.0f , 30.0f };
+	// ボスのHPバーの非表示座標
 	XMFLOAT2 offBossHpUIPosition = { 1255.0f , -30.0f };
 
+	// スコアUIの表示座標
 	XMFLOAT2 onScoreUIPosition = { 15.0f, 60.0f };
+	// スコアUIの非表示座標
 	XMFLOAT2 offScoreUIPosition = { 15.0f, -60.0f };
 
-	float gameScore = 0.0f;
-	float gameScoreMax = 9999999;
-	XMFLOAT2 scoreBasePosition = { 0.0f, 0.0f };
-
-	float scoreMoveVel = 0.0f;
-	float scoreMoveAcc = 1.0f;
-
-	float moveUIVel = 0.04f;
-
+	// 後方向カメラ切り替えUIの色
 	XMFLOAT4 gameParts1Color;
+	// 右方向カメラ切り替えUIの色
 	XMFLOAT4 gameParts2Color;
+	// 左方向カメラ切り替えUIの色
 	XMFLOAT4 gameParts3Color;
+
+	// ダメージエフェクトのアルファ値
+	float damageEffectAlpha = 0.0f;
+	// ダメージエフェクトのアルファ値に加算される値
+	float damageEffectAlphaVel = 0.0f;
+
+	// スコアUIのアルファ値
+	float scoreUIAlpha = 0.0f;
+	// スコアUIのアルファ値に加算される値
+	float scoreUIAlphaVel = 0.0f;
+
+	// プレイヤーのHPバーのアルファ値
+	float playerHpUIAlpha = 0.0f;
+	// プレイヤーのHPバーのアルファ値に加算される値
+	float playerHpUIAlphaVel = 0.0f;
+
+	// プレイヤーのダメージバーのアルファ値
+	float playerDamageUIAlpha = 0.0f;
+	// プレイヤーのダメージバーのアルファ値に加算される値
+	float playerDamageUIAlphaVel = 0.0f;
+
+	// ボスのHPバーのアルファ値
+	float bossHpUIAlpha = 0.0f;
+	// ボスのHPバーのアルファ値に加算される値
+	float bossHpUIAlphaVel = 0.0f;
+
+	// ボスのダメージバーのアルファ値
+	float bossDamageUIAlpha = 0.0f;
+	// ボスのダメージバーのアルファ値に加算される値
+	float bossDamageUIAlphaVel = 0.0f;
 
 	int backFlashingCount = 0;
 	bool backFlashingFlag = false;
@@ -692,9 +855,124 @@ private: // メンバ変数
 	int leftFlashingCount = 0;
 	bool leftFlashingFlag = false;
 
+	// ノーダメージ時に加算加算される値
+	float noDamageBonus = 20000.0f;
+
+	// 合計スコアの値
+	float totalScore = 0.0f;
+
+	// ノーダメージフラグ
+	bool noDamageFlag = true;
+
+	// 目標スコアに達しているかフラグ
+	bool targetScoreFlag = false;
+
+	// リザルト画面に入ってからの時間を計算するタイマー
+	float resultTimer = 5.0f;
+
+	// キー入力が可能かフラグ
+	bool canPushKeyFlag = false;
+
+	// リザルトテキストのサイズ計算を開始するフラグ
+	bool changeResultSizeFlag = false;
+
+	// スコアの表示座標
+	XMFLOAT2 scoreBasePosition = { 0.0f, 0.0f };
+	float scoreMoveVel = 0.0f;
+	float scoreMoveAcc = 1.0f;
+
+	// ゲーム開始時のUI出現に加算している値
+	float moveUIVel = 0.04f;
+#pragma endregion
+
+#pragma endregion
+
+#pragma region リザルト画面
+	// バナー1のサイズ
 	XMFLOAT2 resultBN_1Size;
+	// バナー2のサイズ
 	XMFLOAT2 resultBN_2Size;
+	// バナー3のサイズ
 	XMFLOAT2 resultBN_3Size;
+
+
+	XMFLOAT2 resultParts_1Size;
+	XMFLOAT2 resultParts_2Size;
+	XMFLOAT2 resultParts_3Size;
+
+	// Sランクマークのサイズ
+	XMFLOAT2 rankSSize;
+	// Aランクマークのサイズ
+	XMFLOAT2 rankASize;
+	// Bランクマークのサイズ
+	XMFLOAT2 rankBSize;
+	// Cランクマークのサイズ
+	XMFLOAT2 rankCSize;
+
+	XMFLOAT2 resultGTXT_15Size;
+
+	// ミッション達成スター1のサイズ
+	XMFLOAT2 missionStar1Size;
+	// ミッション達成スター2のサイズ
+	XMFLOAT2 missionStar2Size;
+	// ミッション達成スター3のサイズ
+	XMFLOAT2 missionStar3Size;
+
+	// スコアテキストの表示座標
+	XMFLOAT2 scorePosition = { 855.0f, 275.0f };
+	// ノーダメージボーナステキストの表示座標
+	XMFLOAT2 noDamageBonusPosition = { 855.0f, 305.0f };
+	// 合計スコアテキストの表示座標
+	XMFLOAT2 totalScorePosition = { 800.0f, 385.0f };
+	// クリアランクテキストの表示座標
+	XMFLOAT2 rankPosition = { 800.0f, 455.0f };
+	// クリアランクマークの表示座標
+	XMFLOAT2 resultRankPosition = { 850.0f,480.0f };
+
+	// リザルトテキストの色
+	XMFLOAT4 resultColor;
+	XMFLOAT4 resultPartsColor;
+	// スコアテキストの色
+	XMFLOAT4 scoreColor = { 0.760f, 0.929f, 1.0f, 0.0f };
+	// ノーダメージテキストの色
+	XMFLOAT4 noDamageBonusColor = { 0.760f, 0.929f, 1.0f, 0.0f };
+	// 合計スコアテキストの色
+	XMFLOAT4 totalScoreColor = { 0.760f, 0.929f, 1.0f, 0.0f };
+	// クリアランクテキストの色
+	XMFLOAT4 rankColor = { 0.760f, 0.929f, 1.0f, 0.0f };
+	// ミッションテキストの色
+	XMFLOAT4 missionColor = { 0.760f, 0.929f, 1.0f, 0.0f };
+
+	// Sランクマークの色
+	XMFLOAT4 rankSColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+	// Aランクマークの色
+	XMFLOAT4 rankAColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+	// Bランクマークの色
+	XMFLOAT4 rankBColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+	// Cランクマークの色
+	XMFLOAT4 rankCColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+
+	// ミッション1テキストの色
+	XMFLOAT4 mission1Color;
+	// ミッション2テキストの色
+	XMFLOAT4 mission2Color;
+	// ミッション3テキストの色
+	XMFLOAT4 mission3Color;
+
+	// ミッション未達成スター1の色
+	XMFLOAT4 missionStar1Color;
+	// ミッション未達成スター2の色
+	XMFLOAT4 missionStar2Color;
+	// ミッション未達成スター3の色
+	XMFLOAT4 missionStar3Color;
+
+	// ミッション達成スター1の色
+	XMFLOAT4 missionStar4Color;
+	// ミッション達成スター2の色
+	XMFLOAT4 missionStar5Color;
+	// ミッション達成スター3の色
+	XMFLOAT4 missionStar6Color;
 
 	float resultMoveVelX_1 = 0.0f;
 	float resultMoveAccX_1 = 0.0f;
@@ -725,50 +1003,7 @@ private: // メンバ変数
 	float resultMoveVel_10 = 0.0f;
 	float resultMoveVel_11 = 0.0f;
 
-	XMFLOAT2 resultParts_1Size;
-	XMFLOAT2 resultParts_2Size;
-	XMFLOAT2 resultParts_3Size;
 
-	XMFLOAT2 rankSSize;
-	XMFLOAT2 rankASize;
-	XMFLOAT2 rankBSize;
-	XMFLOAT2 rankCSize;
-	XMFLOAT2 resultGTXT_15Size;
-
-	XMFLOAT2 missionStar1Size;
-	XMFLOAT2 missionStar2Size;
-	XMFLOAT2 missionStar3Size;
-
-	XMFLOAT2 scorePosition = { 855.0f, 275.0f };
-	XMFLOAT2 noDamageBonusPosition = { 855.0f, 305.0f };
-	XMFLOAT2 totalScorePosition = { 800.0f, 385.0f };
-	XMFLOAT2 rankPosition = { 800.0f, 455.0f };
-	XMFLOAT2 resultRankPosition = { 850.0f,480.0f };
-
-	XMFLOAT4 resultColor;
-	XMFLOAT4 resultPartsColor;
-	XMFLOAT4 scoreColor = { 0.760f, 0.929f, 1.0f, 0.0f };
-	XMFLOAT4 noDamageBonusColor = { 0.760f, 0.929f, 1.0f, 0.0f };
-	XMFLOAT4 totalScoreColor = { 0.760f, 0.929f, 1.0f, 0.0f };
-	XMFLOAT4 rankColor = { 0.760f, 0.929f, 1.0f, 0.0f };
-	XMFLOAT4 missionColor = { 0.760f, 0.929f, 1.0f, 0.0f };
-
-	XMFLOAT4 rankSColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-	XMFLOAT4 rankAColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-	XMFLOAT4 rankBColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-	XMFLOAT4 rankCColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-	XMFLOAT4 mission1Color;
-	XMFLOAT4 mission2Color;
-	XMFLOAT4 mission3Color;
-
-	XMFLOAT4 missionStar1Color;
-	XMFLOAT4 missionStar2Color;
-	XMFLOAT4 missionStar3Color;
-
-	XMFLOAT4 missionStar4Color;
-	XMFLOAT4 missionStar5Color;
-	XMFLOAT4 missionStar6Color;
 
 	float resultChangeAlpha_1 = 0.0f;
 	float resultChangeAlpha_2 = 0.0f;
@@ -781,102 +1016,5 @@ private: // メンバ変数
 	float resultChangeAlpha_9 = 0.0f;
 	float resultChangeAlpha_10 = 0.0f;
 	float resultChangeAlpha_11 = 0.0f;
-
-	float loadingChangeAlpha = 0.0f;
-
-	float damageEffectAlpha = 0.0f;
-	float damageEffectAlphaVel = 0.0f;
-
-	float scoreUIAlpha = 0.0f;
-	float scoreUIAlphaVel = 0.0f;
-
-	float playerHpUIAlpha = 0.0f;
-	float playerHpUIAlphaVel = 0.0f;
-
-	float playerDamageUIAlpha = 0.0f;
-	float playerDamageUIAlphaVel = 0.0f;
-
-	float bossHpUIAlpha = 0.0f;
-	float bossHpUIAlphaVel = 0.0f;
-
-	float bossDamageUIAlpha = 0.0f;
-	float bossDamageUIAlphaVel = 0.0f;
-
-	float noDamageBonus = 20000.0f;
-
-	float totalScore = 0.0f;
-
-	bool noDamageFlag = true;
-	bool targetScoreFlag = false;
-
-	float resultTimer = 5.0f;
-
-	bool canPushKeyFlag = false;
-
-	bool changeResultSizeFlag = false;
-
-	float centorVel = 0.1f;
-
-	XMFLOAT3 cameraLocal;
-
-	XMFLOAT3 nextCamera;
-
-	enum TextureNumber
-	{
-		// 共通
-		common_dtxt_1,
-		common_dtxt_2,
-
-		// タイトル
-		title_gtxt_1,
-		title_parts_1,
-
-		// ゲーム
-		game_parts_1,
-
-		// プレイヤー
-		game_player_frame_1,
-		game_player_frame_2,
-		game_player_gauge,
-		game_player_icon,
-
-		// ボス
-		game_boss_frame_1,
-		game_boss_frame_2,
-		game_boss_gauge,
-
-		// スコア
-		game_score_frame,
-		game_score_gtxt,
-		game_score_parts,
-
-		// エフェクト
-		damage_effect_1,
-		loading_effect_1,
-
-		// リザルト
-		result_bg,
-		result_frame_1,
-		result_frame_2,
-		result_frame_3,
-		result_gtxt_1,
-		result_gtxt_2,
-		result_gtxt_3,
-		result_gtxt_4,
-		result_gtxt_5,
-		result_gtxt_6,
-		result_gtxt_7,
-		result_gtxt_8,
-		result_gtxt_9,
-		result_gtxt_12,
-		result_gtxt_13,
-		result_gtxt_14,
-		result_gtxt_15,
-		result_parts_1,
-		result_parts_2,
-		result_parts_3,
-		result_parts_4,
-		result_parts_5,
-		result_parts_6
-	};
+#pragma endregion
 };
