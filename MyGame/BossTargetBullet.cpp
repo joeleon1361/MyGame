@@ -49,4 +49,9 @@ void BossTargetBullet::Update()
 	position.x += velocity.x * speed;
 	position.y += velocity.y * speed;
 	position.z += velocity.z * speed;
+
+	if (--deathTimer <= 0)
+	{
+		deathFlag = true;
+	}
 }

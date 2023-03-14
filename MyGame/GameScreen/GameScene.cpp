@@ -152,8 +152,10 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	resultParts_10 = Sprite::Create(TextureNumber::result_parts_6, { 640.0f,120.0f });
 
 	// パーティクルマネージャー
-	particleMan = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect1.png");
-	playerJetParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect2.png");
+	bossHitParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect2.png");
+	playerJetParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect1.png");
+	playerContrailParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect2.png");
+	playerBulletParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect1.png");
 
 	// 3Dオブジェクト生成
 	objSkydome = ObjObject::Create();
@@ -495,7 +497,7 @@ void GameScene::TitleDraw()
 
 
 	// パーティクルの描画
-	particleMan->Draw(cmdList);
+	bossHitParticle->Draw(cmdList);
 
 	// 3Dオブジェクト描画後処理
 	ObjObject::PostDraw();
@@ -637,7 +639,7 @@ void GameScene::StageSelectDraw()
 	objStage3->Draw();
 
 	// パーティクルの描画
-	particleMan->Draw(cmdList);
+	bossHitParticle->Draw(cmdList);
 
 	// 3Dオブジェクト描画後処理
 	ObjObject::PostDraw();
@@ -1318,6 +1320,20 @@ void GameScene::GameUpdate()
 
 	CreatePlayerJetParticles(playerWorldPosition);
 
+	CreatePlayerContrailParticles({ playerWorldPosition.x + 0.9f, playerWorldPosition.y, playerWorldPosition.z });
+
+	CreatePlayerContrailParticles({ playerWorldPosition.x + -0.9f, playerWorldPosition.y, playerWorldPosition.z });
+
+	for (std::unique_ptr<Bullet>& bullet : bullets)
+	{
+		CreatePlayerBulletParticles(bullet->GetPosition());
+	}
+
+	for (std::unique_ptr<BossTargetBullet>& bullet : bossTargetBullets)
+	{
+		CreateBossBulletParticles(bullet->GetPosition());
+	}
+
 #pragma region 座標のセット
 	// カメラ座標のセット
 	CameraSwitching();
@@ -1419,9 +1435,10 @@ void GameScene::GameUpdate()
 	bossLeg4->Update();
 
 	// パーティクルの更新
-	particleMan->Update();
+	bossHitParticle->Update();
 	playerJetParticle->Update();
-
+	playerContrailParticle->Update();
+	playerBulletParticle->Update();
 	// 背景天球
 	objSkydome->Update();
 
@@ -1486,18 +1503,18 @@ void GameScene::GameDraw()
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
 		{
-			bullet->Draw();
+			//bullet->Draw();
 		}
 	}
 
 	for (std::unique_ptr<BossBullet>& bullet : bossBullets)
 	{
-		bullet->Draw();
+		//bullet->Draw();
 	}
 
 	for (std::unique_ptr<BossTargetBullet>& bullet : bossTargetBullets)
 	{
-		bullet->Draw();
+		//bullet->Draw();
 	}
 
 	if (bossFlag == true)
@@ -1532,8 +1549,10 @@ void GameScene::GameDraw()
 	//objCamera->Draw();
 
 	// パーティクルの描画
-	particleMan->Draw(cmdList);
+	bossHitParticle->Draw(cmdList);
 	playerJetParticle->Draw(cmdList);
+	//playerContrailParticle->Draw(cmdList);
+	playerBulletParticle->Draw(cmdList);
 
 	// 3Dオブジェクト描画後処理
 	ObjObject::PostDraw();
@@ -2370,7 +2389,7 @@ void GameScene::ResultDraw()
 	// 3Dオブクジェクトの描画
 
 	// パーティクルの描画
-	//particleMan->Draw(cmdList);
+	//bossHitParticle->Draw(cmdList);
 
 	// 3Dオブジェクト描画後処理
 	ObjObject::PostDraw();
@@ -2618,7 +2637,7 @@ void GameScene::GameOverDraw()
 	// 3Dオブクジェクトの描画
 
 	// パーティクルの描画
-	//particleMan->Draw(cmdList);
+	//bossHitParticle->Draw(cmdList);
 
 	// 3Dオブジェクト描画後処理
 	ObjObject::PostDraw();
@@ -2665,18 +2684,16 @@ void GameScene::CreateHitParticles(XMFLOAT3 position)
 		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.y;
 		pos.z = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.z;
 
-		const float rnd_vel = 1.0f;
+		const float rnd_vel = 0.5f;
 		XMFLOAT3 vel{};
 		vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
 		vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
 		vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
 
 		XMFLOAT3 acc{};
-		const float rnd_acc = 0.0f;
-		acc.y = -(float)rand() / RAND_MAX * rnd_acc;
 
 		// 追加
-		particleMan->Add(20, pos, vel, acc, { 0.874f,0.443f, 0.149f, 1.000f }, { 0.874f,0.443f, 0.149f, 1.000f }, 3.0f, 0.0f);
+		bossHitParticle->Add(20, pos, vel, acc, { 1.0f,1.0f, 0.0f, 1.0f }, { 1.0f,1.0f, 0.0f, 1.0f }, 3.0f, 0.0f);
 	}
 }
 
@@ -2701,7 +2718,7 @@ void GameScene::CreateBossParticles(XMFLOAT3 position)
 		acc.y = +(float)rand() / RAND_MAX * rnd_acc;
 
 		// 追加
-		particleMan->Add(30, pos, vel, acc, { 0.874f,0.443f, 0.149f, 1.000f }, { 0.874f,0.443f, 0.149f, 1.000f }, 2.0f, 0.0f);
+		bossHitParticle->Add(30, pos, vel, acc, { 0.111f,0.115f, 0.115f, 1.0f }, { 0.111f,0.115f, 0.115f, 1.0f }, 2.0f, 0.0f);
 	}
 }
 
@@ -2724,6 +2741,63 @@ void GameScene::CreatePlayerJetParticles(XMFLOAT3 position)
 
 		// 追加
 		playerJetParticle->Add(5, pos, vel, acc, { 0.874f,0.443f, 0.149f, 1.000f }, { 0.874f,0.443f, 0.149f, 1.000f }, 0.3f, 0.0f);
+	}
+}
+
+void GameScene::CreatePlayerContrailParticles(XMFLOAT3 position)
+{
+	for (int i = 0; i < 10; i++) {
+		const float rnd_pos = 0.1f;
+		XMFLOAT3 pos{};
+		pos.x = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.x;
+		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.y;
+		pos.z = position.z + -0.8f;
+
+		const float rnd_vel = -0.2f;
+		XMFLOAT3 vel{};
+		vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+
+		XMFLOAT3 acc{};
+		const float rnd_acc = -0.1f;
+		acc.z = -0.1f;
+
+		// 追加
+		playerContrailParticle->Add(5, pos, vel, acc, { 1.000f,1.000f, 1.000f, 1.000f }, { 1.000f,1.000f, 1.000f, 1.000f }, 0.2f, 0.0f);
+	}
+}
+
+void GameScene::CreatePlayerBulletParticles(XMFLOAT3 position)
+{
+	for (int i = 0; i < 10; i++) {
+		XMFLOAT3 pos{};
+		pos.x = position.x;
+		pos.y = position.y;
+		pos.z = position.z;
+
+		XMFLOAT3 vel{};
+
+		XMFLOAT3 acc{};
+
+		// 追加
+		playerBulletParticle->Add(7, pos, vel, acc, { 0.1f,1.0f, 0.1f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }, 0.7f, 0.0f);
+	}
+}
+
+void GameScene::CreateBossBulletParticles(XMFLOAT3 position)
+{
+	for (int i = 0; i < 10; i++) {
+		const float rnd_pos = 0.1f;
+		XMFLOAT3 pos{};
+		pos.x = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.x;
+		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.y;
+		pos.z = position.z;
+
+		XMFLOAT3 vel{};
+
+		XMFLOAT3 acc{};
+
+		// 追加
+		playerBulletParticle->Add(7, pos, vel, acc, { 1.0f,0.1f, 0.1f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, 0.7f, 0.0f);
 	}
 }
 
