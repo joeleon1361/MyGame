@@ -1610,8 +1610,6 @@ void GameScene::GameDraw()
 	// デバッグテキストの描画
 	//debugText.DrawAll(cmdList);
 
-	////
-
 	// スプライト描画後処理
 	Sprite::PostDraw();
 #pragma endregion
