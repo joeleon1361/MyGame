@@ -187,6 +187,7 @@
     <ClCompile Include="Sound\Sound.cpp" />
     <ClCompile Include="Spline.cpp" />
     <ClCompile Include="Sprite\Sprite.cpp" />
+    <ClCompile Include="StageObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\FBX.hlsli" />
@@ -298,6 +299,7 @@
     <ClInclude Include="Sound\Sound.h" />
     <ClInclude Include="Spline.h" />
     <ClInclude Include="Sprite\Sprite.h" />
+    <ClInclude Include="StageObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -374,6 +374,7 @@ private: // メンバ変数
 	ObjModel* modelPlayer = nullptr;
 	ObjModel* modelBullet = nullptr;
 	ObjModel* modelBossLeg = nullptr;
+	ObjModel* modelCloud_1 = nullptr;
 
 	FbxModel* testmodel = nullptr;
 
@@ -384,6 +385,8 @@ private: // メンバ変数
 	ObjObject* objStage1 = nullptr;
 	ObjObject* objStage2 = nullptr;
 	ObjObject* objStage3 = nullptr;
+
+	ObjObject* objCloud_1 = nullptr;
 
 	// プレイヤー関連
 	Player* player = nullptr;

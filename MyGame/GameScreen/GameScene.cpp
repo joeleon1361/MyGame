@@ -103,7 +103,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 
 	// スコア
 	scoreUI = Sprite::Create(TextureNumber::game_score_frame, scoreUIPosition);
-	scoreChar = Sprite::Create(TextureNumber::game_score_gtxt, { 190.0f, scoreUIPosition.y - 30.0f });
+	scoreChar = Sprite::Create(TextureNumber::game_score_gtxt, { 190.0f, scoreUIPosition.y - 32.0f });
 	scoreNull_1 = Sprite::Create(TextureNumber::game_score_parts, { 403.5f, scoreUIPosition.y - 33.0f });
 	scoreNull_2 = Sprite::Create(TextureNumber::game_score_parts, { 378.0f, scoreUIPosition.y - 33.0f });
 	scoreNull_3 = Sprite::Create(TextureNumber::game_score_parts, { 352.5f, scoreUIPosition.y - 33.0f });
@@ -165,6 +165,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	objStage2 = ObjObject::Create();
 	objStage3 = ObjObject::Create();
 
+	objCloud_1 = ObjObject::Create();
+
 	player = Player::Create();
 
 	objCenter = ObjObject::Create();
@@ -184,6 +186,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	modelPlayer = ObjModel::CreateFromOBJ("player2");
 	modelBullet = ObjModel::CreateFromOBJ("bullet2");
 	modelBossLeg = ObjModel::CreateFromOBJ("BossLeg");
+	modelCloud_1 = ObjModel::CreateFromOBJ("test");
+	
 
 	objSkydome->SetModel(modelSkydome);
 	objGround->SetModel(modelGround);
@@ -195,6 +199,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	objStage1->SetModel(modelBullet);
 	objStage2->SetModel(modelBullet);
 	objStage3->SetModel(modelBullet);
+
+	objCloud_1->SetModel(modelCloud_1);
 
 	bossBody->SetModel(modelBullet);
 	bossLeg1->SetModel(modelBossLeg);
@@ -215,6 +221,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	bossLeg2->SetParent(bossBody);
 	bossLeg3->SetParent(bossBody);
 	bossLeg4->SetParent(bossBody);
+
+	objCloud_1->SetBillboard(true);
 
 	// FBXモデルのロード
 	testmodel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
@@ -1370,7 +1378,7 @@ void GameScene::GameUpdate()
 	scoreUI->SetPosition(scoreUIPosition);
 	scoreUI->SetColor({ 1.0f, 1.0f, 1.0f, scoreUIAlpha });
 
-	scoreChar->SetPosition({ 190.0f, scoreUIPosition.y - 30.0f });
+	scoreChar->SetPosition({ 190.0f, scoreUIPosition.y - 32.0f });
 	scoreChar->SetColor({ 0.760f, 0.929f, 1.0f, scoreUIAlpha });
 
 	scoreNull_1->SetPosition({ 403.5f, scoreUIPosition.y - 33.0f });
@@ -1455,6 +1463,8 @@ void GameScene::GameUpdate()
 
 	// レール中心オブジェクトの更新
 	objCenter->Update();
+
+	objCloud_1->Update();
 
 	// FBXの更新
 	testobject->Update();
@@ -1545,6 +1555,8 @@ void GameScene::GameDraw()
 	// testobject->Draw(cmdList);
 
 	// objCenter->Draw();
+
+	objCloud_1->Draw();
 
 	//objCamera->Draw();
 
@@ -1665,6 +1677,9 @@ void GameScene::GameInitialize()
 	camera->SetTarget({ 0.0f, 0.0f, 0.0f });
 	camera->SetEye({ 0.0f, 0.0f, 10.0f });
 	camera->SetUp({ 0.0f, 1.0f, 0.0f });
+
+	objCloud_1->SetPosition({ 30.0f,0.0f,100.0f });
+	objCloud_1->SetRotation({ 0.0f,180.0f,0.0f });
 
 	// シーン遷移時の画面暗転
 	//LoadingBG->SetColor({ 1, 1, 1, 1.0f });
