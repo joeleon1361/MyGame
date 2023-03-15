@@ -24,6 +24,7 @@
 #include "Boss.h"
 #include "BossBullet.h"
 #include "BossTargetBullet.h"
+#include "StageObject.h"
 
 #include "Spline.h"
 
@@ -44,6 +45,7 @@ class Bullet;
 class Boss;
 class BossBullet;
 class BossTargetBullet;
+class Stageobject;
 
 // ゲームシーン
 class GameScene
@@ -274,6 +276,9 @@ public: // メンバ関数
 	// 当たり判定
 	bool OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB);
 
+	// 雲の生成
+	void CreateCloud();
+
 private:
 	XMFLOAT3 SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t);
 
@@ -409,6 +414,8 @@ private: // メンバ変数
 	ObjObject* objCamera = nullptr;
 
 	FbxObject3d* testobject = nullptr;
+
+	std::list<std::unique_ptr<StageObject>>stageObjects;
 
 #pragma region スプライン曲線関連
 	// スプライン曲線関連

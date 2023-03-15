@@ -825,7 +825,20 @@ void GameScene::GameUpdate()
 
 	alertUIUpdate();
 
+	// CreateCloud();
 
+	// 雲を更新
+	for (std::unique_ptr<StageObject>& cloud : stageObjects)
+	{
+		cloud->Update();
+	}
+
+	// 雲を消去
+	stageObjects.remove_if([](std::unique_ptr<StageObject>& cloud)
+		{
+			return cloud->GetDeathFlag();
+		}
+	);
 
 #pragma region 弾関連
 	Attack();
@@ -1527,6 +1540,11 @@ void GameScene::GameDraw()
 		//bullet->Draw();
 	}
 
+	for (std::unique_ptr<StageObject>& cloud : stageObjects)
+	{
+		cloud->Draw();
+	}
+
 	if (bossFlag == true)
 	{
 		bossBody->Draw();
@@ -1564,7 +1582,10 @@ void GameScene::GameDraw()
 	bossHitParticle->Draw(cmdList);
 	playerJetParticle->Draw(cmdList);
 	//playerContrailParticle->Draw(cmdList);
-	playerBulletParticle->Draw(cmdList);
+	if (playerUpdateFlag == true)
+	{
+		playerBulletParticle->Draw(cmdList);
+	}
 
 	// 3Dオブジェクト描画後処理
 	ObjObject::PostDraw();
@@ -3859,6 +3880,24 @@ bool GameScene::OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, f
 		return false;
 	}
 }
+
+void GameScene::CreateCloud()
+{
+	XMFLOAT3 randPos;
+
+	randPos.x = ((float)rand() / RAND_MAX * 128.0f - 128.0f / 2.0f);
+	randPos.y = ((float)rand() / RAND_MAX * 72.0f - 72.0f / 2.0f);
+	randPos.z = centerPosition.z + 100.0f;
+
+	if (input->TriggerKey(DIK_U))
+	{ 
+		std::unique_ptr<StageObject> newCloud = std::make_unique<StageObject>();
+		newCloud = StageObject::Create(modelCloud_1, randPos, {1.0f,1.0f,1.0f}, 0.0f);
+
+		stageObjects.push_back(std::move(newCloud));
+	}
+}
+
 // スプライン曲線の計算
 XMFLOAT3 GameScene::SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t)
 {
