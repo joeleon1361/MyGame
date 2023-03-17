@@ -153,6 +153,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 
 	// パーティクルマネージャー
 	bossHitParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect2.png");
+	bossBreakParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect1.png");
 	playerJetParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect1.png");
 	playerContrailParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect2.png");
 	playerBulletParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect1.png");
@@ -338,6 +339,8 @@ void GameScene::TitleUpdate()
 	}
 #pragma endregion
 
+	CreateTitlePlayerJetParticles(TitlePlayerPosition);
+
 	switch (titleScene)
 	{
 	case TITLESCENE::WAITING:
@@ -472,6 +475,7 @@ void GameScene::TitleUpdate()
 	camera->Update();
 	objSkydome->Update();
 	objTitlePlayer->Update();
+	playerJetParticle->Update();
 #pragma endregion
 
 	// デバックテキスト
@@ -506,6 +510,7 @@ void GameScene::TitleDraw()
 
 	// パーティクルの描画
 	bossHitParticle->Draw(cmdList);
+	playerJetParticle->Draw(cmdList);
 
 	// 3Dオブジェクト描画後処理
 	ObjObject::PostDraw();
@@ -812,12 +817,24 @@ void GameScene::GameUpdate()
 		scene = RESULT;
 	}
 
-	if (input->TriggerKey(DIK_C))
+	/*if (input->TriggerKey(DIK_C))
 	{
 		bossHp = 0.0f;
 		L2startCount = GetTickCount();
 		gameScore += 49999.0f;
 	}
+
+	if (input->TriggerKey(DIK_G))
+	{
+		bossLeg1Hp = 0.0f;
+		bossLeg2Hp = 0.0f;
+	}
+
+	if (input->TriggerKey(DIK_H))
+	{
+		bossLeg3Hp = 0.0f;
+		bossLeg4Hp = 0.0f;
+	}*/
 
 	playerHpCalc();
 
@@ -1150,13 +1167,17 @@ void GameScene::GameUpdate()
 	if (bossLeg1Hp <= 0.0f)
 	{
 		bossLeg1Break = true;
+		bossLeg1DeathFlag = true;
 	}
 
 
 	if (bossLeg1Break == true)
 	{
 		bossLeg1LocalPosition.y -= 0.2f;
-		CreateBossParticles(bossLeg1WorldPosition);
+		if (bossLeg1Flag == true)
+		{
+			CreateBossParticles(bossLeg1WorldPosition);
+		}
 	}
 
 	if (bossLeg1LocalPosition.y <= -20.0f)
@@ -1191,13 +1212,17 @@ void GameScene::GameUpdate()
 	if (bossLeg2Hp <= 0.0f)
 	{
 		bossLeg2Break = true;
+		bossLeg2DeathFlag = true;
 	}
 
 
 	if (bossLeg2Break == true)
 	{
 		bossLeg2LocalPosition.y -= 0.2f;
-		CreateBossParticles(bossLeg2WorldPosition);
+		if (bossLeg2Flag == true)
+		{
+			CreateBossParticles(bossLeg2WorldPosition);
+		}
 	}
 
 	if (bossLeg2LocalPosition.y <= -20.0f)
@@ -1232,13 +1257,18 @@ void GameScene::GameUpdate()
 	if (bossLeg3Hp <= 0.0f)
 	{
 		bossLeg3Break = true;
+		bossLeg3DeathFlag = true;
 	}
 
 
 	if (bossLeg3Break == true)
 	{
 		bossLeg3LocalPosition.y -= 0.2f;
-		CreateBossParticles(bossLeg3WorldPosition);
+		if (bossLeg3Flag == true)
+		{
+			CreateBossParticles(bossLeg3WorldPosition);
+		}
+		
 	}
 
 	if (bossLeg3LocalPosition.y <= -20.0f)
@@ -1273,18 +1303,27 @@ void GameScene::GameUpdate()
 	if (bossLeg4Hp <= 0.0f)
 	{
 		bossLeg4Break = true;
+		bossLeg4DeathFlag = true;
 	}
 
 	if (bossLeg4Break == true)
 	{
 		bossLeg4LocalPosition.y -= 0.2f;
-		CreateBossParticles(bossLeg4WorldPosition);
+		if (bossLeg4Flag == true)
+		{
+			CreateBossParticles(bossLeg4WorldPosition);
+		}
 	}
 
 	if (bossLeg4LocalPosition.y <= -20.0f)
 	{
 		bossLeg4Break = false;
 		bossLeg4Flag = false;
+	}
+
+	if ((bossLeg1DeathFlag == true) && (bossLeg2DeathFlag == true) && (bossLeg3DeathFlag == true) && (bossLeg4DeathFlag == true))
+	{
+		allLegBreakFlag = true;
 	}
 
 	// プレイヤーの当たり判定
@@ -1315,12 +1354,12 @@ void GameScene::GameUpdate()
 	changeGameUIAlpha();
 
 #pragma region スプライン曲線関係
-	if (input->PushKey(DIK_R))
+	/*if (input->PushKey(DIK_R))
 	{
 		L5nowCount = 0.0f;
 		L5addCount = 0.02f;
 
-	}
+	}*/
 
 	if (railCountFlag == true)
 	{
@@ -1457,6 +1496,7 @@ void GameScene::GameUpdate()
 
 	// パーティクルの更新
 	bossHitParticle->Update();
+	bossBreakParticle->Update();
 	playerJetParticle->Update();
 	playerContrailParticle->Update();
 	playerBulletParticle->Update();
@@ -1580,6 +1620,7 @@ void GameScene::GameDraw()
 
 	// パーティクルの描画
 	bossHitParticle->Draw(cmdList);
+	bossBreakParticle->Draw(cmdList);
 	playerJetParticle->Draw(cmdList);
 	//playerContrailParticle->Draw(cmdList);
 	if (playerUpdateFlag == true)
@@ -1793,6 +1834,10 @@ void GameScene::GameInitialize()
 
 	// デスフラグ
 	bossDeathFlag = false;
+	bossLeg1DeathFlag = false;
+	bossLeg2DeathFlag = false;
+	bossLeg3DeathFlag = false;
+	bossLeg4DeathFlag = false;
 
 	cameraMode = 0;
 
@@ -1822,6 +1867,7 @@ void GameScene::GameInitialize()
 
 	noDamageFlag = true;
 	targetScoreFlag = false;
+	allLegBreakFlag = false;
 
 	damageEffectAlpha = 0.0f;
 	damageEffectAlphaVel = 0.0f;
@@ -1989,11 +2035,6 @@ void GameScene::ResultUpdate()
 	missionStar6Color.w += resultChangeAlpha_11;
 
 	resultTimer -= 1.0f;
-
-	if (input->TriggerKey(DIK_Q))
-	{
-		resultMoveVel_8 = 1.0f;
-	}
 
 	// 値の制御
 	if (resultTimer > 0.0f)
@@ -2233,7 +2274,10 @@ void GameScene::ResultUpdate()
 	{
 		// 値の設定
 		resultMoveVel_10 = -4.0f;
-		// resultChangeAlpha_10 = 0.05f;
+		if (allLegBreakFlag == true)
+		{
+			resultChangeAlpha_10 = 0.05f;
+		}
 		if (noDamageFlag == true)
 		{
 			sound->PlayWav("SE/Result/result_mission.wav", Volume);
@@ -2263,8 +2307,12 @@ void GameScene::ResultUpdate()
 			resultChangeAlpha_11 = 0.05f;
 		}
 
-		//sound->PlayWav("SE/Result/result_mission.wav", Volume);
+		if (allLegBreakFlag == true)
+		{
+			sound->PlayWav("SE/Result/result_mission.wav", Volume);
 
+		}
+		
 		// 値の初期化
 		missionStar2Size.x = 28.0f;
 		missionStar2Size.y = 28.0f;
@@ -2754,7 +2802,7 @@ void GameScene::CreateBossParticles(XMFLOAT3 position)
 		acc.y = +(float)rand() / RAND_MAX * rnd_acc;
 
 		// 追加
-		bossHitParticle->Add(30, pos, vel, acc, { 0.111f,0.115f, 0.115f, 1.0f }, { 0.111f,0.115f, 0.115f, 1.0f }, 2.0f, 0.0f);
+		bossBreakParticle->Add(30, pos, vel, acc, { 0.874f,0.443f, 0.149f, 1.000f }, { 0.874f,0.443f, 0.149f, 1.000f }, 2.0f, 0.0f);
 	}
 }
 
@@ -2774,6 +2822,28 @@ void GameScene::CreatePlayerJetParticles(XMFLOAT3 position)
 		XMFLOAT3 acc{};
 		const float rnd_acc = -0.1f;
 		acc.z = -0.1f;
+
+		// 追加
+		playerJetParticle->Add(5, pos, vel, acc, { 0.874f,0.443f, 0.149f, 1.000f }, { 0.874f,0.443f, 0.149f, 1.000f }, 0.3f, 0.0f);
+	}
+}
+
+void GameScene::CreateTitlePlayerJetParticles(XMFLOAT3 position)
+{
+	for (int i = 0; i < 10; i++) {
+		const float rnd_pos = 0.1f;
+		XMFLOAT3 pos{};
+		pos.x =  position.x + -1.0f;
+		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.y;
+		pos.z = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.z; 
+
+		const float rnd_vel = -0.4f;
+		XMFLOAT3 vel{};
+		vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+
+		XMFLOAT3 acc{};
+		const float rnd_acc = -0.1f;
+		acc.x = -0.1f;
 
 		// 追加
 		playerJetParticle->Add(5, pos, vel, acc, { 0.874f,0.443f, 0.149f, 1.000f }, { 0.874f,0.443f, 0.149f, 1.000f }, 0.3f, 0.0f);

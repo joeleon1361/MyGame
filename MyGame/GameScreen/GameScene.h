@@ -191,6 +191,9 @@ public: // メンバ関数
 	// プレイヤーのジェットパーティクル生成
 	void CreatePlayerJetParticles(XMFLOAT3 position);
 
+	// プレイヤーのジェットパーティクル生成
+	void CreateTitlePlayerJetParticles(XMFLOAT3 position);
+
 	// プレイヤーの飛行機雲パーティクル生成
 	void CreatePlayerContrailParticles(XMFLOAT3 position);
 
@@ -370,6 +373,7 @@ private: // メンバ変数
 	Sprite* damageEffect = nullptr;
 
 	ParticleManager* bossHitParticle = nullptr;
+	ParticleManager* bossBreakParticle = nullptr;
 	ParticleManager* playerJetParticle = nullptr;
 	ParticleManager* playerBulletParticle = nullptr;
 	ParticleManager* playerContrailParticle = nullptr;
@@ -766,6 +770,14 @@ private: // メンバ変数
 
 	// ボスのデスフラグ
 	bool bossDeathFlag = false;
+	// ボス部位1のデスフラグ
+	bool bossLeg1DeathFlag = false;
+	// ボス部位2のデスフラグ
+	bool bossLeg2DeathFlag = false;
+	// ボス部位3のデスフラグ
+	bool bossLeg3DeathFlag = false;
+	// ボス部位4のデスフラグ
+	bool bossLeg4DeathFlag = false;
 
 	// ボスの行動パターン
 	enum BOSSPATTERN
@@ -887,6 +899,9 @@ private: // メンバ変数
 
 	// 目標スコアに達しているかフラグ
 	bool targetScoreFlag = false;
+
+	// 全ての部位を破壊したか
+	bool allLegBreakFlag = false;
 
 	// リザルト画面に入ってからの時間を計算するタイマー
 	float resultTimer = 5.0f;

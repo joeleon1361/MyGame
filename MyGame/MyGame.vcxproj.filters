@@ -74,6 +74,36 @@
     <Filter Include="Collider">
       <UniqueIdentifier>{e536b6eb-ed67-40db-9f89-c38934df73f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Player">
+      <UniqueIdentifier>{a9c45b3e-8f22-4b9f-92bc-5ec79a0f4dd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダ ファイル\FBXShader">
+      <UniqueIdentifier>{84ee4b46-04d9-4a00-9c01-86127822444f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダ ファイル\OBJShader">
+      <UniqueIdentifier>{9945e36f-2e31-4ed7-ad0a-4f3499bce66e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダ ファイル\ParticleShader">
+      <UniqueIdentifier>{ad09c45d-89f8-4900-98f2-7e10f0240d38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダ ファイル\SpriteShader">
+      <UniqueIdentifier>{607d28cb-e7d0-43b6-85d3-8f124f87442e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="シェーダ ファイル\PostEffectShader">
+      <UniqueIdentifier>{3630f72c-adb0-49bc-8c9a-42c5380ac385}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input\GamePad">
+      <UniqueIdentifier>{166d3e89-bbcf-4908-82d3-981f22acacea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input\KeyBoard">
+      <UniqueIdentifier>{af5cde7c-48ff-41b7-9e51-eafff5850aa5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Boss">
+      <UniqueIdentifier>{ac53e960-a399-4fe7-8fe9-b32b0b454c97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2D\ScoreText">
+      <UniqueIdentifier>{0453b03a-252f-41d6-bd04-e1046a446f7b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -90,9 +120,6 @@
     </ClCompile>
     <ClCompile Include="PostEffect\PostEffect.cpp">
       <Filter>2D\PostEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="Input\Input.cpp">
-      <Filter>Input</Filter>
     </ClCompile>
     <ClCompile Include="Camera\Camera.cpp">
       <Filter>Camera</Filter>
@@ -130,9 +157,6 @@
     <ClCompile Include="GameScreen\GameScene.cpp">
       <Filter>GameScreen</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Collider\Collision.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
@@ -145,81 +169,87 @@
     <ClCompile Include="Collider\SphereCollider.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
-    <ClCompile Include="Bullet.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Boss.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="BossBullet.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Spline.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="BossTargetBullet.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="GamePad.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="ScoreText.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="StageObject.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePad.cpp">
+      <Filter>Input\GamePad</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\Input.cpp">
+      <Filter>Input\KeyBoard</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss.cpp">
+      <Filter>Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="BossBullet.cpp">
+      <Filter>Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="BossTargetBullet.cpp">
+      <Filter>Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreText.cpp">
+      <Filter>2D\ScoreText</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\FBX.hlsli">
-      <Filter>シェーダ ファイル</Filter>
-    </None>
-    <None Include="Resources\shaders\Particle.hlsli">
-      <Filter>シェーダ ファイル</Filter>
-    </None>
-    <None Include="Resources\shaders\Sprite.hlsli">
-      <Filter>シェーダ ファイル</Filter>
-    </None>
-    <None Include="Resources\shaders\PostEffect.hlsli">
-      <Filter>シェーダ ファイル</Filter>
+      <Filter>シェーダ ファイル\FBXShader</Filter>
     </None>
     <None Include="Resources\Shaders\OBJ.hlsli">
-      <Filter>シェーダ ファイル</Filter>
+      <Filter>シェーダ ファイル\OBJShader</Filter>
+    </None>
+    <None Include="Resources\shaders\Particle.hlsli">
+      <Filter>シェーダ ファイル\ParticleShader</Filter>
+    </None>
+    <None Include="Resources\shaders\Sprite.hlsli">
+      <Filter>シェーダ ファイル\SpriteShader</Filter>
+    </None>
+    <None Include="Resources\shaders\PostEffect.hlsli">
+      <Filter>シェーダ ファイル\PostEffectShader</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Resources\shaders\FBXPS.hlsl">
-      <Filter>シェーダ ファイル</Filter>
-    </FxCompile>
     <FxCompile Include="Resources\shaders\FBXVS.hlsl">
-      <Filter>シェーダ ファイル</Filter>
+      <Filter>シェーダ ファイル\FBXShader</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\ParticleGS.hlsl">
-      <Filter>シェーダ ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\ParticlePS.hlsl">
-      <Filter>シェーダ ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\ParticleVS.hlsl">
-      <Filter>シェーダ ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\SpritePS.hlsl">
-      <Filter>シェーダ ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\SpriteVS.hlsl">
-      <Filter>シェーダ ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\PostEffectPS.hlsl">
-      <Filter>シェーダ ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\PostEffectVS.hlsl">
-      <Filter>シェーダ ファイル</Filter>
+    <FxCompile Include="Resources\shaders\FBXPS.hlsl">
+      <Filter>シェーダ ファイル\FBXShader</Filter>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\OBJPS.hlsl">
-      <Filter>シェーダ ファイル</Filter>
+      <Filter>シェーダ ファイル\OBJShader</Filter>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\OBJVS.hlsl">
-      <Filter>シェーダ ファイル</Filter>
+      <Filter>シェーダ ファイル\OBJShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\ParticleGS.hlsl">
+      <Filter>シェーダ ファイル\ParticleShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\ParticlePS.hlsl">
+      <Filter>シェーダ ファイル\ParticleShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\ParticleVS.hlsl">
+      <Filter>シェーダ ファイル\ParticleShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\SpritePS.hlsl">
+      <Filter>シェーダ ファイル\SpriteShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\SpriteVS.hlsl">
+      <Filter>シェーダ ファイル\SpriteShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\PostEffectPS.hlsl">
+      <Filter>シェーダ ファイル\PostEffectShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\PostEffectVS.hlsl">
+      <Filter>シェーダ ファイル\PostEffectShader</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -234,9 +264,6 @@
     </ClInclude>
     <ClInclude Include="PostEffect\PostEffect.h">
       <Filter>2D\PostEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\Input.h">
-      <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="Camera\Camera.h">
       <Filter>Camera</Filter>
@@ -277,7 +304,32 @@
     <ClInclude Include="GameScreen\GameScene.h">
       <Filter>GameScreen</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h" />
+    <ClInclude Include="Spline.h" />
+    <ClInclude Include="StageObject.h" />
+    <ClInclude Include="Player.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePad.h">
+      <Filter>Input\GamePad</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Input.h">
+      <Filter>Input\KeyBoard</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss.h">
+      <Filter>Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="BossBullet.h">
+      <Filter>Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="BossTargetBullet.h">
+      <Filter>Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreText.h">
+      <Filter>2D\ScoreText</Filter>
+    </ClInclude>
     <ClInclude Include="Collider\BaseCollider.h">
       <Filter>Collider</Filter>
     </ClInclude>
@@ -302,13 +354,5 @@
     <ClInclude Include="Collider\SphereCollider.h">
       <Filter>Collider</Filter>
     </ClInclude>
-    <ClInclude Include="Bullet.h" />
-    <ClInclude Include="Boss.h" />
-    <ClInclude Include="BossBullet.h" />
-    <ClInclude Include="Spline.h" />
-    <ClInclude Include="BossTargetBullet.h" />
-    <ClInclude Include="GamePad.h" />
-    <ClInclude Include="ScoreText.h" />
-    <ClInclude Include="StageObject.h" />
   </ItemGroup>
 </Project>
