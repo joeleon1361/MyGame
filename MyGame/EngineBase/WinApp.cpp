@@ -2,6 +2,8 @@
 
 const wchar_t WinApp::windowClassName[] = L"ミーティア";
 
+#pragma comment(lib, "winmm.lib")
+
 // ウィンドウプロシージャ
 LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -17,6 +19,9 @@ LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 void WinApp::CreateGameWindow()
 {
+	// システムタイマーの分解能を上げる
+	timeBeginPeriod(1);
+
 	// ウィンドウクラスの設定
 	wndClass.cbSize = sizeof(WNDCLASSEX);
 	wndClass.lpfnWndProc = (WNDPROC)WindowProc; // ウィンドウプロシージャ

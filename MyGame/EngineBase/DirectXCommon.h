@@ -6,6 +6,8 @@
 #include <wrl.h>
 #include <d3dx12.h>
 #include <cstdlib>
+#include <chrono>
+#include <thread>
 
 #include "WinApp.h"
 
@@ -43,6 +45,15 @@ public: // メンバ関数
 	/// 深度バッファのクリア
 	/// </summary>
 	void ClearDepthBuffer();
+
+	// FPS固定初期化
+	void InitializeFixFPS();
+
+	// FPS固定更新
+	void UpdateFixFPS();
+
+	// 記録時間
+	std::chrono::steady_clock::time_point reference_;
 
 	/// <summary>
 	/// デバイスの取得

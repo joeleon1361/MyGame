@@ -16,6 +16,9 @@ void DirectXCommon::Initialize(WinApp* winApp)
 
 	this->winApp = winApp;
 
+	// FPS固定初期化
+	InitializeFixFPS();
+
 	// DXGIデバイス初期化
 	if (!InitializeDXGIDevice()) {
 		assert(0);
@@ -71,6 +74,7 @@ void DirectXCommon::PreDraw()
 	commandList->RSSetViewports(1, &CD3DX12_VIEWPORT(0.0f, 0.0f, WinApp::window_width, WinApp::window_height));
 	// シザリング矩形の設定
 	commandList->RSSetScissorRects(1, &CD3DX12_RECT(0, 0, WinApp::window_width, WinApp::window_height));
+
 }
 
 void DirectXCommon::PostDraw()
@@ -94,6 +98,9 @@ void DirectXCommon::PostDraw()
 		WaitForSingleObject(event, INFINITE);
 		CloseHandle(event);
 	}
+
+	// FPS固定更新
+	UpdateFixFPS();
 
 	commandAllocator->Reset(); // キューをクリア
 	commandList->Reset(commandAllocator.Get(), nullptr);	// 再びコマンドリストを貯める準備
@@ -120,6 +127,41 @@ void DirectXCommon::ClearDepthBuffer()
 	CD3DX12_CPU_DESCRIPTOR_HANDLE dsvH = CD3DX12_CPU_DESCRIPTOR_HANDLE(dsvHeap->GetCPUDescriptorHandleForHeapStart());
 	// 深度バッファのクリア
 	commandList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+}
+
+void DirectXCommon::InitializeFixFPS()
+{
+	// 現在時間を記録する
+	reference_ = std::chrono::steady_clock::now();
+}
+
+void DirectXCommon::UpdateFixFPS()
+{
+	// 1/60秒丁度の時間
+	const std::chrono::microseconds kMinTime(uint64_t(1000000.0f / 60.0f));
+
+	// 1/60より僅かに短い時間
+	const std::chrono::microseconds kMinCheckTime(uint64_t(1000000.0f / 65.0f));
+
+	// 現在時間を取得する
+	std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+
+	// 前回記録からの経過時間を取得する
+	std::chrono::microseconds elapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - reference_);
+
+	// 1/60経っていない場合
+	if (elapsed < kMinTime)
+	{
+		// 1/60秒経過するまで微妙なスリープを繰り返す
+		while (std::chrono::steady_clock::now() - reference_ < kMinCheckTime)
+		{
+			// 1マイクロ秒スリープ
+			std::this_thread::sleep_for(std::chrono::microseconds(1));
+		}
+	}
+
+	// 現在の時間を記録する
+	reference_ = std::chrono::steady_clock::now();
 }
 
 bool DirectXCommon::InitializeDXGIDevice()
