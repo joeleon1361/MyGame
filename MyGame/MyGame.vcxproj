@@ -167,6 +167,7 @@
     <ClCompile Include="Collider\CollisionPrimitive.cpp" />
     <ClCompile Include="Collider\SphereCollider.cpp" />
     <ClCompile Include="DebugText\DebugText.cpp" />
+    <ClCompile Include="Easing.cpp" />
     <ClCompile Include="EngineBase\DirectXCommon.cpp" />
     <ClCompile Include="EngineBase\WinApp.cpp" />
     <ClCompile Include="FBX\FbxLoader.cpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="GamePad.cpp" />
     <ClCompile Include="GameScreen\GameScene.cpp" />
     <ClCompile Include="Input\Input.cpp" />
+    <ClCompile Include="Lerp.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OBJ\ObjMaterial.cpp" />
     <ClCompile Include="OBJ\ObjMesh.cpp" />
@@ -279,6 +281,7 @@
     <ClInclude Include="Collider\RaycastHit.h" />
     <ClInclude Include="Collider\SphereCollider.h" />
     <ClInclude Include="DebugText\DebugText.h" />
+    <ClInclude Include="Easing.h" />
     <ClInclude Include="EngineBase\DirectXCommon.h" />
     <ClInclude Include="EngineBase\SafeDelete.h" />
     <ClInclude Include="EngineBase\WinApp.h" />
@@ -288,6 +291,7 @@
     <ClInclude Include="GamePad.h" />
     <ClInclude Include="GameScreen\GameScene.h" />
     <ClInclude Include="Input\Input.h" />
+    <ClInclude Include="Lerp.h" />
     <ClInclude Include="OBJ\ObjMaterial.h" />
     <ClInclude Include="OBJ\ObjMesh.h" />
     <ClInclude Include="OBJ\ObjModel.h" />

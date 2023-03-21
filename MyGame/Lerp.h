@@ -6,8 +6,7 @@
 #include <wrl.h>
 #include <d3d12.h>
 #include <DirectXMath.h>
-
-class Spline
+class Lerp
 {
 private: // エイリアス
 // Microsoft::WRL::を省略
@@ -19,6 +18,8 @@ private: // エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 
 public: // 静的メンバ関数
-	static XMFLOAT3 SplineFloat3(const std::vector<XMFLOAT3>& points, size_t startindex, float t);
+	static XMFLOAT2 LerpFloat2(const XMFLOAT2& start, const XMFLOAT2& end, const float t);
+
+	static XMFLOAT3 LerpFloat3(const XMFLOAT3& start, const XMFLOAT3& end, const float t);
 };
 

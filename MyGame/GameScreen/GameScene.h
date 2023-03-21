@@ -27,6 +27,8 @@
 #include "StageObject.h"
 
 #include "Spline.h"
+#include "Lerp.h"
+#include "Easing.h"
 
 #include "GamePad.h"
 
@@ -281,13 +283,6 @@ public: // メンバ関数
 
 	// 雲の生成
 	void CreateCloud();
-
-private:
-	XMFLOAT3 SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t);
-
-	XMFLOAT3 lerp(const XMFLOAT3& start, const XMFLOAT3& end, const float t);
-
-	XMFLOAT2 lerp2(const XMFLOAT2& start, const  XMFLOAT2& end, const float t);
 
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;

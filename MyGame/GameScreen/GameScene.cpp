@@ -189,7 +189,6 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	modelBossLeg = ObjModel::CreateFromOBJ("BossLeg");
 	modelCloud_1 = ObjModel::CreateFromOBJ("test");
 	
-
 	objSkydome->SetModel(modelSkydome);
 	objGround->SetModel(modelGround);
 	player->SetModel(modelPlayer);
@@ -736,9 +735,9 @@ void GameScene::GameUpdate()
 
 	playerRotation = player->GetRotation();
 
-	// playerTargetPosition = SplinePosition(playerTargetCheckPoint, startIndex, timeRate);
+	// playerTargetPosition = SplineFloat3(playerTargetCheckPoint, startIndex, timeRate);
 
-	//centerPosition = SplinePosition(playerCheckPoint, startIndex, timeRate);
+	//centerPosition = SplineFloat3(playerCheckPoint, startIndex, timeRate);
 
 
 	SkydomPosition = objSkydome->GetPosition();
@@ -746,7 +745,7 @@ void GameScene::GameUpdate()
 
 	if (bossBreak == false)
 	{
-		bossLocalPosition = SplinePosition(bossCheckPoint, startIndex, timeRate);
+		bossLocalPosition = Spline::SplineFloat3(bossCheckPoint, startIndex, timeRate);
 	}
 	else if (bossBreak == true)
 	{
@@ -766,24 +765,23 @@ void GameScene::GameUpdate()
 
 	bossHpGageSize = bossHpGage->GetSize();
 
-	playerDamageGageSize = lerp2(playerDamageGage->GetSize(), playerHpGageSize, L1timeRate);
-	bossDamageGageSize = lerp2(bossDamageGage->GetSize(), bossHpGageSize, L2timeRate);
+	playerDamageGageSize = Lerp::LerpFloat2(playerDamageGage->GetSize(), playerHpGageSize, L1timeRate);
+	bossDamageGageSize = Lerp::LerpFloat2(bossDamageGage->GetSize(), bossHpGageSize, L2timeRate);
 
 	//cameraLocalPosition = objCamera->GetPosition();
-	cameraLocalPosition = lerp(objCamera->GetPosition(), nextCamera, L3nowCount);
+	cameraLocalPosition = Lerp::LerpFloat3(objCamera->GetPosition(), nextCamera, L3nowCount);
 
-	moveCameraPosition_1 = lerp({ 5.0f, 0.0f,-1.0f }, { 4.0f, 3.0f,2.0f }, L5nowCount);
-	moveCameraPosition_2 = lerp({ 2.0f, -1.0f,-5.0f }, { -4.0f, 3.0f,-2.0f }, L5nowCount);
-	moveCameraPosition_3 = lerp({ 0.0f, 2.0f,-10.0f }, { 0.0f,0.0f,-20.0f }, L5nowCount);
+	moveCameraPosition_1 = Lerp::LerpFloat3({ 5.0f, 0.0f,-1.0f }, { 4.0f, 3.0f,2.0f }, L5nowCount);
+	moveCameraPosition_2 = Lerp::LerpFloat3({ 2.0f, -1.0f,-5.0f }, { -4.0f, 3.0f,-2.0f }, L5nowCount);
+	moveCameraPosition_3 = Lerp::LerpFloat3({ 0.0f, 2.0f,-10.0f }, { 0.0f,0.0f,-20.0f }, L5nowCount);
 
 	gameParts1Color = gameParts_1->GetColor();
 	gameParts2Color = gameParts_2->GetColor();
 	gameParts3Color = gameParts_3->GetColor();
 
-	playerHpUIPosition = lerp2(offPlayerHpUIPosition, onPlayerHpUIPosition, L4nowCount);
-	bossHpUIPosition = lerp2(offBossHpUIPosition, onBossHpUIPosition, L4nowCount);
-	scoreUIPosition = lerp2(offScoreUIPosition, onScoreUIPosition, L4nowCount);
-
+	playerHpUIPosition = Easing::InOutQuintFloat2(offPlayerHpUIPosition, onPlayerHpUIPosition, L4nowCount);
+	bossHpUIPosition = Easing::InOutQuintFloat2(offBossHpUIPosition, onBossHpUIPosition, L4nowCount);
+	scoreUIPosition = Easing::InOutQuintFloat2(offScoreUIPosition, onScoreUIPosition, L4nowCount);
 	centerPosition.z += centorVel;
 
 #pragma endregion
@@ -3966,73 +3964,4 @@ void GameScene::CreateCloud()
 
 		stageObjects.push_back(std::move(newCloud));
 	}
-}
-
-// スプライン曲線の計算
-XMFLOAT3 GameScene::SplinePosition(const std::vector<XMFLOAT3>& points, size_t startindex, float t)
-{
-	size_t n = points.size() - 2;
-
-	if (startIndex > n) return points[n];
-	if (startIndex < 1) return points[1];
-
-	XMFLOAT3 p0 = points[startindex - 1];
-	XMFLOAT3 p1 = points[startindex];
-	XMFLOAT3 p2 = points[startindex + 1];
-	XMFLOAT3 p3 = points[startindex + 2];
-
-	/*XMFLOAT3 position = { 0.5 * (2 * p1 + (-p0 + p2) * t +
-		(2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t +
-		(-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t) };*/
-
-	XMFLOAT3 A, B, C, D, E, F, G, H, I, J;
-	A = XMFLOAT3(2 * p1.x, 2 * p1.y, 2 * p1.z);
-	B = XMFLOAT3(-p0.x, -p0.y, -p0.z);
-	C = XMFLOAT3(p2.x, p2.y, p2.z);
-	D = XMFLOAT3(2 * p0.x, 2 * p0.y, 2 * p0.z);
-	E = XMFLOAT3(-5 * p1.x, -5 * p1.y, -5 * p1.z);
-	F = XMFLOAT3(4 * p2.x, 4 * p2.y, 4 * p2.z);
-	G = XMFLOAT3(-p3.x, -p3.y, -p3.z);
-	H = XMFLOAT3(3 * p1.x, 3 * p1.y, 3 * p1.z);
-	I = XMFLOAT3(-3 * p2.x, -3 * p2.y, -3 * p2.z);
-	J = XMFLOAT3(p3.x, p3.y, p3.z);
-
-	/*XMFLOAT3 position = { 0.5 * (A + (B + C) * t +
-		(D + E + F + G) * t * t +
-		(B + H + I + J) * t * t * t) };*/
-
-	XMFLOAT3 K, L, M;
-	K = { A.x + (B.x + C.x) * t, A.y + (B.y + C.y) * t, A.z + (B.z + C.z) * t };
-	L = { (D.x + E.x + F.x + G.x) * t * t, (D.y + E.y + F.y + G.y) * t * t, (D.z + E.z + F.z + G.z) * t * t };
-	M = { (B.x + H.x + I.x + J.x) * t * t * t, (B.y + H.y + I.y + J.y) * t * t * t, (B.z + H.z + I.z + J.z) * t * t * t };
-
-	XMFLOAT3 N;
-	N = { K.x + L.x + M.x, K.y + L.y + M.y ,K.z + L.z + M.z };
-
-	XMFLOAT3 position = { N.x * 0.5f, N.y * 0.5f, N.z * 0.5f };
-
-	return position;
-}
-
-// lerp関数の計算
-XMFLOAT3 GameScene::lerp(const XMFLOAT3& start, const XMFLOAT3& end, const float t)
-{
-	XMFLOAT3 A, B;
-	A = XMFLOAT3(start.x * (1.0f - t), start.y * (1.0f - t), start.z * (1.0f - t));
-	B = XMFLOAT3(end.x * t, end.y * t, end.z * t);
-
-	XMFLOAT3 Position;
-	Position = XMFLOAT3(A.x + B.x, A.y + B.y, A.z + B.z);
-	return Position;
-}
-
-XMFLOAT2 GameScene::lerp2(const XMFLOAT2& start, const XMFLOAT2& end, const float t)
-{
-	XMFLOAT2 A, B;
-	A = XMFLOAT2(start.x * (1.0f - t), start.y * (1.0f - t));
-	B = XMFLOAT2(end.x * t, end.y * t);
-
-	XMFLOAT2 Position;
-	Position = XMFLOAT2(A.x + B.x, A.y + B.y);
-	return Position;
 }

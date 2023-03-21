@@ -5,9 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="シェーダ ファイル">
-      <UniqueIdentifier>{bf37cf7d-f251-4a63-8470-5b9359b9b57d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダ ファイル">
       <UniqueIdentifier>{2488e371-56ff-4c4a-965e-02a85c9493ec}</UniqueIdentifier>
     </Filter>
@@ -77,21 +74,6 @@
     <Filter Include="Player">
       <UniqueIdentifier>{a9c45b3e-8f22-4b9f-92bc-5ec79a0f4dd9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="シェーダ ファイル\FBXShader">
-      <UniqueIdentifier>{84ee4b46-04d9-4a00-9c01-86127822444f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="シェーダ ファイル\OBJShader">
-      <UniqueIdentifier>{9945e36f-2e31-4ed7-ad0a-4f3499bce66e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="シェーダ ファイル\ParticleShader">
-      <UniqueIdentifier>{ad09c45d-89f8-4900-98f2-7e10f0240d38}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="シェーダ ファイル\SpriteShader">
-      <UniqueIdentifier>{607d28cb-e7d0-43b6-85d3-8f124f87442e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="シェーダ ファイル\PostEffectShader">
-      <UniqueIdentifier>{3630f72c-adb0-49bc-8c9a-42c5380ac385}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Input\GamePad">
       <UniqueIdentifier>{166d3e89-bbcf-4908-82d3-981f22acacea}</UniqueIdentifier>
     </Filter>
@@ -103,6 +85,27 @@
     </Filter>
     <Filter Include="2D\ScoreText">
       <UniqueIdentifier>{0453b03a-252f-41d6-bd04-e1046a446f7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{6ddb22c2-7085-4dae-bb13-40c133aae1df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{bf37cf7d-f251-4a63-8470-5b9359b9b57d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\FBX">
+      <UniqueIdentifier>{84ee4b46-04d9-4a00-9c01-86127822444f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\OBJ">
+      <UniqueIdentifier>{9945e36f-2e31-4ed7-ad0a-4f3499bce66e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\Particle">
+      <UniqueIdentifier>{ad09c45d-89f8-4900-98f2-7e10f0240d38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\Sprite">
+      <UniqueIdentifier>{607d28cb-e7d0-43b6-85d3-8f124f87442e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\PostEffect">
+      <UniqueIdentifier>{3630f72c-adb0-49bc-8c9a-42c5380ac385}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -169,9 +172,6 @@
     <ClCompile Include="Collider\SphereCollider.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
-    <ClCompile Include="Spline.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="StageObject.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -199,57 +199,66 @@
     <ClCompile Include="ScoreText.cpp">
       <Filter>2D\ScoreText</Filter>
     </ClCompile>
+    <ClCompile Include="Spline.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Lerp.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Easing.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\FBX.hlsli">
-      <Filter>シェーダ ファイル\FBXShader</Filter>
+      <Filter>Shader\FBX</Filter>
     </None>
     <None Include="Resources\Shaders\OBJ.hlsli">
-      <Filter>シェーダ ファイル\OBJShader</Filter>
+      <Filter>Shader\OBJ</Filter>
     </None>
     <None Include="Resources\shaders\Particle.hlsli">
-      <Filter>シェーダ ファイル\ParticleShader</Filter>
+      <Filter>Shader\Particle</Filter>
     </None>
     <None Include="Resources\shaders\Sprite.hlsli">
-      <Filter>シェーダ ファイル\SpriteShader</Filter>
+      <Filter>Shader\Sprite</Filter>
     </None>
     <None Include="Resources\shaders\PostEffect.hlsli">
-      <Filter>シェーダ ファイル\PostEffectShader</Filter>
+      <Filter>Shader\PostEffect</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\FBXVS.hlsl">
-      <Filter>シェーダ ファイル\FBXShader</Filter>
+      <Filter>Shader\FBX</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\FBXPS.hlsl">
-      <Filter>シェーダ ファイル\FBXShader</Filter>
+      <Filter>Shader\FBX</Filter>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\OBJPS.hlsl">
-      <Filter>シェーダ ファイル\OBJShader</Filter>
+      <Filter>Shader\OBJ</Filter>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\OBJVS.hlsl">
-      <Filter>シェーダ ファイル\OBJShader</Filter>
+      <Filter>Shader\OBJ</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\ParticleGS.hlsl">
-      <Filter>シェーダ ファイル\ParticleShader</Filter>
+      <Filter>Shader\Particle</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\ParticlePS.hlsl">
-      <Filter>シェーダ ファイル\ParticleShader</Filter>
+      <Filter>Shader\Particle</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\ParticleVS.hlsl">
-      <Filter>シェーダ ファイル\ParticleShader</Filter>
+      <Filter>Shader\Particle</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\SpritePS.hlsl">
-      <Filter>シェーダ ファイル\SpriteShader</Filter>
+      <Filter>Shader\Sprite</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\SpriteVS.hlsl">
-      <Filter>シェーダ ファイル\SpriteShader</Filter>
+      <Filter>Shader\Sprite</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\PostEffectPS.hlsl">
-      <Filter>シェーダ ファイル\PostEffectShader</Filter>
+      <Filter>Shader\PostEffect</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\PostEffectVS.hlsl">
-      <Filter>シェーダ ファイル\PostEffectShader</Filter>
+      <Filter>Shader\PostEffect</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -304,8 +313,6 @@
     <ClInclude Include="GameScreen\GameScene.h">
       <Filter>GameScreen</Filter>
     </ClInclude>
-    <ClInclude Include="Spline.h" />
-    <ClInclude Include="StageObject.h" />
     <ClInclude Include="Player.h">
       <Filter>Player</Filter>
     </ClInclude>
@@ -353,6 +360,18 @@
     </ClInclude>
     <ClInclude Include="Collider\SphereCollider.h">
       <Filter>Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Spline.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Lerp.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Easing.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="StageObject.h">
+      <Filter>ヘッダ ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
