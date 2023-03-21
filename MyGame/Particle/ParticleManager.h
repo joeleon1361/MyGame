@@ -79,11 +79,11 @@ private: // 定数
 
 public: // 静的メンバ関数
 	// インスタンス生成
-	static ParticleManager* Create(ID3D12Device* device, Camera* camera, const wchar_t* filename);
+	static ParticleManager* Create(ID3D12Device* device, Camera* camera,int blensType, const wchar_t* filename);
 
 public: // メンバ関数	
 	// 初期化
-	void Initialize(const wchar_t* filename);
+	void Initialize(int blendType, const wchar_t* filename );
 
 	// 毎フレーム処理
 	void Update();
@@ -98,7 +98,7 @@ public: // メンバ関数
 	void InitializeDescriptorHeap();
 
 	// グラフィックパイプライン生成
-	void InitializeGraphicsPipeline();
+	void InitializeGraphicsPipeline(int blendType);
 
 	// テクスチャ読み込み
 	void LoadTexture(const wchar_t* filename);
@@ -133,6 +133,13 @@ private: // メンバ変数
 	std::forward_list<Particle> particles;
 	// カメラ
 	Camera* camera = nullptr;
+
+	enum blendType
+	{
+		translucent,
+		add,
+		sub
+	};
 private:
 	// コンストラクタ
 	ParticleManager(ID3D12Device* device, Camera* camera);

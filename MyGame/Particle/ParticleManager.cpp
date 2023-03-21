@@ -34,7 +34,7 @@ const DirectX::XMFLOAT3 operator/(const DirectX::XMFLOAT3& lhs, const float rhs)
 	return result;
 }
 
-ParticleManager* ParticleManager::Create(ID3D12Device* device, Camera* camera, const wchar_t* filename)
+ParticleManager* ParticleManager::Create(ID3D12Device* device, Camera* camera,int blendType, const wchar_t* filename)
 {
 	// 3Dオブジェクトのインスタンスを生成
 	ParticleManager* partMan = new ParticleManager(device, camera);
@@ -43,12 +43,12 @@ ParticleManager* ParticleManager::Create(ID3D12Device* device, Camera* camera, c
 	}
 
 	// 初期化
-	partMan->Initialize(filename);
+	partMan->Initialize(blendType, filename);
 
 	return partMan;
 }
 
-void ParticleManager::Initialize(const wchar_t* filename)
+void ParticleManager::Initialize(int blendType, const wchar_t* filename)
 {
 	// nullptrチェック
 	assert(device);
@@ -59,7 +59,7 @@ void ParticleManager::Initialize(const wchar_t* filename)
 	InitializeDescriptorHeap();
 
 	// パイプライン初期化
-	InitializeGraphicsPipeline();
+	InitializeGraphicsPipeline(blendType);
 
 	// テクスチャ読み込み
 	LoadTexture(filename);
@@ -226,7 +226,7 @@ void ParticleManager::InitializeDescriptorHeap()
 	descriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 }
 
-void ParticleManager::InitializeGraphicsPipeline()
+void ParticleManager::InitializeGraphicsPipeline(int blendType)
 {
 	HRESULT result = S_FALSE;
 	ComPtr<ID3DBlob> vsBlob; // 頂点シェーダオブジェクト
@@ -342,7 +342,7 @@ void ParticleManager::InitializeGraphicsPipeline()
 	// レンダーターゲットのブレンド設定
 	D3D12_RENDER_TARGET_BLEND_DESC blenddesc{};
 	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;	// RBGA全てのチャンネルを描画
-	
+
 	// 共通設定
 	blenddesc.BlendEnable = true;
 	blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
@@ -350,19 +350,28 @@ void ParticleManager::InitializeGraphicsPipeline()
 	blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;
 
 	//半透明合成
-	//blenddesc.BlendOp = D3D12_BLEND_OP_ADD;                           //加算
-	//blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;                       //ソースのアルファ値
-	//blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	if (blendType == blendType::translucent)
+	{
+		blenddesc.BlendOp = D3D12_BLEND_OP_ADD;                           //加算
+		blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;                       //ソースのアルファ値
+		blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	}
 
 	// 加算ブレンディング
-	blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
-	blenddesc.SrcBlend = D3D12_BLEND_ONE;
-	blenddesc.DestBlend = D3D12_BLEND_ONE;
-
+	if (blendType == blendType::add)
+	{
+		blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
+		blenddesc.SrcBlend = D3D12_BLEND_ONE;
+		blenddesc.DestBlend = D3D12_BLEND_ONE;
+	}
+	
 	// 減算ブレンディング
-	//blenddesc.BlendOp = D3D12_BLEND_OP_REV_SUBTRACT;
-	//blenddesc.SrcBlend = D3D12_BLEND_ONE;
-	//blenddesc.DestBlend = D3D12_BLEND_ONE;
+	if (blendType == blendType::sub)
+	{
+		blenddesc.BlendOp = D3D12_BLEND_OP_REV_SUBTRACT;
+		blenddesc.SrcBlend = D3D12_BLEND_ONE;
+		blenddesc.DestBlend = D3D12_BLEND_ONE;
+	}
 
 	// ブレンドステートの設定
 	gpipeline.BlendState.RenderTarget[0] = blenddesc;

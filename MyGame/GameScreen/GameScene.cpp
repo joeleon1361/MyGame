@@ -152,11 +152,11 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	resultParts_10 = Sprite::Create(TextureNumber::result_parts_6, { 640.0f,120.0f });
 
 	// パーティクルマネージャー
-	bossHitParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect2.png");
-	bossBreakParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect1.png");
-	playerJetParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect1.png");
-	playerContrailParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect2.png");
-	playerBulletParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, L"Resources/effect1.png");
+	bossHitParticle = ParticleManager::Create(dxCommon->GetDevice(), camera,1, L"Resources/effect2.png");
+	bossBreakParticle = ParticleManager::Create(dxCommon->GetDevice(), camera,1, L"Resources/effect1.png");
+	playerJetParticle = ParticleManager::Create(dxCommon->GetDevice(), camera,1, L"Resources/effect1.png");
+	playerContrailParticle = ParticleManager::Create(dxCommon->GetDevice(), camera,1, L"Resources/effect2.png");
+	playerBulletParticle = ParticleManager::Create(dxCommon->GetDevice(), camera,1, L"Resources/effect1.png");
 
 	// 3Dオブジェクト生成
 	objSkydome = ObjObject::Create();
