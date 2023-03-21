@@ -41,6 +41,8 @@ void Player::Update()
 {
 	ObjObject::Update();
 
+	rotation.x = rollRotation.x + dodgeRollRotation.x;
+
 	if (cameraMode == FRONT)
 	{
 		if (playerUpdateFlag == true)
@@ -98,6 +100,7 @@ void Player::Update()
 		LeftRolling();
 	}
 
+	// ‰ñ”ð
 	DodgeRoll();
 }
 
@@ -111,19 +114,19 @@ void Player::FrontMove()
 		// ˆÚ“®Œã‚ÌÀ•W‚ðŒvŽZ
 		if (input->PushKey(DIK_W))
 		{
-			position.y += playerVelocity + dodgeRollVelocity;
+			position.y += playerVelocity + dodgeRollSpeed.x;
 		}
 		if (input->PushKey(DIK_S))
 		{
-			position.y -= playerVelocity + dodgeRollVelocity;
+			position.y -= playerVelocity + dodgeRollSpeed.x;
 		}
 		if (input->PushKey(DIK_D))
 		{
-			position.x += playerVelocity + dodgeRollVelocity;
+			position.x += playerVelocity + dodgeRollSpeed.x;
 		}
 		if (input->PushKey(DIK_A))
 		{
-			position.x -= playerVelocity + dodgeRollVelocity;
+			position.x -= playerVelocity + dodgeRollSpeed.x;
 		}
 	}
 }
@@ -137,19 +140,19 @@ void Player::RightMove()
 		// ˆÚ“®Œã‚ÌÀ•W‚ðŒvŽZ
 		if (input->PushKey(DIK_W))
 		{
-			position.y += playerVelocity;
+			position.y += playerVelocity + dodgeRollSpeed.x;
 		}
 		if (input->PushKey(DIK_S))
 		{
-			position.y -= playerVelocity;
+			position.y -= playerVelocity + dodgeRollSpeed.x;
 		}
 		if (input->PushKey(DIK_D))
 		{
-			position.z -= playerVelocity;
+			position.z -= playerVelocity + dodgeRollSpeed.x;
 		}
 		if (input->PushKey(DIK_A))
 		{
-			position.z += playerVelocity;
+			position.z += playerVelocity + dodgeRollSpeed.x;
 		}
 	}
 }
@@ -163,19 +166,19 @@ void Player::BackMove()
 		// ˆÚ“®Œã‚ÌÀ•W‚ðŒvŽZ
 		if (input->PushKey(DIK_W))
 		{
-			position.y += playerVelocity;
+			position.y += playerVelocity + dodgeRollSpeed.x;
 		}
 		if (input->PushKey(DIK_S))
 		{
-			position.y -= playerVelocity;
+			position.y -= playerVelocity + dodgeRollSpeed.x;
 		}
 		if (input->PushKey(DIK_D))
 		{
-			position.x -= playerVelocity;
+			position.x -= playerVelocity + dodgeRollSpeed.x;
 		}
 		if (input->PushKey(DIK_A))
 		{
-			position.x += playerVelocity;
+			position.x += playerVelocity + dodgeRollSpeed.x;
 		}
 	}
 }
@@ -189,19 +192,19 @@ void Player::LeftMove()
 		// ˆÚ“®Œã‚ÌÀ•W‚ðŒvŽZ
 		if (input->PushKey(DIK_W))
 		{
-			position.y += playerVelocity;
+			position.y += playerVelocity + dodgeRollSpeed.x;
 		}
 		if (input->PushKey(DIK_S))
 		{
-			position.y -= playerVelocity;
+			position.y -= playerVelocity + dodgeRollSpeed.x;
 		}
 		if (input->PushKey(DIK_D))
 		{
-			position.z += playerVelocity;
+			position.z += playerVelocity + dodgeRollSpeed.x;
 		}
 		if (input->PushKey(DIK_A))
 		{
-			position.z -= playerVelocity;
+			position.z -= playerVelocity + dodgeRollSpeed.x;
 		}
 	}
 }
@@ -235,49 +238,46 @@ void Player::FrontRolling()
 	if (playerUpdateFlag == true)
 	{
 		// ƒ[ƒ‹
-		if (dodgeRollFlag == 0)
+		if (input->PushKey(DIK_A) || input->PushKey(DIK_D))
 		{
-			if (input->PushKey(DIK_A) || input->PushKey(DIK_D))
+			if (input->PushKey(DIK_D) && rollRotation.x <= +40.0f)
 			{
-				if (input->PushKey(DIK_D) && rotation.x <= +40.0f)
-				{
-					rotation.x += 5.0f;
-				}
+				rollRotation.x += 5.0f;
+			}
 
-				if (input->PushKey(DIK_A) && rotation.x >= -40.0f)
-				{
-					rotation.x -= 5.0f;
-				}
+			if (input->PushKey(DIK_A) && rollRotation.x >= -40.0f)
+			{
+				rollRotation.x -= 5.0f;
 			}
 		}
 
 		// ŒX‚«‚ð–ß‚·
-		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && rotation.x != 0.0f)
+		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && rollRotation.x != 0.0f)
 		{
-			if (rotation.x > 0.0f)
+			if (rollRotation.x > 0.0f)
 			{
-				rotation.x -= 5.0f;
+				rollRotation.x -= 5.0f;
 			}
 
-			if (rotation.x < 0.0f)
+			if (rollRotation.x < 0.0f)
 			{
-				rotation.x += 5.0f;
+				rollRotation.x += 5.0f;
 			}
 		}
 	}
 	else
 	{
 		// ŒX‚«‚ð–ß‚·
-		if (rotation.x != 0.0f)
+		if (rollRotation.x != 0.0f)
 		{
-			if (rotation.x > 0.0f)
+			if (rollRotation.x > 0.0f)
 			{
-				rotation.x -= 5.0f;
+				rollRotation.x -= 5.0f;
 			}
 
-			if (rotation.x < 0.0f)
+			if (rollRotation.x < 0.0f)
 			{
-				rotation.x += 5.0f;
+				rollRotation.x += 5.0f;
 			}
 		}
 	}
@@ -290,32 +290,32 @@ void Player::RightRolling()
 	if (playerUpdateFlag == true)
 	{
 		// ŒX‚«‚ð–ß‚·
-		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && rotation.x != 0.0f)
+		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && rollRotation.x != 0.0f)
 		{
-			if (rotation.x > 0.0f)
+			if (rollRotation.x > 0.0f)
 			{
-				rotation.x -= 5.0f;
+				rollRotation.x -= 5.0f;
 			}
 
-			if (rotation.x < 0.0f)
+			if (rollRotation.x < 0.0f)
 			{
-				rotation.x += 5.0f;
+				rollRotation.x += 5.0f;
 			}
 		}
 	}
 	else
 	{
-		if (rotation.x > 0.0f)
+		if (rollRotation.x > 0.0f)
 		{
-			rotation.x -= 5.0f;
+			rollRotation.x -= 5.0f;
 		}
 
-		if (rotation.x < 0.0f)
+		if (rollRotation.x < 0.0f)
 		{
-			rotation.x += 5.0f;
+			rollRotation.x += 5.0f;
 		}
 	}
-	
+
 }
 // Œã•ûŒüŽž‚ÌŽ©‹@‚ÌŒX‚«
 void Player::BackRolling()
@@ -327,44 +327,44 @@ void Player::BackRolling()
 		// ƒ[ƒ‹
 		if (input->PushKey(DIK_A) || input->PushKey(DIK_D))
 		{
-			if (input->PushKey(DIK_D) && rotation.x >= -40.0f)
+			if (input->PushKey(DIK_D) && rollRotation.x >= -40.0f)
 			{
-				rotation.x -= 5.0f;
+				rollRotation.x -= 5.0f;
 			}
 
-			if (input->PushKey(DIK_A) && rotation.x <= +40.0f)
+			if (input->PushKey(DIK_A) && rollRotation.x <= +40.0f)
 			{
-				rotation.x += 5.0f;
+				rollRotation.x += 5.0f;
 			}
 		}
 
 		// ŒX‚«‚ð–ß‚·
-		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && rotation.x != 0.0f)
+		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && rollRotation.x != 0.0f)
 		{
-			if (rotation.x > 0.0f)
+			if (rollRotation.x > 0.0f)
 			{
-				rotation.x -= 5.0f;
+				rollRotation.x -= 5.0f;
 			}
 
-			if (rotation.x < 0.0f)
+			if (rollRotation.x < 0.0f)
 			{
-				rotation.x += 5.0f;
+				rollRotation.x += 5.0f;
 			}
 		}
 	}
 	else
 	{
 		// ŒX‚«‚ð–ß‚·
-		if (rotation.x != 0.0f)
+		if (rollRotation.x != 0.0f)
 		{
-			if (rotation.x > 0.0f)
+			if (rollRotation.x > 0.0f)
 			{
-				rotation.x -= 5.0f;
+				rollRotation.x -= 5.0f;
 			}
 
-			if (rotation.x < 0.0f)
+			if (rollRotation.x < 0.0f)
 			{
-				rotation.x += 5.0f;
+				rollRotation.x += 5.0f;
 			}
 		}
 	}
@@ -377,55 +377,102 @@ void Player::LeftRolling()
 	if (playerUpdateFlag == true)
 	{
 		// ŒX‚«‚ð–ß‚·
-		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && rotation.x != 0.0f)
+		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && rollRotation.x != 0.0f)
 		{
-			if (rotation.x > 0.0f)
+			if (rollRotation.x > 0.0f)
 			{
-				rotation.x -= 5.0f;
+				rollRotation.x -= 5.0f;
 			}
 
-			if (rotation.x < 0.0f)
+			if (rollRotation.x < 0.0f)
 			{
-				rotation.x += 5.0f;
+				rollRotation.x += 5.0f;
 			}
 		}
 	}
 	else
 	{
-		if (rotation.x > 0.0f)
+		if (rollRotation.x > 0.0f)
 		{
-			rotation.x -= 5.0f;
+			rollRotation.x -= 5.0f;
 		}
 
-		if (rotation.x < 0.0f)
+		if (rollRotation.x < 0.0f)
 		{
-			rotation.x += 5.0f;
+			rollRotation.x += 5.0f;
 		}
 	}
-	
+
 }
+
 // ‰ñ”ð
 void Player::DodgeRoll()
 {
+	if (dodgeRollFlag == true)
+	{
+		executeDodgeRoll();
+	}
+	else
+	{
+		judgeDodgeRoll();
+	}
+}
+
+// ðŒ‚ª‘µ‚Á‚Ä‚¢‚ê‚Î‰ñ”ð‚ÉŽg—p‚·‚é’l‚ðÝ’è 
+void Player::judgeDodgeRoll()
+{
 	Input* input = Input::GetInstance();
 
-	if (dodgeRollFlag == 0)
+	if (cameraMode == FRONT)
 	{
-		if (input->TriggerKey(DIK_V))
+		if (input->TriggerKey(DIK_V) && input->PushKey(DIK_D))
 		{
-			dodgeRollFlag = 1;
-			dodgeRollVelocity = 0.4f;
-			// dodgeRollRotation = 5.0;
+			dodgeRollFlag = true;
+			dodgeRollTimer = 0;
+			dodgeEndRotation.x = 720.0f;
+			dodgeStartSpeed.x = 0.3f;
+		}
+		else if (input->TriggerKey(DIK_V) && input->PushKey(DIK_A))
+		{
+			dodgeRollFlag = true;
+			dodgeRollTimer = 0;
+			dodgeEndRotation.x = -720.0f;
+			dodgeStartSpeed.x = 0.3f;
 		}
 	}
-	else if (dodgeRollFlag == 1)
+	else if (cameraMode == BACK)
 	{
-		dodgeRollVelocity -= 0.01f;
-		if (dodgeRollVelocity <= 0)
+		if (input->TriggerKey(DIK_V) && input->PushKey(DIK_A))
 		{
-			dodgeRollVelocity = 0.0f;
-			dodgeRollFlag = 0;
+			dodgeRollFlag = true;
+			dodgeRollTimer = 0;
+			dodgeEndRotation.x = 720.0f;
+			dodgeStartSpeed.x = 0.3f;
 		}
+		else if (input->TriggerKey(DIK_V) && input->PushKey(DIK_D))
+		{
+			dodgeRollFlag = true;
+			dodgeRollTimer = 0;
+			dodgeEndRotation.x = -720.0f;
+			dodgeStartSpeed.x = 0.3f;
+		}
+	}
+}
+
+// ‰ñ”ð‚ðŽÀs
+void Player::executeDodgeRoll()
+{
+	//ƒ^ƒCƒ}[‚ðXV
+	const float rollTime = 45;
+	dodgeRollTimer++;
+	const float time = dodgeRollTimer / rollTime;
+
+	dodgeRollRotation = Easing::OutCubicFloat3(dodgeStartRotation, dodgeEndRotation, time);
+
+	dodgeRollSpeed = Easing::OutCubicFloat3(dodgeStartSpeed, dodgeEndSpeed, time);
+
+	if (dodgeRollTimer >= rollTime) {
+		dodgeRollFlag = false;
 	}
 }
 

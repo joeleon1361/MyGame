@@ -643,7 +643,7 @@ private: // メンバ変数
 
 	int moveCameraNumber = 0;
 
-	float moveCameraTimer = 3.0f;
+	float moveCameraTimer = 2.0f;
 	float moveCameraTimerVel = 0.0f;
 
 	int cameraType = START;

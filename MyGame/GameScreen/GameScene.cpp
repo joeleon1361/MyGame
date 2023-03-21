@@ -152,10 +152,10 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	resultParts_10 = Sprite::Create(TextureNumber::result_parts_6, { 640.0f,120.0f });
 
 	// パーティクルマネージャー
-	bossHitParticle = ParticleManager::Create(dxCommon->GetDevice(), camera,1, L"Resources/effect2.png");
-	bossBreakParticle = ParticleManager::Create(dxCommon->GetDevice(), camera,1, L"Resources/effect1.png");
+	bossHitParticle = ParticleManager::Create(dxCommon->GetDevice(), camera,1, L"Resources/effect6.png");
+	bossBreakParticle = ParticleManager::Create(dxCommon->GetDevice(), camera,2, L"Resources/effect1.png");
 	playerJetParticle = ParticleManager::Create(dxCommon->GetDevice(), camera,1, L"Resources/effect1.png");
-	playerContrailParticle = ParticleManager::Create(dxCommon->GetDevice(), camera,1, L"Resources/effect2.png");
+	playerContrailParticle = ParticleManager::Create(dxCommon->GetDevice(), camera,1, L"Resources/effect1.png");
 	playerBulletParticle = ParticleManager::Create(dxCommon->GetDevice(), camera,1, L"Resources/effect1.png");
 
 	// 3Dオブジェクト生成
@@ -769,19 +769,19 @@ void GameScene::GameUpdate()
 	bossDamageGageSize = Lerp::LerpFloat2(bossDamageGage->GetSize(), bossHpGageSize, L2timeRate);
 
 	//cameraLocalPosition = objCamera->GetPosition();
-	cameraLocalPosition = Lerp::LerpFloat3(objCamera->GetPosition(), nextCamera, L3nowCount);
+	cameraLocalPosition = Easing::OutQuadFloat3(objCamera->GetPosition(), nextCamera, L3nowCount);
 
-	moveCameraPosition_1 = Lerp::LerpFloat3({ 5.0f, 0.0f,-1.0f }, { 4.0f, 3.0f,2.0f }, L5nowCount);
-	moveCameraPosition_2 = Lerp::LerpFloat3({ 2.0f, -1.0f,-5.0f }, { -4.0f, 3.0f,-2.0f }, L5nowCount);
-	moveCameraPosition_3 = Lerp::LerpFloat3({ 0.0f, 2.0f,-10.0f }, { 0.0f,0.0f,-20.0f }, L5nowCount);
+	moveCameraPosition_1 = Easing::InOutQuadFloat3({ 5.0f, 0.0f,-1.0f }, { 4.0f, 3.0f,2.0f }, L5nowCount);
+	moveCameraPosition_2 = Easing::InOutQuadFloat3({ 2.0f, -1.0f,-5.0f }, { -4.0f, 3.0f,-2.0f }, L5nowCount);
+	moveCameraPosition_3 = Easing::InOutQuadFloat3({ 0.0f, 2.0f,-10.0f }, { 0.0f,0.0f,-20.0f }, L5nowCount);
 
 	gameParts1Color = gameParts_1->GetColor();
 	gameParts2Color = gameParts_2->GetColor();
 	gameParts3Color = gameParts_3->GetColor();
 
-	playerHpUIPosition = Easing::InOutQuintFloat2(offPlayerHpUIPosition, onPlayerHpUIPosition, L4nowCount);
-	bossHpUIPosition = Easing::InOutQuintFloat2(offBossHpUIPosition, onBossHpUIPosition, L4nowCount);
-	scoreUIPosition = Easing::InOutQuintFloat2(offScoreUIPosition, onScoreUIPosition, L4nowCount);
+	playerHpUIPosition = Easing::OutCubicFloat2(offPlayerHpUIPosition, onPlayerHpUIPosition, L4nowCount);
+	bossHpUIPosition = Easing::OutCubicFloat2(offBossHpUIPosition, onBossHpUIPosition, L4nowCount);
+	scoreUIPosition = Easing::OutCubicFloat2(offScoreUIPosition, onScoreUIPosition, L4nowCount);
 	centerPosition.z += centorVel;
 
 #pragma endregion
@@ -815,7 +815,7 @@ void GameScene::GameUpdate()
 		scene = RESULT;
 	}
 
-	/*if (input->TriggerKey(DIK_C))
+	if (input->TriggerKey(DIK_C))
 	{
 		bossHp = 0.0f;
 		L2startCount = GetTickCount();
@@ -832,7 +832,7 @@ void GameScene::GameUpdate()
 	{
 		bossLeg3Hp = 0.0f;
 		bossLeg4Hp = 0.0f;
-	}*/
+	}
 
 	playerHpCalc();
 
@@ -2783,7 +2783,7 @@ void GameScene::CreateBossParticles(XMFLOAT3 position)
 {
 	for (int i = 0; i < 10; i++) {
 		// X,Y,Z全て[-20.0f,+20.0f]でランダムに分布
-		const float rnd_pos = 0.0f;
+		const float rnd_pos = 0.1f;
 		XMFLOAT3 pos{};
 		pos.x = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.x;
 		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.y;
@@ -2796,11 +2796,11 @@ void GameScene::CreateBossParticles(XMFLOAT3 position)
 		vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
 
 		XMFLOAT3 acc{};
-		const float rnd_acc = 0.01f;
+		const float rnd_acc = 0.003f;
 		acc.y = +(float)rand() / RAND_MAX * rnd_acc;
 
 		// 追加
-		bossBreakParticle->Add(30, pos, vel, acc, { 0.874f,0.443f, 0.149f, 1.000f }, { 0.874f,0.443f, 0.149f, 1.000f }, 2.0f, 0.0f);
+		bossBreakParticle->Add(30, pos, vel, acc, { 0.15f, 0.15f, 0.15f, 1.000f }, { 0.01f, 0.01f, 0.01f, 1.000f }, 1.0f, 0.0f);
 	}
 }
 
@@ -3419,9 +3419,9 @@ void GameScene::Lerp5Count()
 	{
 		L5addCount = 0.0f;
 		moveCameraTimerVel = -0.1f;
-		if (moveCameraTimer < 0)
+		if (moveCameraTimer < 0.0f)
 		{
-			moveCameraTimer = 3.0f;
+			moveCameraTimer = 2.0f;
 			moveCameraTimerVel = 0.0f;
 			moveCameraNumber++;
 			L5nowCount = 0.0f;

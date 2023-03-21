@@ -43,7 +43,12 @@ public: // メンバ関数
 
 	void LeftRolling();
 
+	// 回避
 	void DodgeRoll();
+
+	void judgeDodgeRoll();
+
+	void executeDodgeRoll();
 
 	// 弾を打つ
 	void Shot();
@@ -64,8 +69,19 @@ private: // メンバ変数
 
 	float playerVelocity = 0.4f;
 
-	float dodgeRollVelocity = 0.0f;
-	float dodgeRollRotation = 0.0f;
-	int dodgeRollFlag = 0;
+	XMFLOAT3 rollRotation = {};
+
+	bool dodgeRollFlag = false;
+
+	XMFLOAT3 dodgeRollRotation = {};
+	XMFLOAT3 dodgeStartRotation = {};
+	XMFLOAT3 dodgeEndRotation = {};
+
+	XMFLOAT3 dodgeRollSpeed = {};
+	XMFLOAT3 dodgeStartSpeed = {};
+	XMFLOAT3 dodgeEndSpeed = {};
+
+	//緊急回避用タイマー
+	int32_t dodgeRollTimer = 0;
 };
 
