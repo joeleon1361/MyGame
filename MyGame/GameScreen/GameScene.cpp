@@ -3549,7 +3549,6 @@ void GameScene::Lerp5Count()
 
 	if (moveCameraNumber > 4)
 	{
-		//moveCameraNumber = 3;
 		L5nowCount = 1.0f;
 		L5addCount = 0.0f;
 	}
@@ -4077,17 +4076,17 @@ void GameScene::bossHpCalc()
 // 各音量の計算
 void GameScene::VolumeCalc()
 {
-	//マスター音量 = 現在のマスター音量 / 100
+	//　マスター音量 = 現在のマスター音量 / 100
 	masterVolume = masterVolumeNow / 100.0f;
 
-	//割合 = 現在のbgm音量 / bgm音量の最大
+	//　割合 = 現在のbgm音量 / bgm音量の最大
 	bgmVolumeRatio = bgmVolumeNow / bgmVolumeMax;
-	//bgm音量 = (割合 * マスター音量) / 100
+	//　bgm音量 = (割合 * マスター音量) / 100
 	bgmVolume = (bgmVolumeRatio * masterVolumeNow) / 100.0f;
 
-	//割合 = 現在のse音量 / se音量の最大
+	//　割合 = 現在のse音量 / se音量の最大
 	seVolumeRatio = seVolumeNow / seVolumeMax;
-	//se音量 = (割合 * マスター音量) / 100
+	//　se音量 = (割合 * マスター音量) / 100
 	seVolume = (seVolumeRatio * masterVolumeNow) / 100.0f;
 }
 
