@@ -71,7 +71,7 @@ private: // メンバ変数
 
 	XMFLOAT3 rollRotation = {};
 
-	bool dodgeRollFlag = false;
+
 
 	XMFLOAT3 dodgeRollRotation = {};
 	XMFLOAT3 dodgeStartRotation = {};
@@ -83,5 +83,8 @@ private: // メンバ変数
 
 	//緊急回避用タイマー
 	int32_t dodgeRollTimer = 0;
+
+public:
+	bool dodgeRollFlag = false;
 };
 

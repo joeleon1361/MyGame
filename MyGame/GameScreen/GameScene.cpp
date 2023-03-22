@@ -152,11 +152,11 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	resultParts_10 = Sprite::Create(TextureNumber::result_parts_6, { 640.0f,120.0f });
 
 	// パーティクルマネージャー
-	bossHitParticle = ParticleManager::Create(dxCommon->GetDevice(), camera,1, L"Resources/effect6.png");
-	bossBreakParticle = ParticleManager::Create(dxCommon->GetDevice(), camera,2, L"Resources/effect1.png");
-	playerJetParticle = ParticleManager::Create(dxCommon->GetDevice(), camera,1, L"Resources/effect1.png");
-	playerContrailParticle = ParticleManager::Create(dxCommon->GetDevice(), camera,1, L"Resources/effect1.png");
-	playerBulletParticle = ParticleManager::Create(dxCommon->GetDevice(), camera,1, L"Resources/effect1.png");
+	bossHitParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect6.png");
+	bossBreakParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 2, L"Resources/effect1.png");
+	playerJetParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
+	playerContrailParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
+	playerBulletParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
 
 	// 3Dオブジェクト生成
 	objSkydome = ObjObject::Create();
@@ -169,6 +169,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	objCloud_1 = ObjObject::Create();
 
 	player = Player::Create();
+	objPlayerContrailRight = ObjObject::Create();
+	objPlayerContrailLeft = ObjObject::Create();
 
 	objCenter = ObjObject::Create();
 
@@ -188,10 +190,12 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	modelBullet = ObjModel::CreateFromOBJ("bullet2");
 	modelBossLeg = ObjModel::CreateFromOBJ("BossLeg");
 	modelCloud_1 = ObjModel::CreateFromOBJ("test");
-	
+
 	objSkydome->SetModel(modelSkydome);
 	objGround->SetModel(modelGround);
 	player->SetModel(modelPlayer);
+	objPlayerContrailRight->SetModel(modelBullet);
+	objPlayerContrailLeft->SetModel(modelBullet);
 
 	objCenter->SetModel(modelBullet);
 	objCamera->SetModel(modelBullet);
@@ -212,6 +216,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 
 	// 親子関係を結ぶ
 	player->SetParent(objCenter);
+	objPlayerContrailRight->SetParent(player);
+	objPlayerContrailLeft->SetParent(player);
 
 	objCamera->SetParent(objCenter);
 
@@ -842,6 +848,8 @@ void GameScene::GameUpdate()
 
 	// CreateCloud();
 
+
+
 	// 雲を更新
 	for (std::unique_ptr<StageObject>& cloud : stageObjects)
 	{
@@ -914,6 +922,22 @@ void GameScene::GameUpdate()
 	playerPositionV.m128_f32[3] = 1.0f;
 	playerPositionV = DirectX::XMVector3Transform(playerPositionV, objCenter->GetMatWorld());
 	DirectX::XMStoreFloat3(&playerWorldPosition, playerPositionV);
+
+	// プレイヤー飛行機雲(右)の座標変換
+	XMVECTOR playerContrailRightPositionV;
+
+	playerContrailRightPositionV = DirectX::XMLoadFloat3(&objPlayerContrailRight->GetPosition());
+	playerContrailRightPositionV.m128_f32[3] = 1.0f;
+	playerContrailRightPositionV = DirectX::XMVector3Transform(playerContrailRightPositionV, player->GetMatWorld());
+	DirectX::XMStoreFloat3(&playerContrailRightWorldPosition, playerContrailRightPositionV);
+
+	// プレイヤー飛行機雲(左)の座標変換
+	XMVECTOR playerContrailLeftPositionV;
+
+	playerContrailLeftPositionV = DirectX::XMLoadFloat3(&objPlayerContrailLeft->GetPosition());
+	playerContrailLeftPositionV.m128_f32[3] = 1.0f;
+	playerContrailLeftPositionV = DirectX::XMVector3Transform(playerContrailLeftPositionV, player->GetMatWorld());
+	DirectX::XMStoreFloat3(&playerContrailLeftWorldPosition, playerContrailLeftPositionV);
 
 	// ボスの座標変換
 	XMVECTOR bossBodyPositionV;
@@ -1266,7 +1290,7 @@ void GameScene::GameUpdate()
 		{
 			CreateBossParticles(bossLeg3WorldPosition);
 		}
-		
+
 	}
 
 	if (bossLeg3LocalPosition.y <= -20.0f)
@@ -1347,6 +1371,13 @@ void GameScene::GameUpdate()
 
 #pragma endregion
 
+	if (player->dodgeRollFlag)
+	{
+		CreatePlayerContrailParticles(playerContrailRightWorldPosition);
+
+		CreatePlayerContrailParticles(playerContrailLeftWorldPosition);
+	}
+
 	damageEffectUpdate();
 
 	changeGameUIAlpha();
@@ -1378,9 +1409,6 @@ void GameScene::GameUpdate()
 
 	CreatePlayerJetParticles(playerWorldPosition);
 
-	CreatePlayerContrailParticles({ playerWorldPosition.x + 0.9f, playerWorldPosition.y, playerWorldPosition.z });
-
-	CreatePlayerContrailParticles({ playerWorldPosition.x + -0.9f, playerWorldPosition.y, playerWorldPosition.z });
 
 	for (std::unique_ptr<Bullet>& bullet : bullets)
 	{
@@ -1509,6 +1537,8 @@ void GameScene::GameUpdate()
 
 	// プレイヤーの更新
 	player->Update();
+	objPlayerContrailRight->Update();
+	objPlayerContrailLeft->Update();
 
 	objCamera->Update();
 
@@ -1559,6 +1589,8 @@ void GameScene::GameDraw()
 	objSkydome->Draw();
 	// objGround->Draw();
 	player->Draw();
+	/*objPlayerContrailRight->Draw();
+	objPlayerContrailLeft->Draw();*/
 
 	if (playerUpdateFlag == true)
 	{
@@ -1620,7 +1652,7 @@ void GameScene::GameDraw()
 	bossHitParticle->Draw(cmdList);
 	bossBreakParticle->Draw(cmdList);
 	playerJetParticle->Draw(cmdList);
-	//playerContrailParticle->Draw(cmdList);
+	playerContrailParticle->Draw(cmdList);
 	if (playerUpdateFlag == true)
 	{
 		playerBulletParticle->Draw(cmdList);
@@ -1712,6 +1744,12 @@ void GameScene::GameInitialize()
 	player->SetPosition({ 0.0f,0.0f,0.0f });
 	player->SetRotation({ 0.0f, 90.0f, 0.0f });
 	player->SetScale({ 1.0f, 1.0f, 1.0f });
+
+	objPlayerContrailRight->SetPosition({ 1.3f, 0.1f,1.7f });
+	objPlayerContrailRight->SetScale({ 0.1f, 0.1f, 0.1f });
+
+	objPlayerContrailLeft->SetPosition({ 1.3f, 0.1f,-1.7f });
+	objPlayerContrailLeft->SetScale({ 0.1f, 0.1f, 0.1f });
 
 	objSkydome->SetPosition({ 0.0f, 0.0f, 0.0f });
 	objSkydome->SetRotation({ 0.0f,0.0f,0.0f, });
@@ -2310,7 +2348,7 @@ void GameScene::ResultUpdate()
 			sound->PlayWav("SE/Result/result_mission.wav", Volume);
 
 		}
-		
+
 		// 値の初期化
 		missionStar2Size.x = 28.0f;
 		missionStar2Size.y = 28.0f;
@@ -2831,9 +2869,9 @@ void GameScene::CreateTitlePlayerJetParticles(XMFLOAT3 position)
 	for (int i = 0; i < 10; i++) {
 		const float rnd_pos = 0.1f;
 		XMFLOAT3 pos{};
-		pos.x =  position.x + -1.0f;
+		pos.x = position.x + -1.0f;
 		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.y;
-		pos.z = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.z; 
+		pos.z = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.z;
 
 		const float rnd_vel = -0.4f;
 		XMFLOAT3 vel{};
@@ -2851,11 +2889,11 @@ void GameScene::CreateTitlePlayerJetParticles(XMFLOAT3 position)
 void GameScene::CreatePlayerContrailParticles(XMFLOAT3 position)
 {
 	for (int i = 0; i < 10; i++) {
-		const float rnd_pos = 0.1f;
+		const float rnd_pos = 0.05f;
 		XMFLOAT3 pos{};
 		pos.x = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.x;
 		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.y;
-		pos.z = position.z + -0.8f;
+		pos.z = position.z;
 
 		const float rnd_vel = -0.2f;
 		XMFLOAT3 vel{};
@@ -2866,7 +2904,7 @@ void GameScene::CreatePlayerContrailParticles(XMFLOAT3 position)
 		acc.z = -0.1f;
 
 		// 追加
-		playerContrailParticle->Add(5, pos, vel, acc, { 1.000f,1.000f, 1.000f, 1.000f }, { 1.000f,1.000f, 1.000f, 1.000f }, 0.2f, 0.0f);
+		playerContrailParticle->Add(5, pos, vel, acc, { 1.0f, 1.0f, 1.0f, 0.3f }, { 1.0f, 1.0f, 1.0f, 0.0f }, 0.1f, 0.0f);
 	}
 }
 
@@ -3958,9 +3996,9 @@ void GameScene::CreateCloud()
 	randPos.z = centerPosition.z + 100.0f;
 
 	if (input->TriggerKey(DIK_U))
-	{ 
+	{
 		std::unique_ptr<StageObject> newCloud = std::make_unique<StageObject>();
-		newCloud = StageObject::Create(modelCloud_1, randPos, {1.0f,1.0f,1.0f}, 0.0f);
+		newCloud = StageObject::Create(modelCloud_1, randPos, { 1.0f,1.0f,1.0f }, 0.0f);
 
 		stageObjects.push_back(std::move(newCloud));
 	}

@@ -430,14 +430,14 @@ void Player::judgeDodgeRoll()
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
 			dodgeEndRotation.x = 720.0f;
-			dodgeStartSpeed.x = 0.3f;
+			dodgeStartSpeed.x = 0.4f;
 		}
 		else if (input->TriggerKey(DIK_V) && input->PushKey(DIK_A))
 		{
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
 			dodgeEndRotation.x = -720.0f;
-			dodgeStartSpeed.x = 0.3f;
+			dodgeStartSpeed.x = 0.4f;
 		}
 	}
 	else if (cameraMode == BACK)
@@ -447,14 +447,14 @@ void Player::judgeDodgeRoll()
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
 			dodgeEndRotation.x = 720.0f;
-			dodgeStartSpeed.x = 0.3f;
+			dodgeStartSpeed.x = 0.4f;
 		}
 		else if (input->TriggerKey(DIK_V) && input->PushKey(DIK_D))
 		{
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
 			dodgeEndRotation.x = -720.0f;
-			dodgeStartSpeed.x = 0.3f;
+			dodgeStartSpeed.x = 0.4f;
 		}
 	}
 }
@@ -463,13 +463,13 @@ void Player::judgeDodgeRoll()
 void Player::executeDodgeRoll()
 {
 	//タイマーを更新
-	const float rollTime = 45;
+	const float rollTime = 40;
 	dodgeRollTimer++;
 	const float time = dodgeRollTimer / rollTime;
 
-	dodgeRollRotation = Easing::OutCubicFloat3(dodgeStartRotation, dodgeEndRotation, time);
+	dodgeRollRotation = Easing::OutQuadFloat3(dodgeStartRotation, dodgeEndRotation, time);
 
-	dodgeRollSpeed = Easing::OutCubicFloat3(dodgeStartSpeed, dodgeEndSpeed, time);
+	dodgeRollSpeed = Easing::OutQuadFloat3(dodgeStartSpeed, dodgeEndSpeed, time);
 
 	if (dodgeRollTimer >= rollTime) {
 		dodgeRollFlag = false;

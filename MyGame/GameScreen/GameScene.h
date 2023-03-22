@@ -394,6 +394,8 @@ private: // メンバ変数
 
 	// プレイヤー関連
 	Player* player = nullptr;
+	ObjObject* objPlayerContrailRight = nullptr;
+	ObjObject* objPlayerContrailLeft = nullptr;
 
 	std::list<std::unique_ptr<Bullet>> bullets;
 
@@ -669,7 +671,10 @@ private: // メンバ変数
 	XMFLOAT3 startPlayerPosition = { 0.0f,0.0f,-30.0f };
 
 	// プレイヤーのワールド座標
-	XMFLOAT3 playerWorldPosition;
+	XMFLOAT3 playerWorldPosition = {};
+
+	XMFLOAT3 playerContrailRightWorldPosition = {};
+	XMFLOAT3 playerContrailLeftWorldPosition = {};
 
 	// プレイヤーのHP
 	float playerHp;
