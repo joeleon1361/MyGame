@@ -75,6 +75,10 @@ private: // 静的メンバ変数
 
 		// ゲーム
 		game_parts_1,
+		game_gtxt_number1,
+		game_gtxt_number2,
+		game_gtxt_number3,
+		game_gtxt_GO,
 
 		// プレイヤー
 		game_player_frame_1,
@@ -323,6 +327,10 @@ private: // メンバ変数
 	Sprite* gameGTXT_2 = nullptr;
 	Sprite* gameGTXT_3 = nullptr;
 	Sprite* gameGTXT_4 = nullptr;
+	Sprite* gameGTXT_number1 = nullptr;
+	Sprite* gameGTXT_number2 = nullptr;
+	Sprite* gameGTXT_number3 = nullptr;
+	Sprite* gameGTXT_GO = nullptr;
 
 	Sprite* gameParts_1 = nullptr;
 	Sprite* gameParts_2 = nullptr;
@@ -637,6 +645,18 @@ private: // メンバ変数
 	float gameScoreMax = 9999999.0f;
 
 	bool helpMenuFlag = false;
+	
+	XMFLOAT2 gameGTXT_Number1Size = {};
+	XMFLOAT4 gameGTXT_Number1Color = { 1.0f, 1.0f, 1.0f, 0.0f };
+
+	XMFLOAT2 gameGTXT_Number2Size = {};
+	XMFLOAT4 gameGTXT_Number2Color = { 1.0f, 1.0f, 1.0f, 0.0f };
+
+	XMFLOAT2 gameGTXT_Number3Size = {};
+	XMFLOAT4 gameGTXT_Number3Color = { 1.0f, 1.0f, 1.0f, 0.0f };
+
+	XMFLOAT2 gameGTXT_GOSize = {};
+	XMFLOAT4 gameGTXT_GOColor = {1.0f, 1.0f, 1.0f, 0.0f};
 
 #pragma region カメラ関連
 	// カメラの方向パターン

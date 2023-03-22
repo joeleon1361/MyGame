@@ -89,6 +89,11 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	gameParts_2 = Sprite::Create(TextureNumber::game_parts_1, { 1160.0f,360.0f });
 	gameParts_3 = Sprite::Create(TextureNumber::game_parts_1, { 120.0f,360.0f });
 
+	gameGTXT_number1 = Sprite::Create(TextureNumber::game_gtxt_number1, { 0.0f,0.0f });
+	gameGTXT_number2 = Sprite::Create(TextureNumber::game_gtxt_number2, { 0.0f,0.0f });
+	gameGTXT_number3 = Sprite::Create(TextureNumber::game_gtxt_number3, { 0.0f,0.0f });
+	gameGTXT_GO = Sprite::Create(TextureNumber::game_gtxt_GO, { 0.0f,0.0f });
+
 	// プレイヤー
 	playerHpUI = Sprite::Create(TextureNumber::game_player_frame_1, { playerHpUIPosition.x + 10.0f, playerHpUIPosition.y });
 	playerHpGage = Sprite::Create(TextureNumber::game_player_gauge, playerHpUIPosition);
@@ -238,6 +243,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound)
 	testobject->Initialize();
 	testobject->SetModel(testmodel);
 
+	// 各音量初期化
 	VolumeCalc();
 
 	// タイトル画面の初期化
@@ -793,6 +799,26 @@ void GameScene::GameUpdate()
 	playerHpUIPosition = Easing::OutCubicFloat2(offPlayerHpUIPosition, onPlayerHpUIPosition, L4nowCount);
 	bossHpUIPosition = Easing::OutCubicFloat2(offBossHpUIPosition, onBossHpUIPosition, L4nowCount);
 	scoreUIPosition = Easing::OutCubicFloat2(offScoreUIPosition, onScoreUIPosition, L4nowCount);
+
+	gameGTXT_Number1Size = Easing::OutCubicFloat2({ 320.0f, 480.0f }, { 160.0f, 240.0f }, L5nowCount);
+	gameGTXT_Number1Color.w = Easing::OutCubicFloat(0.0f, 1.0f, L5nowCount);
+
+	gameGTXT_Number2Size = Easing::OutCubicFloat2({ 320.0f, 480.0f }, { 160.0f, 240.0f }, L5nowCount);
+	gameGTXT_Number2Color.w = Easing::OutCubicFloat(0.0f, 1.0f, L5nowCount);
+
+	gameGTXT_Number3Size = Easing::OutCubicFloat2({ 320.0f, 480.0f }, { 160.0f, 240.0f }, L5nowCount);
+	gameGTXT_Number3Color.w = Easing::OutCubicFloat(0.0f, 1.0f, L5nowCount);
+
+	if (moveCameraNumber == 3)
+	{
+		gameGTXT_GOSize = Easing::OutCubicFloat2({ 640.0f, 480.0f }, { 320.0f, 240.0f }, L5nowCount);
+		gameGTXT_GOColor.w = Easing::OutCubicFloat(0.0f, 1.0f, L5nowCount);
+	}
+	else if (moveCameraNumber == 4)
+	{
+		gameGTXT_GOColor.w = Easing::OutCubicFloat(1.0f, 0.0f, L5nowCount);
+	}
+
 	centerPosition.z += centorVel;
 
 #pragma endregion
@@ -852,8 +878,6 @@ void GameScene::GameUpdate()
 	alertUIUpdate();
 
 	// CreateCloud();
-
-
 
 	// 雲を更新
 	for (std::unique_ptr<StageObject>& cloud : stageObjects)
@@ -1386,13 +1410,6 @@ void GameScene::GameUpdate()
 	changeGameUIAlpha();
 
 #pragma region スプライン曲線関係
-	/*if (input->PushKey(DIK_R))
-	{
-		L5nowCount = 0.0f;
-		L5addCount = 0.02f;
-
-	}*/
-
 	if (railCountFlag == true)
 	{
 		SplineCount();
@@ -1406,12 +1423,9 @@ void GameScene::GameUpdate()
 
 #pragma endregion
 
-
-
 	railTargetCalc();
 
 	CreatePlayerJetParticles(playerWorldPosition);
-
 
 	for (std::unique_ptr<Bullet>& bullet : bullets)
 	{
@@ -1513,6 +1527,18 @@ void GameScene::GameUpdate()
 	gameParts_1->SetColor(gameParts1Color);
 	gameParts_2->SetColor(gameParts2Color);
 	gameParts_3->SetColor(gameParts3Color);
+
+	gameGTXT_number1->SetSize(gameGTXT_Number1Size);
+	gameGTXT_number1->SetColor(gameGTXT_Number1Color);
+
+	gameGTXT_number2->SetSize(gameGTXT_Number2Size);
+	gameGTXT_number2->SetColor(gameGTXT_Number2Color);
+
+	gameGTXT_number3->SetSize(gameGTXT_Number3Size);
+	gameGTXT_number3->SetColor(gameGTXT_Number3Color);
+
+	gameGTXT_GO->SetSize(gameGTXT_GOSize);
+	gameGTXT_GO->SetColor(gameGTXT_GOColor);
 #pragma endregion
 
 #pragma region 更新処理
@@ -1716,7 +1742,23 @@ void GameScene::GameDraw()
 		gameParts_3->Draw();
 	}
 
-	//gameGTXT_1->Draw();
+	// 
+	if (moveCameraNumber == 0)
+	{
+		gameGTXT_number3->Draw();
+	}
+	if (moveCameraNumber == 1)
+	{
+		gameGTXT_number2->Draw();
+	}
+	if (moveCameraNumber == 2)
+	{
+		gameGTXT_number1->Draw();
+	}
+	if (moveCameraNumber >= 3)
+	{
+		gameGTXT_GO->Draw();
+	}
 
 	// スコアテキストの描画
 	scoreText.DrawAll(cmdList);
@@ -1859,6 +1901,26 @@ void GameScene::GameInitialize()
 	bossHpUIPosition = { 1255.0f , 30.0f };
 
 	scoreUIPosition = { 15.0f, 60.0f };
+
+	gameGTXT_number1->SetPosition({640.0f, 360.0f});
+	gameGTXT_number1->SetSize({ 160.0f, 240.0f });
+	gameGTXT_number1->SetAnchorPoint({ 0.5f, 0.5f });
+	gameGTXT_number1->SetColor({1.0f, 1.0f, 1.0f, 1.0f});
+
+	gameGTXT_number2->SetPosition({ 640.0f, 360.0f });
+	gameGTXT_number2->SetSize({ 160.0f, 240.0f });
+	gameGTXT_number2->SetAnchorPoint({ 0.5f, 0.5f });
+	gameGTXT_number2->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+
+	gameGTXT_number3->SetPosition({ 640.0f, 360.0f });
+	gameGTXT_number3->SetSize({ 160.0f, 240.0f });
+	gameGTXT_number3->SetAnchorPoint({ 0.5f, 0.5f });
+	gameGTXT_number3->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+
+	gameGTXT_GO->SetPosition({ 640.0f, 360.0f });
+	gameGTXT_GO->SetSize({ 320.0f, 240.0f });
+	gameGTXT_GO->SetAnchorPoint({ 0.5f, 0.5f });
+	gameGTXT_GO->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 
 	// プレイヤー関連
 	playerHpMax = 300.0f;
@@ -3172,7 +3234,7 @@ void GameScene::CameraSwitching()
 		{
 			objCamera->SetPosition(moveCameraPosition_3);
 		}
-		if (moveCameraNumber == 3)
+		if (moveCameraNumber >= 3)
 		{
 			objCamera->SetPosition(cameraLocalPosition);
 		}
@@ -3485,9 +3547,9 @@ void GameScene::Lerp5Count()
 		}
 	}
 
-	if (moveCameraNumber > 3)
+	if (moveCameraNumber > 4)
 	{
-		moveCameraNumber = 3;
+		//moveCameraNumber = 3;
 		L5nowCount = 1.0f;
 		L5addCount = 0.0f;
 	}
@@ -3510,6 +3572,26 @@ void GameScene::LoadTextureFunction()
 
 	// ゲーム
 	if (!Sprite::LoadTexture(TextureNumber::game_parts_1, L"Resources/Sprite/GameUI/game_parts_1.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(TextureNumber::game_gtxt_number1, L"Resources/Sprite/GameUI/game_gtxt_number1.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(TextureNumber::game_gtxt_number2, L"Resources/Sprite/GameUI/game_gtxt_number2.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(TextureNumber::game_gtxt_number3, L"Resources/Sprite/GameUI/game_gtxt_number3.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(TextureNumber::game_gtxt_GO, L"Resources/Sprite/GameUI/game_gtxt_GO.png")) {
 		assert(0);
 		return;
 	}
