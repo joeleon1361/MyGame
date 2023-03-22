@@ -278,6 +278,9 @@ public: // メンバ関数
 	// ボスHPの計算
 	void bossHpCalc();
 
+	// 各音量の計算
+	void VolumeCalc();
+
 	// 当たり判定
 	bool OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB);
 
@@ -560,6 +563,20 @@ private: // メンバ変数
 
 	bool changeSceneFlag = false;
 	float changeSceneTimer = 100.0f;
+
+	//オーディオのボリューム
+	float masterVolumeNow = 7.0f;
+	float masterVolume = 0.0f;
+
+	float bgmVolumeMax = 10.0f;
+	float bgmVolumeNow = 10.0f;
+	float bgmVolumeRatio = 0.0f;
+	float bgmVolume = 0.0f;
+
+	float seVolumeMax = 10.0f;
+	float seVolumeNow = 10.0f;
+	float seVolumeRatio = 0.0f;
+	float seVolume = 0.0f;
 #pragma endregion
 
 #pragma region タイトル画面
@@ -617,10 +634,9 @@ private: // メンバ変数
 	float centorVel = 0.1f;
 
 	float gameScore = 0.0f;
-	float gameScoreMax = 9999999;
+	float gameScoreMax = 9999999.0f;
 
-	//オーディオのボリューム
-	const float Volume = 0.07f;
+	bool helpMenuFlag = false;
 
 #pragma region カメラ関連
 	// カメラの方向パターン

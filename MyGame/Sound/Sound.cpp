@@ -147,7 +147,7 @@ void Sound::UnLoad(SoundData* soundData)
 	soundData->wfex = {};
 }
 
-void Sound::PlayWav(const std::string& filename, const float Volume, bool Loop)
+void Sound::PlayWav(const std::string& filename, const float masterVolume, bool Loop)
 {
 	HRESULT result;
 
@@ -175,7 +175,7 @@ void Sound::PlayWav(const std::string& filename, const float Volume, bool Loop)
 		buf.LoopCount = XAUDIO2_LOOP_INFINITE;
 	}
 
-	soundData.pSourceVoice->SetVolume(Volume);
+	soundData.pSourceVoice->SetVolume(masterVolume);
 
 	// 波形データの再生 Playback of waveform data
 	result = soundData.pSourceVoice->SubmitSourceBuffer(&buf);
