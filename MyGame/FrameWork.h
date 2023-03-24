@@ -7,6 +7,9 @@
 #include "PostEffect.h"
 #include "FbxLoader.h"
 
+#include "SceneManager.h"
+#include "AbstractSceneFactory.h"
+
 class FrameWork
 {
 public: // ƒƒ“ƒoŠÖ”
@@ -41,5 +44,6 @@ protected: //ƒƒ“ƒo•Ï”
 	Sound* sound = nullptr;
 	GameScene* gameScene = nullptr;
 	PostEffect* postEffect = nullptr;
+	AbstractSceneFactory* sceneFactory = nullptr;
 };
 

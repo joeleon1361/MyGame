@@ -52,7 +52,7 @@ class BossTargetBullet;
 class Stageobject;
 
 // ゲームシーン
-class GameScene
+class GameScene : public BaseScene
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -137,13 +137,16 @@ public: // メンバ関数
 	~GameScene();
 
 	// 初期化
-	void Initialize();
+	void Initialize() override;
+
+	// 終了
+	void Finalize() override;
 
 	// 毎フレーム処理
-	void Update();
+	void Update() override;
 
 	// 描画
-	void Draw();
+	void Draw() override;
 
 	// タイトル更新
 	void TitleUpdate();

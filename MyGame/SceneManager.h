@@ -19,7 +19,7 @@ public:
 	// ŽŸƒV[ƒ“—\–ñ
 	void ChangeScene(const std::string& sceneName);
 
-	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { sceneFactory = sceneFactory; }
+	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { this->sceneFactory = sceneFactory; }
 
 	//‰ð•ú
 	void Finalize();

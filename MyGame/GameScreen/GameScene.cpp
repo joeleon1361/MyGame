@@ -241,6 +241,10 @@ void GameScene::Initialize()
 	TitleInitialize();
 }
 
+void GameScene::Finalize()
+{
+}
+
 void GameScene::Update()
 {
 	// 音量の計算
