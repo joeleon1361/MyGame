@@ -25,14 +25,12 @@ GameScene::~GameScene()
 	Sound::GetInstance()->Finalize();
 }
 
-void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
+void GameScene::Initialize(DirectXCommon* dxCommon)
 {
 	// nullptrチェック
 	assert(dxCommon);
-	assert(input);
 
 	this->dxCommon = dxCommon;
-	this->input = input;
 
 	//コントローラー初期化
 	InitInput();
@@ -399,7 +397,7 @@ void GameScene::TitleUpdate()
 		}
 
 		// 特定のキーを押してシーン遷移開始
-		if (input->TriggerKey(DIK_SPACE) || input->TriggerKey(DIK_W) || input->TriggerKey(DIK_A) || input->TriggerKey(DIK_S) || input->TriggerKey(DIK_D))
+		if (Input::GetInstance()->TriggerKey(DIK_SPACE) || Input::GetInstance()->TriggerKey(DIK_W) || Input::GetInstance()->TriggerKey(DIK_A) || Input::GetInstance()->TriggerKey(DIK_S) || Input::GetInstance()->TriggerKey(DIK_D))
 		{
 			Sound::GetInstance()->PlayWav("SE/Title/title_start.wav", seVolume);
 			titleStartUIColor.w = 1.0f;
@@ -602,7 +600,7 @@ void GameScene::StageSelectUpdate()
 
 	loadingColor = LoadingBG->GetColor();
 
-	if (input->TriggerKey(DIK_SPACE))
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
 	{
 		changeColorFlag = true;
 	}
@@ -850,20 +848,20 @@ void GameScene::GameUpdate()
 		scene = RESULT;
 	}
 
-	if (input->TriggerKey(DIK_C))
+	if (Input::GetInstance()->TriggerKey(DIK_C))
 	{
 		bossHp = 0.0f;
 		L2startCount = GetTickCount();
 		gameScore += 49999.0f;
 	}
 
-	if (input->TriggerKey(DIK_G))
+	if (Input::GetInstance()->TriggerKey(DIK_G))
 	{
 		bossLeg1Hp = 0.0f;
 		bossLeg2Hp = 0.0f;
 	}
 
-	if (input->TriggerKey(DIK_H))
+	if (Input::GetInstance()->TriggerKey(DIK_H))
 	{
 		bossLeg3Hp = 0.0f;
 		bossLeg4Hp = 0.0f;
@@ -1577,11 +1575,11 @@ void GameScene::GameUpdate()
 	// FBXの更新
 	testobject->Update();
 
-	if (input->TriggerKey(DIK_I) && helpMenuFlag == false)
+	if (Input::GetInstance()->TriggerKey(DIK_I) && helpMenuFlag == false)
 	{
 		helpMenuFlag = true;
 	}
-	else if (input->TriggerKey(DIK_I) && helpMenuFlag == true)
+	else if (Input::GetInstance()->TriggerKey(DIK_I) && helpMenuFlag == true)
 	{
 		helpMenuFlag = false;
 	}
@@ -2476,7 +2474,7 @@ void GameScene::ResultUpdate()
 	// 暗転からシーン遷移
 	if (canPushKeyFlag == true)
 	{
-		if (input->TriggerKey(DIK_SPACE))
+		if (Input::GetInstance()->TriggerKey(DIK_SPACE))
 		{
 			changeColorFlag = true;
 		}
@@ -2799,7 +2797,7 @@ void GameScene::ResultInitialize()
 void GameScene::GameOverUpdate()
 {
 
-	if (input->TriggerKey(DIK_SPACE))
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
 	{
 		TitleInitialize();
 		scene = TITLE;
@@ -3327,7 +3325,7 @@ void GameScene::CameraSwitching()
 
 	}
 
-	if (input->TriggerKey(DIK_RIGHT))
+	if (Input::GetInstance()->TriggerKey(DIK_RIGHT))
 	{
 		cameraMode = 3;
 		rightFlashingFlag = true;
@@ -3335,7 +3333,7 @@ void GameScene::CameraSwitching()
 		L3addCount = 0.001f;
 	}
 
-	if (input->TriggerKey(DIK_DOWN))
+	if (Input::GetInstance()->TriggerKey(DIK_DOWN))
 	{
 		cameraMode = 0;
 		backFlashingFlag = true;
@@ -3343,7 +3341,7 @@ void GameScene::CameraSwitching()
 		L3addCount = 0.001f;
 	}
 
-	if (input->TriggerKey(DIK_LEFT))
+	if (Input::GetInstance()->TriggerKey(DIK_LEFT))
 	{
 		cameraMode = 1;
 		leftFlashingFlag = true;
@@ -3360,7 +3358,7 @@ void GameScene::Attack()
 
 	if (playerUpdateFlag == true)
 	{
-		if (input->PushKey(DIK_SPACE) || (IsButtonPush(ButtonKind::Button_A)))
+		if (Input::GetInstance()->PushKey(DIK_SPACE) || (IsButtonPush(ButtonKind::Button_A)))
 		{
 			if (shotRate <= 0)
 			{
@@ -4109,7 +4107,7 @@ void GameScene::CreateCloud()
 	randPos.y = ((float)rand() / RAND_MAX * 72.0f - 72.0f / 2.0f);
 	randPos.z = centerPosition.z + 100.0f;
 
-	if (input->TriggerKey(DIK_U))
+	if (Input::GetInstance()->TriggerKey(DIK_U))
 	{
 		std::unique_ptr<StageObject> newCloud = std::make_unique<StageObject>();
 		newCloud = StageObject::Create(modelCloud_1, randPos, { 1.0f,1.0f,1.0f }, 0.0f);

@@ -60,7 +60,7 @@ void FrameWork::Initialize()
 
 	// ƒQ[ƒ€ƒV[ƒ“‚Ì‰Šú‰»
 	gameScene = new GameScene();
-	gameScene->Initialize(dxCommon, input);
+	gameScene->Initialize(dxCommon);
 }
 
 void FrameWork::Finalize()
