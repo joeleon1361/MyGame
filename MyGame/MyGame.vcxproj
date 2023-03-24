@@ -175,6 +175,7 @@
     <ClCompile Include="FBX\FbxObject.cpp" />
     <ClCompile Include="FrameWork.cpp" />
     <ClCompile Include="GamePad.cpp" />
+    <ClCompile Include="GamePlayScene.cpp" />
     <ClCompile Include="GameScreen\GameScene.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Lerp.cpp" />
@@ -192,6 +193,7 @@
     <ClCompile Include="Spline.cpp" />
     <ClCompile Include="Sprite\Sprite.cpp" />
     <ClCompile Include="StageObject.cpp" />
+    <ClCompile Include="Title.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\FBX.hlsli" />
@@ -292,6 +294,7 @@
     <ClInclude Include="FBX\FbxObject.h" />
     <ClInclude Include="FrameWork.h" />
     <ClInclude Include="GamePad.h" />
+    <ClInclude Include="GamePlayScene.h" />
     <ClInclude Include="GameScreen\GameScene.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Lerp.h" />
@@ -308,6 +311,7 @@
     <ClInclude Include="Spline.h" />
     <ClInclude Include="Sprite\Sprite.h" />
     <ClInclude Include="StageObject.h" />
+    <ClInclude Include="Title.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -107,6 +107,9 @@
     <Filter Include="Shader\PostEffect">
       <UniqueIdentifier>{3630f72c-adb0-49bc-8c9a-42c5380ac385}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{f7ec7057-bcf6-4b32-ad52-18d01322bce7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -213,6 +216,12 @@
     </ClCompile>
     <ClCompile Include="MyGame.cpp">
       <Filter>EngineBase</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePlayScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Title.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -384,6 +393,12 @@
     </ClInclude>
     <ClInclude Include="MyGame.h">
       <Filter>EngineBase</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePlayScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Title.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

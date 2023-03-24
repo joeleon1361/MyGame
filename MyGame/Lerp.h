@@ -1,7 +1,5 @@
 #pragma once
 
-#include "DirectXCommon.h"
-
 #include <Windows.h>
 #include <wrl.h>
 #include <d3d12.h>
