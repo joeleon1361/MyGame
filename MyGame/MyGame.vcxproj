@@ -179,6 +179,7 @@
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Lerp.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MyGame.cpp" />
     <ClCompile Include="OBJ\ObjMaterial.cpp" />
     <ClCompile Include="OBJ\ObjMesh.cpp" />
     <ClCompile Include="OBJ\ObjModel.cpp" />
@@ -294,6 +295,7 @@
     <ClInclude Include="GameScreen\GameScene.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Lerp.h" />
+    <ClInclude Include="MyGame.h" />
     <ClInclude Include="OBJ\ObjMaterial.h" />
     <ClInclude Include="OBJ\ObjMesh.h" />
     <ClInclude Include="OBJ\ObjModel.h" />

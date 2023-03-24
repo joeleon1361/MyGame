@@ -1,4 +1,12 @@
 #pragma once
+#include "WinApp.h"
+#include "DirectXCommon.h"
+#include "Sound.h"
+#include "GameScene.h"
+#include "fbxsdk.h"
+#include "PostEffect.h"
+#include "FbxLoader.h"
+
 class FrameWork
 {
 public: // メンバ関数
@@ -16,7 +24,7 @@ public: // メンバ関数
 	virtual void Update();
 
 	// 描画
-	virtual void Draw() = 0;
+	virtual void Draw();
 
 	// 終了チェック
 	virtual bool IsEndRequest() { return isEndRequest; }

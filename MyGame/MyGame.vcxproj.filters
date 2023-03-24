@@ -211,6 +211,9 @@
     <ClCompile Include="FrameWork.cpp">
       <Filter>EngineBase</Filter>
     </ClCompile>
+    <ClCompile Include="MyGame.cpp">
+      <Filter>EngineBase</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\FBX.hlsli">
@@ -377,6 +380,9 @@
       <Filter>ヘッダ ファイル</Filter>
     </ClInclude>
     <ClInclude Include="FrameWork.h">
+      <Filter>EngineBase</Filter>
+    </ClInclude>
+    <ClInclude Include="MyGame.h">
       <Filter>EngineBase</Filter>
     </ClInclude>
   </ItemGroup>

@@ -35,3 +35,7 @@ void FrameWork::Finalize()
 void FrameWork::Update()
 {
 }
+
+void FrameWork::Draw()
+{
+}
