@@ -34,5 +34,12 @@ public: // メンバ関数
 protected: //メンバ変数
 //ゲームループ終了リクエスト
 	bool isEndRequest = false;
+
+	WinApp* win = nullptr;
+	DirectXCommon* dxCommon = nullptr;
+	Input* input = nullptr;
+	Sound* sound = nullptr;
+	GameScene* gameScene = nullptr;
+	PostEffect* postEffect = nullptr;
 };
 
