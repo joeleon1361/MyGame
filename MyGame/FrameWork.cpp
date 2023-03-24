@@ -39,7 +39,7 @@ void FrameWork::Initialize()
 	input = Input::GetInstance();
 	input->Initialize(win->GetInstance(), win->GetHwnd());
 	// オーディオの初期化
-	sound = new Sound();
+	sound = Sound::GetInstance();
 	sound->Initialize();
 
 	// スプライト静的初期化
@@ -60,7 +60,7 @@ void FrameWork::Initialize()
 
 	// ゲームシーンの初期化
 	gameScene = new GameScene();
-	gameScene->Initialize(dxCommon, input, sound);
+	gameScene->Initialize(dxCommon, input);
 }
 
 void FrameWork::Finalize()

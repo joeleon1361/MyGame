@@ -137,7 +137,7 @@ public: // メンバ関数
 	~GameScene();
 
 	// 初期化
-	void Initialize(DirectXCommon* dxCommon, Input* input, Sound* sound);
+	void Initialize(DirectXCommon* dxCommon, Input* input);
 
 	// 毎フレーム処理
 	void Update();
@@ -296,7 +296,6 @@ public: // メンバ関数
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
 	Input* input = nullptr;
-	Sound* sound = nullptr;
 	DebugText debugText;
 	ScoreText scoreText;
 	CollisionManager* collisionManager = nullptr;
