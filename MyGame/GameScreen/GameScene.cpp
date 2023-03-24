@@ -25,13 +25,8 @@ GameScene::~GameScene()
 	Sound::GetInstance()->Finalize();
 }
 
-void GameScene::Initialize(DirectXCommon* dxCommon)
+void GameScene::Initialize()
 {
-	// nullptrチェック
-	assert(dxCommon);
-
-	this->dxCommon = dxCommon;
-
 	//コントローラー初期化
 	InitInput();
 

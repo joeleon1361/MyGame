@@ -31,7 +31,7 @@ void FrameWork::Initialize()
 	win->CreateGameWindow();
 
 	//DirectX初期化処理
-	dxCommon = new DirectXCommon();
+	dxCommon = DirectXCommon::GetInstance();
 	dxCommon->Initialize(win);
 
 #pragma region 汎用機能初期化
@@ -60,7 +60,7 @@ void FrameWork::Initialize()
 
 	// ゲームシーンの初期化
 	gameScene = new GameScene();
-	gameScene->Initialize(dxCommon);
+	gameScene->Initialize();
 }
 
 void FrameWork::Finalize()
