@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "BaseScene.h"
+
 #include "SafeDelete.h"
 #include "DirectXCommon.h"
 #include "Input.h"

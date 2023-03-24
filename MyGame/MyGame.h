@@ -1,5 +1,6 @@
 #pragma once
 #include "FrameWork.h"
+#include "Title.h"
 
 // ゲーム固有のクラス
 class MyGame : public FrameWork
@@ -16,5 +17,9 @@ public: //メンバ関数
 
 	// 描画
 	void Draw() override;
+
+private: //メンバ変数
+	// タイトル
+	Title* titleScene = nullptr;
 };
 

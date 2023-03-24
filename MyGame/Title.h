@@ -2,6 +2,7 @@
 
 #include "SafeDelete.h"
 
+#include "BaseScene.h"
 #include "DirectXCommon.h"
 #include <Windows.h>
 #include <wrl.h>
@@ -11,8 +12,9 @@
 #include "Sprite.h"
 #include "ObjObject.h"
 #include "Sound.h"
+#include "Camera.h"
 
-class Title
+class Title : public BaseScene
 {
 private: // エイリアス
 // Microsoft::WRL::を省略
@@ -50,6 +52,9 @@ private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
 	Input* input = nullptr;
 	Sound* sound = nullptr;
+
+	// ゲームシーン用
+	Camera* camera = nullptr;
 
 	Sprite* TitleStartUI = nullptr;
 	Sprite* TitleLogo = nullptr;

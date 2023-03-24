@@ -5,6 +5,9 @@ void Title::Initialize()
 	// サウンド初期化
 	sound->Initialize();
 
+	// カメラ生成
+	camera = new Camera(WinApp::window_width, WinApp::window_height);
+
 	// スプライト生成
 	TitleLogo = Sprite::Create(TextureNumber::title_gtxt_1, { 100.0f,100.0f }, { 1.0f, 1.0f, 1.0f, 1.0f });
 	TitleStartUI = Sprite::Create(TextureNumber::title_parts_1, { 310.0f,630.0f });

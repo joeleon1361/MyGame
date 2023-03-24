@@ -188,6 +188,8 @@
     <ClCompile Include="Particle\ParticleManager.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PostEffect\PostEffect.cpp" />
+    <ClCompile Include="SceneFactory.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ScoreText.cpp" />
     <ClCompile Include="Sound\Sound.cpp" />
     <ClCompile Include="Spline.cpp" />
@@ -271,6 +273,8 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AbstractSceneFactory.h" />
+    <ClInclude Include="BaseScene.h" />
     <ClInclude Include="Boss.h" />
     <ClInclude Include="BossBullet.h" />
     <ClInclude Include="BossTargetBullet.h" />
@@ -306,6 +310,8 @@
     <ClInclude Include="Particle\ParticleManager.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PostEffect\PostEffect.h" />
+    <ClInclude Include="SceneFactory.h" />
+    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ScoreText.h" />
     <ClInclude Include="Sound\Sound.h" />
     <ClInclude Include="Spline.h" />
