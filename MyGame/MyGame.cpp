@@ -17,9 +17,6 @@ void MyGame::Initialize()
 
 void MyGame::Finalize()
 {
-	/*titleScene->Finalize();
-	delete titleScene;*/
-
 	//基底クラスの終了処理
 	FrameWork::Finalize();
 }
@@ -28,8 +25,6 @@ void MyGame::Update()
 {
 	//基底クラスの更新処理
 	FrameWork::Update();
-
-	//titleScene->Update();
 }
 
 void MyGame::Draw()

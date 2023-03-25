@@ -57,10 +57,6 @@ void FrameWork::Initialize()
 
 	FbxLoader::GetInstance()->Initialize(dxCommon->GetDevice());
 #pragma endregion
-
-	// ゲームシーンの初期化
-	/*gameScene = new GameScene();
-	gameScene->Initialize();*/
 }
 
 void FrameWork::Finalize()
@@ -70,12 +66,10 @@ void FrameWork::Finalize()
 	SceneManager::GetInstance()->Finalize();
 	// //FBXLoader解放
 	FbxLoader::GetInstance()->Finalize();
-	//safe_delete(gameScene);
 	safe_delete(sound);
 	// safe_delete(input);
 	safe_delete(dxCommon);
 	delete postEffect;
-	FbxLoader::GetInstance()->Finalize();
 
 	// ゲームウィンドウの破棄
 	win->TerminateGameWindow();
@@ -94,8 +88,7 @@ void FrameWork::Update()
 
 	// 入力関連の毎フレーム処理
 	input->Update();
-	// ゲームシーンの毎フレーム処理
-	//gameScene->Update();
+	
 	//シーン更新
 	SceneManager::GetInstance()->Update();
 }
@@ -114,7 +107,6 @@ void FrameWork::Draw()
 	// postEffect->Draw(dxCommon->GetCommandList());
 
 	// ゲームシーンの描画
-	//gameScene->Draw();
 	SceneManager::GetInstance()->Draw();
 	
 	// 描画終了

@@ -1,6 +1,5 @@
 #pragma once
 #include "FrameWork.h"
-#include "Title.h"
 
 // ゲーム固有のクラス
 class MyGame : public FrameWork

@@ -217,9 +217,6 @@
     <ClCompile Include="MyGame.cpp">
       <Filter>EngineBase</Filter>
     </ClCompile>
-    <ClCompile Include="GamePlayScene.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Title.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
@@ -399,9 +396,6 @@
     </ClInclude>
     <ClInclude Include="MyGame.h">
       <Filter>EngineBase</Filter>
-    </ClInclude>
-    <ClInclude Include="GamePlayScene.h">
-      <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="Title.h">
       <Filter>Scene</Filter>

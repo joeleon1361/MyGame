@@ -3,6 +3,7 @@
 #include "SafeDelete.h"
 
 #include "BaseScene.h"
+#include "SceneManager.h"
 #include "DirectXCommon.h"
 #include <Windows.h>
 #include <wrl.h>
@@ -13,6 +14,7 @@
 #include "ObjObject.h"
 #include "Sound.h"
 #include "Camera.h"
+
 
 class Title : public BaseScene
 {
@@ -36,22 +38,28 @@ private: // 静的メンバ変数
 	};
 
 public:
+	// コンストクラタ
+	Title();
+
+	// デストラクタ
+	~Title();
+
 	// 初期化
-	void Initialize();
+	void Initialize() override;
 
 	// 終了
-	void Finalize();
+	void Finalize() override;
 
 	// 更新
-	void Update();
+	void Update() override;
 
 	// 描画
-	void Draw();
+	void Draw() override;
 
 private: // メンバ変数
-	DirectXCommon* dxCommon = nullptr;
-	Input* input = nullptr;
-	Sound* sound = nullptr;
+	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
+	Input* input = Input::GetInstance();
+	Sound* sound = Sound::GetInstance();
 
 	// ゲームシーン用
 	Camera* camera = nullptr;

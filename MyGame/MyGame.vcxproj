@@ -175,7 +175,6 @@
     <ClCompile Include="FBX\FbxObject.cpp" />
     <ClCompile Include="FrameWork.cpp" />
     <ClCompile Include="GamePad.cpp" />
-    <ClCompile Include="GamePlayScene.cpp" />
     <ClCompile Include="GameScreen\GameScene.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Lerp.cpp" />
@@ -298,7 +297,6 @@
     <ClInclude Include="FBX\FbxObject.h" />
     <ClInclude Include="FrameWork.h" />
     <ClInclude Include="GamePad.h" />
-    <ClInclude Include="GamePlayScene.h" />
     <ClInclude Include="GameScreen\GameScene.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Lerp.h" />
