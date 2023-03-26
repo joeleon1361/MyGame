@@ -393,6 +393,9 @@ private: // メンバ変数
 	ObjModel* modelBullet = nullptr;
 	ObjModel* modelBossLeg = nullptr;
 	ObjModel* modelCloud_1 = nullptr;
+	ObjModel* modelBossCore = nullptr;
+	ObjModel* modelBossUpperBody = nullptr;
+	ObjModel* modelBossLowerBody = nullptr;
 
 	FbxModel* testmodel = nullptr;
 
@@ -415,6 +418,8 @@ private: // メンバ変数
 
 	// ボス関連
 	Boss* bossBody = nullptr;
+	Boss* bossUpperBody = nullptr;
+	Boss* bossLowerBody = nullptr;
 	Boss* bossLeg1 = nullptr;
 	Boss* bossLeg2 = nullptr;
 	Boss* bossLeg3 = nullptr;

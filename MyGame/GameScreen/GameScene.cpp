@@ -173,6 +173,8 @@ void GameScene::Initialize()
 	objCamera = ObjObject::Create();
 
 	bossBody = Boss::Create();
+	bossUpperBody = Boss::Create();
+	bossLowerBody = Boss::Create();
 	bossLeg1 = Boss::Create();
 	bossLeg2 = Boss::Create();
 	bossLeg3 = Boss::Create();
@@ -184,8 +186,11 @@ void GameScene::Initialize()
 	modelGround = ObjModel::CreateFromOBJ("ground");
 	modelPlayer = ObjModel::CreateFromOBJ("player2");
 	modelBullet = ObjModel::CreateFromOBJ("bullet2");
-	modelBossLeg = ObjModel::CreateFromOBJ("BossLeg");
+	modelBossLeg = ObjModel::CreateFromOBJ("bossLeg");
 	modelCloud_1 = ObjModel::CreateFromOBJ("test");
+	modelBossCore = ObjModel::CreateFromOBJ("bossCore");
+	modelBossUpperBody = ObjModel::CreateFromOBJ("bossUpperBody");
+	modelBossLowerBody = ObjModel::CreateFromOBJ("bossLowerBody");
 
 	objSkydome->SetModel(modelSkydome);
 	objGround->SetModel(modelGround);
@@ -202,7 +207,9 @@ void GameScene::Initialize()
 
 	objCloud_1->SetModel(modelCloud_1);
 
-	bossBody->SetModel(modelBullet);
+	bossBody->SetModel(modelBossCore);
+	bossUpperBody->SetModel(modelBossUpperBody);
+	bossLowerBody->SetModel(modelBossLowerBody);
 	bossLeg1->SetModel(modelBossLeg);
 	bossLeg2->SetModel(modelBossLeg);
 	bossLeg3->SetModel(modelBossLeg);
@@ -218,6 +225,8 @@ void GameScene::Initialize()
 	objCamera->SetParent(objCenter);
 
 	bossBody->SetParent(objCenter);
+	bossUpperBody->SetParent(bossBody);
+	bossLowerBody->SetParent(bossBody);
 
 	bossLeg1->SetParent(bossBody);
 	bossLeg2->SetParent(bossBody);
@@ -1151,7 +1160,7 @@ void GameScene::GameUpdate()
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
 		{
-			if (OnCollision(bullet->GetPosition(), bossWorldPosition, 0.6f, 0.4f) == true)
+			if (OnCollision(bullet->GetPosition(), bossWorldPosition, 0.7f, 0.6f) == true)
 			{
 				bossHp -= 10.0f;
 				L2startCount = GetTickCount();
@@ -1192,7 +1201,7 @@ void GameScene::GameUpdate()
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
 		{
-			if (OnCollision(bullet->GetPosition(), bossLeg1WorldPosition, 0.6f, 0.4f) == true)
+			if (OnCollision(bullet->GetPosition(), bossLeg1WorldPosition, 0.6f, 0.6f) == true)
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
 				bossHp -= 5.0f;
@@ -1237,7 +1246,7 @@ void GameScene::GameUpdate()
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
 		{
-			if (OnCollision(bullet->GetPosition(), bossLeg2WorldPosition, 0.6f, 0.4f) == true)
+			if (OnCollision(bullet->GetPosition(), bossLeg2WorldPosition, 0.6f, 0.6f) == true)
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
 				bossHp -= 5.0f;
@@ -1282,7 +1291,7 @@ void GameScene::GameUpdate()
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
 		{
-			if (OnCollision(bullet->GetPosition(), bossLeg3WorldPosition, 0.6f, 0.4f) == true)
+			if (OnCollision(bullet->GetPosition(), bossLeg3WorldPosition, 0.6f, 0.6f) == true)
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
 				bossHp -= 5.0f;
@@ -1328,7 +1337,7 @@ void GameScene::GameUpdate()
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
 		{
-			if (OnCollision(bullet->GetPosition(), bossLeg4WorldPosition, 0.6f, 0.4f) == true)
+			if (OnCollision(bullet->GetPosition(), bossLeg4WorldPosition, 0.6f, 0.6f) == true)
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
 				bossHp -= 5.0f;
@@ -1539,6 +1548,8 @@ void GameScene::GameUpdate()
 #pragma region 更新処理
 	// ボス関連の更新
 	bossBody->Update();
+	bossUpperBody->Update();
+	bossLowerBody->Update();
 	bossLeg1->Update();
 	bossLeg2->Update();
 	bossLeg3->Update();
@@ -1657,6 +1668,8 @@ void GameScene::GameDraw()
 	if (bossFlag == true)
 	{
 		bossBody->Draw();
+		bossUpperBody->Draw();
+		bossLowerBody->Draw();
 
 		if (bossLeg1Flag == true)
 		{
@@ -1816,16 +1829,24 @@ void GameScene::GameInitialize()
 	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
 
 	bossBody->SetPosition({ 0.0f,0.0f,20.0f });
-	bossLeg1->SetPosition({ 2.0f,-2.0f,2.0f });
-	bossLeg2->SetPosition({ 2.0f,-2.0f,-2.0f });
-	bossLeg3->SetPosition({ -2.0f,-2.0f,2.0f });
-	bossLeg4->SetPosition({ -2.0f,-2.0f,-2.0f });
+	bossUpperBody->SetPosition({ 0.0f, 0.2f, 0.0f });
+	bossLowerBody->SetPosition({ 0.0f, -0.2f, 0.0f });
+	bossLeg1->SetPosition({ 1.5f,-1.5f,1.5f });
+	bossLeg2->SetPosition({ 1.5f,-1.5f,-1.5f });
+	bossLeg3->SetPosition({ -1.5f,-1.5f,1.5f });
+	bossLeg4->SetPosition({ -1.5f,-1.5f,-1.5f });
 
 	bossBody->SetRotation({ 0.0f,0.0f,0.0f });
 	bossLeg1->SetRotation({ 0.0f,0.0f,0.0f });
 	bossLeg2->SetRotation({ 0.0f,0.0f,0.0f });
 	bossLeg3->SetRotation({ 0.0f,0.0f,0.0f });
 	bossLeg4->SetRotation({ 0.0f,0.0f,0.0f });
+
+	bossBody->SetScale({ 2.5f, 2.5f, 2.5f });
+	bossLeg1->SetScale({ 0.8f, 0.8f, 0.8f });
+	bossLeg2->SetScale({ 0.8f, 0.8f, 0.8f });
+	bossLeg3->SetScale({ 0.8f, 0.8f, 0.8f });
+	bossLeg4->SetScale({ 0.8f, 0.8f, 0.8f });
 
 	camera->SetTarget({ 0.0f, 0.0f, 0.0f });
 	camera->SetEye({ 0.0f, 0.0f, 10.0f });
@@ -1897,10 +1918,10 @@ void GameScene::GameInitialize()
 
 	scoreUIPosition = { 15.0f, 60.0f };
 
-	gameGTXT_number1->SetPosition({640.0f, 360.0f});
+	gameGTXT_number1->SetPosition({ 640.0f, 360.0f });
 	gameGTXT_number1->SetSize({ 160.0f, 240.0f });
 	gameGTXT_number1->SetAnchorPoint({ 0.5f, 0.5f });
-	gameGTXT_number1->SetColor({1.0f, 1.0f, 1.0f, 1.0f});
+	gameGTXT_number1->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 
 	gameGTXT_number2->SetPosition({ 640.0f, 360.0f });
 	gameGTXT_number2->SetSize({ 160.0f, 240.0f });
