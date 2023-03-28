@@ -42,6 +42,7 @@ void Player::Update()
 	ObjObject::Update();
 
 	rotation.x = rollRotation.x + dodgeRollRotation.x;
+	//InertiaCalc();
 
 	if (cameraMode == FRONT)
 	{
@@ -114,19 +115,19 @@ void Player::FrontMove()
 		// ˆÚ“®Œã‚ÌÀ•W‚ðŒvŽZ
 		if (input->PushKey(DIK_W))
 		{
-			position.y += playerVelocity + dodgeRollSpeed.x;
+			position.y += playerVelocity + dodgeRollSpeed;
 		}
 		if (input->PushKey(DIK_S))
 		{
-			position.y -= playerVelocity + dodgeRollSpeed.x;
+			position.y -= playerVelocity + dodgeRollSpeed;
 		}
 		if (input->PushKey(DIK_D))
 		{
-			position.x += playerVelocity + dodgeRollSpeed.x;
+			position.x += playerVelocity + dodgeRollSpeed;
 		}
 		if (input->PushKey(DIK_A))
 		{
-			position.x -= playerVelocity + dodgeRollSpeed.x;
+			position.x -= playerVelocity + dodgeRollSpeed;
 		}
 	}
 }
@@ -140,19 +141,19 @@ void Player::RightMove()
 		// ˆÚ“®Œã‚ÌÀ•W‚ðŒvŽZ
 		if (input->PushKey(DIK_W))
 		{
-			position.y += playerVelocity + dodgeRollSpeed.x;
+			position.y += playerVelocity + dodgeRollSpeed;
 		}
 		if (input->PushKey(DIK_S))
 		{
-			position.y -= playerVelocity + dodgeRollSpeed.x;
+			position.y -= playerVelocity + dodgeRollSpeed;
 		}
 		if (input->PushKey(DIK_D))
 		{
-			position.z -= playerVelocity + dodgeRollSpeed.x;
+			position.z -= playerVelocity + dodgeRollSpeed;
 		}
 		if (input->PushKey(DIK_A))
 		{
-			position.z += playerVelocity + dodgeRollSpeed.x;
+			position.z += playerVelocity + dodgeRollSpeed;
 		}
 	}
 }
@@ -166,19 +167,19 @@ void Player::BackMove()
 		// ˆÚ“®Œã‚ÌÀ•W‚ðŒvŽZ
 		if (input->PushKey(DIK_W))
 		{
-			position.y += playerVelocity + dodgeRollSpeed.x;
+			position.y += playerVelocity + dodgeRollSpeed;
 		}
 		if (input->PushKey(DIK_S))
 		{
-			position.y -= playerVelocity + dodgeRollSpeed.x;
+			position.y -= playerVelocity + dodgeRollSpeed;
 		}
 		if (input->PushKey(DIK_D))
 		{
-			position.x -= playerVelocity + dodgeRollSpeed.x;
+			position.x -= playerVelocity + dodgeRollSpeed;
 		}
 		if (input->PushKey(DIK_A))
 		{
-			position.x += playerVelocity + dodgeRollSpeed.x;
+			position.x += playerVelocity + dodgeRollSpeed;
 		}
 	}
 }
@@ -192,19 +193,19 @@ void Player::LeftMove()
 		// ˆÚ“®Œã‚ÌÀ•W‚ðŒvŽZ
 		if (input->PushKey(DIK_W))
 		{
-			position.y += playerVelocity + dodgeRollSpeed.x;
+			position.y += playerVelocity + dodgeRollSpeed;
 		}
 		if (input->PushKey(DIK_S))
 		{
-			position.y -= playerVelocity + dodgeRollSpeed.x;
+			position.y -= playerVelocity + dodgeRollSpeed;
 		}
 		if (input->PushKey(DIK_D))
 		{
-			position.z += playerVelocity + dodgeRollSpeed.x;
+			position.z += playerVelocity + dodgeRollSpeed;
 		}
 		if (input->PushKey(DIK_A))
 		{
-			position.z -= playerVelocity + dodgeRollSpeed.x;
+			position.z -= playerVelocity + dodgeRollSpeed;
 		}
 	}
 }
@@ -405,6 +406,31 @@ void Player::LeftRolling()
 
 }
 
+void Player::InertiaCalc()
+{
+	const float InertiaTime = 40;
+
+	Input* input = Input::GetInstance();
+
+	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
+	{
+		InertiaTimer += 2.0f;
+	}
+
+	InertiaTimer--;
+
+	if (InertiaTimer < 0)
+	{
+		InertiaTimer = 0;
+	}
+	if (InertiaTimer >= InertiaTime)
+	{
+		InertiaTimer = InertiaTime;
+	}
+	const float time = InertiaTimer / InertiaTime;
+	playerVelocity = Easing::OutQuadFloat(0.0f, 0.4f, time);
+}
+
 // ‰ñ”ð
 void Player::DodgeRoll()
 {
@@ -430,14 +456,14 @@ void Player::judgeDodgeRoll()
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
 			dodgeEndRotation.x = 720.0f;
-			dodgeStartSpeed.x = 0.4f;
+			dodgeStartSpeed = 0.4f;
 		}
 		else if (input->TriggerKey(DIK_V) && input->PushKey(DIK_A))
 		{
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
 			dodgeEndRotation.x = -720.0f;
-			dodgeStartSpeed.x = 0.4f;
+			dodgeStartSpeed = 0.4f;
 		}
 	}
 	else if (cameraMode == BACK)
@@ -447,14 +473,14 @@ void Player::judgeDodgeRoll()
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
 			dodgeEndRotation.x = 720.0f;
-			dodgeStartSpeed.x = 0.4f;
+			dodgeStartSpeed = 0.4f;
 		}
 		else if (input->TriggerKey(DIK_V) && input->PushKey(DIK_D))
 		{
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
 			dodgeEndRotation.x = -720.0f;
-			dodgeStartSpeed.x = 0.4f;
+			dodgeStartSpeed = 0.4f;
 		}
 	}
 }
@@ -469,9 +495,10 @@ void Player::executeDodgeRoll()
 
 	dodgeRollRotation = Easing::OutQuadFloat3(dodgeStartRotation, dodgeEndRotation, time);
 
-	dodgeRollSpeed = Easing::OutQuadFloat3(dodgeStartSpeed, dodgeEndSpeed, time);
+	dodgeRollSpeed = Easing::OutQuadFloat(dodgeStartSpeed, dodgeEndSpeed, time);
 
-	if (dodgeRollTimer >= rollTime) {
+	if (dodgeRollTimer >= rollTime) 
+	{
 		dodgeRollFlag = false;
 	}
 }

@@ -96,6 +96,7 @@ private: // 静的メンバ変数
 		// スコア
 		game_score_frame,
 		game_score_gtxt,
+		game_score_gtxt_2,
 		game_score_parts,
 
 		// エフェクト
@@ -257,6 +258,8 @@ public: // メンバ関数
 
 	void Lerp5Count();
 
+	void RankTimer();
+
 	// テクスチャのロード
 	void LoadTextureFunction();
 
@@ -342,6 +345,7 @@ private: // メンバ変数
 	// スコアUI
 	Sprite* scoreUI = nullptr;
 	Sprite* scoreChar = nullptr;
+	Sprite* scoreRateChar = nullptr;
 	Sprite* scoreNull_1 = nullptr;
 	Sprite* scoreNull_2 = nullptr;
 	Sprite* scoreNull_3 = nullptr;
@@ -652,7 +656,28 @@ private: // メンバ変数
 	float gameScore = 0.0f;
 	float gameScoreMax = 9999999.0f;
 
+	float scoreRate = 2.0f;
+
 	bool helpMenuFlag = false;
+
+	//タイマ
+	int32_t rankTimer = 0;
+	bool rankSOneTimeFlag = true;
+	bool rankAOneTimeFlag = true;
+	bool rankBOneTimeFlag = true;
+	bool rankCOneTimeFlag = true;
+
+	XMFLOAT2 gameGTXT_1Size = {};
+	XMFLOAT4 gameGTXT_1Color = { 1.0f, 1.0f, 1.0f, 0.0f };
+
+	XMFLOAT2 gameGTXT_2Size = {};
+	XMFLOAT4 gameGTXT_2Color = { 1.0f, 1.0f, 1.0f, 0.0f };
+
+	XMFLOAT2 gameGTXT_3Size = {};
+	XMFLOAT4 gameGTXT_3Color = { 1.0f, 1.0f, 1.0f, 0.0f };
+
+	XMFLOAT2 gameGTXT_4Size = {};
+	XMFLOAT4 gameGTXT_4Color = { 1.0f, 1.0f, 1.0f, 0.0f };
 	
 	XMFLOAT2 gameGTXT_Number1Size = {};
 	XMFLOAT4 gameGTXT_Number1Color = { 1.0f, 1.0f, 1.0f, 0.0f };

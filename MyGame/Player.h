@@ -43,6 +43,9 @@ public: // メンバ関数
 
 	void LeftRolling();
 
+	// 慣性計算
+	void InertiaCalc();
+
 	// 回避
 	void DodgeRoll();
 
@@ -68,21 +71,24 @@ private: // メンバ変数
 	const float LimitY = 10.0f;
 
 	float playerVelocity = 0.4f;
+	float playerSpeedX = 0.0f;
+	float playerSpeedY = 0.0f;
 
 	XMFLOAT3 rollRotation = {};
-
-
 
 	XMFLOAT3 dodgeRollRotation = {};
 	XMFLOAT3 dodgeStartRotation = {};
 	XMFLOAT3 dodgeEndRotation = {};
 
-	XMFLOAT3 dodgeRollSpeed = {};
-	XMFLOAT3 dodgeStartSpeed = {};
-	XMFLOAT3 dodgeEndSpeed = {};
+	float dodgeRollSpeed = {};
+	float dodgeStartSpeed = {};
+	float dodgeEndSpeed = {};
 
 	//緊急回避用タイマー
 	int32_t dodgeRollTimer = 0;
+
+	//慣性用タイマー
+	int32_t InertiaTimer = 0;
 
 public:
 	bool dodgeRollFlag = false;

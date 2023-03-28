@@ -11,18 +11,6 @@ GameScene::GameScene()
 
 GameScene::~GameScene()
 {
-	safe_delete(objSkydome);
-	safe_delete(objGround);
-	safe_delete(player);
-	safe_delete(modelSkydome);
-	safe_delete(modelGround);
-	safe_delete(modelPlayer);
-	safe_delete(modelBullet);
-
-	safe_delete(testmodel);
-	safe_delete(testobject);
-
-	Sound::GetInstance()->Finalize();
 }
 
 void GameScene::Initialize()
@@ -100,6 +88,7 @@ void GameScene::Initialize()
 	// スコア
 	scoreUI = Sprite::Create(TextureNumber::game_score_frame, scoreUIPosition);
 	scoreChar = Sprite::Create(TextureNumber::game_score_gtxt, { 190.0f, scoreUIPosition.y - 32.0f });
+	scoreRateChar = Sprite::Create(TextureNumber::game_score_gtxt_2, { 190.0f, scoreUIPosition.y - 32.0f });
 	scoreNull_1 = Sprite::Create(TextureNumber::game_score_parts, { 403.5f, scoreUIPosition.y - 33.0f });
 	scoreNull_2 = Sprite::Create(TextureNumber::game_score_parts, { 378.0f, scoreUIPosition.y - 33.0f });
 	scoreNull_3 = Sprite::Create(TextureNumber::game_score_parts, { 352.5f, scoreUIPosition.y - 33.0f });
@@ -107,10 +96,14 @@ void GameScene::Initialize()
 	scoreNull_5 = Sprite::Create(TextureNumber::game_score_parts, { 300.5f, scoreUIPosition.y - 33.0f });
 	scoreNull_6 = Sprite::Create(TextureNumber::game_score_parts, { 275.0f, scoreUIPosition.y - 33.0f });
 
-	/*gameGTXT_1 = Sprite::Create(22, { 50.0f,50.0f });
-	gameGTXT_2 = Sprite::Create(23, { 50.0f,50.0f });
-	gameGTXT_3 = Sprite::Create(24, { 50.0f,50.0f });
-	gameGTXT_4 = Sprite::Create(25, { 50.0f,50.0f });*/
+	// S
+	gameGTXT_1 = Sprite::Create(result_gtxt_6, { 66.0f,scoreUIPosition.y + 2.0f });
+	// A
+	gameGTXT_2 = Sprite::Create(result_gtxt_7, { 66.0f,scoreUIPosition.y + 2.0f });
+	// B
+	gameGTXT_3 = Sprite::Create(result_gtxt_8, { 66.0f,scoreUIPosition.y + 2.0f });
+	// C
+	gameGTXT_4 = Sprite::Create(result_gtxt_9, { 66.0f,scoreUIPosition.y + 2.0f });
 
 	// エフェクト
 	LoadingBG = Sprite::Create(TextureNumber::loading_effect_1, { 0.0f,0.0f }, { 1.0f,1.0f,1.0f,0.0f });
@@ -228,10 +221,10 @@ void GameScene::Initialize()
 	bossUpperBody->SetParent(bossBody);
 	bossLowerBody->SetParent(bossBody);
 
-	bossLeg1->SetParent(bossBody);
-	bossLeg2->SetParent(bossBody);
-	bossLeg3->SetParent(bossBody);
-	bossLeg4->SetParent(bossBody);
+	bossLeg1->SetParent(bossLowerBody);
+	bossLeg2->SetParent(bossLowerBody);
+	bossLeg3->SetParent(bossLowerBody);
+	bossLeg4->SetParent(bossLowerBody);
 
 	objCloud_1->SetBillboard(true);
 
@@ -252,6 +245,18 @@ void GameScene::Initialize()
 
 void GameScene::Finalize()
 {
+	safe_delete(objSkydome);
+	safe_delete(objGround);
+	safe_delete(player);
+	safe_delete(modelSkydome);
+	safe_delete(modelGround);
+	safe_delete(modelPlayer);
+	safe_delete(modelBullet);
+
+	safe_delete(testmodel);
+	safe_delete(testobject);
+
+	Sound::GetInstance()->Finalize();
 }
 
 void GameScene::Update()
@@ -789,7 +794,6 @@ void GameScene::GameUpdate()
 	playerDamageGageSize = Lerp::LerpFloat2(playerDamageGage->GetSize(), playerHpGageSize, L1timeRate);
 	bossDamageGageSize = Lerp::LerpFloat2(bossDamageGage->GetSize(), bossHpGageSize, L2timeRate);
 
-	//cameraLocalPosition = objCamera->GetPosition();
 	cameraLocalPosition = Easing::OutQuadFloat3(objCamera->GetPosition(), nextCamera, L3nowCount);
 
 	moveCameraPosition_1 = Easing::InOutQuadFloat3({ 5.0f, 0.0f,-1.0f }, { 4.0f, 3.0f,2.0f }, L5nowCount);
@@ -803,6 +807,8 @@ void GameScene::GameUpdate()
 	playerHpUIPosition = Easing::OutCubicFloat2(offPlayerHpUIPosition, onPlayerHpUIPosition, L4nowCount);
 	bossHpUIPosition = Easing::OutCubicFloat2(offBossHpUIPosition, onBossHpUIPosition, L4nowCount);
 	scoreUIPosition = Easing::OutCubicFloat2(offScoreUIPosition, onScoreUIPosition, L4nowCount);
+
+	RankTimer();
 
 	gameGTXT_Number1Size = Easing::OutCubicFloat2({ 320.0f, 480.0f }, { 160.0f, 240.0f }, L5nowCount);
 	gameGTXT_Number1Color.w = Easing::OutCubicFloat(0.0f, 1.0f, L5nowCount);
@@ -824,6 +830,7 @@ void GameScene::GameUpdate()
 	}
 
 	centerPosition.z += centorVel;
+
 
 #pragma endregion
 
@@ -986,22 +993,22 @@ void GameScene::GameUpdate()
 
 	bossLeg1PositionV = DirectX::XMLoadFloat3(&bossLeg1LocalPosition);
 	bossLeg1PositionV.m128_f32[3] = 1.0f;
-	bossLeg1PositionV = DirectX::XMVector3Transform(bossLeg1PositionV, bossBody->GetMatWorld());
+	bossLeg1PositionV = DirectX::XMVector3Transform(bossLeg1PositionV, bossLowerBody->GetMatWorld());
 	DirectX::XMStoreFloat3(&bossLeg1WorldPosition, bossLeg1PositionV);
 
 	bossLeg2PositionV = DirectX::XMLoadFloat3(&bossLeg2LocalPosition);
 	bossLeg2PositionV.m128_f32[3] = 1.0f;
-	bossLeg2PositionV = DirectX::XMVector3Transform(bossLeg2PositionV, bossBody->GetMatWorld());
+	bossLeg2PositionV = DirectX::XMVector3Transform(bossLeg2PositionV, bossLowerBody->GetMatWorld());
 	DirectX::XMStoreFloat3(&bossLeg2WorldPosition, bossLeg2PositionV);
 
 	bossLeg3PositionV = DirectX::XMLoadFloat3(&bossLeg3LocalPosition);
 	bossLeg3PositionV.m128_f32[3] = 1.0f;
-	bossLeg3PositionV = DirectX::XMVector3Transform(bossLeg3PositionV, bossBody->GetMatWorld());
+	bossLeg3PositionV = DirectX::XMVector3Transform(bossLeg3PositionV, bossLowerBody->GetMatWorld());
 	DirectX::XMStoreFloat3(&bossLeg3WorldPosition, bossLeg3PositionV);
 
 	bossLeg4PositionV = DirectX::XMLoadFloat3(&bossLeg4LocalPosition);
 	bossLeg4PositionV.m128_f32[3] = 1.0f;
-	bossLeg4PositionV = DirectX::XMVector3Transform(bossLeg4PositionV, bossBody->GetMatWorld());
+	bossLeg4PositionV = DirectX::XMVector3Transform(bossLeg4PositionV, bossLowerBody->GetMatWorld());
 	DirectX::XMStoreFloat3(&bossLeg4WorldPosition, bossLeg4PositionV);
 #pragma endregion
 
@@ -1164,7 +1171,7 @@ void GameScene::GameUpdate()
 			{
 				bossHp -= 10.0f;
 				L2startCount = GetTickCount();
-				gameScore += 1000.0f;
+				gameScore += 1000.0f * scoreRate;
 				scoreUIMotion();
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
 				bullet->deathFlag = true;
@@ -1206,7 +1213,7 @@ void GameScene::GameUpdate()
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
 				bossHp -= 5.0f;
 				L2startCount = GetTickCount();
-				gameScore += 250.0f;
+				gameScore += 250.0f * scoreRate;
 				scoreUIMotion();
 				if (rushFlag == false)
 				{
@@ -1251,7 +1258,7 @@ void GameScene::GameUpdate()
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
 				bossHp -= 5.0f;
 				L2startCount = GetTickCount();
-				gameScore += 250.0f;
+				gameScore += 250.0f * scoreRate;
 				scoreUIMotion();
 				if (rushFlag == false)
 				{
@@ -1296,7 +1303,7 @@ void GameScene::GameUpdate()
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
 				bossHp -= 5.0f;
 				L2startCount = GetTickCount();
-				gameScore += 250.0f;
+				gameScore += 250.0f * scoreRate;
 				scoreUIMotion();
 				if (rushFlag == false)
 				{
@@ -1342,7 +1349,7 @@ void GameScene::GameUpdate()
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
 				bossHp -= 5.0f;
 				L2startCount = GetTickCount();
-				gameScore += 250.0f;
+				gameScore += 250.0f * scoreRate;
 				scoreUIMotion();
 				if (rushFlag == false)
 				{
@@ -1480,6 +1487,9 @@ void GameScene::GameUpdate()
 	scoreChar->SetPosition({ 190.0f, scoreUIPosition.y - 32.0f });
 	scoreChar->SetColor({ 0.760f, 0.929f, 1.0f, scoreUIAlpha });
 
+	scoreRateChar->SetPosition({ 210.0f, scoreUIPosition.y + 12.0f });
+	scoreRateChar->SetColor({ 1.0f, 1.0f, 0.4f, scoreUIAlpha });
+
 	scoreNull_1->SetPosition({ 403.5f, scoreUIPosition.y - 33.0f });
 	scoreNull_1->SetColor({ 1.0f, 1.0f, 1.0f, scoreUIAlpha });
 
@@ -1527,6 +1537,22 @@ void GameScene::GameUpdate()
 
 	bossHpUICover->SetPosition({ bossHpUIPosition.x + 10.0f, bossHpUIPosition.y });
 	bossHpUICover->SetColor({ 1.0f, 1.0f, 1.0f, bossHpUIAlpha });
+
+	gameGTXT_1->SetPosition({ 66.0f,scoreUIPosition.y + 2.0f });
+	gameGTXT_1->SetSize({ gameGTXT_1Size });
+	gameGTXT_1->SetColor({ 1.0f, 1.0f, 0.0f, scoreUIAlpha - gameGTXT_1Color.w });
+
+	gameGTXT_2->SetPosition({ 66.0f,scoreUIPosition.y + 2.0f });
+	gameGTXT_2->SetSize({ gameGTXT_2Size });
+	gameGTXT_2->SetColor({ 1.0f, 0.4f, 0.0f, scoreUIAlpha - gameGTXT_2Color.w });
+
+	gameGTXT_3->SetPosition({ 66.0f,scoreUIPosition.y + 2.0f });
+	gameGTXT_3->SetSize({ gameGTXT_3Size });
+	gameGTXT_3->SetColor({ 0.0f, 1.0f, 1.0f, scoreUIAlpha - gameGTXT_3Color.w });
+
+	gameGTXT_4->SetPosition({ 66.0f,scoreUIPosition.y + 2.0f });
+	gameGTXT_4->SetSize({ gameGTXT_4Size });
+	gameGTXT_4->SetColor({ 0.0f, 1.0f, 0.0f, scoreUIAlpha - gameGTXT_4Color.w });
 
 	gameParts_1->SetColor(gameParts1Color);
 	gameParts_2->SetColor(gameParts2Color);
@@ -1611,6 +1637,10 @@ void GameScene::GameUpdate()
 	std::ostringstream StartIndex;
 	StartIndex << std::fixed << std::setprecision(0) << std::setw(7) << gameScore;
 	scoreText.Print(StartIndex.str(), { 300.0f , scoreUIPosition.y + -7.0f + scoreBasePosition.y }, { 0.760f, 0.929f, 1.0f, scoreUIAlpha }, 0.8f);
+
+	std::ostringstream ScoreRate;
+	ScoreRate << "x" << std::fixed << std::setprecision(0) << std::setprecision(1) << scoreRate;
+	scoreText.Print(ScoreRate.str(), { 300.0f , scoreUIPosition.y + 23.0f}, { 1.0f, 1.0f, 0.4f, scoreUIAlpha }, 0.6f);
 
 	scoreUIUpdate();
 }
@@ -1732,6 +1762,7 @@ void GameScene::GameDraw()
 
 	scoreUI->Draw();
 	scoreChar->Draw();
+	scoreRateChar->Draw();
 
 	//GameFG->Draw();
 
@@ -1794,6 +1825,27 @@ void GameScene::GameDraw()
 	if (gameScore < 1000000.0f)
 	{
 		scoreNull_6->Draw();
+	}
+
+	if (gameScore > 99999)
+	{
+		// S
+		gameGTXT_1->Draw();
+	}
+	else if (gameScore > 49999)
+	{
+		// A
+		gameGTXT_2->Draw();
+	}
+	else if (gameScore > 24999)
+	{
+		// B
+		gameGTXT_3->Draw();
+	}
+	else
+	{
+		// C
+		gameGTXT_4->Draw();
 	}
 
 	LoadingBG->Draw();
@@ -1892,6 +1944,9 @@ void GameScene::GameInitialize()
 
 	scoreChar->SetColor({ 0.760f, 0.929f, 1.0f, 1.0f });
 
+	scoreRateChar->SetColor({ 1.0f, 1.0f, 0.4f, 1.0f });
+	scoreRateChar->SetAnchorPoint({ 0.5f, 0.5f });
+
 	scoreNull_1->SetSize({ 25.0f, 25.0f });
 	scoreNull_2->SetSize({ 25.0f, 25.0f });
 	scoreNull_3->SetSize({ 25.0f, 25.0f });
@@ -1917,6 +1972,22 @@ void GameScene::GameInitialize()
 	bossHpUIPosition = { 1255.0f , 30.0f };
 
 	scoreUIPosition = { 15.0f, 60.0f };
+
+	gameGTXT_1->SetSize({ 60.0f, 60.0f });
+	gameGTXT_1->SetColor({ 1.0f, 1.0f, 0.0f, 1.0f });
+	gameGTXT_1->SetAnchorPoint({ 0.5f, 0.5f });
+
+	gameGTXT_2->SetSize({ 60.0f, 60.0f });
+	gameGTXT_2->SetColor({ 1.0f, 0.4f, 0.0f, 1.0f });
+	gameGTXT_2->SetAnchorPoint({ 0.5f, 0.5f });
+
+	gameGTXT_3->SetSize({ 60.0f, 60.0f });
+	gameGTXT_3->SetColor({ 0.0f, 1.0f, 1.0f, 1.0f });
+	gameGTXT_3->SetAnchorPoint({ 0.5f, 0.5f });
+
+	gameGTXT_4->SetSize({ 60.0f, 60.0f });
+	gameGTXT_4->SetColor({ 0.0f, 1.0f, 0.0f, 1.0f });
+	gameGTXT_4->SetAnchorPoint({ 0.5f, 0.5f });
 
 	gameGTXT_number1->SetPosition({ 640.0f, 360.0f });
 	gameGTXT_number1->SetSize({ 160.0f, 240.0f });
@@ -2020,6 +2091,11 @@ void GameScene::GameInitialize()
 	bossDamageUIAlphaVel = 0.0f;
 
 	moveCameraNumber = 0;
+
+	rankSOneTimeFlag = true;
+	rankAOneTimeFlag = true;
+	rankBOneTimeFlag = true;
+	rankCOneTimeFlag = true;
 
 	//railCountFlag = false;
 
@@ -2574,7 +2650,7 @@ void GameScene::ResultUpdate()
 
 	std::ostringstream NoDamageBonus;
 	NoDamageBonus << std::fixed << std::setprecision(0) << std::setw(7) << noDamageBonus;
-	scoreText.Print(NoDamageBonus.str(), noDamageBonusPosition, { 1.0f, 1.0f, 0.0f, noDamageBonusColor.w }, 0.5f);
+	scoreText.Print(NoDamageBonus.str(), noDamageBonusPosition, { 1.0f, 1.0f, 0.4f, noDamageBonusColor.w }, 0.5f);
 
 	std::ostringstream TotalScone;
 	TotalScone << std::fixed << std::setprecision(0) << std::setw(7) << totalScore;
@@ -2743,7 +2819,7 @@ void GameScene::ResultInitialize()
 
 	// NO DAMAGE BONUS
 	resultGTXT_2->SetSize({ 213, 16 });
-	resultGTXT_2->SetColor({ 1.0f, 1.0f, 0.0f, 0.0f });
+	resultGTXT_2->SetColor({ 1.0f, 1.0f, 0.4f, 0.0f });
 	resultGTXT_2->SetAnchorPoint({ 0.0f, 0.5f });
 
 	// TOTAL SCORE
@@ -3570,6 +3646,69 @@ void GameScene::Lerp5Count()
 	}
 }
 
+void GameScene::RankTimer()
+{
+	//タイマーを更新
+	const float rankTime = 40;
+	rankTimer++;
+	const float rankTimeRate = rankTimer / rankTime;
+
+
+	if (gameScore > 99999)
+	{
+		// S
+		if (rankSOneTimeFlag)
+		{
+			rankTimer = 0;
+			rankSOneTimeFlag = false;
+		}
+	}
+	else if (gameScore > 49999)
+	{
+		// A
+		if (rankAOneTimeFlag)
+		{
+			rankTimer = 0;
+			rankAOneTimeFlag = false;
+		}
+	}
+	else if (gameScore > 24999)
+	{
+		// B
+		if (rankBOneTimeFlag)
+		{
+			rankTimer = 0;
+			rankBOneTimeFlag = false;
+		}
+	}
+	else
+	{
+		// C
+		if (rankCOneTimeFlag)
+		{
+			rankTimer = 0;
+			rankCOneTimeFlag = false;
+		}
+	}
+
+	gameGTXT_1Size = Easing::OutCubicFloat2({ 120.0f, 120.0f }, { 60.0f, 60.0f }, rankTimeRate);
+	gameGTXT_1Color.w = Easing::OutCubicFloat(1.0f, 0.0f, rankTimeRate);
+
+	gameGTXT_2Size = Easing::OutCubicFloat2({ 120.0f, 120.0f }, { 60.0f, 60.0f }, rankTimeRate);
+	gameGTXT_2Color.w = Easing::OutCubicFloat(1.0f, 0.0f, rankTimeRate);
+
+	gameGTXT_3Size = Easing::OutCubicFloat2({ 120.0f, 120.0f }, { 60.0f, 60.0f }, rankTimeRate);
+	gameGTXT_3Color.w = Easing::OutCubicFloat(1.0f, 0.0f, rankTimeRate);
+
+	gameGTXT_4Size = Easing::OutCubicFloat2({ 120.0f, 120.0f }, { 60.0f, 60.0f }, rankTimeRate);
+	gameGTXT_4Color.w = Easing::OutCubicFloat(1.0f, 0.0f, rankTimeRate);
+
+	if (rankTimer >= rankTime)
+	{
+		rankTimer = rankTime;
+	}
+}
+
 void GameScene::LoadTextureFunction()
 {
 	// 共通
@@ -3650,6 +3789,11 @@ void GameScene::LoadTextureFunction()
 	}
 
 	if (!Sprite::LoadTexture(TextureNumber::game_score_gtxt, L"Resources/Sprite/GameUI/ScoreUI/game_score_gtxt.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(TextureNumber::game_score_gtxt_2, L"Resources/Sprite/GameUI/ScoreUI/game_score_gtxt_2.png")) {
 		assert(0);
 		return;
 	}
