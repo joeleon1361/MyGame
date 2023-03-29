@@ -729,10 +729,7 @@ void GameScene::StageSelectInitialize()
 void GameScene::GameUpdate()
 {
 	// ルートを完走したら遷移
-	if (startIndex >= 38)
-	{
-		startIndex = 4;
-	}
+	
 
 	// ボスが撃破されたら遷移
 	if (bossFlag == false)
@@ -831,7 +828,11 @@ void GameScene::GameUpdate()
 
 	centerPosition.z += centorVel;
 
-
+	if (startIndex >= 38)
+	{
+		bossRotation.y = 0.0f;
+		startIndex = 4;
+	}
 #pragma endregion
 
 	// 暗転を解除
@@ -3234,9 +3235,9 @@ void GameScene::GameDebugText()
 	bossPos << "BossPos:("
 		<< std::fixed << std::setprecision(2)
 		<< bossWorldPosition.x << "," // x
-		<< bossWorldPosition.y << "," // y
+		<< bossRotation.y << "," // y
 		<< bossWorldPosition.z << ")"; // z
-	debugText.Print(bossPos.str(), 50, 90, 1.0f);
+	debugText.Print(bossPos.str(), 50, 350, 1.0f);
 
 	//std::ostringstream CenterPos;
 	//CenterPos << "CenterPos:("
