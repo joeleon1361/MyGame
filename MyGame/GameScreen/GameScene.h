@@ -212,6 +212,9 @@ public: // メンバ関数
 	// プレイヤーの弾パーティクル生成
 	void CreatePlayerBulletParticles(XMFLOAT3 position);
 
+	// プレイヤーの弾パーティクル生成
+	void CreatePlayerChargeBulletParticles(XMFLOAT3 position);
+
 	// ボスの弾パーティクル生成
 	void CreateBossBulletParticles(XMFLOAT3 position);
 
@@ -229,6 +232,8 @@ public: // メンバ関数
 
 	// プレイヤーの攻撃
 	void Attack();
+
+	void chargeAttack();
 
 	// ボスの攻撃
 	void BossAttack();
@@ -767,8 +772,12 @@ private: // メンバ変数
 
 	// プレイヤーの弾の速度
 	float playerBulletSpeed = 1.8f;
-	// ボスの弾の速度
-	float bossBulletSpeed = 1.2f;
+
+	bool playerChargeFlag = false;
+	float playerChargeMax = 40.0f;
+	float playerChargeNow = 0.0f;
+	float playerChargeRatio = 0.0f;
+	float chargeBulletSize = 0.0f;
 
 	// プレイヤーの弾の発射間隔
 	float shotRate = 1.5f;
@@ -881,6 +890,9 @@ private: // メンバ変数
 
 	// ボスがどれだけ回転するかの値
 	float bossRotateVel = 0.0f;
+
+	// ボスの弾の速度
+	float bossBulletSpeed = 1.2f;
 
 	// ボスのガトリング攻撃番号
 	int rushOrder = 0;

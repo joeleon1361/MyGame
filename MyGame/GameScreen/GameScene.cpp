@@ -729,7 +729,7 @@ void GameScene::StageSelectInitialize()
 void GameScene::GameUpdate()
 {
 	// ルートを完走したら遷移
-	
+
 
 	// ボスが撃破されたら遷移
 	if (bossFlag == false)
@@ -905,7 +905,9 @@ void GameScene::GameUpdate()
 	);
 
 #pragma region 弾関連
-	Attack();
+	//Attack();
+
+	chargeAttack();
 
 	// 弾を更新
 	for (std::unique_ptr<Bullet>& bullet : bullets)
@@ -1442,7 +1444,7 @@ void GameScene::GameUpdate()
 	{
 		scoreRate = 2.0f;
 	}
-	else if(scoreRateCount >= 20)
+	else if (scoreRateCount >= 20)
 	{
 		scoreRate = 1.5f;
 	}
@@ -1451,7 +1453,7 @@ void GameScene::GameUpdate()
 		scoreRate = 1.0f;
 	}
 
-	
+
 
 #pragma region スプライン曲線関係
 	if (railCountFlag == true)
@@ -1673,7 +1675,7 @@ void GameScene::GameUpdate()
 
 	std::ostringstream ScoreRate;
 	ScoreRate << "x" << std::fixed << std::setprecision(0) << std::setprecision(1) << scoreRate;
-	scoreText.Print(ScoreRate.str(), { 300.0f , scoreUIPosition.y + 23.0f}, { 1.0f, 1.0f, 0.4f, scoreUIAlpha - scoreRateAlpha }, 0.6f);
+	scoreText.Print(ScoreRate.str(), { 300.0f , scoreUIPosition.y + 23.0f }, { 1.0f, 1.0f, 0.4f, scoreUIAlpha - scoreRateAlpha }, 0.6f);
 
 	scoreUIUpdate();
 }
@@ -1884,7 +1886,7 @@ void GameScene::GameDraw()
 	LoadingBG->Draw();
 
 	// デバッグテキストの描画
-	//debugText.DrawAll(cmdList);
+	debugText.DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -3136,6 +3138,23 @@ void GameScene::CreatePlayerBulletParticles(XMFLOAT3 position)
 	}
 }
 
+void GameScene::CreatePlayerChargeBulletParticles(XMFLOAT3 position)
+{
+	for (int i = 0; i < 10; i++) {
+		XMFLOAT3 pos{};
+		pos.x = position.x;
+		pos.y = position.y;
+		pos.z = position.z;
+
+		XMFLOAT3 vel{};
+
+		XMFLOAT3 acc{};
+
+		// 追加
+		playerBulletParticle->Add(3, pos, vel, acc, { 0.1f,1.0f, 0.1f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }, chargeBulletSize, 0.0f);
+	}
+}
+
 void GameScene::CreateBossBulletParticles(XMFLOAT3 position)
 {
 	for (int i = 0; i < 10; i++) {
@@ -3280,14 +3299,14 @@ void GameScene::GameDebugText()
 	std::ostringstream StartIndex;
 	StartIndex << "StartIndex:("
 		<< std::fixed << std::setprecision(2)
-		<< scoreRateCount << ")";
+		<< playerChargeFlag << ")";
 	debugText.Print(StartIndex.str(), 50, 210, 1.0f);
 
 	// ボスのHP関連
 	std::ostringstream BossHp;
-	BossHp << "BossHp:("
+	BossHp << "playerChargeNow:("
 		<< std::fixed << std::setprecision(2)
-		<< bossHp << ")";
+		<< playerChargeNow << ")";
 	debugText.Print(BossHp.str(), 50, 230, 1.0f);
 
 	std::ostringstream BossLeg1Hp;
@@ -3514,6 +3533,51 @@ void GameScene::Attack()
 			}
 		}
 	}
+}
+
+void GameScene::chargeAttack()
+{
+	playerChargeRatio = playerChargeNow / playerChargeMax;
+	chargeBulletSize = Easing::InOutQuadFloat(0.0, 1.0, playerChargeRatio);
+
+	CreatePlayerChargeBulletParticles(playerWorldPosition);
+
+	if (playerChargeFlag == false)
+	{
+		if (playerChargeNow < playerChargeMax)
+		{
+			if (Input::GetInstance()->PushKey(DIK_SPACE))
+			{
+				playerChargeNow++;
+			}
+			else if (!Input::GetInstance()->PushKey(DIK_SPACE))
+			{
+				playerChargeNow--;
+			}
+		}
+		else
+		{
+			if (!Input::GetInstance()->PushKey(DIK_SPACE))
+			{
+				playerChargeFlag = true;
+			}
+		}
+
+	}
+	else
+	{
+		Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
+
+		std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
+		newBullet = Bullet::Create(modelBullet, playerWorldPosition, bulletScale, playerBulletSpeed);
+
+		bullets.push_back(std::move(newBullet));
+
+		playerChargeNow = 0.0f;
+		playerChargeFlag = false;
+	}
+	playerChargeNow = max(playerChargeNow, 0.0);
+	playerChargeNow = min(playerChargeNow, playerChargeMax);
 }
 
 void GameScene::BossAttack()
@@ -3756,14 +3820,14 @@ void GameScene::ScoreRateTimer()
 
 	if (scoreRateCount >= 50)
 	{
-		if(rate3rdOneTimeFlag)
+		if (rate3rdOneTimeFlag)
 		{
 			scoreRateTimer = 0;
 			rate1stOneTimeFlag = true;
 			rate2ndOneTimeFlag = true;
 			rate3rdOneTimeFlag = false;
 		}
-		
+
 	}
 	else if (scoreRateCount >= 20)
 	{
