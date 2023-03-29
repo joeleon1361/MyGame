@@ -1173,6 +1173,7 @@ void GameScene::GameUpdate()
 				L2startCount = GetTickCount();
 				gameScore += 1000.0f * scoreRate;
 				scoreUIMotion();
+				scoreRateCount++;
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -1215,6 +1216,7 @@ void GameScene::GameUpdate()
 				L2startCount = GetTickCount();
 				gameScore += 250.0f * scoreRate;
 				scoreUIMotion();
+				scoreRateCount++;
 				if (rushFlag == false)
 				{
 					bossLeg1Hp -= 1.0f;
@@ -1260,6 +1262,7 @@ void GameScene::GameUpdate()
 				L2startCount = GetTickCount();
 				gameScore += 250.0f * scoreRate;
 				scoreUIMotion();
+				scoreRateCount++;
 				if (rushFlag == false)
 				{
 					bossLeg2Hp -= 1.0f;
@@ -1305,6 +1308,7 @@ void GameScene::GameUpdate()
 				L2startCount = GetTickCount();
 				gameScore += 250.0f * scoreRate;
 				scoreUIMotion();
+				scoreRateCount++;
 				if (rushFlag == false)
 				{
 					bossLeg3Hp -= 1.0f;
@@ -1351,6 +1355,7 @@ void GameScene::GameUpdate()
 				L2startCount = GetTickCount();
 				gameScore += 250.0f * scoreRate;
 				scoreUIMotion();
+				scoreRateCount++;
 				if (rushFlag == false)
 				{
 					bossLeg4Hp -= 1.0f;
@@ -1396,6 +1401,16 @@ void GameScene::GameUpdate()
 			damageEffectAlpha = 1.0f;
 			damageEffectAlphaVel = -0.06f;
 			playerHp -= 10.0f;
+			if (scoreRate == 1.5f)
+			{
+				scoreRateTimer = 0;
+				scoreRateCount = 0;
+			}
+			else if (scoreRate == 2.0f)
+			{
+				scoreRateTimer = 0;
+				scoreRateCount = 20;
+			}
 			L1startCount = GetTickCount();
 			noDamageFlag = false;
 			Sound::GetInstance()->PlayWav("SE/Game/game_player_damage.wav", seVolume);
@@ -1419,6 +1434,23 @@ void GameScene::GameUpdate()
 	damageEffectUpdate();
 
 	changeGameUIAlpha();
+
+	ScoreRateTimer();
+
+	if (scoreRateCount >= 50)
+	{
+		scoreRate = 2.0f;
+	}
+	else if(scoreRateCount >= 20)
+	{
+		scoreRate = 1.5f;
+	}
+	else
+	{
+		scoreRate = 1.0f;
+	}
+
+	
 
 #pragma region スプライン曲線関係
 	if (railCountFlag == true)
@@ -1640,7 +1672,7 @@ void GameScene::GameUpdate()
 
 	std::ostringstream ScoreRate;
 	ScoreRate << "x" << std::fixed << std::setprecision(0) << std::setprecision(1) << scoreRate;
-	scoreText.Print(ScoreRate.str(), { 300.0f , scoreUIPosition.y + 23.0f}, { 1.0f, 1.0f, 0.4f, scoreUIAlpha }, 0.6f);
+	scoreText.Print(ScoreRate.str(), { 300.0f , scoreUIPosition.y + 23.0f}, { 1.0f, 1.0f, 0.4f, scoreUIAlpha - scoreRateAlpha }, 0.6f);
 
 	scoreUIUpdate();
 }
@@ -2068,6 +2100,8 @@ void GameScene::GameInitialize()
 
 	gameScoreMax = 9999999.0f;
 
+	scoreRateCount = 0;
+
 	noDamageFlag = true;
 	targetScoreFlag = false;
 	allLegBreakFlag = false;
@@ -2096,6 +2130,10 @@ void GameScene::GameInitialize()
 	rankAOneTimeFlag = true;
 	rankBOneTimeFlag = true;
 	rankCOneTimeFlag = true;
+
+	rate1stOneTimeFlag = true;
+	rate2ndOneTimeFlag = true;
+	rate3rdOneTimeFlag = true;
 
 	//railCountFlag = false;
 
@@ -3241,7 +3279,7 @@ void GameScene::GameDebugText()
 	std::ostringstream StartIndex;
 	StartIndex << "StartIndex:("
 		<< std::fixed << std::setprecision(2)
-		<< L5nowCount << ")";
+		<< scoreRateCount << ")";
 	debugText.Print(StartIndex.str(), 50, 210, 1.0f);
 
 	// ボスのHP関連
@@ -3706,6 +3744,52 @@ void GameScene::RankTimer()
 	if (rankTimer >= rankTime)
 	{
 		rankTimer = rankTime;
+	}
+}
+
+void GameScene::ScoreRateTimer()
+{
+	const float scoreRateTime = 40;
+	scoreRateTimer++;
+	const float scoreRateTimeRate = scoreRateTimer / scoreRateTime;
+
+	if (scoreRateCount >= 50)
+	{
+		if(rate3rdOneTimeFlag)
+		{
+			scoreRateTimer = 0;
+			rate1stOneTimeFlag = true;
+			rate2ndOneTimeFlag = true;
+			rate3rdOneTimeFlag = false;
+		}
+		
+	}
+	else if (scoreRateCount >= 20)
+	{
+		if (rate2ndOneTimeFlag)
+		{
+			scoreRateTimer = 0;
+			rate1stOneTimeFlag = true;
+			rate3rdOneTimeFlag = true;
+			rate2ndOneTimeFlag = false;
+		}
+	}
+	else
+	{
+		if (rate1stOneTimeFlag)
+		{
+			scoreRateTimer = 0;
+			rate2ndOneTimeFlag = true;
+			rate3rdOneTimeFlag = true;
+			rate1stOneTimeFlag = false;
+		}
+	}
+
+	scoreRateAlpha = Easing::OutCubicFloat(1.0f, 0.0f, scoreRateTimeRate);
+
+	if (scoreRateTimer >= scoreRateTime)
+	{
+		scoreRateTimer = scoreRateTime;
 	}
 }
 

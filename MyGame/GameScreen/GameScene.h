@@ -260,6 +260,8 @@ public: // メンバ関数
 
 	void RankTimer();
 
+	void ScoreRateTimer();
+
 	// テクスチャのロード
 	void LoadTextureFunction();
 
@@ -656,7 +658,8 @@ private: // メンバ変数
 	float gameScore = 0.0f;
 	float gameScoreMax = 9999999.0f;
 
-	float scoreRate = 2.0f;
+	float scoreRate = 1.0f;
+	int scoreRateCount = 0;
 
 	bool helpMenuFlag = false;
 
@@ -666,6 +669,13 @@ private: // メンバ変数
 	bool rankAOneTimeFlag = true;
 	bool rankBOneTimeFlag = true;
 	bool rankCOneTimeFlag = true;
+
+	int32_t scoreRateTimer = 0;
+	bool rate1stOneTimeFlag = true;
+	bool rate2ndOneTimeFlag = true;
+	bool rate3rdOneTimeFlag = true;
+
+	float scoreRateAlpha = 0.0f;
 
 	XMFLOAT2 gameGTXT_1Size = {};
 	XMFLOAT4 gameGTXT_1Color = { 1.0f, 1.0f, 1.0f, 0.0f };
