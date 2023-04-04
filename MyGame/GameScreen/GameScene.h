@@ -27,6 +27,7 @@
 #include "BossBullet.h"
 #include "BossTargetBullet.h"
 #include "StageObject.h"
+#include "PlayerSpecialBullet.h"
 
 #include "Spline.h"
 #include "Lerp.h"
@@ -46,6 +47,7 @@
 class CollisionManager;
 class Player;
 class Bullet;
+class PlayerSpecialBullet;
 class Boss;
 class BossBullet;
 class BossTargetBullet;
@@ -213,7 +215,7 @@ public: // メンバ関数
 	void CreatePlayerBulletParticles(XMFLOAT3 position);
 
 	// プレイヤーの弾パーティクル生成
-	void CreatePlayerChargeBulletParticles(XMFLOAT3 position);
+	void CreatePlayerChargeBulletParticles(XMFLOAT3 position , float size);
 
 	// ボスの弾パーティクル生成
 	void CreateBossBulletParticles(XMFLOAT3 position);
@@ -426,6 +428,7 @@ private: // メンバ変数
 	ObjObject* objPlayerContrailLeft = nullptr;
 
 	std::list<std::unique_ptr<Bullet>> bullets;
+	std::list<std::unique_ptr<PlayerSpecialBullet>> specialBullets;
 
 	// ボス関連
 	Boss* bossBody = nullptr;

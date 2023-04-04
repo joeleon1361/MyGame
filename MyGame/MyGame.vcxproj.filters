@@ -229,6 +229,9 @@
     <ClCompile Include="Result.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerSpecialBullet.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\FBX.hlsli">
@@ -410,6 +413,9 @@
     </ClInclude>
     <ClInclude Include="Result.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerSpecialBullet.h">
+      <Filter>Player</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

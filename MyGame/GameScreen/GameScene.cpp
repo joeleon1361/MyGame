@@ -907,7 +907,7 @@ void GameScene::GameUpdate()
 #pragma region 弾関連
 	Attack();
 
-	//chargeAttack();
+	chargeAttack();
 
 	// 弾を更新
 	for (std::unique_ptr<Bullet>& bullet : bullets)
@@ -917,6 +917,19 @@ void GameScene::GameUpdate()
 
 	// 弾を消去
 	bullets.remove_if([](std::unique_ptr<Bullet>& bullet)
+		{
+			return bullet->GetDeathFlag();
+		}
+	);
+
+	// 弾を更新
+	for (std::unique_ptr<PlayerSpecialBullet>& bullet : specialBullets)
+	{
+		bullet->Update();
+	}
+
+	// 弾を消去
+	specialBullets.remove_if([](std::unique_ptr<PlayerSpecialBullet>& bullet)
 		{
 			return bullet->GetDeathFlag();
 		}
@@ -1476,6 +1489,12 @@ void GameScene::GameUpdate()
 		CreatePlayerBulletParticles(bullet->GetPosition());
 	}
 
+	for (std::unique_ptr<PlayerSpecialBullet>& bullet : specialBullets)
+	{
+		XMFLOAT3 bulletPosi = bullet->GetPosition();
+		CreatePlayerChargeBulletParticles({ bulletPosi.x, bulletPosi.y, bulletPosi.z }, 2.0f);
+	}
+
 	for (std::unique_ptr<BossTargetBullet>& bullet : bossTargetBullets)
 	{
 		CreateBossBulletParticles(bullet->GetPosition());
@@ -1708,6 +1727,11 @@ void GameScene::GameDraw()
 	if (playerUpdateFlag == true)
 	{
 		for (std::unique_ptr<Bullet>& bullet : bullets)
+		{
+			//bullet->Draw();
+		}
+
+		for (std::unique_ptr<PlayerSpecialBullet>& bullet : specialBullets)
 		{
 			//bullet->Draw();
 		}
@@ -3135,7 +3159,7 @@ void GameScene::CreatePlayerBulletParticles(XMFLOAT3 position)
 	}
 }
 
-void GameScene::CreatePlayerChargeBulletParticles(XMFLOAT3 position)
+void GameScene::CreatePlayerChargeBulletParticles(XMFLOAT3 position, float size)
 {
 	for (int i = 0; i < 10; i++) {
 		XMFLOAT3 pos{};
@@ -3148,7 +3172,7 @@ void GameScene::CreatePlayerChargeBulletParticles(XMFLOAT3 position)
 		XMFLOAT3 acc{};
 
 		// 追加
-		playerBulletParticle->Add(3, pos, vel, acc, { 0.1f,1.0f, 0.1f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }, chargeBulletSize, 0.0f);
+		playerBulletParticle->Add(3, pos, vel, acc, { 1.0f,1.0f, 0.1f, 1.0f }, { 1.0f, 1.0f, 0.0f, 1.0f }, size, 0.0f);
 	}
 }
 
@@ -3535,24 +3559,24 @@ void GameScene::chargeAttack()
 		playerChargeRatio = playerChargeNow / playerChargeMax;
 		chargeBulletSize = Easing::InOutQuadFloat(0.0, 2.0, playerChargeRatio);
 
-		CreatePlayerChargeBulletParticles(playerWorldPosition);
+		CreatePlayerChargeBulletParticles(playerWorldPosition, chargeBulletSize);
 
 		if (playerChargeFlag == false)
 		{
 			if (playerChargeNow < playerChargeMax)
 			{
-				if (Input::GetInstance()->PushKey(DIK_SPACE))
+				if (Input::GetInstance()->PushKey(DIK_M))
 				{
 					playerChargeNow++;
 				}
-				else if (!Input::GetInstance()->PushKey(DIK_SPACE))
+				else if (!Input::GetInstance()->PushKey(DIK_M))
 				{
 					playerChargeNow--;
 				}
 			}
 			else
 			{
-				if (!Input::GetInstance()->PushKey(DIK_SPACE))
+				if (!Input::GetInstance()->PushKey(DIK_M))
 				{
 					playerChargeFlag = true;
 				}
@@ -3562,10 +3586,10 @@ void GameScene::chargeAttack()
 		{
 			Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
 
-			std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
-			newBullet = Bullet::Create(modelBullet, playerWorldPosition, bulletScale, playerBulletSpeed);
+			std::unique_ptr<PlayerSpecialBullet> newBullet = std::make_unique<PlayerSpecialBullet>();
+			newBullet = PlayerSpecialBullet::Create(modelBullet, playerWorldPosition, bulletScale, playerBulletSpeed);
 
-			bullets.push_back(std::move(newBullet));
+			specialBullets.push_back(std::move(newBullet));
 
 			playerChargeNow = 0.0f;
 			playerChargeFlag = false;

@@ -186,6 +186,7 @@
     <ClCompile Include="OBJ\ObjObject.cpp" />
     <ClCompile Include="Particle\ParticleManager.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerSpecialBullet.cpp" />
     <ClCompile Include="PostEffect\PostEffect.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="SceneFactory.cpp" />
@@ -309,6 +310,7 @@
     <ClInclude Include="OBJ\ObjObject.h" />
     <ClInclude Include="Particle\ParticleManager.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerSpecialBullet.h" />
     <ClInclude Include="PostEffect\PostEffect.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="SceneFactory.h" />
