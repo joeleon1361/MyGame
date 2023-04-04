@@ -793,9 +793,9 @@ void GameScene::GameUpdate()
 
 	cameraLocalPosition = Easing::OutQuadFloat3(objCamera->GetPosition(), nextCamera, L3nowCount);
 
-	moveCameraPosition_1 = Easing::InOutQuadFloat3({ 5.0f, 0.0f,-1.0f }, { 4.0f, 3.0f,2.0f }, L5nowCount);
-	moveCameraPosition_2 = Easing::InOutQuadFloat3({ 2.0f, -1.0f,-5.0f }, { -4.0f, 3.0f,-2.0f }, L5nowCount);
-	moveCameraPosition_3 = Easing::InOutQuadFloat3({ 0.0f, 2.0f,-10.0f }, { 0.0f,0.0f,-20.0f }, L5nowCount);
+	moveCameraPosition_1 = Easing::OutQuadFloat3({ 5.0f, 0.0f,-1.0f }, { 4.0f, 3.0f,2.0f }, L5nowCount);
+	moveCameraPosition_2 = Easing::OutQuadFloat3({ 2.0f, -1.0f,-5.0f }, { -4.0f, 3.0f,-2.0f }, L5nowCount);
+	moveCameraPosition_3 = Easing::OutQuadFloat3({ 0.0f, 2.0f,-10.0f }, { 0.0f,0.0f,-20.0f }, L5nowCount);
 
 	gameParts1Color = gameParts_1->GetColor();
 	gameParts2Color = gameParts_2->GetColor();
@@ -2381,7 +2381,6 @@ void GameScene::ResultUpdate()
 		// 値の設定
 		resultMoveVelX_3 = 40.0f;
 		resultMoveAccX_3 = 1.0f;
-		//sound->PlayWav("SE/Result/result_open2.wav", masterVolume);
 
 		// 値の初期化
 		resultBN_2Size.x = 704.0f;
@@ -3426,10 +3425,6 @@ void GameScene::CameraSwitching()
 	if (startIndex == 3)
 	{
 		L4addCount = moveUIVel;
-	}
-
-	if (startIndex == 4)
-	{
 		playerUpdateFlag = true;
 	}
 
@@ -3726,26 +3721,21 @@ void GameScene::Lerp4Count()
 void GameScene::Lerp5Count()
 {
 	L5nowCount += L5addCount;
-	moveCameraTimer += moveCameraTimerVel;
 
 	if (L5nowCount > 1.0f)
 	{
-		L5addCount = 0.0f;
-		moveCameraTimerVel = -0.1f;
-		if (moveCameraTimer < 0.0f)
-		{
-			moveCameraTimer = 2.0f;
-			moveCameraTimerVel = 0.0f;
-			moveCameraNumber++;
-			L5nowCount = 0.0f;
-			L5addCount = 0.02f;
-		}
+		L5nowCount = 0.0f;
+		moveCameraNumber++;
 	}
 
 	if (moveCameraNumber > 4)
 	{
 		L5nowCount = 1.0f;
 		L5addCount = 0.0f;
+	}
+	else
+	{
+		L5addCount = 0.016f;
 	}
 }
 

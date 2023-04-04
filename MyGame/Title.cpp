@@ -21,22 +21,7 @@ void Title::Initialize()
 	// カメラセット
 	ObjObject::SetCamera(camera);
 
-	// タイトル
-	if (!Sprite::LoadTexture(TextureNumber::title_gtxt_1, L"Resources/Sprite/TitleUI/title_gtxt_1.png")) {
-		assert(0);
-		return;
-	}
-
-	if (!Sprite::LoadTexture(TextureNumber::title_parts_1, L"Resources/Sprite/TitleUI/title_parts_1.png")) {
-		assert(0);
-		return;
-	}
-
-	// エフェクト
-	if (!Sprite::LoadTexture(TextureNumber::loading_effect_1, L"Resources/Sprite/Effect/loading_effect_1.png")) {
-		assert(0);
-		return;
-	}
+	LoadTextureFunction();
 
 	// スプライト生成
 	TitleLogo = Sprite::Create(TextureNumber::title_gtxt_1, { 100.0f,100.0f }, { 1.0f, 1.0f, 1.0f, 1.0f });
@@ -348,4 +333,24 @@ void Title::Draw()
 	Sprite::PostDraw();
 #pragma endregion
 
+}
+
+void Title::LoadTextureFunction()
+{
+	// タイトル
+	if (!Sprite::LoadTexture(TextureNumber::title_gtxt_1, L"Resources/Sprite/TitleUI/title_gtxt_1.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(TextureNumber::title_parts_1, L"Resources/Sprite/TitleUI/title_parts_1.png")) {
+		assert(0);
+		return;
+	}
+
+	// エフェクト
+	if (!Sprite::LoadTexture(TextureNumber::loading_effect_1, L"Resources/Sprite/Effect/loading_effect_1.png")) {
+		assert(0);
+		return;
+	}
 }

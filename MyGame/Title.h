@@ -33,6 +33,8 @@ private: // 静的メンバ変数
 		// タイトル
 		title_gtxt_1,
 		title_parts_1,
+		
+		// エフェクト
 		loading_effect_1
 	};
 
@@ -54,6 +56,9 @@ public:
 
 	// 描画
 	void Draw() override;
+
+	// テクスチャのロード
+	void LoadTextureFunction();
 
 private: // メンバ変数
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();

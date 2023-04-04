@@ -65,9 +65,6 @@
     <Filter Include="EngineBase">
       <UniqueIdentifier>{3daa5a77-8d23-4194-8e38-0a807118291f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameScreen">
-      <UniqueIdentifier>{752d52de-1177-4280-9561-bcaf4bc070a8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Collider">
       <UniqueIdentifier>{e536b6eb-ed67-40db-9f89-c38934df73f3}</UniqueIdentifier>
     </Filter>
@@ -160,9 +157,6 @@
     <ClCompile Include="Sound\Sound.cpp">
       <Filter>Sound</Filter>
     </ClCompile>
-    <ClCompile Include="GameScreen\GameScene.cpp">
-      <Filter>GameScreen</Filter>
-    </ClCompile>
     <ClCompile Include="Collider\Collision.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
@@ -229,8 +223,11 @@
     <ClCompile Include="SpriteCommon.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="GameScreen\GameScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
     <ClCompile Include="Result.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -334,9 +331,6 @@
     <ClInclude Include="Sound\Sound.h">
       <Filter>Sound</Filter>
     </ClInclude>
-    <ClInclude Include="GameScreen\GameScene.h">
-      <Filter>GameScreen</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Player</Filter>
     </ClInclude>
@@ -411,6 +405,11 @@
     <ClInclude Include="AbstractSceneFactory.h" />
     <ClInclude Include="SceneFactory.h" />
     <ClInclude Include="SpriteCommon.h" />
-    <ClInclude Include="Result.h" />
+    <ClInclude Include="GameScreen\GameScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Result.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
