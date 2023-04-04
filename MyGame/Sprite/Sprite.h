@@ -37,6 +37,9 @@ public: // 静的メンバ関数
 	// 静的初期化
 	static bool StaticInitialize(ID3D12Device* device, int window_width, int window_height);
 
+	// グラフィックパイプラインの生成
+	static void CreateGraphicsPipeline();
+
 	// テクスチャ読み込み
 	static bool LoadTexture(UINT texnumber, const wchar_t*filename);
 

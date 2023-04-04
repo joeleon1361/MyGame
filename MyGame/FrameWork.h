@@ -6,6 +6,7 @@
 #include "fbxsdk.h"
 #include "PostEffect.h"
 #include "FbxLoader.h"
+#include "SpriteCommon.h"
 
 #include "SceneManager.h"
 #include "AbstractSceneFactory.h"
@@ -44,6 +45,8 @@ protected: //ÉÅÉìÉoïœêî
 	Sound* sound = nullptr;
 	GameScene* gameScene = nullptr;
 	PostEffect* postEffect = nullptr;
+	SpriteCommon* spriteCommon = nullptr;
+	
 	AbstractSceneFactory* sceneFactory = nullptr;
 };
 

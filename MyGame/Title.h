@@ -15,7 +15,6 @@
 #include "Sound.h"
 #include "Camera.h"
 
-
 class Title : public BaseScene
 {
 private: // エイリアス

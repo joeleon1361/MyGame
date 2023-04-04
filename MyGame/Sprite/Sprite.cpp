@@ -30,6 +30,30 @@ bool Sprite::StaticInitialize(ID3D12Device* device, int window_width, int window
 	descriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	HRESULT result = S_FALSE;
+
+	CreateGraphicsPipeline();
+
+	// 射影行列計算
+	matProjection = XMMatrixOrthographicOffCenterLH(
+		0.0f, (float)window_width,(float)window_height, 0.0f,0.0f, 1.0f);
+
+	// デスクリプタヒープを生成	
+	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
+	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダから見えるように
+	descHeapDesc.NumDescriptors = srvCount;
+	result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descHeap));//生成
+	if (FAILED(result)) {
+		assert(0);
+		return false;
+	}
+
+	return true;
+}
+
+void Sprite::CreateGraphicsPipeline()
+{
+	HRESULT result;
 	ComPtr<ID3DBlob> vsBlob; // 頂点シェーダオブジェクト
 	ComPtr<ID3DBlob> psBlob;	// ピクセルシェーダオブジェクト
 	ComPtr<ID3DBlob> errorBlob; // エラーオブジェクト
@@ -43,6 +67,7 @@ bool Sprite::StaticInitialize(ID3D12Device* device, int window_width, int window
 		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
 		0,
 		&vsBlob, &errorBlob);
+
 	if (FAILED(result)) {
 		// errorBlobからエラー内容をstring型にコピー
 		std::string errstr;
@@ -54,8 +79,6 @@ bool Sprite::StaticInitialize(ID3D12Device* device, int window_width, int window
 		errstr += "\n";
 		// エラー内容を出力ウィンドウに表示
 		OutputDebugStringA(errstr.c_str());
-
-		return false;
 	}
 
 	// ピクセルシェーダの読み込みとコンパイル
@@ -78,8 +101,6 @@ bool Sprite::StaticInitialize(ID3D12Device* device, int window_width, int window
 		errstr += "\n";
 		// エラー内容を出力ウィンドウに表示
 		OutputDebugStringA(errstr.c_str());
-		
-		return false;
 	}
 
 	// 頂点レイアウト
@@ -113,7 +134,7 @@ bool Sprite::StaticInitialize(ID3D12Device* device, int window_width, int window
 	// レンダーターゲットのブレンド設定
 	D3D12_RENDER_TARGET_BLEND_DESC blenddesc{};
 	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;	// RBGA全てのチャンネルを描画
-	
+
 	// 共通設定
 	blenddesc.BlendEnable = true;
 
@@ -162,45 +183,14 @@ bool Sprite::StaticInitialize(ID3D12Device* device, int window_width, int window
 	ComPtr<ID3DBlob> rootSigBlob;
 	// バージョン自動判定のシリアライズ
 	result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &errorBlob);
-	if (FAILED(result)) {
-		assert(0);
-		return false;
-	}
+
 	// ルートシグネチャの生成
 	result = device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
-	if (FAILED(result)) {
-		assert(0);
-		return false;
-	}
 
 	gpipeline.pRootSignature = rootSignature.Get();
 
 	// グラフィックスパイプラインの生成
 	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelineState));
-
-	if (FAILED(result)) {
-		assert(0);
-		return false;
-	}
-
-	// 射影行列計算
-	matProjection = XMMatrixOrthographicOffCenterLH(
-		0.0f, (float)window_width,
-		(float)window_height, 0.0f,
-		0.0f, 1.0f);
-
-	// デスクリプタヒープを生成	
-	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
-	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダから見えるように
-	descHeapDesc.NumDescriptors = srvCount;
-	result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descHeap));//生成
-	if (FAILED(result)) {
-		assert(0);
-		return false;
-	}
-
-	return true;
 }
 
 bool Sprite::LoadTexture(UINT texnumber, const wchar_t * filename)

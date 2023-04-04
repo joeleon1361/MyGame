@@ -226,6 +226,12 @@
     <ClCompile Include="SceneFactory.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="SpriteCommon.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Result.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\FBX.hlsli">
@@ -404,5 +410,7 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="AbstractSceneFactory.h" />
     <ClInclude Include="SceneFactory.h" />
+    <ClInclude Include="SpriteCommon.h" />
+    <ClInclude Include="Result.h" />
   </ItemGroup>
 </Project>

@@ -187,11 +187,13 @@
     <ClCompile Include="Particle\ParticleManager.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PostEffect\PostEffect.cpp" />
+    <ClCompile Include="Result.cpp" />
     <ClCompile Include="SceneFactory.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ScoreText.cpp" />
     <ClCompile Include="Sound\Sound.cpp" />
     <ClCompile Include="Spline.cpp" />
+    <ClCompile Include="SpriteCommon.cpp" />
     <ClCompile Include="Sprite\Sprite.cpp" />
     <ClCompile Include="StageObject.cpp" />
     <ClCompile Include="Title.cpp" />
@@ -308,11 +310,13 @@
     <ClInclude Include="Particle\ParticleManager.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PostEffect\PostEffect.h" />
+    <ClInclude Include="Result.h" />
     <ClInclude Include="SceneFactory.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ScoreText.h" />
     <ClInclude Include="Sound\Sound.h" />
     <ClInclude Include="Spline.h" />
+    <ClInclude Include="SpriteCommon.h" />
     <ClInclude Include="Sprite\Sprite.h" />
     <ClInclude Include="StageObject.h" />
     <ClInclude Include="Title.h" />

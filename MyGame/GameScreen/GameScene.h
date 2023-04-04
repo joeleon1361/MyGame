@@ -49,7 +49,7 @@ class Bullet;
 class Boss;
 class BossBullet;
 class BossTargetBullet;
-class Stageobject;
+class StageObject;
 
 // ゲームシーン
 class GameScene : public BaseScene

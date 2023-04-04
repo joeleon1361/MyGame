@@ -142,7 +142,7 @@ void GameScene::Initialize()
 
 	// パーティクルマネージャー
 	bossHitParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect6.png");
-	bossBreakParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 2, L"Resources/effect1.png");
+	bossBreakParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
 	playerJetParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
 	playerContrailParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
 	playerBulletParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
@@ -864,7 +864,7 @@ void GameScene::GameUpdate()
 		scene = RESULT;
 	}
 
-	if (Input::GetInstance()->TriggerKey(DIK_C))
+	/*if (Input::GetInstance()->TriggerKey(DIK_C))
 	{
 		bossHp = 0.0f;
 		L2startCount = GetTickCount();
@@ -881,7 +881,7 @@ void GameScene::GameUpdate()
 	{
 		bossLeg3Hp = 0.0f;
 		bossLeg4Hp = 0.0f;
-	}
+	}*/
 
 	playerHpCalc();
 
@@ -905,9 +905,9 @@ void GameScene::GameUpdate()
 	);
 
 #pragma region 弾関連
-	//Attack();
+	Attack();
 
-	chargeAttack();
+	//chargeAttack();
 
 	// 弾を更新
 	for (std::unique_ptr<Bullet>& bullet : bullets)
@@ -1453,8 +1453,6 @@ void GameScene::GameUpdate()
 		scoreRate = 1.0f;
 	}
 
-
-
 #pragma region スプライン曲線関係
 	if (railCountFlag == true)
 	{
@@ -1886,7 +1884,7 @@ void GameScene::GameDraw()
 	LoadingBG->Draw();
 
 	// デバッグテキストの描画
-	debugText.DrawAll(cmdList);
+	//debugText.DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -3051,7 +3049,7 @@ void GameScene::CreateBossParticles(XMFLOAT3 position)
 		acc.y = +(float)rand() / RAND_MAX * rnd_acc;
 
 		// 追加
-		bossBreakParticle->Add(30, pos, vel, acc, { 0.15f, 0.15f, 0.15f, 1.000f }, { 0.01f, 0.01f, 0.01f, 1.000f }, 1.0f, 0.0f);
+		bossBreakParticle->Add(30, pos, vel, acc, { 0.874f,0.443f, 0.149f, 1.000f }, { 0.874f,0.443f, 0.149f, 1.000f }, 2.0f, 0.0f);
 	}
 }
 
@@ -3479,7 +3477,7 @@ void GameScene::CameraSwitching()
 
 	}
 
-	if (Input::GetInstance()->TriggerKey(DIK_RIGHT))
+	/*if (Input::GetInstance()->TriggerKey(DIK_RIGHT))
 	{
 		cameraMode = 3;
 		rightFlashingFlag = true;
@@ -3501,7 +3499,7 @@ void GameScene::CameraSwitching()
 		leftFlashingFlag = true;
 		L3nowCount = 0.0f;
 		L3addCount = 0.001f;
-	}
+	}*/
 }
 
 void GameScene::Attack()
@@ -3537,47 +3535,49 @@ void GameScene::Attack()
 
 void GameScene::chargeAttack()
 {
-	playerChargeRatio = playerChargeNow / playerChargeMax;
-	chargeBulletSize = Easing::InOutQuadFloat(0.0, 1.0, playerChargeRatio);
-
-	CreatePlayerChargeBulletParticles(playerWorldPosition);
-
-	if (playerChargeFlag == false)
+	if (playerUpdateFlag == true)
 	{
-		if (playerChargeNow < playerChargeMax)
+		playerChargeRatio = playerChargeNow / playerChargeMax;
+		chargeBulletSize = Easing::InOutQuadFloat(0.0, 2.0, playerChargeRatio);
+
+		CreatePlayerChargeBulletParticles(playerWorldPosition);
+
+		if (playerChargeFlag == false)
 		{
-			if (Input::GetInstance()->PushKey(DIK_SPACE))
+			if (playerChargeNow < playerChargeMax)
 			{
-				playerChargeNow++;
+				if (Input::GetInstance()->PushKey(DIK_SPACE))
+				{
+					playerChargeNow++;
+				}
+				else if (!Input::GetInstance()->PushKey(DIK_SPACE))
+				{
+					playerChargeNow--;
+				}
 			}
-			else if (!Input::GetInstance()->PushKey(DIK_SPACE))
+			else
 			{
-				playerChargeNow--;
+				if (!Input::GetInstance()->PushKey(DIK_SPACE))
+				{
+					playerChargeFlag = true;
+				}
 			}
 		}
 		else
 		{
-			if (!Input::GetInstance()->PushKey(DIK_SPACE))
-			{
-				playerChargeFlag = true;
-			}
+			Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
+
+			std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
+			newBullet = Bullet::Create(modelBullet, playerWorldPosition, bulletScale, playerBulletSpeed);
+
+			bullets.push_back(std::move(newBullet));
+
+			playerChargeNow = 0.0f;
+			playerChargeFlag = false;
 		}
-
+		playerChargeNow = max(playerChargeNow, 0.0);
+		playerChargeNow = min(playerChargeNow, playerChargeMax);
 	}
-	else
-	{
-		Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
-
-		std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
-		newBullet = Bullet::Create(modelBullet, playerWorldPosition, bulletScale, playerBulletSpeed);
-
-		bullets.push_back(std::move(newBullet));
-
-		playerChargeNow = 0.0f;
-		playerChargeFlag = false;
-	}
-	playerChargeNow = max(playerChargeNow, 0.0);
-	playerChargeNow = min(playerChargeNow, playerChargeMax);
 }
 
 void GameScene::BossAttack()
