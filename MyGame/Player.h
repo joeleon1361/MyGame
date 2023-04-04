@@ -74,6 +74,8 @@ private: // ƒƒ“ƒo•Ï”
 	float playerSpeedX = 0.0f;
 	float playerSpeedY = 0.0f;
 
+	XMFLOAT3 playerSpeed = {};
+
 	XMFLOAT3 rollRotation = {};
 
 	XMFLOAT3 dodgeRollRotation = {};

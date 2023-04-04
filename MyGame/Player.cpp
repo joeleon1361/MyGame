@@ -42,15 +42,14 @@ void Player::Update()
 	ObjObject::Update();
 
 	rotation.x = rollRotation.x + dodgeRollRotation.x;
+	position.x += playerSpeed.x;
+	position.y += playerSpeed.y;
 	//InertiaCalc();
 
 	if (cameraMode == FRONT)
 	{
-		if (playerUpdateFlag == true)
-		{
-			// オブジェクト移動
-			FrontMove();
-		}
+		// オブジェクト移動
+		FrontMove();
 
 		// 移動制限
 		MoveLimitXY();
@@ -74,11 +73,8 @@ void Player::Update()
 	}
 	else if (cameraMode == BACK)
 	{
-		if (playerUpdateFlag == true)
-		{
-			// オブジェクト移動
-			BackMove();
-		}
+		// オブジェクト移動
+		BackMove();
 
 		// 移動制限
 		MoveLimitXY();
@@ -110,24 +106,83 @@ void Player::FrontMove()
 {
 	Input* input = Input::GetInstance();
 
-	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
+	if (playerUpdateFlag == true)
 	{
-		// 移動後の座標を計算
-		if (input->PushKey(DIK_W))
+		if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
 		{
-			position.y += playerVelocity + dodgeRollSpeed;
+			// 移動後の座標を計算
+			if (input->PushKey(DIK_W) && playerSpeed.y <= 0.4f)
+			{
+				playerSpeed.y += 0.05f;
+			}
+			if (input->PushKey(DIK_S) && playerSpeed.y >= -0.4f)
+			{
+				playerSpeed.y -= 0.05f;
+			}
+			if (input->PushKey(DIK_D) && playerSpeed.x <= 0.4f)
+			{
+				playerSpeed.x += 0.05f;
+			}
+			if (input->PushKey(DIK_A) && playerSpeed.x >= -0.4f)
+			{
+				playerSpeed.x -= 0.05f;
+			}
 		}
-		if (input->PushKey(DIK_S))
+
+		// 傾きを戻す
+		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && playerSpeed.x != 0.0f)
 		{
-			position.y -= playerVelocity + dodgeRollSpeed;
+			if (playerSpeed.x > 0.0f)
+			{
+				playerSpeed.x -= 0.02f;
+			}
+
+			if (playerSpeed.x < 0.0f)
+			{
+				playerSpeed.x += 0.02f;
+			}
 		}
-		if (input->PushKey(DIK_D))
+
+		if (input->PushKey(DIK_W) == 0 && input->PushKey(DIK_S) == 0 && playerSpeed.y != 0.0f)
 		{
-			position.x += playerVelocity + dodgeRollSpeed;
+			if (playerSpeed.y > 0.0f)
+			{
+				playerSpeed.y -= 0.02f;
+			}
+
+			if (playerSpeed.y < 0.0f)
+			{
+				playerSpeed.y += 0.02f;
+			}
 		}
-		if (input->PushKey(DIK_A))
+	}
+	else
+	{
+		// 傾きを戻す
+		if (playerSpeed.x != 0.0f)
 		{
-			position.x -= playerVelocity + dodgeRollSpeed;
+			if (playerSpeed.x > 0.0f)
+			{
+				playerSpeed.x -= 0.02f;
+			}
+
+			if (playerSpeed.x < 0.0f)
+			{
+				playerSpeed.x += 0.02f;
+			}
+		}
+
+		if (playerSpeed.y != 0.0f)
+		{
+			if (playerSpeed.y > 0.0f)
+			{
+				playerSpeed.y -= 0.02f;
+			}
+
+			if (playerSpeed.y < 0.0f)
+			{
+				playerSpeed.y += 0.02f;
+			}
 		}
 	}
 }
@@ -162,24 +217,83 @@ void Player::BackMove()
 {
 	Input* input = Input::GetInstance();
 
-	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
+	if (playerUpdateFlag == true)
 	{
-		// 移動後の座標を計算
-		if (input->PushKey(DIK_W))
+		if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
 		{
-			position.y += playerVelocity + dodgeRollSpeed;
+			// 移動後の座標を計算
+			if (input->PushKey(DIK_W) && playerSpeed.y <= 0.4f)
+			{
+				playerSpeed.y += 0.05f;
+			}
+			if (input->PushKey(DIK_S) && playerSpeed.y >= -0.4f)
+			{
+				playerSpeed.y -= 0.05f;
+			}
+			if (input->PushKey(DIK_A) && playerSpeed.x <= 0.4f)
+			{
+				playerSpeed.x += 0.05f;
+			}
+			if (input->PushKey(DIK_D) && playerSpeed.x >= -0.4f)
+			{
+				playerSpeed.x -= 0.05f;
+			}
 		}
-		if (input->PushKey(DIK_S))
+
+		// 傾きを戻す
+		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && playerSpeed.x != 0.0f)
 		{
-			position.y -= playerVelocity + dodgeRollSpeed;
+			if (playerSpeed.x > 0.0f)
+			{
+				playerSpeed.x -= 0.02f;
+			}
+
+			if (playerSpeed.x < 0.0f)
+			{
+				playerSpeed.x += 0.02f;
+			}
 		}
-		if (input->PushKey(DIK_D))
+
+		if (input->PushKey(DIK_W) == 0 && input->PushKey(DIK_S) == 0 && playerSpeed.y != 0.0f)
 		{
-			position.x -= playerVelocity + dodgeRollSpeed;
+			if (playerSpeed.y > 0.0f)
+			{
+				playerSpeed.y -= 0.02f;
+			}
+
+			if (playerSpeed.y < 0.0f)
+			{
+				playerSpeed.y += 0.02f;
+			}
 		}
-		if (input->PushKey(DIK_A))
+	}
+	else
+	{
+		// 傾きを戻す
+		if (playerSpeed.x != 0.0f)
 		{
-			position.x += playerVelocity + dodgeRollSpeed;
+			if (playerSpeed.x > 0.0f)
+			{
+				playerSpeed.x -= 0.02f;
+			}
+
+			if (playerSpeed.x < 0.0f)
+			{
+				playerSpeed.x += 0.02f;
+			}
+		}
+
+		if (playerSpeed.y != 0.0f)
+		{
+			if (playerSpeed.y > 0.0f)
+			{
+				playerSpeed.y -= 0.02f;
+			}
+
+			if (playerSpeed.y < 0.0f)
+			{
+				playerSpeed.y += 0.02f;
+			}
 		}
 	}
 }
@@ -463,7 +577,7 @@ void Player::judgeDodgeRoll()
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
 			dodgeEndRotation.x = -720.0f;
-			dodgeStartSpeed = 0.4f;
+			dodgeStartSpeed = -0.4f;
 		}
 	}
 	else if (cameraMode == BACK)
@@ -480,7 +594,7 @@ void Player::judgeDodgeRoll()
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
 			dodgeEndRotation.x = -720.0f;
-			dodgeStartSpeed = 0.4f;
+			dodgeStartSpeed = -0.4f;
 		}
 	}
 }
@@ -497,7 +611,7 @@ void Player::executeDodgeRoll()
 
 	dodgeRollSpeed = Easing::OutQuadFloat(dodgeStartSpeed, dodgeEndSpeed, time);
 
-	if (dodgeRollTimer >= rollTime) 
+	if (dodgeRollTimer >= rollTime)
 	{
 		dodgeRollFlag = false;
 	}
