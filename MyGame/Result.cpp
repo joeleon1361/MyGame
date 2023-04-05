@@ -677,7 +677,7 @@ void Result::Update()
 
 	if (changeSceneTimer <= 0.0f)
 	{
-		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 
 

@@ -1,9 +1,9 @@
-#include "BossTargetBullet.h"
+#include "TargetBullet.h"
 
-std::unique_ptr<BossTargetBullet> BossTargetBullet::Create(ObjModel* model, const XMFLOAT3 position, const XMFLOAT3 scale, const XMFLOAT3 target, const float speed)
+std::unique_ptr<TargetBullet> TargetBullet::Create(ObjModel* model, const XMFLOAT3 position, const XMFLOAT3 scale, const XMFLOAT3 target, const float speed)
 {
 	// 3Dオブジェクトのインスタンスを生成
-	BossTargetBullet* instance = new BossTargetBullet();
+	TargetBullet* instance = new TargetBullet();
 	if (instance == nullptr) {
 		return nullptr;
 	}
@@ -19,10 +19,10 @@ std::unique_ptr<BossTargetBullet> BossTargetBullet::Create(ObjModel* model, cons
 		instance->SetModel(model);
 	}
 
-	return std::unique_ptr<BossTargetBullet>(instance);
+	return std::unique_ptr<TargetBullet>(instance);
 }
 
-bool BossTargetBullet::Initialize(const XMFLOAT3 position, const XMFLOAT3 scale, const XMFLOAT3 target, const float speed)
+bool TargetBullet::Initialize(const XMFLOAT3 position, const XMFLOAT3 scale, const XMFLOAT3 target, const float speed)
 {
 	if (!ObjObject::Initialize())
 	{
@@ -42,7 +42,7 @@ bool BossTargetBullet::Initialize(const XMFLOAT3 position, const XMFLOAT3 scale,
 	return true;
 }
 
-void BossTargetBullet::Update()
+void TargetBullet::Update()
 {
 	ObjObject::Update();
 

@@ -909,53 +909,55 @@ void GameScene::GameUpdate()
 
 	chargeAttack();
 
+	homingAttack();
+
 	// 弾を更新
-	for (std::unique_ptr<Bullet>& bullet : bullets)
+	for (std::unique_ptr<Bullet>& bullet : playerBullets)
 	{
 		bullet->Update();
 	}
 
 	// 弾を消去
-	bullets.remove_if([](std::unique_ptr<Bullet>& bullet)
+	playerBullets.remove_if([](std::unique_ptr<Bullet>& bullet)
+		{
+			return bullet->GetDeathFlag();
+		}
+	);
+
+	// プレイヤーの狙い弾を更新
+	for (std::unique_ptr<TargetBullet>& bullet : playerTargetBullets)
+	{
+		bullet->Update();
+	}
+
+	// プレイヤーの狙い弾を消去
+	playerTargetBullets.remove_if([](std::unique_ptr<TargetBullet>& bullet)
 		{
 			return bullet->GetDeathFlag();
 		}
 	);
 
 	// 弾を更新
-	for (std::unique_ptr<PlayerSpecialBullet>& bullet : specialBullets)
+	for (std::unique_ptr<Bullet>& bullet : playerChargeBullets)
 	{
 		bullet->Update();
 	}
 
 	// 弾を消去
-	specialBullets.remove_if([](std::unique_ptr<PlayerSpecialBullet>& bullet)
-		{
-			return bullet->GetDeathFlag();
-		}
-	);
-
-	// ボスの弾を更新
-	for (std::unique_ptr<BossBullet>& bullet : bossBullets)
-	{
-		bullet->Update();
-	}
-
-	// ボスの弾を消去
-	bossBullets.remove_if([](std::unique_ptr<BossBullet>& bullet)
+	playerChargeBullets.remove_if([](std::unique_ptr<Bullet>& bullet)
 		{
 			return bullet->GetDeathFlag();
 		}
 	);
 
 	// ボスの狙い弾を更新
-	for (std::unique_ptr<BossTargetBullet>& bullet : bossTargetBullets)
+	for (std::unique_ptr<TargetBullet>& bullet : bossTargetBullets)
 	{
 		bullet->Update();
 	}
 
 	// ボスの狙い弾を消去
-	bossTargetBullets.remove_if([](std::unique_ptr<BossTargetBullet>& bullet)
+	bossTargetBullets.remove_if([](std::unique_ptr<TargetBullet>& bullet)
 		{
 			return bullet->GetDeathFlag();
 		}
@@ -1181,13 +1183,14 @@ void GameScene::GameUpdate()
 	// ボス本体の当たり判定
 	if (bossFlag == true)
 	{
-		for (std::unique_ptr<Bullet>& bullet : bullets)
+		for (std::unique_ptr<Bullet>& bullet : playerBullets)
 		{
-			if (OnCollision(bullet->GetPosition(), bossWorldPosition, 0.7f, 0.6f) == true)
+			if (OnCollision(bullet->GetPosition(), bossWorldPosition, 0.6f, 1.5f) == true)
 			{
 				bossHp -= 10.0f;
 				L2startCount = GetTickCount();
 				gameScore += 1000.0f * scoreRate;
+				//score->ScoreAdd(1000.0f);
 				scoreUIMotion();
 				scoreRateCount++;
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
@@ -1223,9 +1226,9 @@ void GameScene::GameUpdate()
 	// ボス部位1の当たり判定
 	if (bossLeg1Flag == true)
 	{
-		for (std::unique_ptr<Bullet>& bullet : bullets)
+		for (std::unique_ptr<Bullet>& bullet : playerBullets)
 		{
-			if (OnCollision(bullet->GetPosition(), bossLeg1WorldPosition, 0.6f, 0.6f) == true)
+			if (OnCollision(bullet->GetPosition(), bossLeg1WorldPosition, 0.6f, 0.8f) == true)
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
 				bossHp -= 5.0f;
@@ -1269,9 +1272,9 @@ void GameScene::GameUpdate()
 	// ボス部位2の当たり判定
 	if (bossLeg2Flag == true)
 	{
-		for (std::unique_ptr<Bullet>& bullet : bullets)
+		for (std::unique_ptr<Bullet>& bullet : playerBullets)
 		{
-			if (OnCollision(bullet->GetPosition(), bossLeg2WorldPosition, 0.6f, 0.6f) == true)
+			if (OnCollision(bullet->GetPosition(), bossLeg2WorldPosition, 0.6f, 0.8f) == true)
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
 				bossHp -= 5.0f;
@@ -1315,9 +1318,9 @@ void GameScene::GameUpdate()
 	// ボス部位3の当たり判定
 	if (bossLeg3Flag == true)
 	{
-		for (std::unique_ptr<Bullet>& bullet : bullets)
+		for (std::unique_ptr<Bullet>& bullet : playerBullets)
 		{
-			if (OnCollision(bullet->GetPosition(), bossLeg3WorldPosition, 0.6f, 0.6f) == true)
+			if (OnCollision(bullet->GetPosition(), bossLeg3WorldPosition, 0.6f, 0.8f) == true)
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
 				bossHp -= 5.0f;
@@ -1362,9 +1365,9 @@ void GameScene::GameUpdate()
 	// ボス部位4の当たり判定
 	if (bossLeg4Flag == true)
 	{
-		for (std::unique_ptr<Bullet>& bullet : bullets)
+		for (std::unique_ptr<Bullet>& bullet : playerBullets)
 		{
-			if (OnCollision(bullet->GetPosition(), bossLeg4WorldPosition, 0.6f, 0.6f) == true)
+			if (OnCollision(bullet->GetPosition(), bossLeg4WorldPosition, 0.6f, 0.8f) == true)
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
 				bossHp -= 5.0f;
@@ -1410,7 +1413,7 @@ void GameScene::GameUpdate()
 	}
 
 	// プレイヤーの当たり判定
-	for (std::unique_ptr<BossTargetBullet>& bullet : bossTargetBullets)
+	for (std::unique_ptr<TargetBullet>& bullet : bossTargetBullets)
 	{
 		if (OnCollision(bullet->GetPosition(), playerWorldPosition, 0.6f, 0.6f) == true)
 		{
@@ -1484,18 +1487,23 @@ void GameScene::GameUpdate()
 
 	CreatePlayerJetParticles(playerWorldPosition);
 
-	for (std::unique_ptr<Bullet>& bullet : bullets)
+	for (std::unique_ptr<Bullet>& bullet : playerBullets)
 	{
 		CreatePlayerBulletParticles(bullet->GetPosition());
 	}
 
-	for (std::unique_ptr<PlayerSpecialBullet>& bullet : specialBullets)
+	for (std::unique_ptr<TargetBullet>& bullet : playerTargetBullets)
+	{
+		CreatePlayerBulletParticles(bullet->GetPosition());
+	}
+
+	for (std::unique_ptr<Bullet>& bullet : playerChargeBullets)
 	{
 		XMFLOAT3 bulletPosi = bullet->GetPosition();
 		CreatePlayerChargeBulletParticles({ bulletPosi.x, bulletPosi.y, bulletPosi.z }, 2.0f);
 	}
 
-	for (std::unique_ptr<BossTargetBullet>& bullet : bossTargetBullets)
+	for (std::unique_ptr<TargetBullet>& bullet : bossTargetBullets)
 	{
 		CreateBossBulletParticles(bullet->GetPosition());
 	}
@@ -1726,25 +1734,15 @@ void GameScene::GameDraw()
 
 	if (playerUpdateFlag == true)
 	{
-		for (std::unique_ptr<Bullet>& bullet : bullets)
+		for (std::unique_ptr<Bullet>& bullet : playerBullets)
 		{
 			//bullet->Draw();
 		}
 
-		for (std::unique_ptr<PlayerSpecialBullet>& bullet : specialBullets)
+		for (std::unique_ptr<Bullet>& bullet : playerChargeBullets)
 		{
 			//bullet->Draw();
 		}
-	}
-
-	for (std::unique_ptr<BossBullet>& bullet : bossBullets)
-	{
-		//bullet->Draw();
-	}
-
-	for (std::unique_ptr<BossTargetBullet>& bullet : bossTargetBullets)
-	{
-		//bullet->Draw();
 	}
 
 	for (std::unique_ptr<StageObject>& cloud : stageObjects)
@@ -1951,7 +1949,7 @@ void GameScene::GameInitialize()
 	bossLeg3->SetRotation({ 0.0f,0.0f,0.0f });
 	bossLeg4->SetRotation({ 0.0f,0.0f,0.0f });
 
-	bossBody->SetScale({ 2.5f, 2.5f, 2.5f });
+	bossBody->SetScale({ 3.5f, 3.5f, 3.5f });
 	bossLeg1->SetScale({ 0.8f, 0.8f, 0.8f });
 	bossLeg2->SetScale({ 0.8f, 0.8f, 0.8f });
 	bossLeg3->SetScale({ 0.8f, 0.8f, 0.8f });
@@ -3327,7 +3325,7 @@ void GameScene::GameDebugText()
 	std::ostringstream BossHp;
 	BossHp << "playerChargeNow:("
 		<< std::fixed << std::setprecision(2)
-		<< playerChargeNow << ")";
+		<< playerHomingNow << ")";
 	debugText.Print(BossHp.str(), 50, 230, 1.0f);
 
 	std::ostringstream BossLeg1Hp;
@@ -3543,7 +3541,7 @@ void GameScene::Attack()
 				std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
 				newBullet = Bullet::Create(modelBullet, playerWorldPosition, bulletScale, playerBulletSpeed);
 
-				bullets.push_back(std::move(newBullet));
+				playerBullets.push_back(std::move(newBullet));
 
 				shotFlag = false;
 				shotRate = 1.5f;
@@ -3586,10 +3584,10 @@ void GameScene::chargeAttack()
 		{
 			Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
 
-			std::unique_ptr<PlayerSpecialBullet> newBullet = std::make_unique<PlayerSpecialBullet>();
-			newBullet = PlayerSpecialBullet::Create(modelBullet, playerWorldPosition, bulletScale, playerBulletSpeed);
+			std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
+			newBullet = Bullet::Create(modelBullet, playerWorldPosition, bulletScale, playerBulletSpeed);
 
-			specialBullets.push_back(std::move(newBullet));
+			playerChargeBullets.push_back(std::move(newBullet));
 
 			playerChargeNow = 0.0f;
 			playerChargeFlag = false;
@@ -3599,18 +3597,136 @@ void GameScene::chargeAttack()
 	}
 }
 
+void GameScene::homingAttack()
+{
+	if (playerUpdateFlag == true)
+	{
+		if (playerHomingNow >= 30.0f)
+		{
+			CreatePlayerChargeBulletParticles({ playerWorldPosition.x, playerWorldPosition.y + 1.0f, playerWorldPosition.z }, 0.7f);
+		}
+		if (playerHomingNow >= 60.0f)
+		{
+			CreatePlayerChargeBulletParticles({ playerWorldPosition.x + 0.8f, playerWorldPosition.y + 0.5f, playerWorldPosition.z }, 0.7f);
+		}
+		if (playerHomingNow >= 90.0f)
+		{
+			CreatePlayerChargeBulletParticles({ playerWorldPosition.x + 0.8f, playerWorldPosition.y - 0.5f, playerWorldPosition.z }, 0.7f);
+		}
+		if (playerHomingNow >= 120.0f)
+		{
+			CreatePlayerChargeBulletParticles({ playerWorldPosition.x, playerWorldPosition.y - 1.0f, playerWorldPosition.z }, 0.7f);
+		}
+		if (playerHomingNow >= 150.0f)
+		{
+			CreatePlayerChargeBulletParticles({ playerWorldPosition.x - 0.8f, playerWorldPosition.y - 0.5f, playerWorldPosition.z }, 0.7f);
+		}
+		if (playerHomingNow >= 180.0f)
+		{
+			CreatePlayerChargeBulletParticles({ playerWorldPosition.x - 0.8f, playerWorldPosition.y + 0.5f, playerWorldPosition.z }, 0.7f);
+		}
+
+
+		if (playerHomingFlag == false)
+		{
+			if (playerHomingNow < playerHomingMax)
+			{
+				if (Input::GetInstance()->PushKey(DIK_N))
+				{
+					playerHomingNow++;
+				}
+				else if (!Input::GetInstance()->PushKey(DIK_N))
+				{
+					playerHomingNow = 0.0f;
+				}
+			}
+			else
+			{
+				if (!Input::GetInstance()->PushKey(DIK_N))
+				{
+					playerHomingFlag = true;
+				}
+			}
+		}
+		else
+		{
+
+
+			if (playerHomingNow == 180.0f)
+			{
+				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
+
+				std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
+				newBullet = TargetBullet::Create(modelBullet, { playerWorldPosition.x - 0.8f, playerWorldPosition.y + 0.5f, playerWorldPosition.z }, bulletScale, bossWorldPosition, playerBulletSpeed);
+
+				playerTargetBullets.push_back(std::move(newBullet));
+			}
+			if (playerHomingNow == 150.0f)
+			{
+				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
+
+				std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
+				newBullet = TargetBullet::Create(modelBullet, { playerWorldPosition.x - 0.8f, playerWorldPosition.y - 0.5f, playerWorldPosition.z }, bulletScale, bossWorldPosition, playerBulletSpeed);
+
+				playerTargetBullets.push_back(std::move(newBullet));
+			}
+			if (playerHomingNow == 120.0f)
+			{
+				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
+
+				std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
+				newBullet = TargetBullet::Create(modelBullet, { playerWorldPosition.x, playerWorldPosition.y - 1.0f, playerWorldPosition.z }, bulletScale, bossWorldPosition, playerBulletSpeed);
+
+				playerTargetBullets.push_back(std::move(newBullet));
+			}
+			if (playerHomingNow == 90.0f)
+			{
+				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
+
+				std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
+				newBullet = TargetBullet::Create(modelBullet, { playerWorldPosition.x + 0.8f, playerWorldPosition.y - 0.5f, playerWorldPosition.z }, bulletScale, bossWorldPosition, playerBulletSpeed);
+
+				playerTargetBullets.push_back(std::move(newBullet));
+			}
+			if (playerHomingNow == 60.0f)
+			{
+				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
+
+				std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
+				newBullet = TargetBullet::Create(modelBullet, { playerWorldPosition.x + 0.8f, playerWorldPosition.y + 0.5f, playerWorldPosition.z }, bulletScale, bossWorldPosition, playerBulletSpeed);
+
+				playerTargetBullets.push_back(std::move(newBullet));
+			}
+			if (playerHomingNow == 30.0f)
+			{
+				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
+
+				std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
+				newBullet = TargetBullet::Create(modelBullet, { playerWorldPosition.x, playerWorldPosition.y + 1.0f, playerWorldPosition.z }, bulletScale, bossWorldPosition, playerBulletSpeed);
+
+				playerTargetBullets.push_back(std::move(newBullet));
+			}
+
+			playerHomingNow -= 2.0f;
+
+			if (playerHomingNow <= 0.0f)
+			{
+				playerHomingNow = 0.0f;
+				playerHomingFlag = false;
+			}
+		}
+		playerHomingNow = max(playerHomingNow, 0.0);
+		playerHomingNow = min(playerHomingNow, playerHomingMax);
+	}
+}
+
 void GameScene::BossAttack()
 {
-	/*std::unique_ptr<BossBullet> newBullet = std::make_unique<BossBullet>();
-	newBullet = BossBullet::Create(modelBullet, bossLocalPosition, bulletScale, bulletVelocity);
-
-	bossBullets.push_back(std::move(newBullet));*/
-
 	if (playerHp >= 0.0f)
 	{
 		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
-		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-		newBullet = BossTargetBullet::Create(modelBullet, bossWorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
+		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
+		newBullet = TargetBullet::Create(modelBullet, bossWorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
 
 		bossTargetBullets.push_back(std::move(newBullet));
 	}
@@ -3621,8 +3737,8 @@ void GameScene::BossLeg1Attack()
 	if ((playerHp >= 0.0f) && (bossLeg1Flag == true))
 	{
 		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
-		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-		newBullet = BossTargetBullet::Create(modelBullet, bossLeg1WorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
+		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
+		newBullet = TargetBullet::Create(modelBullet, bossLeg1WorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
 
 		bossTargetBullets.push_back(std::move(newBullet));
 	}
@@ -3633,8 +3749,8 @@ void GameScene::BossLeg2Attack()
 	if ((playerHp >= 0.0f) && (bossLeg2Flag == true))
 	{
 		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
-		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-		newBullet = BossTargetBullet::Create(modelBullet, bossLeg2WorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
+		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
+		newBullet = TargetBullet::Create(modelBullet, bossLeg2WorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
 
 		bossTargetBullets.push_back(std::move(newBullet));
 	}
@@ -3645,8 +3761,8 @@ void GameScene::BossLeg3Attack()
 	if ((playerHp >= 0.0f) && (bossLeg3Flag == true))
 	{
 		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
-		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-		newBullet = BossTargetBullet::Create(modelBullet, bossLeg3WorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
+		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
+		newBullet = TargetBullet::Create(modelBullet, bossLeg3WorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
 
 		bossTargetBullets.push_back(std::move(newBullet));
 	}
@@ -3657,8 +3773,8 @@ void GameScene::BossLeg4Attack()
 	if ((playerHp >= 0.0f) && (bossLeg4Flag == true))
 	{
 		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
-		std::unique_ptr<BossTargetBullet> newBullet = std::make_unique<BossTargetBullet>();
-		newBullet = BossTargetBullet::Create(modelBullet, bossLeg4WorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
+		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
+		newBullet = TargetBullet::Create(modelBullet, bossLeg4WorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
 
 		bossTargetBullets.push_back(std::move(newBullet));
 	}

@@ -158,8 +158,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Boss.cpp" />
-    <ClCompile Include="BossBullet.cpp" />
-    <ClCompile Include="BossTargetBullet.cpp" />
+    <ClCompile Include="TargetBullet.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Collider\Collision.cpp" />
@@ -186,11 +185,11 @@
     <ClCompile Include="OBJ\ObjObject.cpp" />
     <ClCompile Include="Particle\ParticleManager.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayerSpecialBullet.cpp" />
     <ClCompile Include="PostEffect\PostEffect.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="SceneFactory.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="ScoreManager.cpp" />
     <ClCompile Include="ScoreText.cpp" />
     <ClCompile Include="Sound\Sound.cpp" />
     <ClCompile Include="Spline.cpp" />
@@ -278,8 +277,7 @@
     <ClInclude Include="AbstractSceneFactory.h" />
     <ClInclude Include="BaseScene.h" />
     <ClInclude Include="Boss.h" />
-    <ClInclude Include="BossBullet.h" />
-    <ClInclude Include="BossTargetBullet.h" />
+    <ClInclude Include="TargetBullet.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="Collider\BaseCollider.h" />
@@ -310,11 +308,11 @@
     <ClInclude Include="OBJ\ObjObject.h" />
     <ClInclude Include="Particle\ParticleManager.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayerSpecialBullet.h" />
     <ClInclude Include="PostEffect\PostEffect.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="SceneFactory.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="ScoreManager.h" />
     <ClInclude Include="ScoreText.h" />
     <ClInclude Include="Sound\Sound.h" />
     <ClInclude Include="Spline.h" />

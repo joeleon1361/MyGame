@@ -24,16 +24,16 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Boss.h"
-#include "BossBullet.h"
-#include "BossTargetBullet.h"
+#include "TargetBullet.h"
 #include "StageObject.h"
-#include "PlayerSpecialBullet.h"
 
 #include "Spline.h"
 #include "Lerp.h"
 #include "Easing.h"
 
 #include "GamePad.h"
+
+#include "ScoreManager.h"
 
 #include <cassert>
 #include <sstream>
@@ -50,7 +50,7 @@ class Bullet;
 class PlayerSpecialBullet;
 class Boss;
 class BossBullet;
-class BossTargetBullet;
+class TargetBullet;
 class StageObject;
 
 // ゲームシーン
@@ -236,6 +236,8 @@ public: // メンバ関数
 	void Attack();
 
 	void chargeAttack();
+
+	void homingAttack();
 
 	// ボスの攻撃
 	void BossAttack();
@@ -427,8 +429,8 @@ private: // メンバ変数
 	ObjObject* objPlayerContrailRight = nullptr;
 	ObjObject* objPlayerContrailLeft = nullptr;
 
-	std::list<std::unique_ptr<Bullet>> bullets;
-	std::list<std::unique_ptr<PlayerSpecialBullet>> specialBullets;
+	std::list<std::unique_ptr<Bullet>> playerBullets;
+	std::list<std::unique_ptr<Bullet>> playerChargeBullets;
 
 	// ボス関連
 	Boss* bossBody = nullptr;
@@ -439,9 +441,9 @@ private: // メンバ変数
 	Boss* bossLeg3 = nullptr;
 	Boss* bossLeg4 = nullptr;
 
-	std::list<std::unique_ptr<BossBullet>>bossBullets;
+	std::list<std::unique_ptr<TargetBullet>>bossTargetBullets;
 
-	std::list<std::unique_ptr<BossTargetBullet>>bossTargetBullets;
+	std::list<std::unique_ptr<TargetBullet>>playerTargetBullets;
 
 	ObjObject* objCenter = nullptr;
 
@@ -451,6 +453,7 @@ private: // メンバ変数
 
 	std::list<std::unique_ptr<StageObject>>stageObjects;
 
+	ScoreManager* score = nullptr;
 #pragma region スプライン曲線関連
 	// スプライン曲線関連
 
@@ -782,6 +785,10 @@ private: // メンバ変数
 	float playerChargeRatio = 0.0f;
 	float chargeBulletSize = 0.0f;
 
+	bool playerHomingFlag = false;
+	float playerHomingMax = 180.0f;
+	float playerHomingNow = 0.0f;
+
 	// プレイヤーの弾の発射間隔
 	float shotRate = 1.5f;
 	// プレイヤーの弾の発射フラグ
@@ -895,7 +902,7 @@ private: // メンバ変数
 	float bossRotateVel = 0.0f;
 
 	// ボスの弾の速度
-	float bossBulletSpeed = 1.2f;
+	float bossBulletSpeed = 0.8f;
 
 	// ボスのガトリング攻撃番号
 	int rushOrder = 0;

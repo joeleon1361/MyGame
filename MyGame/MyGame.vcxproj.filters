@@ -187,10 +187,7 @@
     <ClCompile Include="Boss.cpp">
       <Filter>Boss</Filter>
     </ClCompile>
-    <ClCompile Include="BossBullet.cpp">
-      <Filter>Boss</Filter>
-    </ClCompile>
-    <ClCompile Include="BossTargetBullet.cpp">
+    <ClCompile Include="TargetBullet.cpp">
       <Filter>Boss</Filter>
     </ClCompile>
     <ClCompile Include="ScoreText.cpp">
@@ -229,8 +226,8 @@
     <ClCompile Include="Result.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerSpecialBullet.cpp">
-      <Filter>Player</Filter>
+    <ClCompile Include="ScoreManager.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -349,10 +346,7 @@
     <ClInclude Include="Boss.h">
       <Filter>Boss</Filter>
     </ClInclude>
-    <ClInclude Include="BossBullet.h">
-      <Filter>Boss</Filter>
-    </ClInclude>
-    <ClInclude Include="BossTargetBullet.h">
+    <ClInclude Include="TargetBullet.h">
       <Filter>Boss</Filter>
     </ClInclude>
     <ClInclude Include="ScoreText.h">
@@ -414,8 +408,6 @@
     <ClInclude Include="Result.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerSpecialBullet.h">
-      <Filter>Player</Filter>
-    </ClInclude>
+    <ClInclude Include="ScoreManager.h" />
   </ItemGroup>
 </Project>

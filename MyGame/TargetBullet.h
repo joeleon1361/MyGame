@@ -1,7 +1,7 @@
 #pragma once
 #include "ObjObject.h"
 #include <math.h>
-class BossTargetBullet :
+class TargetBullet :
 	public ObjObject
 {
 private:
@@ -15,7 +15,7 @@ private:
 
 public: // 静的メンバ関数
 // 3Dオブジェクト生成
-	static std::unique_ptr<BossTargetBullet>Create(ObjModel* model, const XMFLOAT3 position, const XMFLOAT3 scale, const XMFLOAT3 target, const float speed);
+	static std::unique_ptr<TargetBullet>Create(ObjModel* model, const XMFLOAT3 position, const XMFLOAT3 scale, const XMFLOAT3 target, const float speed);
 
 private: // 静的メンバ変数
 // 消えるまでの時間
