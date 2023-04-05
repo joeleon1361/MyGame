@@ -107,6 +107,12 @@
     <Filter Include="Scene">
       <UniqueIdentifier>{f7ec7057-bcf6-4b32-ad52-18d01322bce7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Bullet">
+      <UniqueIdentifier>{530937ca-c34c-4d00-9a29-154a3665f988}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameBase">
+      <UniqueIdentifier>{e95835f3-35b7-4422-8d0f-a728607eb905}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -175,9 +181,6 @@
     <ClCompile Include="Player.cpp">
       <Filter>Player</Filter>
     </ClCompile>
-    <ClCompile Include="Bullet.cpp">
-      <Filter>Player</Filter>
-    </ClCompile>
     <ClCompile Include="GamePad.cpp">
       <Filter>Input\GamePad</Filter>
     </ClCompile>
@@ -185,9 +188,6 @@
       <Filter>Input\KeyBoard</Filter>
     </ClCompile>
     <ClCompile Include="Boss.cpp">
-      <Filter>Boss</Filter>
-    </ClCompile>
-    <ClCompile Include="TargetBullet.cpp">
       <Filter>Boss</Filter>
     </ClCompile>
     <ClCompile Include="ScoreText.cpp">
@@ -202,23 +202,8 @@
     <ClCompile Include="Easing.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="FrameWork.cpp">
-      <Filter>EngineBase</Filter>
-    </ClCompile>
-    <ClCompile Include="MyGame.cpp">
-      <Filter>EngineBase</Filter>
-    </ClCompile>
     <ClCompile Include="Title.cpp">
       <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneFactory.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteCommon.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="GameScreen\GameScene.cpp">
       <Filter>Scene</Filter>
@@ -228,6 +213,24 @@
     </ClCompile>
     <ClCompile Include="ScoreManager.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="TargetBullet.cpp">
+      <Filter>Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameWork.cpp">
+      <Filter>GameBase</Filter>
+    </ClCompile>
+    <ClCompile Include="MyGame.cpp">
+      <Filter>GameBase</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneFactory.cpp">
+      <Filter>GameBase</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>GameBase</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -334,9 +337,6 @@
     <ClInclude Include="Player.h">
       <Filter>Player</Filter>
     </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>Player</Filter>
-    </ClInclude>
     <ClInclude Include="GamePad.h">
       <Filter>Input\GamePad</Filter>
     </ClInclude>
@@ -344,9 +344,6 @@
       <Filter>Input\KeyBoard</Filter>
     </ClInclude>
     <ClInclude Include="Boss.h">
-      <Filter>Boss</Filter>
-    </ClInclude>
-    <ClInclude Include="TargetBullet.h">
       <Filter>Boss</Filter>
     </ClInclude>
     <ClInclude Include="ScoreText.h">
@@ -388,26 +385,41 @@
     <ClInclude Include="StageObject.h">
       <Filter>ヘッダ ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="FrameWork.h">
-      <Filter>EngineBase</Filter>
-    </ClInclude>
-    <ClInclude Include="MyGame.h">
-      <Filter>EngineBase</Filter>
-    </ClInclude>
     <ClInclude Include="Title.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="BaseScene.h" />
-    <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="AbstractSceneFactory.h" />
-    <ClInclude Include="SceneFactory.h" />
-    <ClInclude Include="SpriteCommon.h" />
     <ClInclude Include="GameScreen\GameScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="Result.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="ScoreManager.h" />
+    <ClInclude Include="Bullet.h">
+      <Filter>Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="TargetBullet.h">
+      <Filter>Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameWork.h">
+      <Filter>GameBase</Filter>
+    </ClInclude>
+    <ClInclude Include="MyGame.h">
+      <Filter>GameBase</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneFactory.h">
+      <Filter>GameBase</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>GameBase</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractSceneFactory.h">
+      <Filter>GameBase</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseScene.h">
+      <Filter>GameBase</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreManager.h">
+      <Filter>ヘッダ ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -193,7 +193,6 @@
     <ClCompile Include="ScoreText.cpp" />
     <ClCompile Include="Sound\Sound.cpp" />
     <ClCompile Include="Spline.cpp" />
-    <ClCompile Include="SpriteCommon.cpp" />
     <ClCompile Include="Sprite\Sprite.cpp" />
     <ClCompile Include="StageObject.cpp" />
     <ClCompile Include="Title.cpp" />
@@ -316,7 +315,6 @@
     <ClInclude Include="ScoreText.h" />
     <ClInclude Include="Sound\Sound.h" />
     <ClInclude Include="Spline.h" />
-    <ClInclude Include="SpriteCommon.h" />
     <ClInclude Include="Sprite\Sprite.h" />
     <ClInclude Include="StageObject.h" />
     <ClInclude Include="Title.h" />

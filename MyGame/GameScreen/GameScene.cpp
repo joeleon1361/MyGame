@@ -145,7 +145,7 @@ void GameScene::Initialize()
 	bossBreakParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
 	playerJetParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
 	playerContrailParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
-	playerBulletParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
+	bulletParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
 
 	// 3Dオブジェクト生成
 	objSkydome = ObjObject::Create();
@@ -1489,23 +1489,22 @@ void GameScene::GameUpdate()
 
 	for (std::unique_ptr<Bullet>& bullet : playerBullets)
 	{
-		CreatePlayerBulletParticles(bullet->GetPosition());
+		CreateBulletParticles(bullet->GetPosition(), { 0.1f,1.0f, 0.1f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }, 0.7f);
 	}
 
 	for (std::unique_ptr<TargetBullet>& bullet : playerTargetBullets)
 	{
-		CreatePlayerBulletParticles(bullet->GetPosition());
+		CreateBulletParticles(bullet->GetPosition(), { 0.1f,1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f, 1.0f, 1.0f }, 0.7f);
 	}
 
 	for (std::unique_ptr<Bullet>& bullet : playerChargeBullets)
 	{
-		XMFLOAT3 bulletPosi = bullet->GetPosition();
-		CreatePlayerChargeBulletParticles({ bulletPosi.x, bulletPosi.y, bulletPosi.z }, 2.0f);
+		CreateChargeBulletParticles(bullet->GetPosition(), { 1.0f,1.0f, 0.1f, 1.0f }, { 1.0f, 1.0f, 0.0f, 1.0f },  2.0f);
 	}
 
 	for (std::unique_ptr<TargetBullet>& bullet : bossTargetBullets)
 	{
-		CreateBossBulletParticles(bullet->GetPosition());
+		CreateBulletParticles(bullet->GetPosition(), { 1.0f,0.1f, 0.1f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, 0.7f);
 	}
 
 #pragma region 座標のセット
@@ -1646,7 +1645,7 @@ void GameScene::GameUpdate()
 	bossBreakParticle->Update();
 	playerJetParticle->Update();
 	playerContrailParticle->Update();
-	playerBulletParticle->Update();
+	bulletParticle->Update();
 	// 背景天球
 	objSkydome->Update();
 
@@ -1792,7 +1791,7 @@ void GameScene::GameDraw()
 	playerContrailParticle->Draw(cmdList);
 	if (playerUpdateFlag == true)
 	{
-		playerBulletParticle->Draw(cmdList);
+		bulletParticle->Draw(cmdList);
 	}
 
 	// 3Dオブジェクト描画後処理
@@ -3140,7 +3139,7 @@ void GameScene::CreatePlayerContrailParticles(XMFLOAT3 position)
 	}
 }
 
-void GameScene::CreatePlayerBulletParticles(XMFLOAT3 position)
+void GameScene::CreateBulletParticles(XMFLOAT3 position, XMFLOAT4 start_color, XMFLOAT4 end_color, float start_scale)
 {
 	for (int i = 0; i < 10; i++) {
 		XMFLOAT3 pos{};
@@ -3153,11 +3152,11 @@ void GameScene::CreatePlayerBulletParticles(XMFLOAT3 position)
 		XMFLOAT3 acc{};
 
 		// 追加
-		playerBulletParticle->Add(7, pos, vel, acc, { 0.1f,1.0f, 0.1f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }, 0.7f, 0.0f);
+		bulletParticle->Add(7, pos, vel, acc, start_color, end_color, start_scale, 0.0f);
 	}
 }
 
-void GameScene::CreatePlayerChargeBulletParticles(XMFLOAT3 position, float size)
+void GameScene::CreateChargeBulletParticles(XMFLOAT3 position, XMFLOAT4 start_color, XMFLOAT4 end_color, float start_scale)
 {
 	for (int i = 0; i < 10; i++) {
 		XMFLOAT3 pos{};
@@ -3170,25 +3169,7 @@ void GameScene::CreatePlayerChargeBulletParticles(XMFLOAT3 position, float size)
 		XMFLOAT3 acc{};
 
 		// 追加
-		playerBulletParticle->Add(3, pos, vel, acc, { 1.0f,1.0f, 0.1f, 1.0f }, { 1.0f, 1.0f, 0.0f, 1.0f }, size, 0.0f);
-	}
-}
-
-void GameScene::CreateBossBulletParticles(XMFLOAT3 position)
-{
-	for (int i = 0; i < 10; i++) {
-		const float rnd_pos = 0.1f;
-		XMFLOAT3 pos{};
-		pos.x = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.x;
-		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.y;
-		pos.z = position.z;
-
-		XMFLOAT3 vel{};
-
-		XMFLOAT3 acc{};
-
-		// 追加
-		playerBulletParticle->Add(7, pos, vel, acc, { 1.0f,0.1f, 0.1f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, 0.7f, 0.0f);
+		bulletParticle->Add(3, pos, vel, acc, start_color, end_color, start_scale, 0.0f);
 	}
 }
 
@@ -3557,7 +3538,7 @@ void GameScene::chargeAttack()
 		playerChargeRatio = playerChargeNow / playerChargeMax;
 		chargeBulletSize = Easing::InOutQuadFloat(0.0, 2.0, playerChargeRatio);
 
-		CreatePlayerChargeBulletParticles(playerWorldPosition, chargeBulletSize);
+		CreateChargeBulletParticles(playerWorldPosition, { 1.0f,1.0f, 0.1f, 1.0f }, { 1.0f, 1.0f, 0.0f, 1.0f }, chargeBulletSize);
 
 		if (playerChargeFlag == false)
 		{
@@ -3603,27 +3584,27 @@ void GameScene::homingAttack()
 	{
 		if (playerHomingNow >= 30.0f)
 		{
-			CreatePlayerChargeBulletParticles({ playerWorldPosition.x, playerWorldPosition.y + 1.0f, playerWorldPosition.z }, 0.7f);
+			CreateChargeBulletParticles({ playerWorldPosition.x, playerWorldPosition.y + 1.0f, playerWorldPosition.z }, { 0.1f,1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f, 1.0f, 1.0f }, 0.7f);
 		}
 		if (playerHomingNow >= 60.0f)
 		{
-			CreatePlayerChargeBulletParticles({ playerWorldPosition.x + 0.8f, playerWorldPosition.y + 0.5f, playerWorldPosition.z }, 0.7f);
+			CreateChargeBulletParticles({ playerWorldPosition.x + 0.8f, playerWorldPosition.y + 0.5f, playerWorldPosition.z }, { 0.1f,1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f, 1.0f, 1.0f }, 0.7f);
 		}
 		if (playerHomingNow >= 90.0f)
 		{
-			CreatePlayerChargeBulletParticles({ playerWorldPosition.x + 0.8f, playerWorldPosition.y - 0.5f, playerWorldPosition.z }, 0.7f);
+			CreateChargeBulletParticles({ playerWorldPosition.x + 0.8f, playerWorldPosition.y - 0.5f, playerWorldPosition.z }, { 0.1f,1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f, 1.0f, 1.0f }, 0.7f);
 		}
 		if (playerHomingNow >= 120.0f)
 		{
-			CreatePlayerChargeBulletParticles({ playerWorldPosition.x, playerWorldPosition.y - 1.0f, playerWorldPosition.z }, 0.7f);
+			CreateChargeBulletParticles({ playerWorldPosition.x, playerWorldPosition.y - 1.0f, playerWorldPosition.z }, { 0.1f,1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f, 1.0f, 1.0f }, 0.7f);
 		}
 		if (playerHomingNow >= 150.0f)
 		{
-			CreatePlayerChargeBulletParticles({ playerWorldPosition.x - 0.8f, playerWorldPosition.y - 0.5f, playerWorldPosition.z }, 0.7f);
+			CreateChargeBulletParticles({ playerWorldPosition.x - 0.8f, playerWorldPosition.y - 0.5f, playerWorldPosition.z }, { 0.1f,1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f, 1.0f, 1.0f }, 0.7f);
 		}
 		if (playerHomingNow >= 180.0f)
 		{
-			CreatePlayerChargeBulletParticles({ playerWorldPosition.x - 0.8f, playerWorldPosition.y + 0.5f, playerWorldPosition.z }, 0.7f);
+			CreateChargeBulletParticles({ playerWorldPosition.x - 0.8f, playerWorldPosition.y + 0.5f, playerWorldPosition.z }, { 0.1f,1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f, 1.0f, 1.0f }, 0.7f);
 		}
 
 

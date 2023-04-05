@@ -211,14 +211,11 @@ public: // メンバ関数
 	// プレイヤーの飛行機雲パーティクル生成
 	void CreatePlayerContrailParticles(XMFLOAT3 position);
 
-	// プレイヤーの弾パーティクル生成
-	void CreatePlayerBulletParticles(XMFLOAT3 position);
+	// 弾パーティクル生成
+	void CreateBulletParticles(XMFLOAT3 position, XMFLOAT4 start_color, XMFLOAT4 end_color, float start_scale);
 
-	// プレイヤーの弾パーティクル生成
-	void CreatePlayerChargeBulletParticles(XMFLOAT3 position , float size);
-
-	// ボスの弾パーティクル生成
-	void CreateBossBulletParticles(XMFLOAT3 position);
+	// チャージ弾パーティクル生成
+	void CreateChargeBulletParticles(XMFLOAT3 position, XMFLOAT4 start_color, XMFLOAT4 end_color, float start_scale);
 
 	// 全シーン共通のデバックテキスト
 	void AllDebugText();
@@ -399,7 +396,7 @@ private: // メンバ変数
 	ParticleManager* bossHitParticle = nullptr;
 	ParticleManager* bossBreakParticle = nullptr;
 	ParticleManager* playerJetParticle = nullptr;
-	ParticleManager* playerBulletParticle = nullptr;
+	ParticleManager* bulletParticle = nullptr;
 	ParticleManager* playerContrailParticle = nullptr;
 
 	ObjModel* modelSkydome = nullptr;
