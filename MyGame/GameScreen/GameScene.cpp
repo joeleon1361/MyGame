@@ -225,8 +225,6 @@ void GameScene::Finalize()
 
 	safe_delete(testmodel);
 	safe_delete(testobject);
-
-	Sound::GetInstance()->Finalize();
 }
 
 void GameScene::Update()
@@ -234,34 +232,6 @@ void GameScene::Update()
 	// 音量の計算
 	VolumeCalc();
 
-	switch (scene)
-	{
-	case SCENE::GAME:
-		GameUpdate();
-		break;
-
-	case SCENE::RESULT:
-		ResultUpdate();
-		break;
-	}
-}
-
-void GameScene::Draw()
-{
-	switch (scene)
-	{
-	case SCENE::GAME:
-		GameDraw();
-		break;
-
-	case SCENE::RESULT:
-		ResultDraw();
-		break;
-	}
-}
-
-void GameScene::GameUpdate()
-{
 	// ルートを完走したら遷移
 
 
@@ -394,8 +364,8 @@ void GameScene::GameUpdate()
 	if (changeSceneTimer <= 0)
 	{
 		Sound::GetInstance()->StopWav("BGM/Game/game_bgm.wav");
-		ResultInitialize();
-		scene = RESULT;
+		//ResultInitialize();
+		SceneManager::GetInstance()->ChangeScene("RESULT");
 	}
 
 	if (Input::GetInstance()->TriggerKey(DIK_C))
@@ -1235,7 +1205,7 @@ void GameScene::GameUpdate()
 	scoreUIUpdate();
 }
 
-void GameScene::GameDraw()
+void GameScene::Draw()
 {
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
@@ -1488,8 +1458,8 @@ void GameScene::GameInitialize()
 	camera->SetUp({ 0.0f, 1.0f, 0.0f });
 
 	// シーン遷移時の画面暗転
-	//LoadingBG->SetColor({ 1, 1, 1, 1.0f });
-	loadingColor.w = 1.0f;
+	LoadingBG->SetColor({ 1, 1, 1, 1.0f });
+	//loadingColor.w = 1.0f;
 
 	// プレイヤーのHPゲージ
 	playerHpGage->SetColor({ 0.1f, 0.6f, 0.1f, 1.0f });
@@ -1500,11 +1470,9 @@ void GameScene::GameInitialize()
 	playerDamageGage->SetSize({ 320.0f, 30.0f });
 	playerDamageGage->SetAnchorPoint({ 1.0f, 0.5f });
 
-	// playerHpUI->SetColor({ 1.0, 0.2, 0.2, 1});
 	playerHpUI->SetAnchorPoint({ 1.0f,0.5f });
 
 	playerHpUICover->SetAnchorPoint({ 1.0f, 0.5f });
-	//playerHpUICover->SetColor({ 1.0, 0.2, 0.2, 1 });
 
 	// ボスのHPゲージ
 	bossHpGage->SetColor({ 0.1f, 0.6f, 0.1f, 1.0f });
@@ -1690,98 +1658,6 @@ void GameScene::GameInitialize()
 	startCount = GetTickCount();
 }
 
-void GameScene::ResultUpdate()
-{
-	loadingColor = LoadingBG->GetColor();
-
-
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
-	{
-		changeColorFlag = true;
-	}
-
-
-	if (changeColorFlag == true)
-	{
-		loadingColor.w += 0.05f;
-		changeSceneFlag = true;
-	}
-
-	if (changeSceneFlag == true)
-	{
-		changeSceneTimer--;
-	}
-
-	if (changeSceneTimer <= 0.0f)
-	{
-		loadingColor.w = 0.0f;
-		GameInitialize();
-		scene = GAME;
-	}
-
-
-	LoadingBG->SetColor(loadingColor);
-
-	camera->Update();
-}
-
-void GameScene::ResultDraw()
-{
-	// コマンドリストの取得
-	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
-
-#pragma region 背景スプライト描画
-	// 背景スプライト描画前処理
-	Sprite::PreDraw(cmdList);
-	// 背景スプライト描画
-
-	// スプライト描画後処理
-	Sprite::PostDraw();
-	// 深度バッファクリア
-	dxCommon->ClearDepthBuffer();
-#pragma endregion
-
-#pragma region 3Dオブジェクト描画
-	// 3Dオブジェクト描画前処理
-	ObjObject::PreDraw(cmdList);
-
-	// 3Dオブクジェクトの描画
-
-
-	// 3Dオブジェクト描画後処理
-	ObjObject::PostDraw();
-#pragma endregion
-
-#pragma region 前景スプライト描画
-	// 前景スプライト描画前処理
-	Sprite::PreDraw(cmdList);
-
-	// 描画
-	LoadingBG->Draw();
-
-
-	// スプライト描画後処理
-	Sprite::PostDraw();
-#pragma endregion
-}
-
-void GameScene::ResultInitialize()
-{
-	camera->SetTarget({ 0, 0, 0 });
-	camera->SetEye({ 0, 0, 0 });
-	camera->SetUp({ 0, 1, 0 });
-
-	// LoadingBG->SetColor({ 1, 1, 1, 0 });
-	loadingColor.w = 0.0f;
-
-	changeColorFlag = false;
-	changeColorTimer = 30.0f;
-
-	changeSceneFlag = false;
-	changeSceneTimer = 100.0f;
-
-}
-
 void GameScene::CreateHitParticles(XMFLOAT3 position)
 {
 	for (int i = 0; i < 10; i++) {
@@ -1933,23 +1809,7 @@ void GameScene::CreateChargeBulletParticles(XMFLOAT3 position, XMFLOAT4 start_co
 // デバックテキスト
 void GameScene::AllDebugText()
 {
-	std::ostringstream Scene;
-	Scene << "Scene:("
-		<< std::fixed << std::setprecision(2)
-		<< scene << ")";
-	debugText.Print(Scene.str(), 50, 10, 1.0f);
-
-	std::ostringstream ResultMoveVel;
-	ResultMoveVel << "ResultMoveVel:("
-		<< std::fixed << std::setprecision(2)
-		<< resultMoveVelY_1 << ")";
-	debugText.Print(ResultMoveVel.str(), 50, 30, 1.0f);
-
-	std::ostringstream ResultMoveAcc;
-	ResultMoveAcc << "ResultMoveAcc:("
-		<< std::fixed << std::setprecision(2)
-		<< resultMoveAccY_1 << ")";
-	debugText.Print(ResultMoveAcc.str(), 50, 50, 1.0f);
+	
 }
 
 void GameScene::GameDebugText()
@@ -2797,12 +2657,6 @@ void GameScene::LoadTextureFunction()
 		return;
 	}
 
-	// リザルト
-	if (!Sprite::LoadTexture(TextureNumber::result_bg, L"Resources/Sprite/ResultUI/result_bg.png")) {
-		assert(0);
-		return;
-	}
-
 	if (!Sprite::LoadTexture(TextureNumber::result_gtxt_6, L"Resources/Sprite/ResultUI/result_gtxt_6.png")) {
 		assert(0);
 		return;
@@ -2826,17 +2680,11 @@ void GameScene::LoadTextureFunction()
 
 void GameScene::LoadWavFunction()
 {
-	Sound::GetInstance()->LoadWav("BGM/Title/title_bgm.wav");
 	Sound::GetInstance()->LoadWav("SE/Game/game_player_shot.wav");
 	Sound::GetInstance()->LoadWav("SE/Game/game_boss_shot.wav");
 	Sound::GetInstance()->LoadWav("SE/Game/game_player_damage.wav");
 	Sound::GetInstance()->LoadWav("SE/Game/game_boss_damage.wav");
 	Sound::GetInstance()->LoadWav("BGM/Game/game_bgm.wav");
-	Sound::GetInstance()->LoadWav("SE/Title/title_start.wav");
-	Sound::GetInstance()->LoadWav("SE/Result/result_open_1.wav");
-	Sound::GetInstance()->LoadWav("SE/Result/result_open_2.wav");
-	Sound::GetInstance()->LoadWav("SE/Result/result_mission.wav");
-	Sound::GetInstance()->LoadWav("SE/Result/result_rank.wav");
 	Sound::GetInstance()->LoadWav("SE/Game/game_alert.wav");
 }
 

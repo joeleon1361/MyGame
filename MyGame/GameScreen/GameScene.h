@@ -102,8 +102,6 @@ private: // 静的メンバ変数
 		loading_effect_1,
 
 		// リザルト
-		result_bg,
-		
 		result_gtxt_6,
 		result_gtxt_7,
 		result_gtxt_8,
@@ -130,23 +128,8 @@ public: // メンバ関数
 	// 描画
 	void Draw() override;
 
-	// ゲーム更新
-	void GameUpdate();
-
-	// ゲーム描画
-	void GameDraw();
-
 	// ゲーム初期化
 	void GameInitialize();
-
-	// リザルト更新
-	void ResultUpdate();
-
-	// リザルト描画
-	void ResultDraw();
-
-	// リザルト初期化
-	void ResultInitialize();
 
 	// 弾が当たった際のパーティクル生成
 	void CreateHitParticles(XMFLOAT3 position);
@@ -469,18 +452,6 @@ private: // メンバ変数
 	float L5addCount = 0.0f;
 	float L5nowCount = 0.0f;
 
-#pragma endregion
-
-#pragma region シーン遷移関連
-	// シーンパターン
-	enum SCENE
-	{
-		GAME,
-		RESULT,
-	};
-
-	// シーンパターン
-	int scene = GAME;
 #pragma endregion
 
 #pragma region 共通
@@ -842,136 +813,5 @@ private: // メンバ変数
 	float moveUIVel = 0.04f;
 #pragma endregion
 
-#pragma endregion
-
-#pragma region リザルト画面
-	// バナー1のサイズ
-	XMFLOAT2 resultBN_1Size;
-	// バナー2のサイズ
-	XMFLOAT2 resultBN_2Size;
-	// バナー3のサイズ
-	XMFLOAT2 resultBN_3Size;
-
-
-	XMFLOAT2 resultParts_1Size;
-	XMFLOAT2 resultParts_2Size;
-	XMFLOAT2 resultParts_3Size;
-
-	// Sランクマークのサイズ
-	XMFLOAT2 rankSSize;
-	// Aランクマークのサイズ
-	XMFLOAT2 rankASize;
-	// Bランクマークのサイズ
-	XMFLOAT2 rankBSize;
-	// Cランクマークのサイズ
-	XMFLOAT2 rankCSize;
-
-	XMFLOAT2 resultGTXT_15Size;
-
-	// ミッション達成スター1のサイズ
-	XMFLOAT2 missionStar1Size;
-	// ミッション達成スター2のサイズ
-	XMFLOAT2 missionStar2Size;
-	// ミッション達成スター3のサイズ
-	XMFLOAT2 missionStar3Size;
-
-	// スコアテキストの表示座標
-	XMFLOAT2 scorePosition = { 855.0f, 275.0f };
-	// ノーダメージボーナステキストの表示座標
-	XMFLOAT2 noDamageBonusPosition = { 855.0f, 305.0f };
-	// 合計スコアテキストの表示座標
-	XMFLOAT2 totalScorePosition = { 800.0f, 385.0f };
-	// クリアランクテキストの表示座標
-	XMFLOAT2 rankPosition = { 800.0f, 455.0f };
-	// クリアランクマークの表示座標
-	XMFLOAT2 resultRankPosition = { 850.0f,480.0f };
-
-	// リザルトテキストの色
-	XMFLOAT4 resultColor;
-	XMFLOAT4 resultPartsColor;
-	// スコアテキストの色
-	XMFLOAT4 scoreColor = { 0.760f, 0.929f, 1.0f, 0.0f };
-	// ノーダメージテキストの色
-	XMFLOAT4 noDamageBonusColor = { 0.760f, 0.929f, 1.0f, 0.0f };
-	// 合計スコアテキストの色
-	XMFLOAT4 totalScoreColor = { 0.760f, 0.929f, 1.0f, 0.0f };
-	// クリアランクテキストの色
-	XMFLOAT4 rankColor = { 0.760f, 0.929f, 1.0f, 0.0f };
-	// ミッションテキストの色
-	XMFLOAT4 missionColor = { 0.760f, 0.929f, 1.0f, 0.0f };
-
-	// Sランクマークの色
-	XMFLOAT4 rankSColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-	// Aランクマークの色
-	XMFLOAT4 rankAColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-	// Bランクマークの色
-	XMFLOAT4 rankBColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-	// Cランクマークの色
-	XMFLOAT4 rankCColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-
-	// ミッション1テキストの色
-	XMFLOAT4 mission1Color;
-	// ミッション2テキストの色
-	XMFLOAT4 mission2Color;
-	// ミッション3テキストの色
-	XMFLOAT4 mission3Color;
-
-	// ミッション未達成スター1の色
-	XMFLOAT4 missionStar1Color;
-	// ミッション未達成スター2の色
-	XMFLOAT4 missionStar2Color;
-	// ミッション未達成スター3の色
-	XMFLOAT4 missionStar3Color;
-
-	// ミッション達成スター1の色
-	XMFLOAT4 missionStar4Color;
-	// ミッション達成スター2の色
-	XMFLOAT4 missionStar5Color;
-	// ミッション達成スター3の色
-	XMFLOAT4 missionStar6Color;
-
-	float resultMoveVelX_1 = 0.0f;
-	float resultMoveAccX_1 = 0.0f;
-
-	float resultMoveVelY_1 = 0.0f;
-	float resultMoveAccY_1 = 0.0f;
-
-	float resultMoveVelX_2 = 0.0f;
-	float resultMoveAccX_2 = 0.0f;
-
-	float resultMoveVelX_3 = 0.0f;
-	float resultMoveAccX_3 = 0.0f;
-
-	float resultMoveVelX_4 = 0.0f;
-	float resultMoveAccX_4 = 0.0f;
-
-	float resultMoveVelX_5 = 0.0f;
-	float resultMoveAccX_5 = 0.0f;
-
-	float resultMoveVelX_6 = 0.0f;
-	float resultMoveAccX_6 = 0.0f;
-
-	float resultMoveVel_7 = 0.0f;
-
-	float resultMoveVel_8 = 0.0f;
-
-	float resultMoveVel_9 = 0.0f;
-	float resultMoveVel_10 = 0.0f;
-	float resultMoveVel_11 = 0.0f;
-
-
-
-	float resultChangeAlpha_1 = 0.0f;
-	float resultChangeAlpha_2 = 0.0f;
-	float resultChangeAlpha_3 = 0.0f;
-	float resultChangeAlpha_4 = 0.0f;
-	float resultChangeAlpha_5 = 0.0f;
-	float resultChangeAlpha_6 = 0.0f;
-	float resultChangeAlpha_7 = 0.0f;
-	float resultChangeAlpha_8 = 0.0f;
-	float resultChangeAlpha_9 = 0.0f;
-	float resultChangeAlpha_10 = 0.0f;
-	float resultChangeAlpha_11 = 0.0f;
 #pragma endregion
 };
