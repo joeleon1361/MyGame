@@ -3,6 +3,16 @@
 extern int cameraMode = 0;
 extern bool playerUpdateFlag = false;
 
+extern float gameScore = 0.0f;
+extern float gameScoreMax = 9999999.0f;
+
+// ノーダメージフラグ
+extern bool noDamageFlag = true;
+// 目標スコアに達しているかフラグ
+extern bool targetScoreFlag = false;
+// 全ての部位を破壊したか
+extern bool allLegBreakFlag = false;
+
 using namespace DirectX;
 
 GameScene::GameScene()
@@ -1190,7 +1200,6 @@ void GameScene::GameUpdate()
 				bossHp -= 10.0f;
 				L2startCount = GetTickCount();
 				gameScore += 1000.0f * scoreRate;
-				//score->ScoreAdd(1000.0f);
 				scoreUIMotion();
 				scoreRateCount++;
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);

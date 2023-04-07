@@ -255,9 +255,8 @@ void Title::Update()
 		if (changeSceneTimer <= 0)
 		{
 			sound->StopWav("BGM/Title/title_bgm.wav");
-			//GameInitialize();
 			//ƒV[ƒ“Ø‚è‘Ö‚¦
-			SceneManager::GetInstance()->ChangeScene("RESULT");
+			SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 		}
 
 		break;

@@ -69,7 +69,7 @@ public: // メンバ関数
 	void UnLoad(SoundData* soundData);
 
 	// サウンドファイルの読み込みと再生
-	void PlayWav(const std::string& filename, const float masterVolume, bool Loop = false);
+	void PlayWav(const std::string& filename, const float Volume, bool Loop = false);
 
 	// サウンドファイルの停止
 	void StopWav(const std::string& filename);

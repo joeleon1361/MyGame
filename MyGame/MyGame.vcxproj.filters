@@ -211,9 +211,6 @@
     <ClCompile Include="Result.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="ScoreManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Bullet.cpp">
       <Filter>Bullet</Filter>
     </ClCompile>
@@ -417,9 +414,6 @@
     </ClInclude>
     <ClInclude Include="BaseScene.h">
       <Filter>GameBase</Filter>
-    </ClInclude>
-    <ClInclude Include="ScoreManager.h">
-      <Filter>ヘッダ ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

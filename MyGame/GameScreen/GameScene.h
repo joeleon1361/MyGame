@@ -33,7 +33,7 @@
 
 #include "GamePad.h"
 
-#include "ScoreManager.h"
+#include "SceneManager.h"
 
 #include <cassert>
 #include <sstream>
@@ -450,7 +450,6 @@ private: // メンバ変数
 
 	std::list<std::unique_ptr<StageObject>>stageObjects;
 
-	ScoreManager* score = nullptr;
 #pragma region スプライン曲線関連
 	// スプライン曲線関連
 
@@ -663,8 +662,7 @@ private: // メンバ変数
 	// コアオブジェクトに加算する値
 	float centorVel = 0.1f;
 
-	float gameScore = 0.0f;
-	float gameScoreMax = 9999999.0f;
+	
 
 	float scoreRate = 1.0f;
 	int scoreRateCount = 0;
@@ -992,14 +990,7 @@ private: // メンバ変数
 	// 合計スコアの値
 	float totalScore = 0.0f;
 
-	// ノーダメージフラグ
-	bool noDamageFlag = true;
-
-	// 目標スコアに達しているかフラグ
-	bool targetScoreFlag = false;
-
-	// 全ての部位を破壊したか
-	bool allLegBreakFlag = false;
+	
 
 	// リザルト画面に入ってからの時間を計算するタイマー
 	float resultTimer = 5.0f;

@@ -1,5 +1,15 @@
 #include "Result.h"
 
+extern float gameScore;
+extern float gameScoreMax;
+
+// ノーダメージフラグ
+extern bool noDamageFlag;
+// 目標スコアに達しているかフラグ
+extern bool targetScoreFlag;
+// 全ての部位を破壊したか
+extern bool allLegBreakFlag;
+
 Result::Result()
 {
 }
@@ -17,6 +27,14 @@ void Result::Initialize()
 	camera = new Camera(WinApp::window_width, WinApp::window_height);
 
 	LoadTextureFunction();
+
+	// スコアテキスト用テクスチャ読み込み
+	if (!Sprite::LoadTexture(common_dtxt_2, L"Resources/Sprite/Common/common_dtxt_2.png")) {
+		assert(0);
+		return;
+	}
+	// スコアテキスト初期化
+	scoreText.Initialize(common_dtxt_2);
 
 	ResultBG = Sprite::Create(TextureNumber::result_bg, { 0.0f,0.0f });
 	ResultBN_1 = Sprite::Create(TextureNumber::result_frame_1, { 640.0f,360.0f });
@@ -60,9 +78,9 @@ void Result::Initialize()
 
 	loadingColor.w = 0.0f;
 
-	//totalScore = 0.0f;
+	totalScore = 0.0f;
 
-	//noDamageBonus = 20000.0f;
+	noDamageBonus = 20000.0f;
 
 	ResultBN_1->SetSize({ 0.0f, 8.0f });
 	ResultBN_1->SetAnchorPoint({ 0.5f, 0.5f });
@@ -249,12 +267,12 @@ void Result::Update()
 	}*/
 
 	// 合計スコアの計算
-	/*if (noDamageFlag == false)
+	if (noDamageFlag == false)
 	{
 		noDamageBonus = 0;
 	}
 
-	totalScore = gameScore + noDamageBonus;*/
+	totalScore = gameScore + noDamageBonus;
 
 	// サイズ値の計算
 	resultMoveVelX_1 -= resultMoveAccX_1;
@@ -549,10 +567,10 @@ void Result::Update()
 	{
 		// 値の設定
 		resultMoveVel_9 = -4.0f;
-	/*	if (noDamageFlag == true)
+		if (noDamageFlag == true)
 		{
 			resultChangeAlpha_9 = 0.05f;
-		}*/
+		}
 
 		// 値の初期化
 		missionColor.w = 1.0f;
@@ -570,14 +588,14 @@ void Result::Update()
 	{
 		// 値の設定
 		resultMoveVel_10 = -4.0f;
-		/*if (allLegBreakFlag == true)
+		if (allLegBreakFlag == true)
 		{
 			resultChangeAlpha_10 = 0.05f;
 		}
 		if (noDamageFlag == true)
 		{
-			Sound::GetInstance()->PlayWav("SE/Result/result_mission.wav", seVolume);
-		}*/
+			//Sound::GetInstance()->PlayWav("SE/Result/result_mission.wav", seVolume);
+		}
 
 		// 値の初期化
 		missionStar1Size.x = 28.0f;
@@ -598,16 +616,16 @@ void Result::Update()
 	{
 		// 値の設定
 		resultMoveVel_11 = -4.0f;
-		/*if (targetScoreFlag == true)
+		if (targetScoreFlag == true)
 		{
 			resultChangeAlpha_11 = 0.05f;
 		}
 
 		if (allLegBreakFlag == true)
 		{
-			Sound::GetInstance()->PlayWav("SE/Result/result_mission.wav", seVolume);
+			//Sound::GetInstance()->PlayWav("SE/Result/result_mission.wav", seVolume);
 
-		}*/
+		}
 
 		// 値の初期化
 		missionStar2Size.x = 28.0f;
@@ -626,10 +644,10 @@ void Result::Update()
 	// 星3のサイズ制御
 	if (missionStar3Size.x < 28.0f)
 	{
-		/*if (targetScoreFlag == true)
+		if (targetScoreFlag == true)
 		{
-			Sound::GetInstance()->PlayWav("SE/Result/result_mission.wav", seVolume);
-		}*/
+			//Sound::GetInstance()->PlayWav("SE/Result/result_mission.wav", seVolume);
+		}
 
 		// 値の初期化
 		missionStar3Size.x = 28.0f;
@@ -725,6 +743,19 @@ void Result::Update()
 	resultGTXT_15->SetColor(resultColor);
 
 	camera->Update();
+
+	// スコアの描画
+	std::ostringstream GameScore;
+	GameScore << std::fixed << std::setprecision(0) << std::setw(7) << gameScore;
+	scoreText.Print(GameScore.str(), scorePosition, { 0.760f, 0.929f, 1.0f, scoreColor.w }, 0.5f);
+
+	std::ostringstream NoDamageBonus;
+	NoDamageBonus << std::fixed << std::setprecision(0) << std::setw(7) << noDamageBonus;
+	scoreText.Print(NoDamageBonus.str(), noDamageBonusPosition, { 1.0f, 1.0f, 0.4f, noDamageBonusColor.w }, 0.5f);
+
+	std::ostringstream TotalScone;
+	TotalScone << std::fixed << std::setprecision(0) << std::setw(7) << totalScore;
+	scoreText.Print(TotalScone.str(), totalScorePosition, { 0.760f, 0.929f, 1.0f, totalScoreColor.w }, 0.8f);
 }
 
 void Result::Draw()
@@ -788,29 +819,29 @@ void Result::Draw()
 	resultGTXT_15->Draw();
 
 
-	//if (gameScore > 99999)
-	//{
-	//	// S
+	if (gameScore > 99999)
+	{
+		// S
 		resultGTXT_6->Draw();
-	//}
-	//else if (gameScore > 49999)
-	//{
-	//	// A
-	//	resultGTXT_7->Draw();
-	//}
-	//else if (gameScore > 24999)
-	//{
-	//	// B
-	//	resultGTXT_8->Draw();
-	//}
-	//else
-	//{
-	//	// C
-	//	resultGTXT_9->Draw();
-	//}
+	}
+	else if (gameScore > 49999)
+	{
+		// A
+		resultGTXT_7->Draw();
+	}
+	else if (gameScore > 24999)
+	{
+		// B
+		resultGTXT_8->Draw();
+	}
+	else
+	{
+		// C
+		resultGTXT_9->Draw();
+	}
 
 	// スコアテキストの描画
-	//scoreText.DrawAll(cmdList);
+	scoreText.DrawAll(cmdList);
 
 	LoadingBG->Draw();
 

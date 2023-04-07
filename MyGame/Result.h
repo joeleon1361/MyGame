@@ -9,11 +9,15 @@
 #include <wrl.h>
 #include <d3d12.h>
 
+#include <sstream>
+#include <iomanip>
+
 #include "Input.h"
 #include "Sprite.h"
 #include "ObjObject.h"
 #include "Sound.h"
 #include "Camera.h"
+#include "ScoreText.h"
 
 class Result : public BaseScene
 {
@@ -30,6 +34,9 @@ private: // 静的メンバ変数
 // スプライトのテクスチャ番号
 	static enum TextureNumber
 	{
+		// 共通
+		common_dtxt_2,
+
 		// リザルト
 		result_bg,
 		result_frame_1,
@@ -85,6 +92,8 @@ private: // メンバ変数
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 	Input* input = Input::GetInstance();
 	Sound* sound = Sound::GetInstance();
+
+	ScoreText scoreText;
 
 	// ゲームシーン用
 	Camera* camera = nullptr;
@@ -267,5 +276,11 @@ private: // メンバ変数
 
 	// リザルトテキストのサイズ計算を開始するフラグ
 	bool changeResultSizeFlag = false;
+
+	// ノーダメージ時に加算加算される値
+	float noDamageBonus = 20000.0f;
+
+	// 合計スコアの値
+	float totalScore = 0.0f;
 };
 
