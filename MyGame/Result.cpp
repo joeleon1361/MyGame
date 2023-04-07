@@ -10,6 +10,20 @@ extern bool targetScoreFlag;
 // 全ての部位を破壊したか
 extern bool allLegBreakFlag;
 
+//オーディオのボリューム
+extern float masterVolumeNow;
+extern float masterVolume;
+
+extern float bgmVolumeMax;
+extern float bgmVolumeNow;
+extern float bgmVolumeRatio;
+extern float bgmVolume;
+
+extern float seVolumeMax;
+extern float seVolumeNow;
+extern float seVolumeRatio;
+extern float seVolume;
+
 Result::Result()
 {
 }
@@ -594,7 +608,7 @@ void Result::Update()
 		}
 		if (noDamageFlag == true)
 		{
-			//Sound::GetInstance()->PlayWav("SE/Result/result_mission.wav", seVolume);
+			Sound::GetInstance()->PlayWav("SE/Result/result_mission.wav", seVolume);
 		}
 
 		// 値の初期化
@@ -623,7 +637,7 @@ void Result::Update()
 
 		if (allLegBreakFlag == true)
 		{
-			//Sound::GetInstance()->PlayWav("SE/Result/result_mission.wav", seVolume);
+			Sound::GetInstance()->PlayWav("SE/Result/result_mission.wav", seVolume);
 
 		}
 
@@ -646,7 +660,7 @@ void Result::Update()
 	{
 		if (targetScoreFlag == true)
 		{
-			//Sound::GetInstance()->PlayWav("SE/Result/result_mission.wav", seVolume);
+			Sound::GetInstance()->PlayWav("SE/Result/result_mission.wav", seVolume);
 		}
 
 		// 値の初期化

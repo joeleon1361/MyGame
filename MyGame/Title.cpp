@@ -1,5 +1,19 @@
 #include "Title.h"
 
+//オーディオのボリューム
+extern float masterVolumeNow;
+extern float masterVolume;
+
+extern float bgmVolumeMax;
+extern float bgmVolumeNow;
+extern float bgmVolumeRatio;
+extern float bgmVolume;
+
+extern float seVolumeMax;
+extern float seVolumeNow;
+extern float seVolumeRatio;
+extern float seVolume;
+
 using namespace DirectX;
 
 Title::Title()
@@ -78,7 +92,7 @@ void Title::Initialize()
 	changeSceneFlag = false;
 	changeSceneTimer = 100.0f;
 
-	Sound::GetInstance()->PlayWav("BGM/Title/title_bgm.wav", 0.07, true);
+	Sound::GetInstance()->PlayWav("BGM/Title/title_bgm.wav", bgmVolume, true);
 }
 
 void Title::Finalize()
@@ -188,7 +202,7 @@ void Title::Update()
 		// 特定のキーを押してシーン遷移開始
 		if (input->TriggerKey(DIK_SPACE) || input->TriggerKey(DIK_W) || input->TriggerKey(DIK_A) || input->TriggerKey(DIK_S) || input->TriggerKey(DIK_D))
 		{
-			sound->PlayWav("SE/Title/title_start.wav", 0.07f);
+			sound->PlayWav("SE/Title/title_start.wav", seVolume);
 			titleStartUIColor.w = 1.0f;
 			titleScene = STAGING;
 		}

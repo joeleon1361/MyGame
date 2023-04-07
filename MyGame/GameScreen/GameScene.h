@@ -73,10 +73,6 @@ private: // 静的メンバ変数
 		common_dtxt_1,
 		common_dtxt_2,
 
-		// タイトル
-		title_gtxt_1,
-		title_parts_1,
-
 		// ゲーム
 		game_parts_1,
 		game_gtxt_number1,
@@ -107,28 +103,11 @@ private: // 静的メンバ変数
 
 		// リザルト
 		result_bg,
-		result_frame_1,
-		result_frame_2,
-		result_frame_3,
-		result_gtxt_1,
-		result_gtxt_2,
-		result_gtxt_3,
-		result_gtxt_4,
-		result_gtxt_5,
+		
 		result_gtxt_6,
 		result_gtxt_7,
 		result_gtxt_8,
 		result_gtxt_9,
-		result_gtxt_12,
-		result_gtxt_13,
-		result_gtxt_14,
-		result_gtxt_15,
-		result_parts_1,
-		result_parts_2,
-		result_parts_3,
-		result_parts_4,
-		result_parts_5,
-		result_parts_6
 	};
 
 public: // メンバ関数
@@ -151,24 +130,6 @@ public: // メンバ関数
 	// 描画
 	void Draw() override;
 
-	// タイトル更新
-	void TitleUpdate();
-
-	// タイトル描画
-	void TitleDraw();
-
-	// タイトル初期化
-	void TitleInitialize();
-
-	// ステージセレクト更新
-	void StageSelectUpdate();
-
-	// ステージセレクト描画
-	void StageSelectDraw();
-
-	// ステージセレクト初期化
-	void StageSelectInitialize();
-
 	// ゲーム更新
 	void GameUpdate();
 
@@ -186,15 +147,6 @@ public: // メンバ関数
 
 	// リザルト初期化
 	void ResultInitialize();
-
-	// ゲームオーバー更新
-	void GameOverUpdate();
-
-	// ゲームオーバー描画
-	void GameOverDraw();
-
-	// ゲームオーバー初期化
-	void GameOverInitialize();
 
 	// 弾が当たった際のパーティクル生成
 	void CreateHitParticles(XMFLOAT3 position);
@@ -219,9 +171,6 @@ public: // メンバ関数
 
 	// 全シーン共通のデバックテキスト
 	void AllDebugText();
-
-	// タイトル画面で使用するのデバックテキスト
-	void TitleDebugText();
 
 	// ゲーム画面で使用するのデバックテキスト
 	void GameDebugText();
@@ -316,12 +265,6 @@ private: // メンバ変数
 	// ゲームシーン用
 	Camera* camera = nullptr;
 
-	Sprite* StageSelectBG = nullptr;
-	Sprite* GameFG = nullptr;
-	Sprite* TitleStartUI = nullptr;
-
-	Sprite* TitleLogo = nullptr;
-
 	Sprite* LoadingBG = nullptr;
 
 	// プレイヤーのHPUI
@@ -361,36 +304,6 @@ private: // メンバ変数
 	Sprite* scoreNull_5 = nullptr;
 	Sprite* scoreNull_6 = nullptr;
 
-	// リザルトUI
-	Sprite* ResultBG = nullptr;
-	Sprite* ResultBN_1 = nullptr;
-	Sprite* ResultBN_2 = nullptr;
-	Sprite* ResultBN_3 = nullptr;
-	Sprite* resultGTXT_1 = nullptr;
-	Sprite* resultGTXT_2 = nullptr;
-	Sprite* resultGTXT_3 = nullptr;
-	Sprite* resultGTXT_4 = nullptr;
-	Sprite* resultGTXT_5 = nullptr;
-	Sprite* resultGTXT_6 = nullptr;
-	Sprite* resultGTXT_7 = nullptr;
-	Sprite* resultGTXT_8 = nullptr;
-	Sprite* resultGTXT_9 = nullptr;
-	Sprite* resultGTXT_12 = nullptr;
-	Sprite* resultGTXT_13 = nullptr;
-	Sprite* resultGTXT_14 = nullptr;
-	Sprite* resultGTXT_15 = nullptr;
-
-	Sprite* resultParts_1 = nullptr;
-	Sprite* resultParts_2 = nullptr;
-	Sprite* resultParts_3 = nullptr;
-	Sprite* resultParts_4 = nullptr;
-	Sprite* resultParts_5 = nullptr;
-	Sprite* resultParts_6 = nullptr;
-	Sprite* resultParts_7 = nullptr;
-	Sprite* resultParts_8 = nullptr;
-	Sprite* resultParts_9 = nullptr;
-	Sprite* resultParts_10 = nullptr;
-
 	Sprite* damageEffect = nullptr;
 
 	ParticleManager* bossHitParticle = nullptr;
@@ -413,13 +326,6 @@ private: // メンバ変数
 
 	ObjObject* objSkydome = nullptr;
 	ObjObject* objGround = nullptr;
-	ObjObject* objTitlePlayer = nullptr;
-
-	ObjObject* objStage1 = nullptr;
-	ObjObject* objStage2 = nullptr;
-	ObjObject* objStage3 = nullptr;
-
-	ObjObject* objCloud_1 = nullptr;
 
 	// プレイヤー関連
 	Player* player = nullptr;
@@ -569,15 +475,12 @@ private: // メンバ変数
 	// シーンパターン
 	enum SCENE
 	{
-		TITLE,
-		STAGESELECT,
 		GAME,
 		RESULT,
-		GAMEOVER
 	};
 
 	// シーンパターン
-	int scene = TITLE;
+	int scene = GAME;
 #pragma endregion
 
 #pragma region 共通
@@ -593,59 +496,6 @@ private: // メンバ変数
 	bool changeSceneFlag = false;
 	float changeSceneTimer = 100.0f;
 
-	//オーディオのボリューム
-	float masterVolumeNow = 7.0f;
-	float masterVolume = 0.0f;
-
-	float bgmVolumeMax = 10.0f;
-	float bgmVolumeNow = 10.0f;
-	float bgmVolumeRatio = 0.0f;
-	float bgmVolume = 0.0f;
-
-	float seVolumeMax = 10.0f;
-	float seVolumeNow = 10.0f;
-	float seVolumeRatio = 0.0f;
-	float seVolume = 0.0f;
-#pragma endregion
-
-#pragma region タイトル画面
-	// プレイヤー関連
-	XMFLOAT3 TitlePlayerPosition;
-	XMFLOAT3 TitlePlayerRotation;
-
-	XMFLOAT4 titleStartUIColor;
-
-	int titleScene = WAITING;
-
-	float backTimer = 40.0f;
-	float stagingTimer = 60.0f;
-
-	bool stagingFlag = false;
-
-	float moveY = 0.01f;
-	float moveX = 0.05f;
-
-	bool addSpeedX = false;
-	bool subSpeedX = false;
-
-	bool addSpeedY = false;
-	bool subSpeedY = false;
-
-	bool addAngleX = false;
-	bool subAngleX = false;
-
-	enum TITLESCENE
-	{
-		WAITING,
-		STAGING,
-		MOVESCENE
-	};
-#pragma endregion
-
-#pragma region ステージセレクト関連
-	XMFLOAT3 stage1Position;
-	XMFLOAT3 stage2Position;
-	XMFLOAT3 stage3Position;
 #pragma endregion
 
 #pragma region ゲーム画面
@@ -661,8 +511,6 @@ private: // メンバ変数
 
 	// コアオブジェクトに加算する値
 	float centorVel = 0.1f;
-
-	
 
 	float scoreRate = 1.0f;
 	int scoreRateCount = 0;
@@ -984,22 +832,6 @@ private: // メンバ変数
 	int leftFlashingCount = 0;
 	bool leftFlashingFlag = false;
 
-	// ノーダメージ時に加算加算される値
-	float noDamageBonus = 20000.0f;
-
-	// 合計スコアの値
-	float totalScore = 0.0f;
-
-	
-
-	// リザルト画面に入ってからの時間を計算するタイマー
-	float resultTimer = 5.0f;
-
-	// キー入力が可能かフラグ
-	bool canPushKeyFlag = false;
-
-	// リザルトテキストのサイズ計算を開始するフラグ
-	bool changeResultSizeFlag = false;
 
 	// スコアの表示座標
 	XMFLOAT2 scoreBasePosition = { 0.0f, 0.0f };
