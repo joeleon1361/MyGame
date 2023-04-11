@@ -1,8 +1,10 @@
 #pragma once
 
+#include "DirectXCommon.h"
 #include "ObjObject.h"
 #include "GamePlay.h"
 #include "Input.h"
+#include "DebugText.h"
 
 class Player :
 	public ObjObject
@@ -21,6 +23,13 @@ public: // メンバ関数
 
 	// 毎フレーム処理
 	void Update() override;
+
+	// 描画
+	void Draw() override;
+
+	void DebugTextUpdate();
+
+	void DebugTextDraw();
 
 	void FrontMove();
 
@@ -57,7 +66,9 @@ public: // メンバ関数
 	void Shot();
 
 private: // メンバ変数
+	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 	ObjModel* modelBullet = nullptr;
+	DebugText debugText;
 
 	enum CAMERADIRECTION
 	{

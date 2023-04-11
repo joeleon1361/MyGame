@@ -1190,7 +1190,6 @@ void GamePlay::Update()
 	collisionManager->CheckAllCollisions();
 
 	// デバックテキスト
-	AllDebugText();
 	GameDebugText();
 
 	// スコアの描画
@@ -1405,6 +1404,8 @@ void GamePlay::Draw()
 
 	// デバッグテキストの描画
 	//debugText.DrawAll(cmdList);
+
+	player->DebugTextDraw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -1806,12 +1807,6 @@ void GamePlay::CreateChargeBulletParticles(XMFLOAT3 position, XMFLOAT4 start_col
 	}
 }
 
-// デバックテキスト
-void GamePlay::AllDebugText()
-{
-	
-}
-
 void GamePlay::GameDebugText()
 {
 	// プレイヤーの座標を表示
@@ -1823,27 +1818,6 @@ void GamePlay::GameDebugText()
 		<< playerRotation.z << ") Local"; // z
 	debugText.Print(PlayerPos.str(), 50, 70, 1.0f);
 
-	//std::ostringstream HPUIPos;
-	//HPUIPos << "playerHpUIPosition:("
-	//	<< std::fixed << std::setprecision(2)
-	//	<< playerHpUIPosition.x << "," // x
-	//	<< playerHpUIPosition.y << ")";// y
-	//debugText.Print(HPUIPos.str(), 50, 90, 1.0f);
-
-	//std::ostringstream BOSSUIPos;
-	//BOSSUIPos << "bossHpUIPosition:("
-	//	<< std::fixed << std::setprecision(2)
-	//	<< bossHpUIPosition.x << "," // x
-	//	<< bossHpUIPosition.y << ")";// y
-	//debugText.Print(BOSSUIPos.str(), 50, 110, 1.0f);
-
-	//std::ostringstream SCOREUIPos;
-	//SCOREUIPos << "SCOREUIPosition:("
-	//	<< std::fixed << std::setprecision(2)
-	//	<< scoreUIPosition.x << "," // x
-	//	<< scoreUIPosition.y << ")";// y
-	//debugText.Print(SCOREUIPos.str(), 50, 130, 1.0f);
-
 	std::ostringstream bossPos;
 	bossPos << "BossPos:("
 		<< std::fixed << std::setprecision(2)
@@ -1851,44 +1825,6 @@ void GamePlay::GameDebugText()
 		<< bossRotation.y << "," // y
 		<< bossWorldPosition.z << ")"; // z
 	debugText.Print(bossPos.str(), 50, 350, 1.0f);
-
-	//std::ostringstream CenterPos;
-	//CenterPos << "CenterPos:("
-	//	<< std::fixed << std::setprecision(2)
-	//	<< centerPosition.x << "," // x
-	//	<< centerPosition.y << "," // y
-	//	<< centerPosition.z << ") World"; // z
-	//debugText.Print(CenterPos.str(), 50, 110, 1.0f);
-
-	/*std::ostringstream startCounter;
-	startCounter << "StartCounter:("
-		<< std::fixed << std::setprecision(2)
-		<< startCount << ")";
-	debugText.Print(startCounter.str(), 50, 110, 1.0f);
-
-	std::ostringstream nowCounter;
-	nowCounter << "NowCounter:("
-		<< std::fixed << std::setprecision(2)
-		<< nowCount << ")";
-	debugText.Print(nowCounter.str(), 50, 130, 1.0f);
-
-	std::ostringstream elapsedCounter;
-	elapsedCounter << "ElapsedCounter:("
-		<< std::fixed << std::setprecision(2)
-		<< elapsedCount << ")";
-	debugText.Print(elapsedCounter.str(), 50, 150, 1.0f);
-
-	std::ostringstream elapsedTimer;
-	elapsedTimer << "ElapsedTimer:("
-		<< std::fixed << std::setprecision(2)
-		<< elapsedTime << "[s])";
-	debugText.Print(elapsedTimer.str(), 50, 170, 1.0f);
-
-	std::ostringstream TimeRate;
-	TimeRate << "TimeRate:("
-		<< std::fixed << std::setprecision(2)
-		<< timeRate << "[%])";
-	debugText.Print(TimeRate.str(), 50, 190, 1.0f);*/
 
 	std::ostringstream StartIndex;
 	StartIndex << "StartIndex:("
@@ -1932,25 +1868,6 @@ void GamePlay::GameDebugText()
 		<< std::fixed << std::setprecision(2)
 		<< playerHpRatio << ")";
 	debugText.Print(PlayerHp.str(), 50, 330, 1.0f);
-
-	// プレイヤーの回避関連
-	/*std::ostringstream DodgeRollFlag;
-	DodgeRollFlag << "DodgeRollFlag:("
-		<< std::fixed << std::setprecision(2)
-		<< dodgeRollFlag << ")";
-	debugText.Print(DodgeRollFlag.str(), 50, 250, 1.0f);
-
-	std::ostringstream DodgeRollVelocity;
-	DodgeRollVelocity << "DodgeRollVelocity:("
-		<< std::fixed << std::setprecision(2)
-		<< dodgeRollVelocity << ")";
-	debugText.Print(DodgeRollVelocity.str(), 50, 270, 1.0f);
-
-	std::ostringstream DodgeRollRotation;
-	DodgeRollRotation << "DodgeRollRotation:("
-		<< std::fixed << std::setprecision(2)
-		<< dodgeRollRotation << ")";
-	debugText.Print(DodgeRollRotation.str(), 50, 290, 1.0f);*/
 }
 
 // カメラ方向の切り替え

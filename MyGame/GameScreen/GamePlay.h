@@ -152,9 +152,6 @@ public: // メンバ関数
 	// チャージ弾パーティクル生成
 	void CreateChargeBulletParticles(XMFLOAT3 position, XMFLOAT4 start_color, XMFLOAT4 end_color, float start_scale);
 
-	// 全シーン共通のデバックテキスト
-	void AllDebugText();
-
 	// ゲーム画面で使用するのデバックテキスト
 	void GameDebugText();
 
