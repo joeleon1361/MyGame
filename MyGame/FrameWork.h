@@ -2,7 +2,7 @@
 #include "WinApp.h"
 #include "DirectXCommon.h"
 #include "Sound.h"
-#include "GameScene.h"
+#include "GamePlay.h"
 #include "fbxsdk.h"
 #include "PostEffect.h"
 #include "FbxLoader.h"
@@ -42,7 +42,6 @@ protected: //ÉÅÉìÉoïœêî
 	DirectXCommon* dxCommon = nullptr;
 	Input* input = nullptr;
 	Sound* sound = nullptr;
-	GameScene* gameScene = nullptr;
 	PostEffect* postEffect = nullptr;
 	
 	AbstractSceneFactory* sceneFactory = nullptr;

@@ -1,7 +1,6 @@
 ﻿#include "WinApp.h"
 #include "DirectXCommon.h"
 #include "Sound.h"
-#include "GameScene.h"
 #include "fbxsdk.h"
 #include "PostEffect.h"
 #include "FbxLoader.h"

@@ -205,7 +205,7 @@
     <ClCompile Include="Title.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="GameScreen\GameScene.cpp">
+    <ClCompile Include="GameScreen\GamePlay.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="Result.cpp">
@@ -385,7 +385,7 @@
     <ClInclude Include="Title.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="GameScreen\GameScene.h">
+    <ClInclude Include="GameScreen\GamePlay.h">
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="Result.h">

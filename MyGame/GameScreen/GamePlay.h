@@ -54,7 +54,7 @@ class TargetBullet;
 class StageObject;
 
 // ゲームシーン
-class GameScene : public BaseScene
+class GamePlay : public BaseScene
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -111,10 +111,10 @@ private: // 静的メンバ変数
 public: // メンバ関数
 
 	// コンストクラタ
-	GameScene();
+	GamePlay();
 
 	// デストラクタ
-	~GameScene();
+	~GamePlay();
 
 	// 初期化
 	void Initialize() override;

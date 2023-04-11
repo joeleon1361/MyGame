@@ -45,9 +45,6 @@ void FrameWork::Initialize()
 	// スプライト静的初期化
 	Sprite::StaticInitialize(dxCommon->GetDevice(), WinApp::window_width, WinApp::window_height);
 
-	/*spriteCommon = new SpriteCommon;
-	spriteCommon->Initialize();*/
-
 	// ポストエフェクト用テクスチャの読み込み
 	// Sprite::LoadTexture(100, L"Resources/white1x1.png");
 

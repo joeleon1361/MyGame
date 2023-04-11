@@ -1,4 +1,4 @@
-﻿#include "GameScene.h"
+﻿#include "GamePlay.h"
 
 extern int cameraMode = 0;
 extern bool playerUpdateFlag = false;
@@ -29,15 +29,15 @@ extern float seVolume = 0.0f;
 
 using namespace DirectX;
 
-GameScene::GameScene()
+GamePlay::GamePlay()
 {
 }
 
-GameScene::~GameScene()
+GamePlay::~GamePlay()
 {
 }
 
-void GameScene::Initialize()
+void GamePlay::Initialize()
 {
 	//コントローラー初期化
 	InitInput();
@@ -213,7 +213,7 @@ void GameScene::Initialize()
 	GameInitialize();
 }
 
-void GameScene::Finalize()
+void GamePlay::Finalize()
 {
 	safe_delete(objSkydome);
 	safe_delete(objGround);
@@ -227,7 +227,7 @@ void GameScene::Finalize()
 	safe_delete(testobject);
 }
 
-void GameScene::Update()
+void GamePlay::Update()
 {
 	// 音量の計算
 	VolumeCalc();
@@ -1205,7 +1205,7 @@ void GameScene::Update()
 	scoreUIUpdate();
 }
 
-void GameScene::Draw()
+void GamePlay::Draw()
 {
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
@@ -1411,7 +1411,7 @@ void GameScene::Draw()
 #pragma endregion
 }
 
-void GameScene::GameInitialize()
+void GamePlay::GameInitialize()
 {
 	// 座標のセット
 	player->SetPosition({ 0.0f,0.0f,0.0f });
@@ -1658,7 +1658,7 @@ void GameScene::GameInitialize()
 	startCount = GetTickCount();
 }
 
-void GameScene::CreateHitParticles(XMFLOAT3 position)
+void GamePlay::CreateHitParticles(XMFLOAT3 position)
 {
 	for (int i = 0; i < 10; i++) {
 		// X,Y,Z全て[-20.0f,+20.0f]でランダムに分布
@@ -1681,7 +1681,7 @@ void GameScene::CreateHitParticles(XMFLOAT3 position)
 	}
 }
 
-void GameScene::CreateBossParticles(XMFLOAT3 position)
+void GamePlay::CreateBossParticles(XMFLOAT3 position)
 {
 	for (int i = 0; i < 10; i++) {
 		// X,Y,Z全て[-20.0f,+20.0f]でランダムに分布
@@ -1706,7 +1706,7 @@ void GameScene::CreateBossParticles(XMFLOAT3 position)
 	}
 }
 
-void GameScene::CreatePlayerJetParticles(XMFLOAT3 position)
+void GamePlay::CreatePlayerJetParticles(XMFLOAT3 position)
 {
 	for (int i = 0; i < 10; i++) {
 		const float rnd_pos = 0.1f;
@@ -1728,7 +1728,7 @@ void GameScene::CreatePlayerJetParticles(XMFLOAT3 position)
 	}
 }
 
-void GameScene::CreateTitlePlayerJetParticles(XMFLOAT3 position)
+void GamePlay::CreateTitlePlayerJetParticles(XMFLOAT3 position)
 {
 	for (int i = 0; i < 10; i++) {
 		const float rnd_pos = 0.1f;
@@ -1750,7 +1750,7 @@ void GameScene::CreateTitlePlayerJetParticles(XMFLOAT3 position)
 	}
 }
 
-void GameScene::CreatePlayerContrailParticles(XMFLOAT3 position)
+void GamePlay::CreatePlayerContrailParticles(XMFLOAT3 position)
 {
 	for (int i = 0; i < 10; i++) {
 		const float rnd_pos = 0.05f;
@@ -1772,7 +1772,7 @@ void GameScene::CreatePlayerContrailParticles(XMFLOAT3 position)
 	}
 }
 
-void GameScene::CreateBulletParticles(XMFLOAT3 position, XMFLOAT4 start_color, XMFLOAT4 end_color, float start_scale)
+void GamePlay::CreateBulletParticles(XMFLOAT3 position, XMFLOAT4 start_color, XMFLOAT4 end_color, float start_scale)
 {
 	for (int i = 0; i < 10; i++) {
 		XMFLOAT3 pos{};
@@ -1789,7 +1789,7 @@ void GameScene::CreateBulletParticles(XMFLOAT3 position, XMFLOAT4 start_color, X
 	}
 }
 
-void GameScene::CreateChargeBulletParticles(XMFLOAT3 position, XMFLOAT4 start_color, XMFLOAT4 end_color, float start_scale)
+void GamePlay::CreateChargeBulletParticles(XMFLOAT3 position, XMFLOAT4 start_color, XMFLOAT4 end_color, float start_scale)
 {
 	for (int i = 0; i < 10; i++) {
 		XMFLOAT3 pos{};
@@ -1807,12 +1807,12 @@ void GameScene::CreateChargeBulletParticles(XMFLOAT3 position, XMFLOAT4 start_co
 }
 
 // デバックテキスト
-void GameScene::AllDebugText()
+void GamePlay::AllDebugText()
 {
 	
 }
 
-void GameScene::GameDebugText()
+void GamePlay::GameDebugText()
 {
 	// プレイヤーの座標を表示
 	std::ostringstream PlayerPos;
@@ -1954,7 +1954,7 @@ void GameScene::GameDebugText()
 }
 
 // カメラ方向の切り替え
-void GameScene::CameraSwitching()
+void GamePlay::CameraSwitching()
 {
 	switch (cameraType)
 	{
@@ -2094,7 +2094,7 @@ void GameScene::CameraSwitching()
 	}*/
 }
 
-void GameScene::Attack()
+void GamePlay::Attack()
 {
 	shotRate -= 0.1f;
 
@@ -2125,7 +2125,7 @@ void GameScene::Attack()
 	}
 }
 
-void GameScene::chargeAttack()
+void GamePlay::chargeAttack()
 {
 	if (playerUpdateFlag == true)
 	{
@@ -2172,7 +2172,7 @@ void GameScene::chargeAttack()
 	}
 }
 
-void GameScene::homingAttack()
+void GamePlay::homingAttack()
 {
 	if (playerUpdateFlag == true)
 	{
@@ -2295,7 +2295,7 @@ void GameScene::homingAttack()
 	}
 }
 
-void GameScene::BossAttack()
+void GamePlay::BossAttack()
 {
 	if (playerHp >= 0.0f)
 	{
@@ -2307,7 +2307,7 @@ void GameScene::BossAttack()
 	}
 }
 
-void GameScene::BossLeg1Attack()
+void GamePlay::BossLeg1Attack()
 {
 	if ((playerHp >= 0.0f) && (bossLeg1Flag == true))
 	{
@@ -2319,7 +2319,7 @@ void GameScene::BossLeg1Attack()
 	}
 }
 
-void GameScene::BossLeg2Attack()
+void GamePlay::BossLeg2Attack()
 {
 	if ((playerHp >= 0.0f) && (bossLeg2Flag == true))
 	{
@@ -2331,7 +2331,7 @@ void GameScene::BossLeg2Attack()
 	}
 }
 
-void GameScene::BossLeg3Attack()
+void GamePlay::BossLeg3Attack()
 {
 	if ((playerHp >= 0.0f) && (bossLeg3Flag == true))
 	{
@@ -2343,7 +2343,7 @@ void GameScene::BossLeg3Attack()
 	}
 }
 
-void GameScene::BossLeg4Attack()
+void GamePlay::BossLeg4Attack()
 {
 	if ((playerHp >= 0.0f) && (bossLeg4Flag == true))
 	{
@@ -2355,7 +2355,7 @@ void GameScene::BossLeg4Attack()
 	}
 }
 
-void GameScene::SplineCount()
+void GamePlay::SplineCount()
 {
 	nowCount = GetTickCount();
 
@@ -2379,7 +2379,7 @@ void GameScene::SplineCount()
 	}
 }
 
-void GameScene::Lerp1Count()
+void GamePlay::Lerp1Count()
 {
 	L1nowCount = GetTickCount();
 
@@ -2389,7 +2389,7 @@ void GameScene::Lerp1Count()
 	L1timeRate = min(L1elapsedCount / L1maxTime, 1.0f);
 }
 
-void GameScene::Lerp2Count()
+void GamePlay::Lerp2Count()
 {
 	L2nowCount = GetTickCount();
 
@@ -2399,7 +2399,7 @@ void GameScene::Lerp2Count()
 	L2timeRate = min(L2elapsedCount / L2maxTime, 1.0f);
 }
 
-void GameScene::Lerp3Count()
+void GamePlay::Lerp3Count()
 {
 	L3nowCount += L3addCount;
 
@@ -2416,7 +2416,7 @@ void GameScene::Lerp3Count()
 	}
 }
 
-void GameScene::Lerp4Count()
+void GamePlay::Lerp4Count()
 {
 	L4nowCount += L4addCount;
 
@@ -2433,7 +2433,7 @@ void GameScene::Lerp4Count()
 	}
 }
 
-void GameScene::Lerp5Count()
+void GamePlay::Lerp5Count()
 {
 	L5nowCount += L5addCount;
 
@@ -2454,7 +2454,7 @@ void GameScene::Lerp5Count()
 	}
 }
 
-void GameScene::RankTimer()
+void GamePlay::RankTimer()
 {
 	//タイマーを更新
 	const float rankTime = 40;
@@ -2517,7 +2517,7 @@ void GameScene::RankTimer()
 	}
 }
 
-void GameScene::ScoreRateTimer()
+void GamePlay::ScoreRateTimer()
 {
 	const float scoreRateTime = 40;
 	scoreRateTimer++;
@@ -2563,7 +2563,7 @@ void GameScene::ScoreRateTimer()
 	}
 }
 
-void GameScene::LoadTextureFunction()
+void GamePlay::LoadTextureFunction()
 {
 	// 共通
 
@@ -2678,7 +2678,7 @@ void GameScene::LoadTextureFunction()
 	}
 }
 
-void GameScene::LoadWavFunction()
+void GamePlay::LoadWavFunction()
 {
 	Sound::GetInstance()->LoadWav("SE/Game/game_player_shot.wav");
 	Sound::GetInstance()->LoadWav("SE/Game/game_boss_shot.wav");
@@ -2688,12 +2688,12 @@ void GameScene::LoadWavFunction()
 	Sound::GetInstance()->LoadWav("SE/Game/game_alert.wav");
 }
 
-void GameScene::scoreUIMotion()
+void GamePlay::scoreUIMotion()
 {
 	scoreMoveVel = -8;
 }
 
-void GameScene::scoreUIUpdate()
+void GamePlay::scoreUIUpdate()
 {
 	scoreMoveVel += scoreMoveAcc;
 	scoreBasePosition.y += scoreMoveVel;
@@ -2712,7 +2712,7 @@ void GameScene::scoreUIUpdate()
 }
 
 // プレイヤーとUIが重なった際のアルファ値計算
-void GameScene::changeGameUIAlpha()
+void GamePlay::changeGameUIAlpha()
 {
 	if (cameraMode == 0)
 	{
@@ -2857,7 +2857,7 @@ void GameScene::changeGameUIAlpha()
 }
 
 // ダメージエフェクトの挙動管理
-void GameScene::damageEffectUpdate()
+void GamePlay::damageEffectUpdate()
 {
 	// ダメージエフェクトの計算
 	damageEffectAlpha += damageEffectAlphaVel;
@@ -2870,7 +2870,7 @@ void GameScene::damageEffectUpdate()
 }
 
 // カメラ切り替え時のUI挙動管理
-void GameScene::alertUIUpdate()
+void GamePlay::alertUIUpdate()
 {
 	// UIの点滅
 	if (backFlashingFlag == true)
@@ -2949,7 +2949,7 @@ void GameScene::alertUIUpdate()
 }
 
 // レールオブジェクトの角度計算
-void GameScene::railTargetCalc()
+void GamePlay::railTargetCalc()
 {
 	// レールの進行方向へ自機の角度を向ける
 	testX = playerTargetPosition.x - centerPosition.x;
@@ -2959,7 +2959,7 @@ void GameScene::railTargetCalc()
 }
 
 // プレイヤーHPの計算
-void GameScene::playerHpCalc()
+void GamePlay::playerHpCalc()
 {
 	// プレイヤーのHP計算
 	playerHpRatio = playerHp / playerHpMax;
@@ -2967,7 +2967,7 @@ void GameScene::playerHpCalc()
 }
 
 // ボスHPの計算
-void GameScene::bossHpCalc()
+void GamePlay::bossHpCalc()
 {
 	// ボスのHP計算
 	bossHpRatio = bossHp / bossHpMax;
@@ -2975,7 +2975,7 @@ void GameScene::bossHpCalc()
 }
 
 // 各音量の計算
-void GameScene::VolumeCalc()
+void GamePlay::VolumeCalc()
 {
 	//　マスター音量 = 現在のマスター音量 / 100
 	masterVolume = masterVolumeNow / 100.0f;
@@ -2991,7 +2991,7 @@ void GameScene::VolumeCalc()
 	seVolume = (seVolumeRatio * masterVolumeNow) / 100.0f;
 }
 
-bool GameScene::OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB)
+bool GamePlay::OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB)
 {
 	float Check = sqrtf((sphereA.x - sphereB.x) * (sphereA.x - sphereB.x) + (sphereA.y - sphereB.y) * (sphereA.y - sphereB.y) + (sphereA.z - sphereB.z) * (sphereA.z - sphereB.z));
 	if (Check <= radiusA - radiusB || Check <= radiusB - radiusA || Check < radiusA + radiusB)
@@ -3004,7 +3004,7 @@ bool GameScene::OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, f
 	}
 }
 
-void GameScene::CreateCloud()
+void GamePlay::CreateCloud()
 {
 	XMFLOAT3 randPos;
 
