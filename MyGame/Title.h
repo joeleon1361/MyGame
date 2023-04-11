@@ -13,6 +13,7 @@
 #include "Sprite.h"
 #include "ObjObject.h"
 #include "Sound.h"
+#include "ParticleManager.h"
 #include "Camera.h"
 
 class Title : public BaseScene
@@ -60,6 +61,9 @@ public:
 	// テクスチャのロード
 	void LoadTextureFunction();
 
+	// プレイヤーのジェットパーティクル生成
+	void CreatePlayerJetParticles(XMFLOAT3 position);
+
 private: // メンバ変数
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 	Input* input = Input::GetInstance();
@@ -71,6 +75,8 @@ private: // メンバ変数
 	Sprite* TitleStartUI = nullptr;
 	Sprite* TitleLogo = nullptr;
 	Sprite* LoadingBG = nullptr;
+
+	ParticleManager* playerJetParticle = nullptr;
 
 	ObjObject* objTitlePlayer = nullptr;
 	ObjObject* objSkydome = nullptr;

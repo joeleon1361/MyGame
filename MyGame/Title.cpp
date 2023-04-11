@@ -42,6 +42,8 @@ void Title::Initialize()
 	TitleStartUI = Sprite::Create(TextureNumber::title_parts_1, { 310.0f,630.0f });
 	LoadingBG = Sprite::Create(TextureNumber::loading_effect_1, { 0.0f,0.0f }, { 1.0f,1.0f,1.0f,0.0f });
 
+	playerJetParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
+
 	// 3Dオブジェクト生成
 	objTitlePlayer = ObjObject::Create();
 	modelPlayer = ObjModel::CreateFromOBJ("player2");
@@ -65,8 +67,7 @@ void Title::Initialize()
 	camera->SetEye({ 0, 0, 10 });
 	camera->SetUp({ 0, 1, 0 });
 
-	// LoadingBG->SetColor({ 1, 1, 1, 0 });
-	loadingColor.w = 0;
+	LoadingBG->SetColor({ 1, 1, 1, 0 });
 
 	TitleStartUI->SetColor({ 1, 1, 1, 1 });
 
@@ -91,6 +92,19 @@ void Title::Initialize()
 
 	changeSceneFlag = false;
 	changeSceneTimer = 100.0f;
+
+	//　マスター音量 = 現在のマスター音量 / 100
+	masterVolume = masterVolumeNow / 100.0f;
+
+	//　割合 = 現在のbgm音量 / bgm音量の最大
+	bgmVolumeRatio = bgmVolumeNow / bgmVolumeMax;
+	//　bgm音量 = (割合 * マスター音量) / 100
+	bgmVolume = (bgmVolumeRatio * masterVolumeNow) / 100.0f;
+
+	//　割合 = 現在のse音量 / se音量の最大
+	seVolumeRatio = seVolumeNow / seVolumeMax;
+	//　se音量 = (割合 * マスター音量) / 100
+	seVolume = (seVolumeRatio * masterVolumeNow) / 100.0f;
 
 	Sound::GetInstance()->PlayWav("BGM/Title/title_bgm.wav", bgmVolume, true);
 }
@@ -119,6 +133,8 @@ void Title::Update()
 #pragma endregion
 
 #pragma region プレイヤーモデルの制御
+	CreatePlayerJetParticles(TitlePlayerPosition);
+
 	TitlePlayerPosition.x += moveX;
 	TitlePlayerPosition.y += moveY;
 
@@ -153,8 +169,6 @@ void Title::Update()
 
 	}
 #pragma endregion
-
-	//CreateTitlePlayerJetParticles(TitlePlayerPosition);
 
 	switch (titleScene)
 	{
@@ -290,7 +304,7 @@ void Title::Update()
 	camera->Update();
 	objSkydome->Update();
 	objTitlePlayer->Update();
-	//playerJetParticle->Update();
+	playerJetParticle->Update();
 #pragma endregion
 
 }
@@ -321,8 +335,7 @@ void Title::Draw()
 
 
 	// パーティクルの描画
-	//bossHitParticle->Draw(cmdList);
-	//playerJetParticle->Draw(cmdList);
+	playerJetParticle->Draw(cmdList);
 
 	// 3Dオブジェクト描画後処理
 	ObjObject::PostDraw();
@@ -365,5 +378,27 @@ void Title::LoadTextureFunction()
 	if (!Sprite::LoadTexture(TextureNumber::loading_effect_1, L"Resources/Sprite/Effect/loading_effect_1.png")) {
 		assert(0);
 		return;
+	}
+}
+
+void Title::CreatePlayerJetParticles(XMFLOAT3 position)
+{
+	for (int i = 0; i < 10; i++) {
+		const float rnd_pos = 0.1f;
+		XMFLOAT3 pos{};
+		pos.x = position.x + -0.9f;
+		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.y;
+		pos.z = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.z;
+
+		const float rnd_vel = -0.2f;
+		XMFLOAT3 vel{};
+		vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+
+		XMFLOAT3 acc{};
+		const float rnd_acc = -0.1f;
+		acc.x = -0.1f;
+
+		// 追加
+		playerJetParticle->Add(5, pos, vel, acc, { 0.874f,0.443f, 0.149f, 1.000f }, { 0.874f,0.443f, 0.149f, 1.000f }, 0.3f, 0.0f);
 	}
 }
