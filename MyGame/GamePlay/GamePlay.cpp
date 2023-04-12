@@ -135,6 +135,7 @@ void GamePlay::Initialize()
 	playerJetParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
 	playerContrailParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
 	bulletParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
+	stageBoxParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect2.png");
 
 	// 3Dオブジェクト生成
 	objSkydome = ObjObject::Create();
@@ -161,7 +162,6 @@ void GamePlay::Initialize()
 	modelPlayer = ObjModel::CreateFromOBJ("player2");
 	modelBullet = ObjModel::CreateFromOBJ("bullet2");
 	modelBossLeg = ObjModel::CreateFromOBJ("bossLeg");
-	modelCloud_1 = ObjModel::CreateFromOBJ("test");
 	modelBossCore = ObjModel::CreateFromOBJ("bossCore");
 	modelBossUpperBody = ObjModel::CreateFromOBJ("bossUpperBody");
 	modelBossLowerBody = ObjModel::CreateFromOBJ("bossLowerBody");
@@ -393,12 +393,12 @@ void GamePlay::Update()
 
 	alertUIUpdate();
 
-	// CreateCloud();
+	CreateBoxParticle();
 
 	// 雲を更新
-	for (std::unique_ptr<StageObject>& cloud : stageObjects)
+	for (std::unique_ptr<StageObject>& box : stageObjects)
 	{
-		cloud->Update();
+		box->Update();
 	}
 
 	// 雲を消去
@@ -1007,8 +1007,15 @@ void GamePlay::Update()
 
 	for (std::unique_ptr<TargetBullet>& bullet : bossTargetBullets)
 	{
-		CreateBulletParticles(bullet->GetPosition(), { 1.0f,0.1f, 0.1f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, 0.7f);
+		CreateBulletParticles(bullet->GetPosition(), { 1.0f,0.1f, 0.1f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } , 0.7f);
 	}
+
+	for (std::unique_ptr<StageObject>& box : stageObjects)
+	{
+		CreateStageBoxParticles (box->GetPosition(), { 0.1f,1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f, 1.0f, 1.0f }, 10.0f);
+	}
+		
+	
 
 #pragma region 座標のセット
 	// カメラ座標のセット
@@ -1149,6 +1156,7 @@ void GamePlay::Update()
 	playerJetParticle->Update();
 	playerContrailParticle->Update();
 	bulletParticle->Update();
+	stageBoxParticle->Update();
 	// 背景天球
 	objSkydome->Update();
 
@@ -1244,9 +1252,9 @@ void GamePlay::Draw()
 		}
 	}
 
-	for (std::unique_ptr<StageObject>& cloud : stageObjects)
+	for (std::unique_ptr<StageObject>& box : stageObjects)
 	{
-		cloud->Draw();
+		//box->Draw();
 	}
 
 	if (bossFlag == true)
@@ -1287,6 +1295,7 @@ void GamePlay::Draw()
 	bossBreakParticle->Draw(cmdList);
 	playerJetParticle->Draw(cmdList);
 	playerContrailParticle->Draw(cmdList);
+	stageBoxParticle->Draw(cmdList);
 	if (playerUpdateFlag == true)
 	{
 		bulletParticle->Draw(cmdList);
@@ -1405,7 +1414,7 @@ void GamePlay::Draw()
 	// デバッグテキストの描画
 	//debugText.DrawAll(cmdList);
 
-	player->DebugTextDraw();
+	//player->DebugTextDraw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -1729,28 +1738,6 @@ void GamePlay::CreatePlayerJetParticles(XMFLOAT3 position)
 	}
 }
 
-void GamePlay::CreateTitlePlayerJetParticles(XMFLOAT3 position)
-{
-	for (int i = 0; i < 10; i++) {
-		const float rnd_pos = 0.1f;
-		XMFLOAT3 pos{};
-		pos.x = position.x + -1.0f;
-		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.y;
-		pos.z = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.z;
-
-		const float rnd_vel = -0.4f;
-		XMFLOAT3 vel{};
-		vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-
-		XMFLOAT3 acc{};
-		const float rnd_acc = -0.1f;
-		acc.x = -0.1f;
-
-		// 追加
-		playerJetParticle->Add(5, pos, vel, acc, { 0.874f,0.443f, 0.149f, 1.000f }, { 0.874f,0.443f, 0.149f, 1.000f }, 0.3f, 0.0f);
-	}
-}
-
 void GamePlay::CreatePlayerContrailParticles(XMFLOAT3 position)
 {
 	for (int i = 0; i < 10; i++) {
@@ -1804,6 +1791,23 @@ void GamePlay::CreateChargeBulletParticles(XMFLOAT3 position, XMFLOAT4 start_col
 
 		// 追加
 		bulletParticle->Add(3, pos, vel, acc, start_color, end_color, start_scale, 0.0f);
+	}
+}
+
+void GamePlay::CreateStageBoxParticles(XMFLOAT3 position, XMFLOAT4 start_color, XMFLOAT4 end_color, float start_scale)
+{
+	for (int i = 0; i < 10; i++) {
+		XMFLOAT3 pos{};
+		pos.x = position.x;
+		pos.y = position.y;
+		pos.z = position.z;
+
+		XMFLOAT3 vel{};
+
+		XMFLOAT3 acc{};
+
+		// 追加
+		stageBoxParticle->Add(7, pos, vel, acc, start_color, end_color, start_scale, 0.0f);
 	}
 }
 
@@ -2921,19 +2925,26 @@ bool GamePlay::OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, fl
 	}
 }
 
-void GamePlay::CreateCloud()
+void GamePlay::CreateBoxParticle()
 {
 	XMFLOAT3 randPos;
 
 	randPos.x = ((float)rand() / RAND_MAX * 128.0f - 128.0f / 2.0f);
 	randPos.y = ((float)rand() / RAND_MAX * 72.0f - 72.0f / 2.0f);
-	randPos.z = centerPosition.z + 100.0f;
+	randPos.z = centerPosition.z + 300.0f;
 
-	if (Input::GetInstance()->TriggerKey(DIK_U))
+	//タイマーを更新
+	const float stageBoxTime = 30;
+	stageBoxTimer++;
+	const float stageBoxTimeRate = stageBoxTimer / stageBoxTime;
+
+	if (stageBoxTimer >= stageBoxTime)
 	{
-		std::unique_ptr<StageObject> newCloud = std::make_unique<StageObject>();
-		newCloud = StageObject::Create(modelCloud_1, randPos, { 1.0f,1.0f,1.0f }, 0.0f);
+		std::unique_ptr<StageObject> newBox = std::make_unique<StageObject>();
+		newBox = StageObject::Create(modelBullet, randPos, { 1.0f,1.0f,1.0f }, 1.5f);
 
-		stageObjects.push_back(std::move(newCloud));
+		stageObjects.push_back(std::move(newBox));
+
+		stageBoxTimer = 0;
 	}
 }

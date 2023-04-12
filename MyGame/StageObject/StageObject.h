@@ -18,6 +18,8 @@ public: // 静的メンバ関数
 	static std::unique_ptr<StageObject>Create(ObjModel* model, const XMFLOAT3 position, const XMFLOAT3 scale, const float velocity);
 
 private: // 静的メンバ変数
+	// 消えるまでの時間
+	static const int32_t LifeTime = 400;
 
 public: // メンバ関数
 // 初期化
@@ -29,8 +31,10 @@ public: // メンバ関数
 	const bool GetDeathFlag() { return deathFlag; }
 
 private: // メンバ変数
-	float velocity = 0.0f;
+	float velocity = 1.0f;
 
+	// デスタイマー 
+	int32_t deathTimer = LifeTime;
 public:
 	// デスフラグ
 	bool deathFlag = false;

@@ -175,58 +175,58 @@
     <ClCompile Include="Collider\SphereCollider.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
-    <ClCompile Include="StageObject.cpp">
+    <ClCompile Include="StageObject\StageObject.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
+    <ClCompile Include="Player\Player.cpp">
       <Filter>Player</Filter>
     </ClCompile>
-    <ClCompile Include="GamePad.cpp">
+    <ClCompile Include="Input\GamePad.cpp">
       <Filter>Input\GamePad</Filter>
     </ClCompile>
     <ClCompile Include="Input\Input.cpp">
       <Filter>Input\KeyBoard</Filter>
     </ClCompile>
-    <ClCompile Include="Boss.cpp">
+    <ClCompile Include="Boss\Boss.cpp">
       <Filter>Boss</Filter>
     </ClCompile>
-    <ClCompile Include="ScoreText.cpp">
+    <ClCompile Include="ScoreText\ScoreText.cpp">
       <Filter>2D\ScoreText</Filter>
     </ClCompile>
-    <ClCompile Include="Spline.cpp">
+    <ClCompile Include="Math\Spline.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="Lerp.cpp">
+    <ClCompile Include="Math\Lerp.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="Easing.cpp">
+    <ClCompile Include="Math\Easing.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="Title.cpp">
+    <ClCompile Include="Title\Title.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="GameScreen\GamePlay.cpp">
+    <ClCompile Include="GamePlay\GamePlay.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Result.cpp">
+    <ClCompile Include="Result\Result.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Bullet.cpp">
+    <ClCompile Include="Bullet\Bullet.cpp">
       <Filter>Bullet</Filter>
     </ClCompile>
-    <ClCompile Include="TargetBullet.cpp">
+    <ClCompile Include="Bullet\TargetBullet.cpp">
       <Filter>Bullet</Filter>
     </ClCompile>
-    <ClCompile Include="FrameWork.cpp">
+    <ClCompile Include="GameBase\FrameWork.cpp">
       <Filter>GameBase</Filter>
     </ClCompile>
-    <ClCompile Include="MyGame.cpp">
+    <ClCompile Include="GameBase\MyGame.cpp">
       <Filter>GameBase</Filter>
     </ClCompile>
-    <ClCompile Include="SceneFactory.cpp">
+    <ClCompile Include="GameBase\SceneFactory.cpp">
       <Filter>GameBase</Filter>
     </ClCompile>
-    <ClCompile Include="SceneManager.cpp">
+    <ClCompile Include="GameBase\SceneManager.cpp">
       <Filter>GameBase</Filter>
     </ClCompile>
   </ItemGroup>
@@ -331,19 +331,19 @@
     <ClInclude Include="Sound\Sound.h">
       <Filter>Sound</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
+    <ClInclude Include="Player\Player.h">
       <Filter>Player</Filter>
     </ClInclude>
-    <ClInclude Include="GamePad.h">
+    <ClInclude Include="Input\GamePad.h">
       <Filter>Input\GamePad</Filter>
     </ClInclude>
     <ClInclude Include="Input\Input.h">
       <Filter>Input\KeyBoard</Filter>
     </ClInclude>
-    <ClInclude Include="Boss.h">
+    <ClInclude Include="Boss\Boss.h">
       <Filter>Boss</Filter>
     </ClInclude>
-    <ClInclude Include="ScoreText.h">
+    <ClInclude Include="ScoreText\ScoreText.h">
       <Filter>2D\ScoreText</Filter>
     </ClInclude>
     <ClInclude Include="Collider\BaseCollider.h">
@@ -370,49 +370,49 @@
     <ClInclude Include="Collider\SphereCollider.h">
       <Filter>Collider</Filter>
     </ClInclude>
-    <ClInclude Include="Spline.h">
+    <ClInclude Include="Math\Spline.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Lerp.h">
+    <ClInclude Include="Math\Lerp.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Easing.h">
+    <ClInclude Include="Math\Easing.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="StageObject.h">
+    <ClInclude Include="StageObject\StageObject.h">
       <Filter>ヘッダ ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Title.h">
+    <ClInclude Include="Title\Title.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="GameScreen\GamePlay.h">
+    <ClInclude Include="GamePlay\GamePlay.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Result.h">
+    <ClInclude Include="Result\Result.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Bullet.h">
+    <ClInclude Include="Bullet\Bullet.h">
       <Filter>Bullet</Filter>
     </ClInclude>
-    <ClInclude Include="TargetBullet.h">
+    <ClInclude Include="Bullet\TargetBullet.h">
       <Filter>Bullet</Filter>
     </ClInclude>
-    <ClInclude Include="FrameWork.h">
+    <ClInclude Include="GameBase\FrameWork.h">
       <Filter>GameBase</Filter>
     </ClInclude>
-    <ClInclude Include="MyGame.h">
+    <ClInclude Include="GameBase\MyGame.h">
       <Filter>GameBase</Filter>
     </ClInclude>
-    <ClInclude Include="SceneFactory.h">
+    <ClInclude Include="GameBase\SceneFactory.h">
       <Filter>GameBase</Filter>
     </ClInclude>
-    <ClInclude Include="SceneManager.h">
+    <ClInclude Include="GameBase\SceneManager.h">
       <Filter>GameBase</Filter>
     </ClInclude>
-    <ClInclude Include="AbstractSceneFactory.h">
+    <ClInclude Include="GameBase\AbstractSceneFactory.h">
       <Filter>GameBase</Filter>
     </ClInclude>
-    <ClInclude Include="BaseScene.h">
+    <ClInclude Include="GameBase\BaseScene.h">
       <Filter>GameBase</Filter>
     </ClInclude>
   </ItemGroup>

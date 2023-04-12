@@ -28,8 +28,6 @@ bool StageObject::Initialize(const XMFLOAT3 position, const XMFLOAT3 scale, cons
 	{
 		return false;
 	}
-	//SetRotation({ 0.0f,180.0f,0.0f });
-	SetBillboard(true);
 
 	this->position = position;
 	this->scale = scale;
@@ -40,4 +38,10 @@ bool StageObject::Initialize(const XMFLOAT3 position, const XMFLOAT3 scale, cons
 void StageObject::Update()
 {
 	ObjObject::Update();
+	position.z -= velocity;
+
+	if (--deathTimer <= 0)
+	{
+		deathFlag = true;
+	}
 }

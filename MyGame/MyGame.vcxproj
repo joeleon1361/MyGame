@@ -121,7 +121,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)FBX;$(ProjectDir)OBJ;$(ProjectDir)Particle;$(ProjectDir)PostEffect;$(ProjectDir)Sound;$(ProjectDir)Input;$(ProjectDir)Camera;$(ProjectDir)Sprite;$(ProjectDir)DebugText;$(ProjectDir)EngineBase;$(ProjectDir)GameScreen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)FBX;$(ProjectDir)OBJ;$(ProjectDir)Particle;$(ProjectDir)PostEffect;$(ProjectDir)Sound;$(ProjectDir)Input;$(ProjectDir)Camera;$(ProjectDir)Sprite;$(ProjectDir)DebugText;$(ProjectDir)EngineBase;$(ProjectDir)GamePlay;$(ProjectDir)GameBase;$(ProjectDir)Math;$(ProjectDir)ScoreText;$(ProjectDir)Boss;$(ProjectDir)Bullet;$(ProjectDir)StageObject;$(ProjectDir)Player;$(ProjectDir)Title;$(ProjectDir)Result;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
@@ -142,7 +142,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)FBX;$(ProjectDir)OBJ;$(ProjectDir)Particle;$(ProjectDir)PostEffect;$(ProjectDir)Sound;$(ProjectDir)Input;$(ProjectDir)Camera;$(ProjectDir)Sprite;$(ProjectDir)DebugText;$(ProjectDir)EngineBase;$(ProjectDir)GameScreen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)FBX;$(ProjectDir)OBJ;$(ProjectDir)Particle;$(ProjectDir)PostEffect;$(ProjectDir)Sound;$(ProjectDir)Input;$(ProjectDir)Camera;$(ProjectDir)Sprite;$(ProjectDir)DebugText;$(ProjectDir)EngineBase;$(ProjectDir)GamePlay;$(ProjectDir)GameBase;$(ProjectDir)Math;$(ProjectDir)ScoreText;$(ProjectDir)Boss;$(ProjectDir)Bullet;$(ProjectDir)StageObject;$(ProjectDir)Player;$(ProjectDir)Title;$(ProjectDir)Result;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
@@ -157,44 +157,44 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Boss.cpp" />
-    <ClCompile Include="TargetBullet.cpp" />
-    <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Boss\Boss.cpp" />
+    <ClCompile Include="Bullet\TargetBullet.cpp" />
+    <ClCompile Include="Bullet\Bullet.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Collider\Collision.cpp" />
     <ClCompile Include="Collider\CollisionManager.cpp" />
     <ClCompile Include="Collider\CollisionPrimitive.cpp" />
     <ClCompile Include="Collider\SphereCollider.cpp" />
     <ClCompile Include="DebugText\DebugText.cpp" />
-    <ClCompile Include="Easing.cpp" />
+    <ClCompile Include="Math\Easing.cpp" />
     <ClCompile Include="EngineBase\DirectXCommon.cpp" />
     <ClCompile Include="EngineBase\WinApp.cpp" />
     <ClCompile Include="FBX\FbxLoader.cpp" />
     <ClCompile Include="FBX\FbxModel.cpp" />
     <ClCompile Include="FBX\FbxObject.cpp" />
-    <ClCompile Include="FrameWork.cpp" />
-    <ClCompile Include="GamePad.cpp" />
-    <ClCompile Include="GameScreen\GamePlay.cpp" />
+    <ClCompile Include="GameBase\FrameWork.cpp" />
+    <ClCompile Include="Input\GamePad.cpp" />
+    <ClCompile Include="GamePlay\GamePlay.cpp" />
     <ClCompile Include="Input\Input.cpp" />
-    <ClCompile Include="Lerp.cpp" />
+    <ClCompile Include="Math\Lerp.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MyGame.cpp" />
+    <ClCompile Include="GameBase\MyGame.cpp" />
     <ClCompile Include="OBJ\ObjMaterial.cpp" />
     <ClCompile Include="OBJ\ObjMesh.cpp" />
     <ClCompile Include="OBJ\ObjModel.cpp" />
     <ClCompile Include="OBJ\ObjObject.cpp" />
     <ClCompile Include="Particle\ParticleManager.cpp" />
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Player\Player.cpp" />
     <ClCompile Include="PostEffect\PostEffect.cpp" />
-    <ClCompile Include="Result.cpp" />
-    <ClCompile Include="SceneFactory.cpp" />
-    <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="ScoreText.cpp" />
+    <ClCompile Include="Result\Result.cpp" />
+    <ClCompile Include="GameBase\SceneFactory.cpp" />
+    <ClCompile Include="GameBase\SceneManager.cpp" />
+    <ClCompile Include="ScoreText\ScoreText.cpp" />
     <ClCompile Include="Sound\Sound.cpp" />
-    <ClCompile Include="Spline.cpp" />
+    <ClCompile Include="Math\Spline.cpp" />
     <ClCompile Include="Sprite\Sprite.cpp" />
-    <ClCompile Include="StageObject.cpp" />
-    <ClCompile Include="Title.cpp" />
+    <ClCompile Include="StageObject\StageObject.cpp" />
+    <ClCompile Include="Title\Title.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\FBX.hlsli" />
@@ -272,11 +272,11 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AbstractSceneFactory.h" />
-    <ClInclude Include="BaseScene.h" />
-    <ClInclude Include="Boss.h" />
-    <ClInclude Include="TargetBullet.h" />
-    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="GameBase\AbstractSceneFactory.h" />
+    <ClInclude Include="GameBase\BaseScene.h" />
+    <ClInclude Include="Boss\Boss.h" />
+    <ClInclude Include="Bullet\TargetBullet.h" />
+    <ClInclude Include="Bullet\Bullet.h" />
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="Collider\BaseCollider.h" />
     <ClInclude Include="Collider\Collision.h" />
@@ -287,35 +287,35 @@
     <ClInclude Include="Collider\RaycastHit.h" />
     <ClInclude Include="Collider\SphereCollider.h" />
     <ClInclude Include="DebugText\DebugText.h" />
-    <ClInclude Include="Easing.h" />
+    <ClInclude Include="Math\Easing.h" />
     <ClInclude Include="EngineBase\DirectXCommon.h" />
     <ClInclude Include="EngineBase\SafeDelete.h" />
     <ClInclude Include="EngineBase\WinApp.h" />
     <ClInclude Include="FBX\FbxLoader.h" />
     <ClInclude Include="FBX\FbxModel.h" />
     <ClInclude Include="FBX\FbxObject.h" />
-    <ClInclude Include="FrameWork.h" />
-    <ClInclude Include="GamePad.h" />
-    <ClInclude Include="GameScreen\GamePlay.h" />
+    <ClInclude Include="GameBase\FrameWork.h" />
+    <ClInclude Include="Input\GamePad.h" />
+    <ClInclude Include="GamePlay\GamePlay.h" />
     <ClInclude Include="Input\Input.h" />
-    <ClInclude Include="Lerp.h" />
-    <ClInclude Include="MyGame.h" />
+    <ClInclude Include="Math\Lerp.h" />
+    <ClInclude Include="GameBase\MyGame.h" />
     <ClInclude Include="OBJ\ObjMaterial.h" />
     <ClInclude Include="OBJ\ObjMesh.h" />
     <ClInclude Include="OBJ\ObjModel.h" />
     <ClInclude Include="OBJ\ObjObject.h" />
     <ClInclude Include="Particle\ParticleManager.h" />
-    <ClInclude Include="Player.h" />
+    <ClInclude Include="Player\Player.h" />
     <ClInclude Include="PostEffect\PostEffect.h" />
-    <ClInclude Include="Result.h" />
-    <ClInclude Include="SceneFactory.h" />
-    <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="ScoreText.h" />
+    <ClInclude Include="Result\Result.h" />
+    <ClInclude Include="GameBase\SceneFactory.h" />
+    <ClInclude Include="GameBase\SceneManager.h" />
+    <ClInclude Include="ScoreText\ScoreText.h" />
     <ClInclude Include="Sound\Sound.h" />
-    <ClInclude Include="Spline.h" />
+    <ClInclude Include="Math\Spline.h" />
     <ClInclude Include="Sprite\Sprite.h" />
-    <ClInclude Include="StageObject.h" />
-    <ClInclude Include="Title.h" />
+    <ClInclude Include="StageObject\StageObject.h" />
+    <ClInclude Include="Title\Title.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

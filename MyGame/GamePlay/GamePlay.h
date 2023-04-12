@@ -140,9 +140,6 @@ public: // メンバ関数
 	// プレイヤーのジェットパーティクル生成
 	void CreatePlayerJetParticles(XMFLOAT3 position);
 
-	// プレイヤーのジェットパーティクル生成
-	void CreateTitlePlayerJetParticles(XMFLOAT3 position);
-
 	// プレイヤーの飛行機雲パーティクル生成
 	void CreatePlayerContrailParticles(XMFLOAT3 position);
 
@@ -151,6 +148,9 @@ public: // メンバ関数
 
 	// チャージ弾パーティクル生成
 	void CreateChargeBulletParticles(XMFLOAT3 position, XMFLOAT4 start_color, XMFLOAT4 end_color, float start_scale);
+
+	// ステージオブジェクトパーティクル生成
+	void CreateStageBoxParticles(XMFLOAT3 position, XMFLOAT4 start_color, XMFLOAT4 end_color, float start_scale);
 
 	// ゲーム画面で使用するのデバックテキスト
 	void GameDebugText();
@@ -234,7 +234,7 @@ public: // メンバ関数
 	bool OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB);
 
 	// 雲の生成
-	void CreateCloud();
+	void CreateBoxParticle();
 
 private: // メンバ変数
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
@@ -291,13 +291,13 @@ private: // メンバ変数
 	ParticleManager* playerJetParticle = nullptr;
 	ParticleManager* bulletParticle = nullptr;
 	ParticleManager* playerContrailParticle = nullptr;
+	ParticleManager* stageBoxParticle = nullptr;
 
 	ObjModel* modelSkydome = nullptr;
 	ObjModel* modelGround = nullptr;
 	ObjModel* modelPlayer = nullptr;
 	ObjModel* modelBullet = nullptr;
 	ObjModel* modelBossLeg = nullptr;
-	ObjModel* modelCloud_1 = nullptr;
 	ObjModel* modelBossCore = nullptr;
 	ObjModel* modelBossUpperBody = nullptr;
 	ObjModel* modelBossLowerBody = nullptr;
@@ -498,6 +498,8 @@ private: // メンバ変数
 	bool rate3rdOneTimeFlag = true;
 
 	float scoreRateAlpha = 0.0f;
+
+	int32_t stageBoxTimer = 0;
 
 	XMFLOAT2 gameGTXT_1Size = {};
 	XMFLOAT4 gameGTXT_1Color = { 1.0f, 1.0f, 1.0f, 0.0f };
