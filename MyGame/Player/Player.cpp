@@ -51,53 +51,29 @@ void Player::Update()
 	position.y += playerSpeed.y;
 	//InertiaCalc();
 
+	// オブジェクト移動
+	Move();
+
+	// 移動制限
+	MoveLimit();
+
 	if (cameraMode == FRONT)
 	{
-		// オブジェクト移動
-		FrontMove();
-
-		// 移動制限
-		MoveLimitXY();
-
 		// ローリング
 		FrontRolling();
 	}
 	else if (cameraMode == RIGHT)
 	{
-		if (playerUpdateFlag == true)
-		{
-			// オブジェクト移動
-			RightMove();
-		}
-
-		// 移動制限
-		MoveLimitZY();
-
 		// ローリング
 		RightRolling();
 	}
 	else if (cameraMode == BACK)
 	{
-		// オブジェクト移動
-		BackMove();
-
-		// 移動制限
-		MoveLimitXY();
-
 		// ローリング
 		BackRolling();
 	}
 	else if (cameraMode == LEFT)
 	{
-		if (playerUpdateFlag == true)
-		{
-			// オブジェクト移動
-			LeftMove();
-		}
-
-		// 移動制限
-		MoveLimitZY();
-
 		// ローリング
 		LeftRolling();
 	}
@@ -111,7 +87,6 @@ void Player::Update()
 void Player::Draw()
 {
 	ObjObject::Draw();
-
 }
 
 void Player::DebugTextUpdate()
@@ -149,13 +124,21 @@ void Player::DebugTextUpdate()
 		<< dodgeRollSpeed << ")";
 	debugText.Print(DodgeRollSpeed.str(), 10, 150, 1.0f);
 
+	std::ostringstream RollRotation;
+	RollRotation << "RollRotation:("
+		<< std::fixed << std::setprecision(2)
+		<< rollRotation.x << "," // x
+		<< rollRotation.y << "," // y
+		<< rollRotation.z << ")"; // z
+	debugText.Print(RollRotation.str(), 10, 170, 1.0f);
+
 	std::ostringstream DodgeRollRotation;
 	DodgeRollRotation << "DodgeRollRotation:("
 		<< std::fixed << std::setprecision(2)
 		<< dodgeRollRotation.x << "," // x
 		<< dodgeRollRotation.y << "," // y
 		<< dodgeRollRotation.z << ")"; // z
-	debugText.Print(DodgeRollRotation.str(), 10, 170, 1.0f);
+	debugText.Print(DodgeRollRotation.str(), 10, 190, 1.0f);
 }
 
 void Player::DebugTextDraw()
@@ -167,7 +150,7 @@ void Player::DebugTextDraw()
 }
 
 // 前方向移動処理
-void Player::FrontMove()
+void Player::Move()
 {
 	Input* input = Input::GetInstance();
 
@@ -232,7 +215,6 @@ void Player::FrontMove()
 	else
 	{
 		// 傾きを戻す
-
 		if (playerSpeed.x > 0.0f && playerSpeed.x != 0.0f)
 		{
 			playerSpeed.x -= 0.02f;
@@ -243,8 +225,6 @@ void Player::FrontMove()
 			playerSpeed.x += 0.02f;
 		}
 
-
-
 		if (playerSpeed.y > 0.0f && playerSpeed.y != 0.0f)
 		{
 			playerSpeed.y -= 0.02f;
@@ -254,148 +234,11 @@ void Player::FrontMove()
 		{
 			playerSpeed.y += 0.02f;
 		}
-
 	}
 }
-// 右方向移動処理
-void Player::RightMove()
-{
-	Input* input = Input::GetInstance();
 
-	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
-	{
-		// 移動後の座標を計算
-		if (input->PushKey(DIK_W))
-		{
-			position.y += playerVelocity + dodgeRollSpeed;
-		}
-		if (input->PushKey(DIK_S))
-		{
-			position.y -= playerVelocity + dodgeRollSpeed;
-		}
-		if (input->PushKey(DIK_D))
-		{
-			position.z -= playerVelocity + dodgeRollSpeed;
-		}
-		if (input->PushKey(DIK_A))
-		{
-			position.z += playerVelocity + dodgeRollSpeed;
-		}
-	}
-}
-// 後方向移動処理
-void Player::BackMove()
-{
-	Input* input = Input::GetInstance();
-
-	if (playerUpdateFlag == true)
-	{
-		if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
-		{
-			// 移動後の座標を計算
-			if (input->PushKey(DIK_W) && playerSpeed.y <= 0.4f)
-			{
-				playerSpeed.y += 0.05f;
-			}
-			if (input->PushKey(DIK_S) && playerSpeed.y >= -0.4f)
-			{
-				playerSpeed.y -= 0.05f;
-			}
-			if (input->PushKey(DIK_A) && playerSpeed.x <= 0.4f)
-			{
-				playerSpeed.x += 0.05f;
-			}
-			if (input->PushKey(DIK_D) && playerSpeed.x >= -0.4f)
-			{
-				playerSpeed.x -= 0.05f;
-			}
-		}
-
-		// 傾きを戻す
-		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && playerSpeed.x != 0.0f)
-		{
-			if (playerSpeed.x > 0.0f)
-			{
-				playerSpeed.x -= 0.02f;
-			}
-
-			if (playerSpeed.x < 0.0f)
-			{
-				playerSpeed.x += 0.02f;
-			}
-		}
-
-		if (input->PushKey(DIK_W) == 0 && input->PushKey(DIK_S) == 0 && playerSpeed.y != 0.0f)
-		{
-			if (playerSpeed.y > 0.0f)
-			{
-				playerSpeed.y -= 0.02f;
-			}
-
-			if (playerSpeed.y < 0.0f)
-			{
-				playerSpeed.y += 0.02f;
-			}
-		}
-	}
-	else
-	{
-		// 傾きを戻す
-		if (playerSpeed.x != 0.0f)
-		{
-			if (playerSpeed.x > 0.0f)
-			{
-				playerSpeed.x -= 0.02f;
-			}
-
-			if (playerSpeed.x < 0.0f)
-			{
-				playerSpeed.x += 0.02f;
-			}
-		}
-
-		if (playerSpeed.y != 0.0f)
-		{
-			if (playerSpeed.y > 0.0f)
-			{
-				playerSpeed.y -= 0.02f;
-			}
-
-			if (playerSpeed.y < 0.0f)
-			{
-				playerSpeed.y += 0.02f;
-			}
-		}
-	}
-}
-// 左方向移動処理
-void Player::LeftMove()
-{
-	Input* input = Input::GetInstance();
-
-	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
-	{
-		// 移動後の座標を計算
-		if (input->PushKey(DIK_W))
-		{
-			position.y += playerVelocity + dodgeRollSpeed;
-		}
-		if (input->PushKey(DIK_S))
-		{
-			position.y -= playerVelocity + dodgeRollSpeed;
-		}
-		if (input->PushKey(DIK_D))
-		{
-			position.z += playerVelocity + dodgeRollSpeed;
-		}
-		if (input->PushKey(DIK_A))
-		{
-			position.z -= playerVelocity + dodgeRollSpeed;
-		}
-	}
-}
 // XY座標の移動制限
-void Player::MoveLimitXY()
+void Player::MoveLimit()
 {
 	// X軸を制限
 	position.x = max(position.x, -LimitXZ);
@@ -405,17 +248,7 @@ void Player::MoveLimitXY()
 	position.y = max(position.y, -LimitY);
 	position.y = min(position.y, +LimitY);
 }
-// ZY座標の移動制限
-void Player::MoveLimitZY()
-{
-	// Z軸を制限
-	position.z = max(position.z, -LimitXZ);
-	position.z = min(position.z, +LimitXZ);
 
-	// Y軸を制限
-	position.y = max(position.y, -LimitY);
-	position.y = min(position.y, +LimitY);
-}
 // 前方向時の自機の傾き
 void Player::FrontRolling()
 {
@@ -658,14 +491,14 @@ void Player::judgeDodgeRoll()
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
 			dodgeEndRotation.x = 720.0f;
-			dodgeStartSpeed = 0.4f;
+			dodgeStartSpeed = -0.4f;
 		}
 		else if (input->TriggerKey(DIK_V) && input->PushKey(DIK_D))
 		{
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
 			dodgeEndRotation.x = -720.0f;
-			dodgeStartSpeed = -0.4f;
+			dodgeStartSpeed = 0.4f;
 		}
 	}
 }

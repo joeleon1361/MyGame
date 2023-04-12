@@ -340,46 +340,46 @@ private: // メンバ変数
 	// スプライン曲線関連
 
 	// ボス制御点
-	XMFLOAT3 Bstart = { 0.0f, 40.0f, 30.0f };
-	XMFLOAT3 Bp2 = { 0.0f, 40.0f, 30.0f };
-	XMFLOAT3 Bp3 = { 0.0f, 20.0f, 30.0f };
-	XMFLOAT3 Bp4 = { 0.0f, 0.0f, 30.0f };
-	XMFLOAT3 Bp5 = { 0.0f, 5.0f, 30.0f };
-	XMFLOAT3 Bp6 = { -7.0f, 0.0f, 30.0f };
-	XMFLOAT3 Bp7 = { 0.0f, -5.0f, 30.0f };
-	XMFLOAT3 Bp8 = { 7.0f, 0.0f, 30.0f };
-	XMFLOAT3 Bp9 = { 0.0f, 5.0f, 30.0f };
-	XMFLOAT3 Bp10 = { -7.0f, 0.0f, 30.0f };
-	XMFLOAT3 Bp11 = { 0.0f, 0.0f, 30.0f };
-	XMFLOAT3 Bp12 = { 0.0f, 30.0f, 0.0f };
-	XMFLOAT3 Bp13 = { 0.0f, 60.0f, -10.0f };
-	XMFLOAT3 Bp14 = { 0.0f, 60.0f, -30.0f };
-	XMFLOAT3 Bp15 = { 0.0f, 30.0f, -30.0f };
-	XMFLOAT3 Bp16 = { 0.0f, 0.0f, -30.0f };
-	XMFLOAT3 Bp17 = { 0.0f, 0.0f, -30.0f };
-	XMFLOAT3 Bp18 = { 0.0f, 0.0f, -30.0f };
-	XMFLOAT3 Bp19 = { 0.0f, 0.0f, -30.0f };
-	XMFLOAT3 Bp20 = { 0.0f, 0.0f, -30.0f };
-	XMFLOAT3 Bp21 = { 15.0f, 0.0f, -30.0f };
-	XMFLOAT3 Bp22 = { 0.0f, 0.0f, -30.0f };
-	XMFLOAT3 Bp23 = { -15.0f, 0.0f, -30.0f };
-	XMFLOAT3 Bp24 = { 0.0f, 0.0f, -30.0f };
-	XMFLOAT3 Bp25 = { 15.0f, 0.0f, -30.0f };
-	XMFLOAT3 Bp26 = { 0.0f, 0.0f, -30.0f };
-	XMFLOAT3 Bp27 = { 0.0f, -10.0f, -20.0f };
-	XMFLOAT3 Bp28 = { 0.0f, 30.0f, -10.0f };
-	XMFLOAT3 Bp29 = { 0.0f, 50.0f, 00.0f };
-	XMFLOAT3 Bp30 = { 0.0f, 50.0f, 10.0f };
-	XMFLOAT3 Bp31 = { 0.0f, 50.0f, 20.0f };
-	XMFLOAT3 Bp32 = { 0.0f, 0.0f, 30.0f };
-	XMFLOAT3 Bp33 = { 5.0f, 5.0f, 30.0f };
-	XMFLOAT3 Bp34 = { 5.0f, -5.0f, 30.0f };
-	XMFLOAT3 Bp35 = { -5.0f, -5.0f, 30.0f };
-	XMFLOAT3 Bp36 = { -5.0f, 5.0f, 30.0f };
-	XMFLOAT3 Bp37 = { 0.0f, -10.0f, 30.0f };
-	XMFLOAT3 Bp38 = { 0.0f, 0.0f, 30.0f };
-	XMFLOAT3 Bp39 = { 10.0f, 0.0f, 20.0f };
-	XMFLOAT3 Bp40 = { 20.0f, 0.0f, 10.0f };
+	XMFLOAT3 Bstart = { 0.0f, 40.0f, 50.0f };
+	XMFLOAT3 Bp2 = { 0.0f, 40.0f, 50.0f };
+	XMFLOAT3 Bp3 = { 0.0f, 20.0f, 50.0f };
+	XMFLOAT3 Bp4 = { 0.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp5 = { 0.0f, 5.0f, 50.0f };
+	XMFLOAT3 Bp6 = { -7.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp7 = { 0.0f, -5.0f, 50.0f };
+	XMFLOAT3 Bp8 = { 7.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp9 = { 0.0f, 5.0f, 50.0f };
+	XMFLOAT3 Bp10 = { -7.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp11 = { 0.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp12 = { 0.0f, 30.0f, 50.0f };
+	XMFLOAT3 Bp13 = { 0.0f, 60.0f, 50.0f };
+	XMFLOAT3 Bp14 = { 0.0f, 60.0f, 50.0f };
+	XMFLOAT3 Bp15 = { 0.0f, 30.0f, 50.0f };
+	XMFLOAT3 Bp16 = { 0.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp17 = { 0.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp18 = { 0.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp19 = { 0.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp20 = { 0.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp21 = { 15.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp22 = { 0.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp23 = { -15.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp24 = { 0.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp25 = { 15.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp26 = { 0.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp27 = { 0.0f, -10.0f, 50.0f };
+	XMFLOAT3 Bp28 = { 0.0f, 30.0f, 50.0f };
+	XMFLOAT3 Bp29 = { 0.0f, 50.0f, 50.0f };
+	XMFLOAT3 Bp30 = { 0.0f, 50.0f, 50.0f };
+	XMFLOAT3 Bp31 = { 0.0f, 50.0f, 50.0f };
+	XMFLOAT3 Bp32 = { 0.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp33 = { 5.0f, 5.0f, 50.0f };
+	XMFLOAT3 Bp34 = { 5.0f, -5.0f, 50.0f };
+	XMFLOAT3 Bp35 = { -5.0f, -5.0f, 50.0f };
+	XMFLOAT3 Bp36 = { -5.0f, 5.0f, 50.0f };
+	XMFLOAT3 Bp37 = { 0.0f, -10.0f, 50.0f };
+	XMFLOAT3 Bp38 = { 0.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp39 = { 10.0f, 0.0f, 50.0f };
+	XMFLOAT3 Bp40 = { 20.0f, 0.0f, 50.0f };
 	XMFLOAT3 Bp41 = { 30.0f, 0.0f, 0.0f };
 	XMFLOAT3 Bp42 = { 30.0f, 0.0f, 0.0f };
 	XMFLOAT3 Bp43 = { 30.0f, 0.0f, 0.0f };
@@ -558,10 +558,10 @@ private: // メンバ変数
 	// カメラのワールド座標
 	XMFLOAT3 cameraWorldPosition;
 	// カメラのローカル座標
-	XMFLOAT3 cameraLocalPosition;
+	//XMFLOAT3 cameraLocalPosition;
 
 	// 切り替え先のカメラ座標
-	XMFLOAT3 nextCamera;
+	XMFLOAT3 nextRotation;
 #pragma endregion
 
 #pragma region プレイヤー関連
@@ -569,6 +569,7 @@ private: // メンバ変数
 	XMFLOAT3 playerLocalPosition;
 	// プレイヤーの角度
 	XMFLOAT3 playerRotation;
+	XMFLOAT3 nextPlayerRotation;
 
 	// ゲーム開始時の演出プレイヤーの座標
 	XMFLOAT3 startPlayerPosition = { 0.0f,0.0f,-30.0f };
@@ -697,12 +698,7 @@ private: // メンバ変数
 		NORMAL,
 		BODYUP,
 		BODYDOWN,
-		BODYRIGHT,
-		BODYLEFT,
-		RUSH,
-		GUARDON,
-		GUARDOFF,
-		FOURWAYRUSH
+		RUSH
 	};
 
 	// ボスのガトリング攻撃フラグ

@@ -258,12 +258,12 @@ void GamePlay::Update()
 	playerLocalPosition = player->GetPosition();
 	//playerLocalPosition = lerp(startPlayerPosition, {0.0f,0.0f,0.0f}, L5nowCount);
 
-	playerRotation = player->GetRotation();
+	playerRotation = Easing::OutQuadFloat3(player->GetRotation(), nextPlayerRotation, L3nowCount);
 
 	// playerTargetPosition = SplineFloat3(playerTargetCheckPoint, startIndex, timeRate);
 
-	//centerPosition = SplineFloat3(playerCheckPoint, startIndex, timeRate);
-
+	centerPosition = objCenter->GetPosition();
+	centerRotation = Easing::OutQuadFloat3(objCenter->GetRotation(), nextRotation, L3nowCount);
 
 	SkydomPosition = objSkydome->GetPosition();
 	SkydomRotation = objSkydome->GetRotation();
@@ -293,11 +293,11 @@ void GamePlay::Update()
 	playerDamageGageSize = Lerp::LerpFloat2(playerDamageGage->GetSize(), playerHpGageSize, L1timeRate);
 	bossDamageGageSize = Lerp::LerpFloat2(bossDamageGage->GetSize(), bossHpGageSize, L2timeRate);
 
-	cameraLocalPosition = Easing::OutQuadFloat3(objCamera->GetPosition(), nextCamera, L3nowCount);
+	//cameraLocalPosition = Easing::OutQuadFloat3(objCamera->GetPosition(), nextRotation, L3nowCount);
 
-	moveCameraPosition_1 = Easing::OutQuadFloat3({ 5.0f, 0.0f,-1.0f }, { 4.0f, 3.0f,2.0f }, L5nowCount);
-	moveCameraPosition_2 = Easing::OutQuadFloat3({ 2.0f, -1.0f,-5.0f }, { -4.0f, 3.0f,-2.0f }, L5nowCount);
-	moveCameraPosition_3 = Easing::OutQuadFloat3({ 0.0f, 2.0f,-10.0f }, { 0.0f,0.0f,-20.0f }, L5nowCount);
+	moveCameraPosition_1 = Easing::OutQuadFloat3({ 3.0f, 0.0f, centerPosition.z + 9.0f }, { 2.0f, 1.0f, centerPosition.z + 12.0f }, L5nowCount);
+	moveCameraPosition_2 = Easing::OutQuadFloat3({ 1.0f, -1.0f, centerPosition.z + 5.0f }, { -2.0f, 1.0f, centerPosition.z + 8.0f }, L5nowCount);
+	moveCameraPosition_3 = Easing::OutQuadFloat3({ 0.0f, 1.0f, centerPosition.z + 5.0f }, { 0.0f, 0.0f, centerPosition.z }, L5nowCount);
 
 	gameParts1Color = gameParts_1->GetColor();
 	gameParts2Color = gameParts_2->GetColor();
@@ -609,28 +609,6 @@ void GamePlay::Update()
 			bossBody->shotTimer = bossBody->RushInterval;
 		}
 		break;
-
-	case BOSSPATTERN::BODYRIGHT:
-
-		if (bossRotation.y <= bossRotateVel)
-		{
-			bossRotation.y += 1.0f;
-		}
-
-		break;
-
-	case BOSSPATTERN::BODYLEFT:
-
-		if (bossRotation.y >= -bossRotateVel)
-		{
-			bossRotation.y -= 1.0f;
-		}
-
-		break;
-
-	case BOSSPATTERN::FOURWAYRUSH:
-
-		break;
 	}
 #pragma endregion
 
@@ -643,16 +621,6 @@ void GamePlay::Update()
 	{
 		bossPattern = STAY;
 	}
-	else if (startIndex == 13)
-	{
-		bossRotateVel = 90.0f;
-		bossPattern = BODYLEFT;
-	}
-	else if (startIndex == 14)
-	{
-		bossRotateVel = 180.0f;
-		bossPattern = BODYLEFT;
-	}
 	else if (startIndex == 16)
 	{
 		bossPattern = BODYUP;
@@ -660,16 +628,6 @@ void GamePlay::Update()
 	else if (startIndex == 20)
 	{
 		bossPattern = BODYDOWN;
-	}
-	else if (startIndex == 30)
-	{
-		bossRotateVel = 270.0f;
-		bossPattern = BODYLEFT;
-	}
-	else if (startIndex == 31)
-	{
-		bossRotateVel = 360.0f;
-		bossPattern = BODYLEFT;
 	}
 	else if (startIndex == 32)
 	{
@@ -1005,20 +963,20 @@ void GamePlay::Update()
 
 	for (std::unique_ptr<TargetBullet>& bullet : bossTargetBullets)
 	{
-		CreateBulletParticles(bullet->GetPosition(), { 1.0f,0.1f, 0.1f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } , 0.7f);
+		CreateBulletParticles(bullet->GetPosition(), { 1.0f,0.1f, 0.1f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, 0.7f);
 	}
 
 	for (std::unique_ptr<StageObject>& box : stageObjects)
 	{
-		CreateStageBoxParticles (box->GetPosition(), { 0.1f,1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f, 1.0f, 1.0f }, 10.0f);
+		CreateStageBoxParticles(box->GetPosition(), { 0.1f,1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f, 1.0f, 1.0f }, 10.0f);
 	}
-		
-	
+
+
 
 #pragma region 座標のセット
 	// カメラ座標のセット
 	CameraSwitching();
-	
+
 
 	// プレイヤー座標のセット
 	player->SetPosition(playerLocalPosition);
@@ -1028,7 +986,7 @@ void GamePlay::Update()
 	// レール中心オブジェクト座標のセット
 	objCenter->SetPosition(centerPosition);
 	// objCenter->SetRotation({ centerRotation.x, -testDegrees + 90.0f, centerRotation.z });
-	objCenter->SetRotation({ centerRotation.x, centerRotation.y, centerRotation.z });
+	objCenter->SetRotation(centerRotation);
 
 	// 背景天球座標のセット
 	objSkydome->SetPosition(centerPosition);
@@ -1410,7 +1368,7 @@ void GamePlay::Draw()
 	// デバッグテキストの描画
 	//debugText.DrawAll(cmdList);
 
-	//player->DebugTextDraw();
+	player->DebugTextDraw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -1420,7 +1378,7 @@ void GamePlay::Draw()
 void GamePlay::GameInitialize()
 {
 	// 座標のセット
-	player->SetPosition({ 0.0f,0.0f,0.0f });
+	player->SetPosition({ 0.0f,0.0f,20.0f });
 	player->SetRotation({ 0.0f, 90.0f, 0.0f });
 	player->SetScale({ 1.0f, 1.0f, 1.0f });
 
@@ -1434,7 +1392,7 @@ void GamePlay::GameInitialize()
 	objSkydome->SetRotation({ 0.0f,0.0f,0.0f, });
 	objSkydome->SetScale({ 5.0f, 5.0f, 5.0f });
 
-	objCamera->SetPosition({ 0.0f,0.0f,-20.0f });
+	objCamera->SetPosition({ 0.0f,0.0f,20.0f });
 
 	objCenter->SetPosition({ 0.0f,0.0f,0.0f });
 	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
@@ -1884,55 +1842,51 @@ void GamePlay::CameraSwitching()
 	case CAMERAMODE::FIGHT:
 		if (moveCameraNumber == 0)
 		{
-			objCamera->SetPosition(moveCameraPosition_1);
+			camera->SetEye(moveCameraPosition_1);
 		}
 		if (moveCameraNumber == 1)
 		{
-			objCamera->SetPosition(moveCameraPosition_2);
+			camera->SetEye(moveCameraPosition_2);
 		}
 		if (moveCameraNumber == 2)
 		{
-			objCamera->SetPosition(moveCameraPosition_3);
+			camera->SetEye(moveCameraPosition_3);
 		}
 		if (moveCameraNumber >= 3)
 		{
-			objCamera->SetPosition(cameraLocalPosition);
+			camera->SetEye(centerPosition);
 		}
 		break;
 	}
 
-	camera->SetEye(cameraWorldPosition);
+	//camera->SetEye(centerPosition);
 
 	// 前方向
 	if (cameraMode == 0)
 	{
-		playerLocalPosition.z = 0;
-
-		nextCamera = { 0.0f,0.0f,-20.0f };
+		nextRotation = { 0.0f,0.0f,0.0f };
+		nextPlayerRotation = { playerRotation.x, 90.0f, playerRotation.z };
 	}
 
 	// 右方向
 	if (cameraMode == 1)
 	{
-		playerLocalPosition.x = 0;
-
-		nextCamera = { -20.0f,0.0f,0.0f };
+		nextRotation = { 0.0f,90.0f,0.0f };
+		nextPlayerRotation = { playerRotation.x, 0.0f, playerRotation.z };
 	}
 
 	// 後方向
 	if (cameraMode == 2)
 	{
-		playerLocalPosition.z = 0;
-
-		nextCamera = { 0.0f,0.0f,20.0f };
+		nextRotation = { 0.0f,180.0f,0.0f };
+		nextPlayerRotation = { playerRotation.x, -90.0f, playerRotation.z };
 	}
 
 	// 左方向
 	if (cameraMode == 3)
 	{
-		playerLocalPosition.x = 0;
-
-		nextCamera = { 20.0f,0.0f,0.0f };
+		nextRotation = { 0.0f,-90.0f,0.0f };
+		nextPlayerRotation = { playerRotation.x, 180.0f, playerRotation.z };
 	}
 
 	if (startIndex == 3)
@@ -1985,9 +1939,9 @@ void GamePlay::CameraSwitching()
 
 	}
 
-	camera->SetTarget(centerPosition);
+	camera->SetTarget(cameraWorldPosition);
 
-	/*if (Input::GetInstance()->TriggerKey(DIK_RIGHT))
+	if (Input::GetInstance()->TriggerKey(DIK_RIGHT))
 	{
 		cameraMode = 3;
 		rightFlashingFlag = true;
@@ -2009,7 +1963,7 @@ void GamePlay::CameraSwitching()
 		leftFlashingFlag = true;
 		L3nowCount = 0.0f;
 		L3addCount = 0.001f;
-	}*/
+	}
 }
 
 void GamePlay::Attack()
@@ -2632,72 +2586,35 @@ void GamePlay::scoreUIUpdate()
 // プレイヤーとUIが重なった際のアルファ値計算
 void GamePlay::changeGameUIAlpha()
 {
-	if (cameraMode == 0)
+	if (playerLocalPosition.x < -3.2f && playerLocalPosition.y > 6.0f)
 	{
-		if (playerLocalPosition.x < -3.2f && playerLocalPosition.y > 6.0f)
-		{
-			scoreUIAlphaVel = -0.06f;
-		}
-		else
-		{
-			scoreUIAlphaVel = 0.06f;
-		}
-
-		if (playerLocalPosition.x > 3.6f && playerLocalPosition.y < -8.8f)
-		{
-			playerHpUIAlphaVel = -0.06f;
-			playerDamageUIAlphaVel = -0.08f;
-		}
-		else
-		{
-			playerHpUIAlphaVel = 0.06f;
-			playerDamageUIAlphaVel = 0.08f;
-		}
-
-		if (playerLocalPosition.x > 0.4f && playerLocalPosition.y > 8.8f)
-		{
-			bossHpUIAlphaVel = -0.06f;
-			bossDamageUIAlphaVel = -0.08f;
-		}
-		else
-		{
-			bossHpUIAlphaVel = 0.06f;
-			bossDamageUIAlphaVel = 0.08f;
-		}
+		scoreUIAlphaVel = -0.06f;
+	}
+	else
+	{
+		scoreUIAlphaVel = 0.06f;
 	}
 
-	if (cameraMode == 2)
+	if (playerLocalPosition.x > 3.6f && playerLocalPosition.y < -8.8f)
 	{
-		if (playerLocalPosition.x > 3.2f && playerLocalPosition.y > 6.0f)
-		{
-			scoreUIAlphaVel = -0.06f;
-		}
-		else
-		{
-			scoreUIAlphaVel = 0.06f;
-		}
+		playerHpUIAlphaVel = -0.06f;
+		playerDamageUIAlphaVel = -0.08f;
+	}
+	else
+	{
+		playerHpUIAlphaVel = 0.06f;
+		playerDamageUIAlphaVel = 0.08f;
+	}
 
-		if (playerLocalPosition.x < -3.6f && playerLocalPosition.y < -8.8f)
-		{
-			playerHpUIAlphaVel = -0.06f;
-			playerDamageUIAlphaVel = -0.08f;
-		}
-		else
-		{
-			playerHpUIAlphaVel = 0.06f;
-			playerDamageUIAlphaVel = 0.08f;
-		}
-
-		if (playerLocalPosition.x < -0.4f && playerLocalPosition.y > 8.8f)
-		{
-			bossHpUIAlphaVel = -0.06f;
-			bossDamageUIAlphaVel = -0.08f;
-		}
-		else
-		{
-			bossHpUIAlphaVel = 0.06f;
-			bossDamageUIAlphaVel = 0.08f;
-		}
+	if (playerLocalPosition.x > 0.4f && playerLocalPosition.y > 8.8f)
+	{
+		bossHpUIAlphaVel = -0.06f;
+		bossDamageUIAlphaVel = -0.08f;
+	}
+	else
+	{
+		bossHpUIAlphaVel = 0.06f;
+		bossDamageUIAlphaVel = 0.08f;
 	}
 
 	// スコアUIのAlpha値計算

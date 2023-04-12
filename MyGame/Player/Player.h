@@ -31,18 +31,10 @@ public: // ƒƒ“ƒoŠÖ”
 
 	void DebugTextDraw();
 
-	void FrontMove();
-
-	void RightMove();
-
-	void BackMove();
-
-	void LeftMove();
+	void Move();
 
 	// ˆÚ“®§ŒÀ
-	void MoveLimitXY();
-
-	void MoveLimitZY();
+	void MoveLimit();
 
 	void FrontRolling();
 
