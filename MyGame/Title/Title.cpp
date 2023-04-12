@@ -333,7 +333,6 @@ void Title::Draw()
 	objSkydome->Draw();
 	objTitlePlayer->Draw();
 
-
 	// パーティクルの描画
 	playerJetParticle->Draw(cmdList);
 
@@ -369,7 +368,7 @@ void Title::LoadTextureFunction()
 		return;
 	}
 
-	if (!Sprite::LoadTexture(TextureNumber::title_parts_1, L"Resources/Sprite/TitleUI/title_parts_1.png")) {
+	if (!Sprite::LoadTexture(TextureNumber::title_parts_1, L"Resources/Sprite/TitleUI/title_parts_2.png")) {
 		assert(0);
 		return;
 	}

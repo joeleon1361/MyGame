@@ -795,9 +795,6 @@ void Result::Draw()
 
 	// 3Dオブクジェクトの描画
 
-	// パーティクルの描画
-	//bossHitParticle->Draw(cmdList);
-
 	// 3Dオブジェクト描画後処理
 	ObjObject::PostDraw();
 #pragma endregion

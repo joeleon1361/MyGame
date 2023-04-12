@@ -232,8 +232,6 @@ void GamePlay::Update()
 	// 音量の計算
 	VolumeCalc();
 
-	// ルートを完走したら遷移
-
 
 	// ボスが撃破されたら遷移
 	if (bossFlag == false)
@@ -1020,7 +1018,7 @@ void GamePlay::Update()
 #pragma region 座標のセット
 	// カメラ座標のセット
 	CameraSwitching();
-	camera->SetTarget(centerPosition);
+	
 
 	// プレイヤー座標のセット
 	player->SetPosition(playerLocalPosition);
@@ -1325,8 +1323,6 @@ void GamePlay::Draw()
 	scoreChar->Draw();
 	scoreRateChar->Draw();
 
-	//GameFG->Draw();
-
 	if (backFlashingFlag == true)
 	{
 		gameParts_1->Draw();
@@ -1469,7 +1465,6 @@ void GamePlay::GameInitialize()
 
 	// シーン遷移時の画面暗転
 	LoadingBG->SetColor({ 1, 1, 1, 1.0f });
-	//loadingColor.w = 1.0f;
 
 	// プレイヤーのHPゲージ
 	playerHpGage->SetColor({ 0.1f, 0.6f, 0.1f, 1.0f });
@@ -1989,6 +1984,8 @@ void GamePlay::CameraSwitching()
 		L3addCount = 0.001f;
 
 	}
+
+	camera->SetTarget(centerPosition);
 
 	/*if (Input::GetInstance()->TriggerKey(DIK_RIGHT))
 	{
@@ -2927,7 +2924,7 @@ bool GamePlay::OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, fl
 
 void GamePlay::CreateBoxParticle()
 {
-	XMFLOAT3 randPos;
+	XMFLOAT3 randPos = {};
 
 	randPos.x = ((float)rand() / RAND_MAX * 128.0f - 128.0f / 2.0f);
 	randPos.y = ((float)rand() / RAND_MAX * 72.0f - 72.0f / 2.0f);

@@ -130,34 +130,34 @@ private: // メンバ変数
 	Sprite* resultParts_10 = nullptr;
 
 	// バナー1のサイズ
-	XMFLOAT2 resultBN_1Size;
+	XMFLOAT2 resultBN_1Size = {};
 	// バナー2のサイズ
-	XMFLOAT2 resultBN_2Size;
+	XMFLOAT2 resultBN_2Size = {};
 	// バナー3のサイズ
-	XMFLOAT2 resultBN_3Size;
+	XMFLOAT2 resultBN_3Size = {};
 
 
-	XMFLOAT2 resultParts_1Size;
-	XMFLOAT2 resultParts_2Size;
-	XMFLOAT2 resultParts_3Size;
+	XMFLOAT2 resultParts_1Size = {};
+	XMFLOAT2 resultParts_2Size = {};
+	XMFLOAT2 resultParts_3Size = {};
 
 	// Sランクマークのサイズ
-	XMFLOAT2 rankSSize;
+	XMFLOAT2 rankSSize = {};
 	// Aランクマークのサイズ
-	XMFLOAT2 rankASize;
+	XMFLOAT2 rankASize = {};
 	// Bランクマークのサイズ
-	XMFLOAT2 rankBSize;
+	XMFLOAT2 rankBSize = {};
 	// Cランクマークのサイズ
-	XMFLOAT2 rankCSize;
+	XMFLOAT2 rankCSize = {};
 
-	XMFLOAT2 resultGTXT_15Size;
+	XMFLOAT2 resultGTXT_15Size = {};
 
 	// ミッション達成スター1のサイズ
-	XMFLOAT2 missionStar1Size;
+	XMFLOAT2 missionStar1Size = {};
 	// ミッション達成スター2のサイズ
-	XMFLOAT2 missionStar2Size;
+	XMFLOAT2 missionStar2Size = {};
 	// ミッション達成スター3のサイズ
-	XMFLOAT2 missionStar3Size;
+	XMFLOAT2 missionStar3Size = {};
 
 	// スコアテキストの表示座標
 	XMFLOAT2 scorePosition = { 855.0f, 275.0f };
@@ -171,8 +171,8 @@ private: // メンバ変数
 	XMFLOAT2 resultRankPosition = { 850.0f,480.0f };
 
 	// リザルトテキストの色
-	XMFLOAT4 resultColor;
-	XMFLOAT4 resultPartsColor;
+	XMFLOAT4 resultColor = {};
+	XMFLOAT4 resultPartsColor = {};
 	// スコアテキストの色
 	XMFLOAT4 scoreColor = { 0.760f, 0.929f, 1.0f, 0.0f };
 	// ノーダメージテキストの色
@@ -195,25 +195,25 @@ private: // メンバ変数
 
 
 	// ミッション1テキストの色
-	XMFLOAT4 mission1Color;
+	XMFLOAT4 mission1Color = {};
 	// ミッション2テキストの色
-	XMFLOAT4 mission2Color;
+	XMFLOAT4 mission2Color = {};
 	// ミッション3テキストの色
-	XMFLOAT4 mission3Color;
+	XMFLOAT4 mission3Color = {};
 
 	// ミッション未達成スター1の色
-	XMFLOAT4 missionStar1Color;
+	XMFLOAT4 missionStar1Color = {};
 	// ミッション未達成スター2の色
-	XMFLOAT4 missionStar2Color;
+	XMFLOAT4 missionStar2Color = {};
 	// ミッション未達成スター3の色
-	XMFLOAT4 missionStar3Color;
+	XMFLOAT4 missionStar3Color = {};
 
 	// ミッション達成スター1の色
-	XMFLOAT4 missionStar4Color;
+	XMFLOAT4 missionStar4Color = {};
 	// ミッション達成スター2の色
-	XMFLOAT4 missionStar5Color;
+	XMFLOAT4 missionStar5Color = {};
 	// ミッション達成スター3の色
-	XMFLOAT4 missionStar6Color;
+	XMFLOAT4 missionStar6Color = {};
 
 	float resultMoveVelX_1 = 0.0f;
 	float resultMoveAccX_1 = 0.0f;
