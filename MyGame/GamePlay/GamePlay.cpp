@@ -93,6 +93,11 @@ void GamePlay::Initialize()
 	gameGTXT_number3 = Sprite::Create(TextureNumber::game_gtxt_number3, { 0.0f,0.0f });
 	gameGTXT_GO = Sprite::Create(TextureNumber::game_gtxt_GO, { 0.0f,0.0f });
 
+	// チャージ
+	chargeGageBase = Sprite::Create(TextureNumber::game_player_frame_1, { playerHpUIPosition.x + 10.0f, playerHpUIPosition.y });
+	chargeGage = Sprite::Create(TextureNumber::game_player_gauge, playerHpUIPosition);
+	chargeGageCover = Sprite::Create(TextureNumber::game_player_frame_2, { playerHpUIPosition.x + 10.0f, playerHpUIPosition.y });
+
 	// プレイヤー
 	playerHpUI = Sprite::Create(TextureNumber::game_player_frame_1, { playerHpUIPosition.x + 10.0f, playerHpUIPosition.y });
 	playerHpGage = Sprite::Create(TextureNumber::game_player_gauge, playerHpUIPosition);
@@ -157,6 +162,9 @@ void GamePlay::Initialize()
 	bossLeg3 = Boss::Create();
 	bossLeg4 = Boss::Create();
 
+	objMars = Planet::Create();
+	objJupiter = Planet::Create();
+
 	modelSkydome = ObjModel::CreateFromOBJ("skydome");
 	modelGround = ObjModel::CreateFromOBJ("ground");
 	modelPlayer = ObjModel::CreateFromOBJ("player2");
@@ -165,6 +173,10 @@ void GamePlay::Initialize()
 	modelBossCore = ObjModel::CreateFromOBJ("bossCore");
 	modelBossUpperBody = ObjModel::CreateFromOBJ("bossUpperBody");
 	modelBossLowerBody = ObjModel::CreateFromOBJ("bossLowerBody");
+	modelSmallRock = ObjModel::CreateFromOBJ("smallRock");
+	modelLargeRock = ObjModel::CreateFromOBJ("largeRock");
+	modelMars = ObjModel::CreateFromOBJ("mars");
+	modelJupiter = ObjModel::CreateFromOBJ("jupiter");
 
 	objSkydome->SetModel(modelSkydome);
 	objGround->SetModel(modelGround);
@@ -183,6 +195,9 @@ void GamePlay::Initialize()
 	bossLeg3->SetModel(modelBossLeg);
 	bossLeg4->SetModel(modelBossLeg);
 
+	objMars->SetModel(modelMars);
+	objJupiter->SetModel(modelJupiter);
+
 	// 親子関係を結ぶ
 	player->SetParent(objCenter);
 	objPlayerContrailRight->SetParent(player);
@@ -198,6 +213,8 @@ void GamePlay::Initialize()
 	bossLeg2->SetParent(bossLowerBody);
 	bossLeg3->SetParent(bossLowerBody);
 	bossLeg4->SetParent(bossLowerBody);
+
+	
 
 	// FBXモデルのロード
 	testmodel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
@@ -391,16 +408,32 @@ void GamePlay::Update()
 
 	alertUIUpdate();
 
-	CreateBoxParticle();
+	CreateLargeRockLeft();
+	CreateLargeRockRight();
+	CreateSmallRockLeft();
+	CreateSmallRockRight();
 
 	// 雲を更新
-	for (std::unique_ptr<StageObject>& box : stageObjects)
+	for (std::unique_ptr<SmallRock>& box : smallRocks)
 	{
 		box->Update();
 	}
 
 	// 雲を消去
-	stageObjects.remove_if([](std::unique_ptr<StageObject>& cloud)
+	smallRocks.remove_if([](std::unique_ptr<SmallRock>& cloud)
+		{
+			return cloud->GetDeathFlag();
+		}
+	);
+
+	// 雲を更新
+	for (std::unique_ptr<LargeRock>& box : largeRocks)
+	{
+		box->Update();
+	}
+
+	// 雲を消去
+	largeRocks.remove_if([](std::unique_ptr<LargeRock>& cloud)
 		{
 			return cloud->GetDeathFlag();
 		}
@@ -966,10 +999,10 @@ void GamePlay::Update()
 		CreateBulletParticles(bullet->GetPosition(), { 1.0f,0.1f, 0.1f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, 0.7f);
 	}
 
-	for (std::unique_ptr<StageObject>& box : stageObjects)
+	/*for (std::unique_ptr<SmallRock>& box : smallRocks)
 	{
 		CreateStageBoxParticles(box->GetPosition(), { 0.1f,1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f, 1.0f, 1.0f }, 10.0f);
-	}
+	}*/
 
 
 
@@ -999,6 +1032,9 @@ void GamePlay::Update()
 	bossLeg2->SetPosition(bossLeg2LocalPosition);
 	bossLeg3->SetPosition(bossLeg3LocalPosition);
 	bossLeg4->SetPosition(bossLeg4LocalPosition);
+
+	objMars->SetPosition({ centerPosition.x + 100.0f, centerPosition.y + 50.0f, centerPosition.z + 200.0f });
+	objJupiter->SetPosition({ centerPosition.x - 100.0f, centerPosition.y + 50.0f, centerPosition.z + 200.0f });
 
 	LoadingBG->SetColor(loadingColor);
 
@@ -1132,6 +1168,9 @@ void GamePlay::Update()
 	// レール中心オブジェクトの更新
 	objCenter->Update();
 
+	objMars->Update();
+	objJupiter->Update();
+
 	// FBXの更新
 	testobject->Update();
 
@@ -1208,9 +1247,13 @@ void GamePlay::Draw()
 		}
 	}
 
-	for (std::unique_ptr<StageObject>& box : stageObjects)
+	for (std::unique_ptr<SmallRock>& box : smallRocks)
 	{
-		//box->Draw();
+		box->Draw();
+	}
+	for (std::unique_ptr<LargeRock>& box : largeRocks)
+	{
+		box->Draw();
 	}
 
 	if (bossFlag == true)
@@ -1240,6 +1283,9 @@ void GamePlay::Draw()
 		}
 	}
 
+	objMars->Draw();
+	objJupiter->Draw();
+
 	// testobject->Draw(cmdList);
 
 	// objCenter->Draw();
@@ -1267,6 +1313,11 @@ void GamePlay::Draw()
 	damageEffect->Draw();
 
 	// 描画
+	// チャージ
+	/*chargeGageBase->Draw();
+	chargeGage->Draw();
+	chargeGageCover->Draw();*/
+
 	playerHpUI->Draw();
 	playerDamageGage->Draw();
 	playerHpGage->Draw();
@@ -1417,12 +1468,21 @@ void GamePlay::GameInitialize()
 	bossLeg3->SetScale({ 0.8f, 0.8f, 0.8f });
 	bossLeg4->SetScale({ 0.8f, 0.8f, 0.8f });
 
+	objMars->SetScale({20.0f, 20.0f, 20.0f});
+	objJupiter->SetScale({ 10.0f, 10.0f, 10.0f });
+
 	camera->SetTarget({ 0.0f, 0.0f, 0.0f });
 	camera->SetEye({ 0.0f, 0.0f, 10.0f });
 	camera->SetUp({ 0.0f, 1.0f, 0.0f });
 
 	// シーン遷移時の画面暗転
 	LoadingBG->SetColor({ 1, 1, 1, 1.0f });
+
+
+
+	chargeGageCover->SetAnchorPoint({ 1.0f, 0.5f });
+
+	chargeGageBase->SetAnchorPoint({ 1.0f, 0.5f });
 
 	// プレイヤーのHPゲージ
 	playerHpGage->SetColor({ 0.1f, 0.6f, 0.1f, 1.0f });
@@ -2839,26 +2899,94 @@ bool GamePlay::OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, fl
 	}
 }
 
-void GamePlay::CreateBoxParticle()
+void GamePlay::CreateLargeRockLeft()
 {
-	XMFLOAT3 randPos = {};
-
-	randPos.x = ((float)rand() / RAND_MAX * 128.0f - 128.0f / 2.0f);
-	randPos.y = ((float)rand() / RAND_MAX * 72.0f - 72.0f / 2.0f);
-	randPos.z = centerPosition.z + 300.0f;
+	XMFLOAT3 randLPos = {};
+	randLPos.x = -50.0f;
+	randLPos.y = ((float)rand() / RAND_MAX * 100.0f - 100.0f / 2.0f);
+	randLPos.z = centerPosition.z + 500.0f;
 
 	//タイマーを更新
-	const float stageBoxTime = 30;
-	stageBoxTimer++;
-	const float stageBoxTimeRate = stageBoxTimer / stageBoxTime;
+	const float stageBoxTime = 150;
+	creatLargeRockLeftTimer++;
+	const float stageBoxTimeRate = creatLargeRockLeftTimer / stageBoxTime;
 
-	if (stageBoxTimer >= stageBoxTime)
+	if (creatLargeRockLeftTimer >= stageBoxTime)
 	{
-		std::unique_ptr<StageObject> newBox = std::make_unique<StageObject>();
-		newBox = StageObject::Create(modelBullet, randPos, { 1.0f,1.0f,1.0f }, 1.5f);
+		std::unique_ptr<LargeRock> newBox = std::make_unique<LargeRock>();
+		newBox = LargeRock::Create(modelLargeRock, randLPos, { 3.0f,3.0f,3.0f }, 0.5f);
+		largeRocks.push_back(std::move(newBox));
 
-		stageObjects.push_back(std::move(newBox));
+		creatLargeRockLeftTimer = 0;
+	}
+}
 
-		stageBoxTimer = 0;
+void GamePlay::CreateLargeRockRight()
+{
+	XMFLOAT3 randRPos = {};
+	randRPos.x = 50.0f;
+	randRPos.y = ((float)rand() / RAND_MAX * 100.0f - 100.0f / 2.0f);
+	randRPos.z = centerPosition.z + 500.0f;
+
+	//タイマーを更新
+	const float stageBoxTime = 150;
+	creatLargeRockRightTimer++;
+	const float stageBoxTimeRate = creatLargeRockRightTimer / stageBoxTime;
+
+	if (creatLargeRockRightTimer >= stageBoxTime)
+	{
+		std::unique_ptr<LargeRock> newBox = std::make_unique<LargeRock>();
+		newBox = LargeRock::Create(modelLargeRock, randRPos, { 3.0f,3.0f,3.0f }, 0.5f);
+		largeRocks.push_back(std::move(newBox));
+
+		creatLargeRockRightTimer = 0;
+	}
+}
+
+void GamePlay::CreateSmallRockLeft()
+{
+	XMFLOAT3 randLPos = {};
+	randLPos.x = -40.0f;
+	randLPos.y = ((float)rand() / RAND_MAX * 72.0f - 72.0f / 2.0f);
+	randLPos.z = centerPosition.z + 500.0f;
+
+	float randSpeed = (1.0f + (float)rand() / RAND_MAX * 3.0f);
+
+	//タイマーを更新
+	const float stageBoxTime = 50;
+	creatSmallRockLeftTimer++;
+	const float stageBoxTimeRate = creatSmallRockLeftTimer / stageBoxTime;
+
+	if (creatSmallRockLeftTimer >= stageBoxTime)
+	{
+		std::unique_ptr<SmallRock> newBox = std::make_unique<SmallRock>();
+		newBox = SmallRock::Create(modelSmallRock, randLPos, { 3.0f,3.0f,3.0f }, randSpeed);
+		smallRocks.push_back(std::move(newBox));
+
+		creatSmallRockLeftTimer = 0;
+	}
+}
+
+void GamePlay::CreateSmallRockRight()
+{
+	XMFLOAT3 randRPos = {};
+	randRPos.x = 40.0f;
+	randRPos.y = ((float)rand() / RAND_MAX * 72.0f - 72.0f / 2.0f);
+	randRPos.z = centerPosition.z + 500.0f;
+
+	float randSpeed = (1.0f + (float)rand() / RAND_MAX * 3.0f);
+
+	//タイマーを更新
+	const float stageBoxTime = 50;
+	creatSmallRockRightTimer++;
+	const float stageBoxTimeRate = creatSmallRockRightTimer / stageBoxTime;
+
+	if (creatSmallRockRightTimer >= stageBoxTime)
+	{
+		std::unique_ptr<SmallRock> newBox = std::make_unique<SmallRock>();
+		newBox = SmallRock::Create(modelSmallRock, randRPos, { 3.0f,3.0f,3.0f }, randSpeed);
+		smallRocks.push_back(std::move(newBox));
+
+		creatSmallRockRightTimer = 0;
 	}
 }

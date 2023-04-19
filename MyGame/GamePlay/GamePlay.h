@@ -25,7 +25,10 @@
 #include "Bullet.h"
 #include "Boss.h"
 #include "TargetBullet.h"
-#include "StageObject.h"
+
+#include "SmallRock.h"
+#include "LargeRock.h"
+#include "Planet.h"
 
 #include "Spline.h"
 #include "Lerp.h"
@@ -51,7 +54,8 @@ class PlayerSpecialBullet;
 class Boss;
 class BossBullet;
 class TargetBullet;
-class StageObject;
+class SmallRock;
+class Planet;
 
 // ゲームシーン
 class GamePlay : public BaseScene
@@ -233,8 +237,13 @@ public: // メンバ関数
 	// 当たり判定
 	bool OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB);
 
-	// 雲の生成
-	void CreateBoxParticle();
+	void CreateLargeRockLeft();
+
+	void CreateLargeRockRight();
+
+	void CreateSmallRockLeft();
+
+	void CreateSmallRockRight();
 
 private: // メンバ変数
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
@@ -246,6 +255,11 @@ private: // メンバ変数
 	Camera* camera = nullptr;
 
 	Sprite* LoadingBG = nullptr;
+
+	// チャージゲージ
+	Sprite* chargeGageBase = nullptr;
+	Sprite* chargeGage = nullptr;
+	Sprite* chargeGageCover = nullptr;
 
 	// プレイヤーのHPUI
 	Sprite* playerHpUI = nullptr;
@@ -301,6 +315,10 @@ private: // メンバ変数
 	ObjModel* modelBossCore = nullptr;
 	ObjModel* modelBossUpperBody = nullptr;
 	ObjModel* modelBossLowerBody = nullptr;
+	ObjModel* modelSmallRock = nullptr;
+	ObjModel* modelLargeRock = nullptr;
+	ObjModel* modelMars = nullptr;
+	ObjModel* modelJupiter = nullptr;
 
 	FbxModel* testmodel = nullptr;
 
@@ -324,6 +342,9 @@ private: // メンバ変数
 	Boss* bossLeg3 = nullptr;
 	Boss* bossLeg4 = nullptr;
 
+	Planet* objMars = nullptr;
+	Planet* objJupiter = nullptr;
+
 	std::list<std::unique_ptr<TargetBullet>>bossTargetBullets;
 
 	std::list<std::unique_ptr<TargetBullet>>playerTargetBullets;
@@ -334,7 +355,8 @@ private: // メンバ変数
 
 	FbxObject3d* testobject = nullptr;
 
-	std::list<std::unique_ptr<StageObject>>stageObjects;
+	std::list<std::unique_ptr<SmallRock>>smallRocks;
+	std::list<std::unique_ptr<LargeRock>>largeRocks;
 
 #pragma region スプライン曲線関連
 	// スプライン曲線関連
@@ -499,7 +521,11 @@ private: // メンバ変数
 
 	float scoreRateAlpha = 0.0f;
 
-	int32_t stageBoxTimer = 0;
+	int32_t creatLargeRockLeftTimer = 0;
+	int32_t creatLargeRockRightTimer = 0;
+
+	int32_t creatSmallRockLeftTimer = 0;
+	int32_t creatSmallRockRightTimer = 0;
 
 	XMFLOAT2 gameGTXT_1Size = {};
 	XMFLOAT4 gameGTXT_1Color = { 1.0f, 1.0f, 1.0f, 0.0f };

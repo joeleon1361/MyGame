@@ -113,6 +113,9 @@
     <Filter Include="GameBase">
       <UniqueIdentifier>{e95835f3-35b7-4422-8d0f-a728607eb905}</UniqueIdentifier>
     </Filter>
+    <Filter Include="StageObject">
+      <UniqueIdentifier>{75916f21-131c-409e-b76e-e3922bd851a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -175,9 +178,6 @@
     <ClCompile Include="Collider\SphereCollider.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
-    <ClCompile Include="StageObject\StageObject.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Player\Player.cpp">
       <Filter>Player</Filter>
     </ClCompile>
@@ -228,6 +228,15 @@
     </ClCompile>
     <ClCompile Include="GameBase\SceneManager.cpp">
       <Filter>GameBase</Filter>
+    </ClCompile>
+    <ClCompile Include="StageObject\LargeRock.cpp">
+      <Filter>StageObject</Filter>
+    </ClCompile>
+    <ClCompile Include="StageObject\Planet.cpp">
+      <Filter>StageObject</Filter>
+    </ClCompile>
+    <ClCompile Include="StageObject\SmallRock.cpp">
+      <Filter>StageObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -379,9 +388,6 @@
     <ClInclude Include="Math\Easing.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="StageObject\StageObject.h">
-      <Filter>ヘッダ ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Title\Title.h">
       <Filter>Scene</Filter>
     </ClInclude>
@@ -414,6 +420,15 @@
     </ClInclude>
     <ClInclude Include="GameBase\BaseScene.h">
       <Filter>GameBase</Filter>
+    </ClInclude>
+    <ClInclude Include="StageObject\LargeRock.h">
+      <Filter>StageObject</Filter>
+    </ClInclude>
+    <ClInclude Include="StageObject\SmallRock.h">
+      <Filter>StageObject</Filter>
+    </ClInclude>
+    <ClInclude Include="StageObject\Planet.h">
+      <Filter>StageObject</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
