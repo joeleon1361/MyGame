@@ -39,6 +39,9 @@ void LargeRock::Update()
 {
 	ObjObject::Update();
 	position.z -= velocity;
+	rotation.x += 0.5f;
+	rotation.y += 0.5f;
+	rotation.z += 0.5f;
 
 	if (--deathTimer <= 0)
 	{

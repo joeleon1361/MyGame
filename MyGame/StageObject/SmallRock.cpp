@@ -39,6 +39,9 @@ void SmallRock::Update()
 {
 	ObjObject::Update();
 	position.z -= velocity;
+	rotation.x += 0.7f;
+	rotation.y += 0.7f;
+	rotation.z += 0.7f;
 
 	if (--deathTimer <= 0)
 	{

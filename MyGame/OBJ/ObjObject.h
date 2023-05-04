@@ -39,6 +39,7 @@ public: // サブクラス
 	// 定数バッファ用データ構造体B0
 	struct ConstBufferDataB0
 	{
+		XMFLOAT4 color;		//色
 		XMMATRIX mat;	// ３Ｄ変換行列
 	};
 
@@ -103,6 +104,8 @@ public: // メンバ関数
 	// 座標の取得
 	const XMFLOAT3& GetRotation() { return rotation; }
 
+	// 色の取得
+	const XMFLOAT4& GetColor() { return color; }
 
 	// 座標の設定
 	void SetPosition(XMFLOAT3 position) { this->position = position; }
@@ -112,6 +115,9 @@ public: // メンバ関数
 
 	// スケールの設定
 	void SetScale(XMFLOAT3 scale) { this->scale = scale; }
+
+	// 色の設定
+	void SetColor(const XMFLOAT4& color) { this->color = color; }
 
 	// モデルのセット
  	void SetModel(ObjModel* model) { this->model = model; }

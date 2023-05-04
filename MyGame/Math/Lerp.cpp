@@ -23,3 +23,14 @@ XMFLOAT3 Lerp::LerpFloat3(const XMFLOAT3& start, const XMFLOAT3& end, const floa
 	position = XMFLOAT3(A.x + B.x, A.y + B.y, A.z + B.z);
 	return position;
 }
+
+XMFLOAT4 Lerp::LerpFloat4(const XMFLOAT4& start, const XMFLOAT4& end, const float time)
+{
+	XMFLOAT4 A, B;
+	A = XMFLOAT4(start.x * (1.0f - time), start.y * (1.0f - time), start.z * (1.0f - time), start.w * (1.0f - time));
+	B = XMFLOAT4(end.x * time, end.y * time, end.z * time, end.w * time);
+
+	XMFLOAT4 position;
+	position = XMFLOAT4(A.x + B.x, A.y + B.y, A.z + B.z, A.w + B.w);
+	return position;
+}

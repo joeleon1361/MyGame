@@ -1,7 +1,6 @@
 #include "Player.h"
 
 extern int cameraMode;
-extern bool playerUpdateFlag;
 
 using namespace DirectX;
 
@@ -47,8 +46,8 @@ void Player::Update()
 	ObjObject::Update();
 
 	rotation.x = rollRotation.x + dodgeRollRotation.x;
-	position.x += playerSpeed.x + dodgeRollSpeed;
-	position.y += playerSpeed.y;
+	position.x += playerPositiveSpeedX + playerNegativeSpeedX + dodgeRollSpeed;
+	position.y += playerPositiveSpeedY + playerNegativeSpeedY;
 	//InertiaCalc();
 
 	// ƒIƒuƒWƒFƒNƒgˆÚ“®
@@ -109,14 +108,6 @@ void Player::DebugTextUpdate()
 		<< rotation.z << ")"; // z
 	debugText.Print(PlayerRotation.str(), 10, 110, 1.0f);
 
-	std::ostringstream PlayerSpeed;
-	PlayerSpeed << "PlayerSpeed:("
-		<< std::fixed << std::setprecision(2)
-		<< playerSpeed.x << "," // x
-		<< playerSpeed.y << "," // y
-		<< playerSpeed.z << ")"; // z
-	debugText.Print(PlayerSpeed.str(), 10, 130, 1.0f);
-
 	// ƒ{ƒX‚ÌHPŠÖ˜A
 	std::ostringstream DodgeRollSpeed;
 	DodgeRollSpeed << "DodgeRollSpeed:("
@@ -156,83 +147,74 @@ void Player::Move()
 
 	if (playerUpdateFlag == true)
 	{
-		if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
+
+		// ˆÚ“®Œã‚ÌÀ•W‚ðŒvŽZ
+		if (input->PushKey(DIK_UP))
 		{
-			// ˆÚ“®Œã‚ÌÀ•W‚ðŒvŽZ
-			if (input->PushKey(DIK_W))
-			{
-				playerSpeed.y += 0.05f;
-			}
-			if (input->PushKey(DIK_S))
-			{
-				playerSpeed.y -= 0.05f;
-			}
-			if (input->PushKey(DIK_D))
-			{
-				playerSpeed.x += 0.05f;
-			}
-			if (input->PushKey(DIK_A))
-			{
-				playerSpeed.x -= 0.05f;
-			}
+			playerPositiveSpeedY += 0.05f;
+		}
+		if (input->PushKey(DIK_DOWN))
+		{
+			playerNegativeSpeedY -= 0.05f;
+		}
+		if (input->PushKey(DIK_RIGHT))
+		{
+			playerPositiveSpeedX += 0.05f;
+		}
+		if (input->PushKey(DIK_LEFT))
+		{
+			playerNegativeSpeedX -= 0.05f;
 		}
 
 		// XŽ²‚ð§ŒÀ
-		playerSpeed.x = max(playerSpeed.x, -0.4f);
-		playerSpeed.x = min(playerSpeed.x, +0.4f);
+		playerPositiveSpeedX = max(playerPositiveSpeedX, 0.0f);
+		playerPositiveSpeedX = min(playerPositiveSpeedX, 0.4f);
+
+		playerNegativeSpeedX = max(playerNegativeSpeedX, -0.4f);
+		playerNegativeSpeedX = min(playerNegativeSpeedX, 0.0f);
 
 		// YŽ²‚ð§ŒÀ
-		playerSpeed.y = max(playerSpeed.y, -0.4f);
-		playerSpeed.y = min(playerSpeed.y, +0.4f);
+		playerPositiveSpeedY = max(playerPositiveSpeedY, 0.0f);
+		playerPositiveSpeedY = min(playerPositiveSpeedY, 0.4f);
+
+		playerNegativeSpeedY = max(playerNegativeSpeedY, -0.4f);
+		playerNegativeSpeedY = min(playerNegativeSpeedY, 0.0f);
 
 		// ŒX‚«‚ð–ß‚·
-		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && playerSpeed.x != 0.0f)
+		if (input->PushKey(DIK_LEFT) == 0 && playerNegativeSpeedX != 0.0f)
 		{
-			if (playerSpeed.x > 0.0f)
+			playerNegativeSpeedX += 0.02f;
+			if (playerNegativeSpeedX > 0.0f)
 			{
-				playerSpeed.x -= 0.02f;
-			}
-
-			if (playerSpeed.x < 0.0f)
-			{
-				playerSpeed.x += 0.02f;
+				playerNegativeSpeedX = 0.0f;
 			}
 		}
 
-		if (input->PushKey(DIK_W) == 0 && input->PushKey(DIK_S) == 0 && playerSpeed.y != 0.0f)
+		if (input->PushKey(DIK_RIGHT) == 0 && playerPositiveSpeedX != 0.0f)
 		{
-			if (playerSpeed.y > 0.0f)
+			playerPositiveSpeedX -= 0.02f;
+			if (playerPositiveSpeedX < 0.0f)
 			{
-				playerSpeed.y -= 0.02f;
-			}
-
-			if (playerSpeed.y < 0.0f)
-			{
-				playerSpeed.y += 0.02f;
+				playerPositiveSpeedX = 0.0f;
 			}
 		}
-	}
-	else
-	{
-		// ŒX‚«‚ð–ß‚·
-		if (playerSpeed.x > 0.0f && playerSpeed.x != 0.0f)
+
+		if (input->PushKey(DIK_DOWN) == 0 && playerNegativeSpeedY != 0.0f)
 		{
-			playerSpeed.x -= 0.02f;
+			playerNegativeSpeedY += 0.02f;
+			if (playerNegativeSpeedY > 0.0f)
+			{
+				playerNegativeSpeedY = 0.0f;
+			}
 		}
 
-		if (playerSpeed.x < 0.0f && playerSpeed.x != 0.0f)
+		if (input->PushKey(DIK_UP) == 0 && playerPositiveSpeedY != 0.0f)
 		{
-			playerSpeed.x += 0.02f;
-		}
-
-		if (playerSpeed.y > 0.0f && playerSpeed.y != 0.0f)
-		{
-			playerSpeed.y -= 0.02f;
-		}
-
-		if (playerSpeed.y < 0.0f && playerSpeed.y != 0.0f)
-		{
-			playerSpeed.y += 0.02f;
+			playerPositiveSpeedY -= 0.02f;
+			if (playerPositiveSpeedY < 0.0f)
+			{
+				playerPositiveSpeedY = 0.0f;
+			}
 		}
 	}
 }
@@ -257,21 +239,21 @@ void Player::FrontRolling()
 	if (playerUpdateFlag == true)
 	{
 		// ƒ[ƒ‹
-		if (input->PushKey(DIK_A) || input->PushKey(DIK_D))
+		if (input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
 		{
-			if (input->PushKey(DIK_D) && rollRotation.x <= +40.0f)
+			if (input->PushKey(DIK_RIGHT) && rollRotation.x <= +40.0f)
 			{
 				rollRotation.x += 5.0f;
 			}
 
-			if (input->PushKey(DIK_A) && rollRotation.x >= -40.0f)
+			if (input->PushKey(DIK_LEFT) && rollRotation.x >= -40.0f)
 			{
 				rollRotation.x -= 5.0f;
 			}
 		}
 
 		// ŒX‚«‚ð–ß‚·
-		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && rollRotation.x != 0.0f)
+		if (input->PushKey(DIK_LEFT) == 0 && input->PushKey(DIK_RIGHT) == 0 && rollRotation.x != 0.0f)
 		{
 			if (rollRotation.x > 0.0f)
 			{
@@ -309,7 +291,7 @@ void Player::RightRolling()
 	if (playerUpdateFlag == true)
 	{
 		// ŒX‚«‚ð–ß‚·
-		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && rollRotation.x != 0.0f)
+		if (input->PushKey(DIK_LEFT) == 0 && input->PushKey(DIK_RIGHT) == 0 && rollRotation.x != 0.0f)
 		{
 			if (rollRotation.x > 0.0f)
 			{
@@ -344,21 +326,21 @@ void Player::BackRolling()
 	if (playerUpdateFlag == true)
 	{
 		// ƒ[ƒ‹
-		if (input->PushKey(DIK_A) || input->PushKey(DIK_D))
+		if (input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
 		{
-			if (input->PushKey(DIK_D) && rollRotation.x >= -40.0f)
+			if (input->PushKey(DIK_RIGHT) && rollRotation.x >= -40.0f)
 			{
 				rollRotation.x -= 5.0f;
 			}
 
-			if (input->PushKey(DIK_A) && rollRotation.x <= +40.0f)
+			if (input->PushKey(DIK_LEFT) && rollRotation.x <= +40.0f)
 			{
 				rollRotation.x += 5.0f;
 			}
 		}
 
 		// ŒX‚«‚ð–ß‚·
-		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && rollRotation.x != 0.0f)
+		if (input->PushKey(DIK_LEFT) == 0 && input->PushKey(DIK_RIGHT) == 0 && rollRotation.x != 0.0f)
 		{
 			if (rollRotation.x > 0.0f)
 			{
@@ -396,7 +378,7 @@ void Player::LeftRolling()
 	if (playerUpdateFlag == true)
 	{
 		// ŒX‚«‚ð–ß‚·
-		if (input->PushKey(DIK_A) == 0 && input->PushKey(DIK_D) == 0 && rollRotation.x != 0.0f)
+		if (input->PushKey(DIK_LEFT) == 0 && input->PushKey(DIK_RIGHT) == 0 && rollRotation.x != 0.0f)
 		{
 			if (rollRotation.x > 0.0f)
 			{
@@ -424,31 +406,6 @@ void Player::LeftRolling()
 
 }
 
-void Player::InertiaCalc()
-{
-	const float InertiaTime = 40;
-
-	Input* input = Input::GetInstance();
-
-	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_A) || input->PushKey(DIK_D))
-	{
-		InertiaTimer += 2.0f;
-	}
-
-	InertiaTimer--;
-
-	if (InertiaTimer < 0)
-	{
-		InertiaTimer = 0;
-	}
-	if (InertiaTimer >= InertiaTime)
-	{
-		InertiaTimer = InertiaTime;
-	}
-	const float time = InertiaTimer / InertiaTime;
-	playerVelocity = Easing::OutQuadFloat(0.0f, 0.4f, time);
-}
-
 // ‰ñ”ð
 void Player::DodgeRoll()
 {
@@ -469,14 +426,14 @@ void Player::judgeDodgeRoll()
 
 	if (cameraMode == FRONT)
 	{
-		if (input->TriggerKey(DIK_V) && input->PushKey(DIK_D))
+		if (input->TriggerKey(DIK_C) && input->PushKey(DIK_RIGHT))
 		{
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
 			dodgeEndRotation.x = 720.0f;
 			dodgeStartSpeed = 0.4f;
 		}
-		else if (input->TriggerKey(DIK_V) && input->PushKey(DIK_A))
+		else if (input->TriggerKey(DIK_C) && input->PushKey(DIK_LEFT))
 		{
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
@@ -486,14 +443,14 @@ void Player::judgeDodgeRoll()
 	}
 	else if (cameraMode == BACK)
 	{
-		if (input->TriggerKey(DIK_V) && input->PushKey(DIK_A))
+		if (input->TriggerKey(DIK_C) && input->PushKey(DIK_LEFT))
 		{
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
 			dodgeEndRotation.x = 720.0f;
 			dodgeStartSpeed = -0.4f;
 		}
-		else if (input->TriggerKey(DIK_V) && input->PushKey(DIK_D))
+		else if (input->TriggerKey(DIK_C) && input->PushKey(DIK_RIGHT))
 		{
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;

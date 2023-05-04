@@ -19,7 +19,7 @@ public: // 静的メンバ関数
 
 private: // 静的メンバ変数
 // 消えるまでの時間
-	static const int32_t LifeTime = 30;
+	static const int32_t LifeTime = 60;
 
 public: // メンバ関数
 // 初期化

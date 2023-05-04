@@ -1,7 +1,6 @@
 ﻿#include "GamePlay.h"
 
 extern int cameraMode = 0;
-extern bool playerUpdateFlag = false;
 
 extern float gameScore = 0.0f;
 extern float gameScoreMax = 9999999.0f;
@@ -84,7 +83,7 @@ void GamePlay::Initialize()
 
 	// スプライト生成
 	// ゲーム
-	gameParts_1 = Sprite::Create(TextureNumber::game_parts_1, { 640.0f,600.0f });
+	gameParts_1 = Sprite::Create(TextureNumber::game_parts_1, { 640.0f,500.0f });
 	gameParts_2 = Sprite::Create(TextureNumber::game_parts_1, { 1160.0f,360.0f });
 	gameParts_3 = Sprite::Create(TextureNumber::game_parts_1, { 120.0f,360.0f });
 
@@ -93,10 +92,12 @@ void GamePlay::Initialize()
 	gameGTXT_number3 = Sprite::Create(TextureNumber::game_gtxt_number3, { 0.0f,0.0f });
 	gameGTXT_GO = Sprite::Create(TextureNumber::game_gtxt_GO, { 0.0f,0.0f });
 
+	gameGTXT = Sprite::Create(TextureNumber::game_gtxt, { 0.0f,0.0f });
+
 	// チャージ
-	chargeGageBase = Sprite::Create(TextureNumber::game_player_frame_1, { playerHpUIPosition.x + 10.0f, playerHpUIPosition.y });
-	chargeGage = Sprite::Create(TextureNumber::game_player_gauge, playerHpUIPosition);
-	chargeGageCover = Sprite::Create(TextureNumber::game_player_frame_2, { playerHpUIPosition.x + 10.0f, playerHpUIPosition.y });
+	chargeGageBase = Sprite::Create(TextureNumber::game_player_frame_1, { playerHpUIPosition.x + 10.0f, playerHpUIPosition.y - 50.0f });
+	chargeGage = Sprite::Create(TextureNumber::game_player_gauge, { playerHpUIPosition.x, playerHpUIPosition.y - 50.0f });
+	chargeGageCover = Sprite::Create(TextureNumber::game_player_frame_2, { playerHpUIPosition.x, playerHpUIPosition.y - 50.0f });
 
 	// プレイヤー
 	playerHpUI = Sprite::Create(TextureNumber::game_player_frame_1, { playerHpUIPosition.x + 10.0f, playerHpUIPosition.y });
@@ -135,7 +136,7 @@ void GamePlay::Initialize()
 	damageEffect = Sprite::Create(TextureNumber::damage_effect_1, { 0.0f, 0.0 });
 
 	// パーティクルマネージャー
-	bossHitParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect6.png");
+	bossHitParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
 	bossBreakParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
 	playerJetParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
 	playerContrailParticle = ParticleManager::Create(dxCommon->GetDevice(), camera, 1, L"Resources/effect1.png");
@@ -164,6 +165,10 @@ void GamePlay::Initialize()
 
 	objMars = Planet::Create();
 	objJupiter = Planet::Create();
+	objCeres = Planet::Create();
+	objEris = Planet::Create();
+	objMakemake = Planet::Create();
+	objHaumea = Planet::Create();
 
 	modelSkydome = ObjModel::CreateFromOBJ("skydome");
 	modelGround = ObjModel::CreateFromOBJ("ground");
@@ -177,6 +182,10 @@ void GamePlay::Initialize()
 	modelLargeRock = ObjModel::CreateFromOBJ("largeRock");
 	modelMars = ObjModel::CreateFromOBJ("mars");
 	modelJupiter = ObjModel::CreateFromOBJ("jupiter");
+	modelCeres = ObjModel::CreateFromOBJ("ceres");
+	modelEris = ObjModel::CreateFromOBJ("eris");
+	modelMakemake = ObjModel::CreateFromOBJ("makemake");
+	modelHaumea = ObjModel::CreateFromOBJ("haumea");
 
 	objSkydome->SetModel(modelSkydome);
 	objGround->SetModel(modelGround);
@@ -197,6 +206,10 @@ void GamePlay::Initialize()
 
 	objMars->SetModel(modelMars);
 	objJupiter->SetModel(modelJupiter);
+	objCeres->SetModel(modelCeres);
+	objEris->SetModel(modelEris);
+	objMakemake->SetModel(modelMakemake);
+	objHaumea->SetModel(modelHaumea);
 
 	// 親子関係を結ぶ
 	player->SetParent(objCenter);
@@ -214,7 +227,7 @@ void GamePlay::Initialize()
 	bossLeg3->SetParent(bossLowerBody);
 	bossLeg4->SetParent(bossLowerBody);
 
-	
+
 
 	// FBXモデルのロード
 	testmodel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
@@ -301,11 +314,46 @@ void GamePlay::Update()
 	bossLeg3LocalPosition = bossLeg3->GetPosition();
 	bossLeg4LocalPosition = bossLeg4->GetPosition();
 
+	// ボスの部位1
+	bossLeg1ColorTimer += 0.1;
+	if (bossLeg1ColorTimer > 1.0f)
+	{
+		bossLeg1ColorTimer = 1.0f;
+	}
+	bossLeg1Color = Lerp::LerpFloat4({ 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, bossLeg1ColorTimer);
+	
+	// ボスの部位2
+	bossLeg2ColorTimer += 0.1;
+	if (bossLeg2ColorTimer > 1.0f)
+	{
+		bossLeg2ColorTimer = 1.0f;
+	}
+	bossLeg2Color = Lerp::LerpFloat4({ 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, bossLeg2ColorTimer);
+
+	// ボスの部位3
+	bossLeg3ColorTimer += 0.1;
+	if (bossLeg3ColorTimer > 1.0f)
+	{
+		bossLeg3ColorTimer = 1.0f;
+	}
+	bossLeg3Color = Lerp::LerpFloat4({ 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, bossLeg3ColorTimer);
+
+	// ボスの部位4
+	bossLeg4ColorTimer += 0.1;
+	if (bossLeg4ColorTimer > 1.0f)
+	{
+		bossLeg4ColorTimer = 1.0f;
+	}
+	bossLeg4Color = Lerp::LerpFloat4({ 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, bossLeg4ColorTimer);
+
 	loadingColor = LoadingBG->GetColor();
 
 	playerHpGageSize = playerHpGage->GetSize();
 
 	bossHpGageSize = bossHpGage->GetSize();
+
+	chargeGageSize = chargeGage->GetSize();
+
 
 	playerDamageGageSize = Lerp::LerpFloat2(playerDamageGage->GetSize(), playerHpGageSize, L1timeRate);
 	bossDamageGageSize = Lerp::LerpFloat2(bossDamageGage->GetSize(), bossHpGageSize, L2timeRate);
@@ -383,7 +431,7 @@ void GamePlay::Update()
 		SceneManager::GetInstance()->ChangeScene("RESULT");
 	}
 
-	if (Input::GetInstance()->TriggerKey(DIK_C))
+	/*if (Input::GetInstance()->TriggerKey(DIK_C))
 	{
 		bossHp = 0.0f;
 		L2startCount = GetTickCount();
@@ -400,7 +448,7 @@ void GamePlay::Update()
 	{
 		bossLeg3Hp = 0.0f;
 		bossLeg4Hp = 0.0f;
-	}
+	}*/
 
 	playerHpCalc();
 
@@ -723,6 +771,7 @@ void GamePlay::Update()
 			if (OnCollision(bullet->GetPosition(), bossLeg1WorldPosition, 0.6f, 0.8f) == true)
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
+				bossLeg1ColorTimer = 0.0f;
 				bossHp -= 5.0f;
 				L2startCount = GetTickCount();
 				gameScore += 250.0f * scoreRate;
@@ -769,6 +818,7 @@ void GamePlay::Update()
 			if (OnCollision(bullet->GetPosition(), bossLeg2WorldPosition, 0.6f, 0.8f) == true)
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
+				bossLeg2ColorTimer = 0.0f;
 				bossHp -= 5.0f;
 				L2startCount = GetTickCount();
 				gameScore += 250.0f * scoreRate;
@@ -815,6 +865,7 @@ void GamePlay::Update()
 			if (OnCollision(bullet->GetPosition(), bossLeg3WorldPosition, 0.6f, 0.8f) == true)
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
+				bossLeg3ColorTimer = 0.0f;
 				bossHp -= 5.0f;
 				L2startCount = GetTickCount();
 				gameScore += 250.0f * scoreRate;
@@ -862,6 +913,7 @@ void GamePlay::Update()
 			if (OnCollision(bullet->GetPosition(), bossLeg4WorldPosition, 0.6f, 0.8f) == true)
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
+				bossLeg4ColorTimer = 0.0f;
 				bossHp -= 5.0f;
 				L2startCount = GetTickCount();
 				gameScore += 250.0f * scoreRate;
@@ -1004,6 +1056,42 @@ void GamePlay::Update()
 		CreateStageBoxParticles(box->GetPosition(), { 0.1f,1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f, 1.0f, 1.0f }, 10.0f);
 	}*/
 
+	marsPosition.z -= 0.1f;
+	if (marsPosition.z < -500.0f)
+	{
+		marsPosition.z = 500.0f;
+	}
+
+	jupiterPosition.z -= 0.1f;
+	if (jupiterPosition.z < -500.0f)
+	{
+		jupiterPosition.z = 500.0f;
+	}
+
+	ceresPosition.z -= 0.2f;
+	if (ceresPosition.z < -500.0f)
+	{
+		ceresPosition.z = 500.0f;
+	}
+
+	erisPosition.z -= 0.3f;
+	if (erisPosition.z < -500.0f)
+	{
+		erisPosition.z = 500.0f;
+	}
+
+	makemakePosition.z -= 0.2f;
+	if (makemakePosition.z < -500.0f)
+	{
+		makemakePosition.z = 500.0f;
+	}
+
+	haumeaPosition.z -= 0.3f;
+	if (haumeaPosition.z < -500.0f)
+	{
+		haumeaPosition.z = 500.0f;
+	}
+
 
 
 #pragma region 座標のセット
@@ -1029,12 +1117,23 @@ void GamePlay::Update()
 	bossBody->SetRotation(bossRotation);
 
 	bossLeg1->SetPosition(bossLeg1LocalPosition);
-	bossLeg2->SetPosition(bossLeg2LocalPosition);
-	bossLeg3->SetPosition(bossLeg3LocalPosition);
-	bossLeg4->SetPosition(bossLeg4LocalPosition);
+	bossLeg1->SetColor(bossLeg1Color);
 
-	objMars->SetPosition({ centerPosition.x + 100.0f, centerPosition.y + 50.0f, centerPosition.z + 200.0f });
-	objJupiter->SetPosition({ centerPosition.x - 100.0f, centerPosition.y + 50.0f, centerPosition.z + 200.0f });
+	bossLeg2->SetPosition(bossLeg2LocalPosition);
+	bossLeg2->SetColor(bossLeg2Color);
+
+	bossLeg3->SetPosition(bossLeg3LocalPosition);
+	bossLeg3->SetColor(bossLeg3Color);
+
+	bossLeg4->SetPosition(bossLeg4LocalPosition);
+	bossLeg4->SetColor(bossLeg4Color);
+
+	objMars->SetPosition({ centerPosition.x + marsPosition.x, centerPosition.y + marsPosition.y, centerPosition.z + marsPosition.z });
+	objJupiter->SetPosition({ centerPosition.x + jupiterPosition.x, centerPosition.y + jupiterPosition.y, centerPosition.z + jupiterPosition.z });
+	objCeres->SetPosition({ centerPosition.x + ceresPosition.x, centerPosition.y + ceresPosition.y, centerPosition.z + ceresPosition.z });
+	objEris->SetPosition({ centerPosition.x + erisPosition.x, centerPosition.y + erisPosition.y, centerPosition.z + erisPosition.z });
+	objMakemake->SetPosition({ centerPosition.x + makemakePosition.x, centerPosition.y + makemakePosition.y, centerPosition.z + makemakePosition.z });
+	objHaumea->SetPosition({ centerPosition.x + haumeaPosition.x, centerPosition.y + haumeaPosition.y, centerPosition.z + haumeaPosition.z });
 
 	LoadingBG->SetColor(loadingColor);
 
@@ -1069,6 +1168,17 @@ void GamePlay::Update()
 	scoreNull_6->SetPosition({ 275.0f, scoreUIPosition.y - 33.0f });
 	scoreNull_6->SetColor({ 1.0f, 1.0f, 1.0f, scoreUIAlpha });
 
+	// チャージ
+	chargeGageBase->SetPosition({ playerHpUIPosition.x + 10.0f, playerHpUIPosition.y - 50.0f });
+	chargeGageBase->SetColor({ 1.0f, 1.0f, 1.0f, playerHpUIAlpha });
+
+	chargeGage->SetPosition({ playerHpUIPosition.x, playerHpUIPosition.y - 50.0f });
+	chargeGage->SetColor({ 1.0f, 0.6f, 0.1f, playerHpUIAlpha });
+	chargeGage->SetSize(chargeGageSize);
+
+	chargeGageCover->SetPosition({ playerHpUIPosition.x + 10.0f, playerHpUIPosition.y - 50.0f });
+	chargeGageCover->SetColor({ 1.0f, 1.0f, 1.0f, playerHpUIAlpha });
+
 	// プレイヤーのHPゲージ
 	playerHpGage->SetPosition(playerHpUIPosition);
 	playerHpGage->SetColor({ 0.1f, 0.6f, 0.1f, playerHpUIAlpha });
@@ -1083,6 +1193,8 @@ void GamePlay::Update()
 
 	playerHpUICover->SetPosition({ playerHpUIPosition.x + 10.0f, playerHpUIPosition.y });
 	playerHpUICover->SetColor({ 1.0f, 1.0f, 1.0f, playerHpUIAlpha });
+
+	gameGTXT->SetPosition({ playerHpUIPosition.x - 1230.0f, playerHpUIPosition.y - 20.0f });
 
 	// ボスのHPゲージ
 	bossHpGage->SetPosition(bossHpUIPosition);
@@ -1170,6 +1282,10 @@ void GamePlay::Update()
 
 	objMars->Update();
 	objJupiter->Update();
+	objCeres->Update();
+	objEris->Update();
+	objMakemake->Update();
+	objHaumea->Update();
 
 	// FBXの更新
 	testobject->Update();
@@ -1234,7 +1350,7 @@ void GamePlay::Draw()
 	/*objPlayerContrailRight->Draw();
 	objPlayerContrailLeft->Draw();*/
 
-	if (playerUpdateFlag == true)
+	if (player->playerUpdateFlag == true)
 	{
 		for (std::unique_ptr<Bullet>& bullet : playerBullets)
 		{
@@ -1285,6 +1401,10 @@ void GamePlay::Draw()
 
 	objMars->Draw();
 	objJupiter->Draw();
+	objCeres->Draw();
+	objEris->Draw();
+	objMakemake->Draw();
+	objHaumea->Draw();
 
 	// testobject->Draw(cmdList);
 
@@ -1298,7 +1418,7 @@ void GamePlay::Draw()
 	playerJetParticle->Draw(cmdList);
 	playerContrailParticle->Draw(cmdList);
 	stageBoxParticle->Draw(cmdList);
-	if (playerUpdateFlag == true)
+	if (player->playerUpdateFlag == true)
 	{
 		bulletParticle->Draw(cmdList);
 	}
@@ -1413,13 +1533,13 @@ void GamePlay::Draw()
 		// C
 		gameGTXT_4->Draw();
 	}
-
+	gameGTXT->Draw();
 	LoadingBG->Draw();
 
 	// デバッグテキストの描画
 	//debugText.DrawAll(cmdList);
 
-	player->DebugTextDraw();
+	//player->DebugTextDraw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -1428,73 +1548,105 @@ void GamePlay::Draw()
 
 void GamePlay::GameInitialize()
 {
-	// 座標のセット
+#pragma region Objectの値をセット
+	// プレイヤー値をセット
 	player->SetPosition({ 0.0f,0.0f,20.0f });
 	player->SetRotation({ 0.0f, 90.0f, 0.0f });
 	player->SetScale({ 1.0f, 1.0f, 1.0f });
 
+	// プレイヤー右翼の値をセット
 	objPlayerContrailRight->SetPosition({ 1.3f, 0.1f,1.7f });
 	objPlayerContrailRight->SetScale({ 0.1f, 0.1f, 0.1f });
 
+	// プレイヤー左翼の値をセット
 	objPlayerContrailLeft->SetPosition({ 1.3f, 0.1f,-1.7f });
 	objPlayerContrailLeft->SetScale({ 0.1f, 0.1f, 0.1f });
 
+	// スカイドームの値をセット
 	objSkydome->SetPosition({ 0.0f, 0.0f, 0.0f });
 	objSkydome->SetRotation({ 0.0f,0.0f,0.0f, });
 	objSkydome->SetScale({ 5.0f, 5.0f, 5.0f });
 
+	// カメラオブジェクトの値をセット
 	objCamera->SetPosition({ 0.0f,0.0f,20.0f });
 
+	// センターオブジェクトの値をセット
 	objCenter->SetPosition({ 0.0f,0.0f,0.0f });
 	objCenter->SetScale({ 0.5f, 0.5f, 0.5f });
 
+	// ボスの核の値をセット
 	bossBody->SetPosition({ 0.0f,0.0f,20.0f });
-	bossUpperBody->SetPosition({ 0.0f, 0.2f, 0.0f });
-	bossLowerBody->SetPosition({ 0.0f, -0.2f, 0.0f });
-	bossLeg1->SetPosition({ 1.5f,-1.5f,1.5f });
-	bossLeg2->SetPosition({ 1.5f,-1.5f,-1.5f });
-	bossLeg3->SetPosition({ -1.5f,-1.5f,1.5f });
-	bossLeg4->SetPosition({ -1.5f,-1.5f,-1.5f });
-
 	bossBody->SetRotation({ 0.0f,0.0f,0.0f });
-	bossLeg1->SetRotation({ 0.0f,0.0f,0.0f });
-	bossLeg2->SetRotation({ 0.0f,0.0f,0.0f });
-	bossLeg3->SetRotation({ 0.0f,0.0f,0.0f });
-	bossLeg4->SetRotation({ 0.0f,0.0f,0.0f });
-
 	bossBody->SetScale({ 3.5f, 3.5f, 3.5f });
+
+	// ボスの上パーツの値をセット
+	bossUpperBody->SetPosition({ 0.0f, 0.2f, 0.0f });
+
+	// ボスの下パーツの値をセット
+	bossLowerBody->SetPosition({ 0.0f, -0.2f, 0.0f });
+
+	// ボス足パーツ1の値をセット
+	bossLeg1->SetPosition({ 1.5f,-1.5f,1.5f });
+	bossLeg1->SetRotation({ 0.0f,0.0f,0.0f });
 	bossLeg1->SetScale({ 0.8f, 0.8f, 0.8f });
+
+	// ボス足パーツ2の値をセット
+	bossLeg2->SetPosition({ 1.5f,-1.5f,-1.5f });
+	bossLeg2->SetRotation({ 0.0f,0.0f,0.0f });
 	bossLeg2->SetScale({ 0.8f, 0.8f, 0.8f });
+
+	// ボス足パーツ3の値をセット
+	bossLeg3->SetPosition({ -1.5f,-1.5f,1.5f });
+	bossLeg3->SetRotation({ 0.0f,0.0f,0.0f });
 	bossLeg3->SetScale({ 0.8f, 0.8f, 0.8f });
+
+	// ボス足パーツ4の値をセット
+	bossLeg4->SetPosition({ -1.5f,-1.5f,-1.5f });
+	bossLeg4->SetRotation({ 0.0f,0.0f,0.0f });
 	bossLeg4->SetScale({ 0.8f, 0.8f, 0.8f });
 
-	objMars->SetScale({20.0f, 20.0f, 20.0f});
+	// 火星モデルの値をセット
+	objMars->SetScale({ 10.0f, 10.0f, 10.0f });
+
+	// 木星モデルの値をセット
 	objJupiter->SetScale({ 10.0f, 10.0f, 10.0f });
 
+	objCeres->SetScale({ 10.0f, 10.0f, 10.0f });
+	objEris->SetScale({ 10.0f, 10.0f, 10.0f });
+	objMakemake->SetScale({ 10.0f, 10.0f, 10.0f });
+	objHaumea->SetScale({ 10.0f, 10.0f, 10.0f });
+
+	// カメラの値をセット
 	camera->SetTarget({ 0.0f, 0.0f, 0.0f });
 	camera->SetEye({ 0.0f, 0.0f, 10.0f });
 	camera->SetUp({ 0.0f, 1.0f, 0.0f });
+#pragma endregion
 
 	// シーン遷移時の画面暗転
 	LoadingBG->SetColor({ 1, 1, 1, 1.0f });
 
+	// チャージゲージの値をセット
+	chargeGage->SetSize({ 0.0f, 30.0f });
+	chargeGage->SetAnchorPoint({ 1.0f, 0.5f });
 
-
+	// チャージゲージカバーの値をセット
 	chargeGageCover->SetAnchorPoint({ 1.0f, 0.5f });
 
+	// チャージゲージベースの値をセット
 	chargeGageBase->SetAnchorPoint({ 1.0f, 0.5f });
 
-	// プレイヤーのHPゲージ
+	// プレイヤーのHPゲージの値をセット
 	playerHpGage->SetColor({ 0.1f, 0.6f, 0.1f, 1.0f });
 	playerHpGage->SetSize({ 320.0f, 30.0f });
 	playerHpGage->SetAnchorPoint({ 1.0f, 0.5f });
 
+	// プレイヤーのダメージゲージの値をセット
 	playerDamageGage->SetColor({ 1.0f, 0, 0.2f, 1.0f });
 	playerDamageGage->SetSize({ 320.0f, 30.0f });
 	playerDamageGage->SetAnchorPoint({ 1.0f, 0.5f });
 
+	// 
 	playerHpUI->SetAnchorPoint({ 1.0f,0.5f });
-
 	playerHpUICover->SetAnchorPoint({ 1.0f, 0.5f });
 
 	// ボスのHPゲージ
@@ -1585,12 +1737,12 @@ void GamePlay::GameInitialize()
 	playerHp = playerHpMax;
 
 	// ボス関連
-	bossHpMax = 800.0f;
+	bossHpMax = 600.0f;
 	bossHp = bossHpMax;
-	bossLeg1Hp = 20.0f;
-	bossLeg2Hp = 20.0f;
-	bossLeg3Hp = 20.0f;
-	bossLeg4Hp = 20.0f;
+	bossLeg1Hp = 10.0f;
+	bossLeg2Hp = 10.0f;
+	bossLeg3Hp = 10.0f;
+	bossLeg4Hp = 10.0f;
 
 	bossBreak = false;
 	bossLeg1Break = false;
@@ -1617,7 +1769,7 @@ void GamePlay::GameInitialize()
 
 	cameraType = START;
 
-	playerUpdateFlag = false;
+	player->playerUpdateFlag = false;
 
 	bossPattern = STAY;
 
@@ -1685,7 +1837,7 @@ void GamePlay::CreateHitParticles(XMFLOAT3 position)
 {
 	for (int i = 0; i < 10; i++) {
 		// X,Y,Z全て[-20.0f,+20.0f]でランダムに分布
-		const float rnd_pos = 0.0f;
+		const float rnd_pos = 1.0f;
 		XMFLOAT3 pos{};
 		pos.x = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.x;
 		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.y;
@@ -1700,7 +1852,7 @@ void GamePlay::CreateHitParticles(XMFLOAT3 position)
 		XMFLOAT3 acc{};
 
 		// 追加
-		bossHitParticle->Add(20, pos, vel, acc, { 1.0f,1.0f, 0.0f, 1.0f }, { 1.0f,1.0f, 0.0f, 1.0f }, 3.0f, 0.0f);
+		bossHitParticle->Add(40, pos, vel, acc, { 1.0f,0.1f, 0.1f, 1.0f }, { 1.0f,0.1f, 0.1f, 1.0f }, 2.0f, 0.0f);
 	}
 }
 
@@ -1952,23 +2104,40 @@ void GamePlay::CameraSwitching()
 	if (startIndex == 3)
 	{
 		L4addCount = moveUIVel;
-		playerUpdateFlag = true;
+		player->playerUpdateFlag = true;
 	}
 
 	if (startIndex == 12)
 	{
-		cameraMode = 2;
+		//cameraMode = 2;
 		backFlashingFlag = true;
 		L3nowCount = 0.0f;
 		L3addCount = 0.001f;
 	}
 
-	else if (startIndex == 29)
+	if (startIndex == 13)
 	{
-		cameraMode = 0;
+		cameraMode = 2;
+		/*backFlashingFlag = true;
+		L3nowCount = 0.0f;
+		L3addCount = 0.001f;*/
+	}
+
+	if (startIndex == 29)
+	{
+		//cameraMode = 0;
 		backFlashingFlag = true;
 		L3nowCount = 0.0f;
 		L3addCount = 0.001f;
+
+	}
+
+	if (startIndex == 30)
+	{
+		cameraMode = 0;
+		/*backFlashingFlag = true;
+		L3nowCount = 0.0f;
+		L3addCount = 0.001f;*/
 
 	}
 
@@ -2001,7 +2170,7 @@ void GamePlay::CameraSwitching()
 
 	camera->SetTarget(cameraWorldPosition);
 
-	if (Input::GetInstance()->TriggerKey(DIK_RIGHT))
+	/*if (Input::GetInstance()->TriggerKey(DIK_RIGHT))
 	{
 		cameraMode = 3;
 		rightFlashingFlag = true;
@@ -2023,7 +2192,7 @@ void GamePlay::CameraSwitching()
 		leftFlashingFlag = true;
 		L3nowCount = 0.0f;
 		L3addCount = 0.001f;
-	}
+	}*/
 }
 
 void GamePlay::Attack()
@@ -2032,9 +2201,9 @@ void GamePlay::Attack()
 
 	XMVECTOR bulletVelocity = { 0,0,playerBulletSpeed };
 
-	if (playerUpdateFlag == true)
+	if (player->playerUpdateFlag == true)
 	{
-		if (Input::GetInstance()->PushKey(DIK_SPACE) || (IsButtonPush(ButtonKind::Button_A)))
+		if (Input::GetInstance()->PushKey(DIK_SPACE) || Input::GetInstance()->PushKey(DIK_Z))
 		{
 			if (shotRate <= 0)
 			{
@@ -2059,9 +2228,11 @@ void GamePlay::Attack()
 
 void GamePlay::chargeAttack()
 {
-	if (playerUpdateFlag == true)
+	if (player->playerUpdateFlag == true)
 	{
 		playerChargeRatio = playerChargeNow / playerChargeMax;
+		chargeGageSize.x = playerChargeRatio * 320.0f;
+
 		chargeBulletSize = Easing::InOutQuadFloat(0.0, 2.0, playerChargeRatio);
 
 		CreateChargeBulletParticles(playerWorldPosition, { 1.0f,1.0f, 0.1f, 1.0f }, { 1.0f, 1.0f, 0.0f, 1.0f }, chargeBulletSize);
@@ -2106,7 +2277,7 @@ void GamePlay::chargeAttack()
 
 void GamePlay::homingAttack()
 {
-	if (playerUpdateFlag == true)
+	if (player->playerUpdateFlag == true)
 	{
 		if (playerHomingNow >= 30.0f)
 		{
@@ -2337,14 +2508,14 @@ void GamePlay::Lerp3Count()
 
 	if (L3nowCount > 0.1f)
 	{
-		playerUpdateFlag = true;
+		//playerUpdateFlag = true;
 		L3nowCount = 0.1f;
 		L3addCount = 0.0f;
 	}
 
 	if (L3nowCount < 0.1f)
 	{
-		playerUpdateFlag = false;
+		//playerUpdateFlag = false;
 	}
 }
 
@@ -2521,6 +2692,11 @@ void GamePlay::LoadTextureFunction()
 	}
 
 	if (!Sprite::LoadTexture(TextureNumber::game_gtxt_GO, L"Resources/Sprite/GameUI/game_gtxt_GO.png")) {
+		assert(0);
+		return;
+	}
+
+	if (!Sprite::LoadTexture(TextureNumber::game_gtxt, L"Resources/Sprite/GameUI/game_gtxt.png")) {
 		assert(0);
 		return;
 	}
@@ -2902,8 +3078,8 @@ bool GamePlay::OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, fl
 void GamePlay::CreateLargeRockLeft()
 {
 	XMFLOAT3 randLPos = {};
-	randLPos.x = -50.0f;
-	randLPos.y = ((float)rand() / RAND_MAX * 100.0f - 100.0f / 2.0f);
+	randLPos.x = (-150.0f + (float)rand() / RAND_MAX * 50.0f);
+	randLPos.y = ((float)rand() / RAND_MAX * 200.0f - 200.0f / 2.0f);
 	randLPos.z = centerPosition.z + 500.0f;
 
 	//タイマーを更新
@@ -2914,7 +3090,7 @@ void GamePlay::CreateLargeRockLeft()
 	if (creatLargeRockLeftTimer >= stageBoxTime)
 	{
 		std::unique_ptr<LargeRock> newBox = std::make_unique<LargeRock>();
-		newBox = LargeRock::Create(modelLargeRock, randLPos, { 3.0f,3.0f,3.0f }, 0.5f);
+		newBox = LargeRock::Create(modelLargeRock, randLPos, { 2.0f,2.0f,2.0f }, 0.5f);
 		largeRocks.push_back(std::move(newBox));
 
 		creatLargeRockLeftTimer = 0;
@@ -2924,8 +3100,8 @@ void GamePlay::CreateLargeRockLeft()
 void GamePlay::CreateLargeRockRight()
 {
 	XMFLOAT3 randRPos = {};
-	randRPos.x = 50.0f;
-	randRPos.y = ((float)rand() / RAND_MAX * 100.0f - 100.0f / 2.0f);
+	randRPos.x = (100.0f + (float)rand() / RAND_MAX * 50.0f);
+	randRPos.y = ((float)rand() / RAND_MAX * 200.0f - 200.0f / 2.0f);
 	randRPos.z = centerPosition.z + 500.0f;
 
 	//タイマーを更新
@@ -2936,7 +3112,7 @@ void GamePlay::CreateLargeRockRight()
 	if (creatLargeRockRightTimer >= stageBoxTime)
 	{
 		std::unique_ptr<LargeRock> newBox = std::make_unique<LargeRock>();
-		newBox = LargeRock::Create(modelLargeRock, randRPos, { 3.0f,3.0f,3.0f }, 0.5f);
+		newBox = LargeRock::Create(modelLargeRock, randRPos, { 2.0f,2.0f,2.0f }, 0.5f);
 		largeRocks.push_back(std::move(newBox));
 
 		creatLargeRockRightTimer = 0;
@@ -2946,8 +3122,8 @@ void GamePlay::CreateLargeRockRight()
 void GamePlay::CreateSmallRockLeft()
 {
 	XMFLOAT3 randLPos = {};
-	randLPos.x = -40.0f;
-	randLPos.y = ((float)rand() / RAND_MAX * 72.0f - 72.0f / 2.0f);
+	randLPos.x = (-100.0f + (float)rand() / RAND_MAX * 50.0f);
+	randLPos.y = ((float)rand() / RAND_MAX * 100.0f - 100.0f / 2.0f);
 	randLPos.z = centerPosition.z + 500.0f;
 
 	float randSpeed = (1.0f + (float)rand() / RAND_MAX * 3.0f);
@@ -2960,7 +3136,7 @@ void GamePlay::CreateSmallRockLeft()
 	if (creatSmallRockLeftTimer >= stageBoxTime)
 	{
 		std::unique_ptr<SmallRock> newBox = std::make_unique<SmallRock>();
-		newBox = SmallRock::Create(modelSmallRock, randLPos, { 3.0f,3.0f,3.0f }, randSpeed);
+		newBox = SmallRock::Create(modelSmallRock, randLPos, { 2.0f,2.0f,2.0f }, randSpeed);
 		smallRocks.push_back(std::move(newBox));
 
 		creatSmallRockLeftTimer = 0;
@@ -2970,8 +3146,8 @@ void GamePlay::CreateSmallRockLeft()
 void GamePlay::CreateSmallRockRight()
 {
 	XMFLOAT3 randRPos = {};
-	randRPos.x = 40.0f;
-	randRPos.y = ((float)rand() / RAND_MAX * 72.0f - 72.0f / 2.0f);
+	randRPos.x = (50.0f + (float)rand() / RAND_MAX * 50.0f);
+	randRPos.y = ((float)rand() / RAND_MAX * 100.0f - 100.0f / 2.0f);
 	randRPos.z = centerPosition.z + 500.0f;
 
 	float randSpeed = (1.0f + (float)rand() / RAND_MAX * 3.0f);
@@ -2984,7 +3160,7 @@ void GamePlay::CreateSmallRockRight()
 	if (creatSmallRockRightTimer >= stageBoxTime)
 	{
 		std::unique_ptr<SmallRock> newBox = std::make_unique<SmallRock>();
-		newBox = SmallRock::Create(modelSmallRock, randRPos, { 3.0f,3.0f,3.0f }, randSpeed);
+		newBox = SmallRock::Create(modelSmallRock, randRPos, { 2.0f,2.0f,2.0f }, randSpeed);
 		smallRocks.push_back(std::move(newBox));
 
 		creatSmallRockRightTimer = 0;

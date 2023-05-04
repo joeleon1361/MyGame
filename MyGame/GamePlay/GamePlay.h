@@ -47,6 +47,8 @@
 #include <list>
 #include <array>
 
+#include "ScoreManager.h"
+
 class CollisionManager;
 class Player;
 class Bullet;
@@ -83,6 +85,7 @@ private: // 静的メンバ変数
 		game_gtxt_number2,
 		game_gtxt_number3,
 		game_gtxt_GO,
+		game_gtxt,
 
 		// プレイヤー
 		game_player_frame_1,
@@ -250,6 +253,7 @@ private: // メンバ変数
 	DebugText debugText;
 	ScoreText scoreText;
 	CollisionManager* collisionManager = nullptr;
+	ScoreManager* scoreManager = ScoreManager::GetInstance();
 
 	// ゲームシーン用
 	Camera* camera = nullptr;
@@ -287,6 +291,8 @@ private: // メンバ変数
 	Sprite* gameParts_2 = nullptr;
 	Sprite* gameParts_3 = nullptr;
 
+	Sprite* gameGTXT = nullptr;
+
 	// スコアUI
 	Sprite* scoreUI = nullptr;
 	Sprite* scoreChar = nullptr;
@@ -317,8 +323,13 @@ private: // メンバ変数
 	ObjModel* modelBossLowerBody = nullptr;
 	ObjModel* modelSmallRock = nullptr;
 	ObjModel* modelLargeRock = nullptr;
+
 	ObjModel* modelMars = nullptr;
 	ObjModel* modelJupiter = nullptr;
+	ObjModel* modelCeres = nullptr;
+	ObjModel* modelEris = nullptr;
+	ObjModel* modelMakemake = nullptr;
+	ObjModel* modelHaumea = nullptr;
 
 	FbxModel* testmodel = nullptr;
 
@@ -344,6 +355,10 @@ private: // メンバ変数
 
 	Planet* objMars = nullptr;
 	Planet* objJupiter = nullptr;
+	Planet* objCeres = nullptr;
+	Planet* objEris = nullptr;
+	Planet* objMakemake = nullptr;
+	Planet* objHaumea = nullptr;
 
 	std::list<std::unique_ptr<TargetBullet>>bossTargetBullets;
 
@@ -488,7 +503,6 @@ private: // メンバ変数
 
 #pragma endregion
 
-#pragma region ゲーム画面
 	// コアオブジェクトの座標
 	XMFLOAT3 centerPosition;
 	// コアオブジェクトの角度
@@ -498,6 +512,20 @@ private: // メンバ変数
 	XMFLOAT3 SkydomPosition;
 	// スカイドームの角度
 	XMFLOAT3 SkydomRotation;
+
+	// 火星モデルの座標
+	XMFLOAT3 marsPosition = {130.0f, 20.0f, 450.0f};
+
+	// 木星モデルの座標
+	XMFLOAT3 jupiterPosition = { -150.0f, -30.0f, 250.0f };
+
+	XMFLOAT3 ceresPosition = { -80.0f, -50.0f, 100.0f };
+
+	XMFLOAT3 erisPosition = { 60.0f, -70.0f, -100.0f };
+
+	XMFLOAT3 makemakePosition = { 90.0f, 60.0f, -250.0f };
+
+	XMFLOAT3 haumeaPosition = { -30.0f, 50.0f, -450.0f };
 
 	// コアオブジェクトに加算する値
 	float centorVel = 0.1f;
@@ -550,6 +578,8 @@ private: // メンバ変数
 
 	XMFLOAT2 gameGTXT_GOSize = {};
 	XMFLOAT4 gameGTXT_GOColor = {1.0f, 1.0f, 1.0f, 0.0f};
+
+	
 
 #pragma region カメラ関連
 	// カメラの方向パターン
@@ -668,6 +698,18 @@ private: // メンバ変数
 	// ボス部位4のローカル座標
 	XMFLOAT3 bossLeg4WorldPosition;
 
+	XMFLOAT4 bossLeg1Color;
+	float bossLeg1ColorTimer = 0.0f;
+
+	XMFLOAT4 bossLeg2Color;
+	float bossLeg2ColorTimer = 0.0f;
+
+	XMFLOAT4 bossLeg3Color;
+	float bossLeg3ColorTimer = 0.0f;
+
+	XMFLOAT4 bossLeg4Color;
+	float bossLeg4ColorTimer = 0.0f;
+
 	// ボスのHP
 	float bossHp;
 	// ボスの最大HP
@@ -737,7 +779,7 @@ private: // メンバ変数
 	float bossRotateVel = 0.0f;
 
 	// ボスの弾の速度
-	float bossBulletSpeed = 0.8f;
+	float bossBulletSpeed = 0.6f;
 
 	// ボスのガトリング攻撃番号
 	int rushOrder = 0;
@@ -753,9 +795,11 @@ private: // メンバ変数
 	XMFLOAT2 bossHpGageSize;
 	// ボスのダメージバーのサイズ
 	XMFLOAT2 bossDamageGageSize;
+	// 
+	XMFLOAT2 chargeGageSize;
 
 	// プレイヤーのHPバーの座標
-	XMFLOAT2 playerHpUIPosition = { 1154.0f, 680.0f };
+	XMFLOAT2 playerHpUIPosition = { 1255.0f, 680.0f };
 
 	// ボスのHPバーの座標
 	XMFLOAT2 bossHpUIPosition = { 1255.0f , 30.0f };
@@ -764,9 +808,9 @@ private: // メンバ変数
 	XMFLOAT2 scoreUIPosition = { 15.0f, 60.0f };
 
 	// プレイヤーのHPバーの表示座標
-	XMFLOAT2 onPlayerHpUIPosition = { 1154.0f, 680.0f };
+	XMFLOAT2 onPlayerHpUIPosition = { 1255.0f, 680.0f };
 	// プレイヤーのHPバーの非表示座標
-	XMFLOAT2 offPlayerHpUIPosition = { 1154.0f, 780.0f };
+	XMFLOAT2 offPlayerHpUIPosition = { 1255.0f, 780.0f };
 
 	// ボスのHPバーの表示座標
 	XMFLOAT2 onBossHpUIPosition = { 1255.0f , 30.0f };
@@ -832,7 +876,5 @@ private: // メンバ変数
 
 	// ゲーム開始時のUI出現に加算している値
 	float moveUIVel = 0.04f;
-#pragma endregion
-
 #pragma endregion
 };

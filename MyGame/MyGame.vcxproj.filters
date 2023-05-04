@@ -116,6 +116,12 @@
     <Filter Include="StageObject">
       <UniqueIdentifier>{75916f21-131c-409e-b76e-e3922bd851a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ScoreManager">
+      <UniqueIdentifier>{c569e4ae-6adf-4b17-8470-5622a29af945}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VolumeManager">
+      <UniqueIdentifier>{3f3bc0ce-0844-4106-87c5-57495cc6effb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -237,6 +243,12 @@
     </ClCompile>
     <ClCompile Include="StageObject\SmallRock.cpp">
       <Filter>StageObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreManager\ScoreManager.cpp">
+      <Filter>ScoreManager</Filter>
+    </ClCompile>
+    <ClCompile Include="VolumeManager\VolumeManager.cpp">
+      <Filter>VolumeManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -429,6 +441,12 @@
     </ClInclude>
     <ClInclude Include="StageObject\Planet.h">
       <Filter>StageObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreManager\ScoreManager.h">
+      <Filter>ScoreManager</Filter>
+    </ClInclude>
+    <ClInclude Include="VolumeManager\VolumeManager.h">
+      <Filter>VolumeManager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -690,7 +690,7 @@ void Result::Update()
 	// ˆÃ“]‚©‚çƒV[ƒ“‘JˆÚ
 	if (canPushKeyFlag == true)
 	{
-		if (Input::GetInstance()->TriggerKey(DIK_SPACE))
+		if (Input::GetInstance()->TriggerKey(DIK_SPACE) || input->TriggerKey(DIK_Z))
 		{
 			changeColorFlag = true;
 		}

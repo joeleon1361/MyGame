@@ -214,7 +214,7 @@ void Title::Update()
 		}
 
 		// 特定のキーを押してシーン遷移開始
-		if (input->TriggerKey(DIK_SPACE) || input->TriggerKey(DIK_W) || input->TriggerKey(DIK_A) || input->TriggerKey(DIK_S) || input->TriggerKey(DIK_D))
+		if (input->TriggerKey(DIK_SPACE) || input->TriggerKey(DIK_Z) || input->TriggerKey(DIK_A) || input->TriggerKey(DIK_S) || input->TriggerKey(DIK_D))
 		{
 			sound->PlayWav("SE/Title/title_start.wav", seVolume);
 			titleStartUIColor.w = 1.0f;

@@ -16,8 +16,10 @@ private: // エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 
 public: // 静的メンバ関数
-	static XMFLOAT2 LerpFloat2(const XMFLOAT2& start, const XMFLOAT2& end, const float t);
+	static XMFLOAT2 LerpFloat2(const XMFLOAT2& start, const XMFLOAT2& end, const float time);
 
-	static XMFLOAT3 LerpFloat3(const XMFLOAT3& start, const XMFLOAT3& end, const float t);
+	static XMFLOAT3 LerpFloat3(const XMFLOAT3& start, const XMFLOAT3& end, const float time);
+
+	static XMFLOAT4 LerpFloat4(const XMFLOAT4& start, const XMFLOAT4& end, const float time);
 };
 
