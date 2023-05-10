@@ -46,8 +46,12 @@ void Title::Initialize()
 
 	// 3Dオブジェクト生成
 	objTitlePlayer = ObjObject::Create();
-	modelPlayer = ObjModel::CreateFromOBJ("player2");
+	modelPlayer = ObjModel::CreateFromOBJ("playerBody");
 	objTitlePlayer->SetModel(modelPlayer);
+
+	objTitlePlayerTurret = ObjObject::Create();
+	modelPlayerTurret = ObjModel::CreateFromOBJ("playerTurret");
+	objTitlePlayerTurret->SetModel(modelPlayerTurret);
 
 	objSkydome = ObjObject::Create();
 	modelSkydome = ObjModel::CreateFromOBJ("skydome");
@@ -57,8 +61,10 @@ void Title::Initialize()
 	sound->LoadWav("SE/Title/title_start.wav");
 
 	objTitlePlayer->SetPosition({ -4.0f,-2.0f,0 });
-	objTitlePlayer->SetRotation({ 0, 180, 0 });
+	objTitlePlayer->SetRotation({ 0, 90, 0 });
 	objTitlePlayer->SetScale({ 0.8f, 0.8f, 0.8f });
+
+	objTitlePlayerTurret->SetParent(objTitlePlayer);
 
 	objSkydome->SetPosition({ 0.0f, 0.0f, 70.0f });
 	objSkydome->SetScale({ 1.0f,1.0f,1.0f });
@@ -385,8 +391,8 @@ void Title::CreatePlayerJetParticles(XMFLOAT3 position)
 	for (int i = 0; i < 10; i++) {
 		const float rnd_pos = 0.1f;
 		XMFLOAT3 pos{};
-		pos.x = position.x + -0.9f;
-		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.y;
+		pos.x = position.x + -1.5f;
+		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.y - 0.1f;
 		pos.z = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.z;
 
 		const float rnd_vel = -0.2f;

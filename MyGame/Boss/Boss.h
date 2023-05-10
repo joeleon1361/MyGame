@@ -32,5 +32,12 @@ private: // メンバ変数
 public:
 	// 発射タイマー
 	int32_t shotTimer = 0;
+
+	// ボスの最大HP
+	float maxHp = 600.0f;
+	// ボスのHP
+	float nowHp = maxHp;
+	// ボスの最大HPから現HPを割った値
+	float ratioHp = {};
 };
 

@@ -78,10 +78,12 @@ private: // メンバ変数
 
 	ParticleManager* playerJetParticle = nullptr;
 
+	ObjObject* objTitlePlayerTurret = nullptr;
 	ObjObject* objTitlePlayer = nullptr;
 	ObjObject* objSkydome = nullptr;
 
 	ObjModel* modelPlayer = nullptr;
+	ObjModel* modelPlayerTurret = nullptr;
 	ObjModel* modelSkydome = nullptr;
 
 	// プレイヤー関連

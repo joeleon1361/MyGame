@@ -45,10 +45,9 @@ void Player::Update()
 {
 	ObjObject::Update();
 
-	rotation.x = rollRotation.x + dodgeRollRotation.x;
+	rotation.z = rollRotation.z + dodgeRollRotation.z;
 	position.x += playerPositiveSpeedX + playerNegativeSpeedX + dodgeRollSpeed;
 	position.y += playerPositiveSpeedY + playerNegativeSpeedY;
-	//InertiaCalc();
 
 	// ƒIƒuƒWƒFƒNƒgˆÚ“®
 	Move();
@@ -241,44 +240,44 @@ void Player::FrontRolling()
 		// ƒ[ƒ‹
 		if (input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
 		{
-			if (input->PushKey(DIK_RIGHT) && rollRotation.x <= +40.0f)
+			if (input->PushKey(DIK_LEFT) && rollRotation.z <= +40.0f)
 			{
-				rollRotation.x += 5.0f;
+				rollRotation.z += 5.0f;
 			}
 
-			if (input->PushKey(DIK_LEFT) && rollRotation.x >= -40.0f)
+			if (input->PushKey(DIK_RIGHT) && rollRotation.z >= -40.0f)
 			{
-				rollRotation.x -= 5.0f;
+				rollRotation.z -= 5.0f;
 			}
 		}
 
 		// ŒX‚«‚ð–ß‚·
-		if (input->PushKey(DIK_LEFT) == 0 && input->PushKey(DIK_RIGHT) == 0 && rollRotation.x != 0.0f)
+		if (input->PushKey(DIK_LEFT) == 0 && input->PushKey(DIK_RIGHT) == 0 && rollRotation.z != 0.0f)
 		{
-			if (rollRotation.x > 0.0f)
+			if (rollRotation.z > 0.0f)
 			{
-				rollRotation.x -= 5.0f;
+				rollRotation.z -= 5.0f;
 			}
 
-			if (rollRotation.x < 0.0f)
+			if (rollRotation.z < 0.0f)
 			{
-				rollRotation.x += 5.0f;
+				rollRotation.z += 5.0f;
 			}
 		}
 	}
 	else
 	{
 		// ŒX‚«‚ð–ß‚·
-		if (rollRotation.x != 0.0f)
+		if (rollRotation.z != 0.0f)
 		{
-			if (rollRotation.x > 0.0f)
+			if (rollRotation.z > 0.0f)
 			{
-				rollRotation.x -= 5.0f;
+				rollRotation.z -= 5.0f;
 			}
 
-			if (rollRotation.x < 0.0f)
+			if (rollRotation.z < 0.0f)
 			{
-				rollRotation.x += 5.0f;
+				rollRotation.z += 5.0f;
 			}
 		}
 	}
@@ -291,29 +290,29 @@ void Player::RightRolling()
 	if (playerUpdateFlag == true)
 	{
 		// ŒX‚«‚ð–ß‚·
-		if (input->PushKey(DIK_LEFT) == 0 && input->PushKey(DIK_RIGHT) == 0 && rollRotation.x != 0.0f)
+		if (input->PushKey(DIK_LEFT) == 0 && input->PushKey(DIK_RIGHT) == 0 && rollRotation.z != 0.0f)
 		{
-			if (rollRotation.x > 0.0f)
+			if (rollRotation.z > 0.0f)
 			{
-				rollRotation.x -= 5.0f;
+				rollRotation.z -= 5.0f;
 			}
 
-			if (rollRotation.x < 0.0f)
+			if (rollRotation.z < 0.0f)
 			{
-				rollRotation.x += 5.0f;
+				rollRotation.z += 5.0f;
 			}
 		}
 	}
 	else
 	{
-		if (rollRotation.x > 0.0f)
+		if (rollRotation.z > 0.0f)
 		{
-			rollRotation.x -= 5.0f;
+			rollRotation.z -= 5.0f;
 		}
 
-		if (rollRotation.x < 0.0f)
+		if (rollRotation.z < 0.0f)
 		{
-			rollRotation.x += 5.0f;
+			rollRotation.z += 5.0f;
 		}
 	}
 
@@ -328,44 +327,44 @@ void Player::BackRolling()
 		// ƒ[ƒ‹
 		if (input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
 		{
-			if (input->PushKey(DIK_RIGHT) && rollRotation.x >= -40.0f)
+			if (input->PushKey(DIK_LEFT) && rollRotation.z >= -40.0f)
 			{
-				rollRotation.x -= 5.0f;
+				rollRotation.z -= 5.0f;
 			}
 
-			if (input->PushKey(DIK_LEFT) && rollRotation.x <= +40.0f)
+			if (input->PushKey(DIK_RIGHT) && rollRotation.z <= +40.0f)
 			{
-				rollRotation.x += 5.0f;
+				rollRotation.z += 5.0f;
 			}
 		}
 
 		// ŒX‚«‚ð–ß‚·
-		if (input->PushKey(DIK_LEFT) == 0 && input->PushKey(DIK_RIGHT) == 0 && rollRotation.x != 0.0f)
+		if (input->PushKey(DIK_LEFT) == 0 && input->PushKey(DIK_RIGHT) == 0 && rollRotation.z != 0.0f)
 		{
-			if (rollRotation.x > 0.0f)
+			if (rollRotation.z > 0.0f)
 			{
-				rollRotation.x -= 5.0f;
+				rollRotation.z -= 5.0f;
 			}
 
-			if (rollRotation.x < 0.0f)
+			if (rollRotation.z < 0.0f)
 			{
-				rollRotation.x += 5.0f;
+				rollRotation.z += 5.0f;
 			}
 		}
 	}
 	else
 	{
 		// ŒX‚«‚ð–ß‚·
-		if (rollRotation.x != 0.0f)
+		if (rollRotation.z != 0.0f)
 		{
-			if (rollRotation.x > 0.0f)
+			if (rollRotation.z > 0.0f)
 			{
-				rollRotation.x -= 5.0f;
+				rollRotation.z -= 5.0f;
 			}
 
-			if (rollRotation.x < 0.0f)
+			if (rollRotation.z < 0.0f)
 			{
-				rollRotation.x += 5.0f;
+				rollRotation.z += 5.0f;
 			}
 		}
 	}
@@ -378,29 +377,29 @@ void Player::LeftRolling()
 	if (playerUpdateFlag == true)
 	{
 		// ŒX‚«‚ð–ß‚·
-		if (input->PushKey(DIK_LEFT) == 0 && input->PushKey(DIK_RIGHT) == 0 && rollRotation.x != 0.0f)
+		if (input->PushKey(DIK_LEFT) == 0 && input->PushKey(DIK_RIGHT) == 0 && rollRotation.z != 0.0f)
 		{
-			if (rollRotation.x > 0.0f)
+			if (rollRotation.z > 0.0f)
 			{
-				rollRotation.x -= 5.0f;
+				rollRotation.z -= 5.0f;
 			}
 
-			if (rollRotation.x < 0.0f)
+			if (rollRotation.z < 0.0f)
 			{
-				rollRotation.x += 5.0f;
+				rollRotation.z += 5.0f;
 			}
 		}
 	}
 	else
 	{
-		if (rollRotation.x > 0.0f)
+		if (rollRotation.z > 0.0f)
 		{
-			rollRotation.x -= 5.0f;
+			rollRotation.z -= 5.0f;
 		}
 
-		if (rollRotation.x < 0.0f)
+		if (rollRotation.z < 0.0f)
 		{
-			rollRotation.x += 5.0f;
+			rollRotation.z += 5.0f;
 		}
 	}
 
@@ -430,14 +429,14 @@ void Player::judgeDodgeRoll()
 		{
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
-			dodgeEndRotation.x = 720.0f;
+			dodgeEndRotation.z = -720.0f;
 			dodgeStartSpeed = 0.4f;
 		}
 		else if (input->TriggerKey(DIK_C) && input->PushKey(DIK_LEFT))
 		{
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
-			dodgeEndRotation.x = -720.0f;
+			dodgeEndRotation.z = 720.0f;
 			dodgeStartSpeed = -0.4f;
 		}
 	}
@@ -447,14 +446,14 @@ void Player::judgeDodgeRoll()
 		{
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
-			dodgeEndRotation.x = 720.0f;
+			dodgeEndRotation.z = -720.0f;
 			dodgeStartSpeed = -0.4f;
 		}
 		else if (input->TriggerKey(DIK_C) && input->PushKey(DIK_RIGHT))
 		{
 			dodgeRollFlag = true;
 			dodgeRollTimer = 0;
-			dodgeEndRotation.x = -720.0f;
+			dodgeEndRotation.z = 720.0f;
 			dodgeStartSpeed = 0.4f;
 		}
 	}

@@ -248,6 +248,8 @@ public: // メンバ関数
 
 	void CreateSmallRockRight();
 
+	XMFLOAT3 TransformWorldPosition(XMFLOAT3 localPosition, XMMATRIX matWorld );
+
 private: // メンバ変数
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 	DebugText debugText;
@@ -316,6 +318,7 @@ private: // メンバ変数
 	ObjModel* modelSkydome = nullptr;
 	ObjModel* modelGround = nullptr;
 	ObjModel* modelPlayer = nullptr;
+	ObjModel* modelPlayerTurret = nullptr;
 	ObjModel* modelBullet = nullptr;
 	ObjModel* modelBossLeg = nullptr;
 	ObjModel* modelBossCore = nullptr;
@@ -338,6 +341,7 @@ private: // メンバ変数
 
 	// プレイヤー関連
 	Player* player = nullptr;
+	Player* playerTurret = nullptr;
 	ObjObject* objPlayerContrailRight = nullptr;
 	ObjObject* objPlayerContrailLeft = nullptr;
 
@@ -636,13 +640,6 @@ private: // メンバ変数
 	XMFLOAT3 playerContrailRightWorldPosition = {};
 	XMFLOAT3 playerContrailLeftWorldPosition = {};
 
-	// プレイヤーのHP
-	float playerHp;
-	// プレイヤーの最大HP
-	float playerHpMax;
-	// プレイヤーの最大HPから現HPを割った値
-	float playerHpRatio;
-
 	// プレイヤーの弾のサイズ
 	XMFLOAT3 bulletScale = { 0.3f, 0.3f, 0.3f };
 
@@ -698,6 +695,9 @@ private: // メンバ変数
 	// ボス部位4のローカル座標
 	XMFLOAT3 bossLeg4WorldPosition;
 
+	XMFLOAT4 bossBodyColor;
+	float bossBodyColorTimer = 0.0f;
+
 	XMFLOAT4 bossLeg1Color;
 	float bossLeg1ColorTimer = 0.0f;
 
@@ -709,13 +709,6 @@ private: // メンバ変数
 
 	XMFLOAT4 bossLeg4Color;
 	float bossLeg4ColorTimer = 0.0f;
-
-	// ボスのHP
-	float bossHp;
-	// ボスの最大HP
-	float bossHpMax;
-	// ボスの最大HPから現HPを割った値
-	float bossHpRatio;
 
 	// ボス部位1のHP
 	float bossLeg1Hp;

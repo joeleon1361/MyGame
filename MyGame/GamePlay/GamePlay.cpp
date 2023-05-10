@@ -148,6 +148,7 @@ void GamePlay::Initialize()
 	objGround = ObjObject::Create();
 
 	player = Player::Create();
+	playerTurret = Player::Create();
 	objPlayerContrailRight = ObjObject::Create();
 	objPlayerContrailLeft = ObjObject::Create();
 
@@ -172,7 +173,8 @@ void GamePlay::Initialize()
 
 	modelSkydome = ObjModel::CreateFromOBJ("skydome");
 	modelGround = ObjModel::CreateFromOBJ("ground");
-	modelPlayer = ObjModel::CreateFromOBJ("player2");
+	modelPlayer = ObjModel::CreateFromOBJ("playerBody");
+	modelPlayerTurret = ObjModel::CreateFromOBJ("playerTurret");
 	modelBullet = ObjModel::CreateFromOBJ("bullet2");
 	modelBossLeg = ObjModel::CreateFromOBJ("bossLeg");
 	modelBossCore = ObjModel::CreateFromOBJ("bossCore");
@@ -190,6 +192,7 @@ void GamePlay::Initialize()
 	objSkydome->SetModel(modelSkydome);
 	objGround->SetModel(modelGround);
 	player->SetModel(modelPlayer);
+	playerTurret->SetModel(modelPlayerTurret);
 	objPlayerContrailRight->SetModel(modelBullet);
 	objPlayerContrailLeft->SetModel(modelBullet);
 
@@ -215,6 +218,8 @@ void GamePlay::Initialize()
 	player->SetParent(objCenter);
 	objPlayerContrailRight->SetParent(player);
 	objPlayerContrailLeft->SetParent(player);
+
+	playerTurret->SetParent(objCenter);
 
 	objCamera->SetParent(objCenter);
 
@@ -270,7 +275,7 @@ void GamePlay::Update()
 	}
 
 	// プレイヤーが撃破されたら遷移
-	if (playerHp <= 0.0f)
+	if (player->nowHp <= 0.0f)
 	{
 		/*sound->StopWav("Play.wav");
 		GameOverInitialize();
@@ -314,6 +319,14 @@ void GamePlay::Update()
 	bossLeg3LocalPosition = bossLeg3->GetPosition();
 	bossLeg4LocalPosition = bossLeg4->GetPosition();
 
+	// ボスの本体
+	bossBodyColorTimer += 0.1;
+	if (bossBodyColorTimer > 1.0f)
+	{
+		bossBodyColorTimer = 1.0f;
+	}
+	bossBodyColor = Lerp::LerpFloat4({ 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, bossBodyColorTimer);
+
 	// ボスの部位1
 	bossLeg1ColorTimer += 0.1;
 	if (bossLeg1ColorTimer > 1.0f)
@@ -321,7 +334,7 @@ void GamePlay::Update()
 		bossLeg1ColorTimer = 1.0f;
 	}
 	bossLeg1Color = Lerp::LerpFloat4({ 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, bossLeg1ColorTimer);
-	
+
 	// ボスの部位2
 	bossLeg2ColorTimer += 0.1;
 	if (bossLeg2ColorTimer > 1.0f)
@@ -549,68 +562,23 @@ void GamePlay::Update()
 
 #pragma region 座標変換
 	// カメラの座標変換
-	XMVECTOR cameraPositionV;
-
-	cameraPositionV = DirectX::XMLoadFloat3(&objCamera->GetPosition());
-	cameraPositionV.m128_f32[3] = 1.0f;
-	cameraPositionV = DirectX::XMVector3Transform(cameraPositionV, objCenter->GetMatWorld());
-	DirectX::XMStoreFloat3(&cameraWorldPosition, cameraPositionV);
+	cameraWorldPosition = TransformWorldPosition(objCamera->GetPosition(), objCenter->GetMatWorld());
 
 	// プレイヤーの座標変換
-	XMVECTOR playerPositionV;
-
-	playerPositionV = DirectX::XMLoadFloat3(&playerLocalPosition);
-	playerPositionV.m128_f32[3] = 1.0f;
-	playerPositionV = DirectX::XMVector3Transform(playerPositionV, objCenter->GetMatWorld());
-	DirectX::XMStoreFloat3(&playerWorldPosition, playerPositionV);
+	playerWorldPosition = TransformWorldPosition(playerLocalPosition, objCenter->GetMatWorld());
 
 	// プレイヤー飛行機雲(右)の座標変換
-	XMVECTOR playerContrailRightPositionV;
-
-	playerContrailRightPositionV = DirectX::XMLoadFloat3(&objPlayerContrailRight->GetPosition());
-	playerContrailRightPositionV.m128_f32[3] = 1.0f;
-	playerContrailRightPositionV = DirectX::XMVector3Transform(playerContrailRightPositionV, player->GetMatWorld());
-	DirectX::XMStoreFloat3(&playerContrailRightWorldPosition, playerContrailRightPositionV);
+	playerContrailRightWorldPosition = TransformWorldPosition(objPlayerContrailRight->GetPosition(), player->GetMatWorld());
 
 	// プレイヤー飛行機雲(左)の座標変換
-	XMVECTOR playerContrailLeftPositionV;
-
-	playerContrailLeftPositionV = DirectX::XMLoadFloat3(&objPlayerContrailLeft->GetPosition());
-	playerContrailLeftPositionV.m128_f32[3] = 1.0f;
-	playerContrailLeftPositionV = DirectX::XMVector3Transform(playerContrailLeftPositionV, player->GetMatWorld());
-	DirectX::XMStoreFloat3(&playerContrailLeftWorldPosition, playerContrailLeftPositionV);
+	playerContrailLeftWorldPosition = TransformWorldPosition(objPlayerContrailLeft->GetPosition(), player->GetMatWorld());
 
 	// ボスの座標変換
-	XMVECTOR bossBodyPositionV;
-	XMVECTOR bossLeg1PositionV;
-	XMVECTOR bossLeg2PositionV;
-	XMVECTOR bossLeg3PositionV;
-	XMVECTOR bossLeg4PositionV;
-
-	bossBodyPositionV = DirectX::XMLoadFloat3(&bossLocalPosition);
-	bossBodyPositionV.m128_f32[3] = 1.0f;
-	bossBodyPositionV = DirectX::XMVector3Transform(bossBodyPositionV, objCenter->GetMatWorld());
-	DirectX::XMStoreFloat3(&bossWorldPosition, bossBodyPositionV);
-
-	bossLeg1PositionV = DirectX::XMLoadFloat3(&bossLeg1LocalPosition);
-	bossLeg1PositionV.m128_f32[3] = 1.0f;
-	bossLeg1PositionV = DirectX::XMVector3Transform(bossLeg1PositionV, bossLowerBody->GetMatWorld());
-	DirectX::XMStoreFloat3(&bossLeg1WorldPosition, bossLeg1PositionV);
-
-	bossLeg2PositionV = DirectX::XMLoadFloat3(&bossLeg2LocalPosition);
-	bossLeg2PositionV.m128_f32[3] = 1.0f;
-	bossLeg2PositionV = DirectX::XMVector3Transform(bossLeg2PositionV, bossLowerBody->GetMatWorld());
-	DirectX::XMStoreFloat3(&bossLeg2WorldPosition, bossLeg2PositionV);
-
-	bossLeg3PositionV = DirectX::XMLoadFloat3(&bossLeg3LocalPosition);
-	bossLeg3PositionV.m128_f32[3] = 1.0f;
-	bossLeg3PositionV = DirectX::XMVector3Transform(bossLeg3PositionV, bossLowerBody->GetMatWorld());
-	DirectX::XMStoreFloat3(&bossLeg3WorldPosition, bossLeg3PositionV);
-
-	bossLeg4PositionV = DirectX::XMLoadFloat3(&bossLeg4LocalPosition);
-	bossLeg4PositionV.m128_f32[3] = 1.0f;
-	bossLeg4PositionV = DirectX::XMVector3Transform(bossLeg4PositionV, bossLowerBody->GetMatWorld());
-	DirectX::XMStoreFloat3(&bossLeg4WorldPosition, bossLeg4PositionV);
+	bossWorldPosition = TransformWorldPosition(bossLocalPosition, objCenter->GetMatWorld());
+	bossLeg1WorldPosition = TransformWorldPosition(bossLeg1LocalPosition, bossLowerBody->GetMatWorld());
+	bossLeg2WorldPosition = TransformWorldPosition(bossLeg2LocalPosition, bossLowerBody->GetMatWorld());
+	bossLeg3WorldPosition = TransformWorldPosition(bossLeg3LocalPosition, bossLowerBody->GetMatWorld());
+	bossLeg4WorldPosition = TransformWorldPosition(bossLeg4LocalPosition, bossLowerBody->GetMatWorld());
 #pragma endregion
 
 #pragma region ボス関連
@@ -728,7 +696,8 @@ void GamePlay::Update()
 		{
 			if (OnCollision(bullet->GetPosition(), bossWorldPosition, 0.6f, 1.5f) == true)
 			{
-				bossHp -= 10.0f;
+				bossBodyColorTimer = 0.0f;
+				bossBody->nowHp -= 10.0f;
 				L2startCount = GetTickCount();
 				gameScore += 1000.0f * scoreRate;
 				scoreUIMotion();
@@ -741,7 +710,7 @@ void GamePlay::Update()
 		}
 	}
 
-	if (bossHp <= 0.0f)
+	if (bossBody->nowHp <= 0.0f)
 	{
 		bossBreak = true;
 	}
@@ -772,7 +741,7 @@ void GamePlay::Update()
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
 				bossLeg1ColorTimer = 0.0f;
-				bossHp -= 5.0f;
+				bossBody->nowHp -= 5.0f;
 				L2startCount = GetTickCount();
 				gameScore += 250.0f * scoreRate;
 				scoreUIMotion();
@@ -819,7 +788,7 @@ void GamePlay::Update()
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
 				bossLeg2ColorTimer = 0.0f;
-				bossHp -= 5.0f;
+				bossBody->nowHp -= 5.0f;
 				L2startCount = GetTickCount();
 				gameScore += 250.0f * scoreRate;
 				scoreUIMotion();
@@ -866,7 +835,7 @@ void GamePlay::Update()
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
 				bossLeg3ColorTimer = 0.0f;
-				bossHp -= 5.0f;
+				bossBody->nowHp -= 5.0f;
 				L2startCount = GetTickCount();
 				gameScore += 250.0f * scoreRate;
 				scoreUIMotion();
@@ -914,7 +883,7 @@ void GamePlay::Update()
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
 				bossLeg4ColorTimer = 0.0f;
-				bossHp -= 5.0f;
+				bossBody->nowHp -= 5.0f;
 				L2startCount = GetTickCount();
 				gameScore += 250.0f * scoreRate;
 				scoreUIMotion();
@@ -963,7 +932,7 @@ void GamePlay::Update()
 		{
 			damageEffectAlpha = 1.0f;
 			damageEffectAlphaVel = -0.06f;
-			playerHp -= 10.0f;
+			player->nowHp -= 10.0f;
 			if (scoreRate == 1.5f)
 			{
 				scoreRateTimer = 0;
@@ -1104,6 +1073,9 @@ void GamePlay::Update()
 	// player->SetRotation({playerRotation.x, -testDegrees + 180.0f, playerRotation.z});
 	player->SetRotation(playerRotation);
 
+	playerTurret->SetPosition({ playerLocalPosition.x, playerLocalPosition.y + 0.4f, playerLocalPosition.z });
+	playerTurret->SetRotation({ 0.0f, 0.0f , playerRotation.z });
+
 	// レール中心オブジェクト座標のセット
 	objCenter->SetPosition(centerPosition);
 	// objCenter->SetRotation({ centerRotation.x, -testDegrees + 90.0f, centerRotation.z });
@@ -1115,6 +1087,9 @@ void GamePlay::Update()
 	// ボス関連座標のセット
 	bossBody->SetPosition(bossLocalPosition);
 	bossBody->SetRotation(bossRotation);
+
+	bossUpperBody->SetColor(bossBodyColor);
+	bossLowerBody->SetColor(bossBodyColor);
 
 	bossLeg1->SetPosition(bossLeg1LocalPosition);
 	bossLeg1->SetColor(bossLeg1Color);
@@ -1275,6 +1250,8 @@ void GamePlay::Update()
 	objPlayerContrailRight->Update();
 	objPlayerContrailLeft->Update();
 
+	playerTurret->Update();
+
 	objCamera->Update();
 
 	// レール中心オブジェクトの更新
@@ -1347,6 +1324,7 @@ void GamePlay::Draw()
 	objSkydome->Draw();
 	// objGround->Draw();
 	player->Draw();
+	playerTurret->Draw();
 	/*objPlayerContrailRight->Draw();
 	objPlayerContrailLeft->Draw();*/
 
@@ -1551,15 +1529,15 @@ void GamePlay::GameInitialize()
 #pragma region Objectの値をセット
 	// プレイヤー値をセット
 	player->SetPosition({ 0.0f,0.0f,20.0f });
-	player->SetRotation({ 0.0f, 90.0f, 0.0f });
+	player->SetRotation({ 0.0f, 0.0f, 0.0f });
 	player->SetScale({ 1.0f, 1.0f, 1.0f });
 
 	// プレイヤー右翼の値をセット
-	objPlayerContrailRight->SetPosition({ 1.3f, 0.1f,1.7f });
+	objPlayerContrailRight->SetPosition({ 2.8f, -0.1f,-1.3f });
 	objPlayerContrailRight->SetScale({ 0.1f, 0.1f, 0.1f });
 
 	// プレイヤー左翼の値をセット
-	objPlayerContrailLeft->SetPosition({ 1.3f, 0.1f,-1.7f });
+	objPlayerContrailLeft->SetPosition({ -2.8f, -0.1f,-1.3f });
 	objPlayerContrailLeft->SetScale({ 0.1f, 0.1f, 0.1f });
 
 	// スカイドームの値をセット
@@ -1732,13 +1710,7 @@ void GamePlay::GameInitialize()
 	gameGTXT_GO->SetAnchorPoint({ 0.5f, 0.5f });
 	gameGTXT_GO->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 
-	// プレイヤー関連
-	playerHpMax = 300.0f;
-	playerHp = playerHpMax;
-
 	// ボス関連
-	bossHpMax = 600.0f;
-	bossHp = bossHpMax;
 	bossLeg1Hp = 10.0f;
 	bossLeg2Hp = 10.0f;
 	bossLeg3Hp = 10.0f;
@@ -1887,8 +1859,8 @@ void GamePlay::CreatePlayerJetParticles(XMFLOAT3 position)
 		const float rnd_pos = 0.1f;
 		XMFLOAT3 pos{};
 		pos.x = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.x;
-		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.y;
-		pos.z = position.z + -0.8f;
+		pos.y = ((float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f) + position.y - 0.1f;
+		pos.z = position.z + -1.1f;
 
 		const float rnd_vel = -0.2f;
 		XMFLOAT3 vel{};
@@ -2032,11 +2004,11 @@ void GamePlay::GameDebugText()
 		<< bossLeg4Hp << ")";
 	debugText.Print(BossLeg4Hp.str(), 50, 310, 1.0f);
 
-	std::ostringstream PlayerHp;
+	/*std::ostringstream PlayerHp;
 	PlayerHp << "PlayerHp:("
 		<< std::fixed << std::setprecision(2)
 		<< playerHpRatio << ")";
-	debugText.Print(PlayerHp.str(), 50, 330, 1.0f);
+	debugText.Print(PlayerHp.str(), 50, 330, 1.0f);*/
 }
 
 // カメラ方向の切り替え
@@ -2077,28 +2049,28 @@ void GamePlay::CameraSwitching()
 	if (cameraMode == 0)
 	{
 		nextRotation = { 0.0f,0.0f,0.0f };
-		nextPlayerRotation = { playerRotation.x, 90.0f, playerRotation.z };
+		nextPlayerRotation = { playerRotation.x, 0.0f, playerRotation.z };
 	}
 
 	// 右方向
 	if (cameraMode == 1)
 	{
 		nextRotation = { 0.0f,90.0f,0.0f };
-		nextPlayerRotation = { playerRotation.x, 0.0f, playerRotation.z };
+		nextPlayerRotation = { playerRotation.x, 90.0f, playerRotation.z };
 	}
 
 	// 後方向
 	if (cameraMode == 2)
 	{
 		nextRotation = { 0.0f,180.0f,0.0f };
-		nextPlayerRotation = { playerRotation.x, -90.0f, playerRotation.z };
+		nextPlayerRotation = { playerRotation.x, -180.0f, playerRotation.z };
 	}
 
 	// 左方向
 	if (cameraMode == 3)
 	{
 		nextRotation = { 0.0f,-90.0f,0.0f };
-		nextPlayerRotation = { playerRotation.x, 180.0f, playerRotation.z };
+		nextPlayerRotation = { playerRotation.x, -90.0f, playerRotation.z };
 	}
 
 	if (startIndex == 3)
@@ -2215,7 +2187,7 @@ void GamePlay::Attack()
 				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
 
 				std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
-				newBullet = Bullet::Create(modelBullet, playerWorldPosition, bulletScale, playerBulletSpeed);
+				newBullet = Bullet::Create(modelBullet, { playerWorldPosition.x, playerWorldPosition.y + 0.3f, playerWorldPosition.z }, bulletScale, playerBulletSpeed);
 
 				playerBullets.push_back(std::move(newBullet));
 
@@ -2400,7 +2372,7 @@ void GamePlay::homingAttack()
 
 void GamePlay::BossAttack()
 {
-	if (playerHp >= 0.0f)
+	if (player->nowHp >= 0.0f)
 	{
 		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
 		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
@@ -2412,7 +2384,7 @@ void GamePlay::BossAttack()
 
 void GamePlay::BossLeg1Attack()
 {
-	if ((playerHp >= 0.0f) && (bossLeg1Flag == true))
+	if ((player->nowHp >= 0.0f) && (bossLeg1Flag == true))
 	{
 		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
 		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
@@ -2424,7 +2396,7 @@ void GamePlay::BossLeg1Attack()
 
 void GamePlay::BossLeg2Attack()
 {
-	if ((playerHp >= 0.0f) && (bossLeg2Flag == true))
+	if ((player->nowHp >= 0.0f) && (bossLeg2Flag == true))
 	{
 		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
 		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
@@ -2436,7 +2408,7 @@ void GamePlay::BossLeg2Attack()
 
 void GamePlay::BossLeg3Attack()
 {
-	if ((playerHp >= 0.0f) && (bossLeg3Flag == true))
+	if ((player->nowHp >= 0.0f) && (bossLeg3Flag == true))
 	{
 		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
 		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
@@ -2448,7 +2420,7 @@ void GamePlay::BossLeg3Attack()
 
 void GamePlay::BossLeg4Attack()
 {
-	if ((playerHp >= 0.0f) && (bossLeg4Flag == true))
+	if ((player->nowHp >= 0.0f) && (bossLeg4Flag == true))
 	{
 		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
 		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
@@ -3033,16 +3005,16 @@ void GamePlay::railTargetCalc()
 void GamePlay::playerHpCalc()
 {
 	// プレイヤーのHP計算
-	playerHpRatio = playerHp / playerHpMax;
-	playerHpGageSize.x = playerHpRatio * 320.0f;
+	player->ratioHp = player->nowHp / player->maxHp;
+	playerHpGageSize.x = player->ratioHp * 320.0f;
 }
 
 // ボスHPの計算
 void GamePlay::bossHpCalc()
 {
 	// ボスのHP計算
-	bossHpRatio = bossHp / bossHpMax;
-	bossHpGageSize.x = bossHpRatio * 530.0f;
+	bossBody->ratioHp = bossBody->nowHp / bossBody->maxHp;
+	bossHpGageSize.x = bossBody->ratioHp * 530.0f;
 }
 
 // 各音量の計算
@@ -3165,4 +3137,15 @@ void GamePlay::CreateSmallRockRight()
 
 		creatSmallRockRightTimer = 0;
 	}
+}
+
+XMFLOAT3 GamePlay::TransformWorldPosition(XMFLOAT3 localPosition, XMMATRIX matWorld)
+{
+	XMVECTOR positionV;
+	XMFLOAT3 worldPosition;
+	positionV = DirectX::XMLoadFloat3(&localPosition);
+	positionV.m128_f32[3] = 1.0f;
+	positionV = DirectX::XMVector3Transform(positionV, matWorld);
+	DirectX::XMStoreFloat3(&worldPosition, positionV);
+	return worldPosition;
 }

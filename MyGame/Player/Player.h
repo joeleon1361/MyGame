@@ -46,9 +46,9 @@ public: // メンバ関数
 
 	// 回避
 	void DodgeRoll();
-
+	// 回避準備
 	void judgeDodgeRoll();
-
+	// 回避実行
 	void executeDodgeRoll();
 
 	// 弾を打つ
@@ -59,6 +59,7 @@ private: // メンバ変数
 	ObjModel* modelBullet = nullptr;
 	DebugText debugText;
 
+	// カメラ角度
 	enum CAMERADIRECTION
 	{
 		FRONT,
@@ -67,34 +68,49 @@ private: // メンバ変数
 		LEFT
 	};
 
+	// 移動制限
 	const float LimitXZ = 18.0f;
 	const float LimitY = 10.0f;
 
+	// 正の速さ
 	float playerPositiveSpeedX = {};
 	float playerPositiveSpeedY = {};
 
+	// 負の速さ
 	float playerNegativeSpeedX = {};
 	float playerNegativeSpeedY = {};
 
+	// ロール角度
 	XMFLOAT3 rollRotation = {};
 
+	// 回避時の角度
 	XMFLOAT3 dodgeRollRotation = {};
+	// 回避前の角度
 	XMFLOAT3 dodgeStartRotation = {};
+	// 回避後の角度
 	XMFLOAT3 dodgeEndRotation = {};
 
+	// 回避時の速さ
 	float dodgeRollSpeed = {};
+	// 回避前の速さ
 	float dodgeStartSpeed = {};
+	// 回避後の速さ
 	float dodgeEndSpeed = {};
 
-	//緊急回避用タイマー
+	// 避用タイマー
 	int32_t dodgeRollTimer = 0;
 
-	//慣性用タイマー
-	int32_t InertiaTimer = 0;
-
 public:
+	// 回避可能フラグ
 	bool dodgeRollFlag = false;
-
+	// 更新可能フラグ
 	bool playerUpdateFlag = false;
+
+	// プレイヤーの最大HP
+	float maxHp = 300.0f;
+	// プレイヤーのHP
+	float nowHp = maxHp;
+	// プレイヤーの最大HPから現HPを割った値
+	float ratioHp = {};
 };
 
