@@ -1,6 +1,6 @@
 #pragma once
 #include "ObjObject.h"
-class Boss :
+class BossParts :
 	public ObjObject
 {
 private:
@@ -9,15 +9,10 @@ private:
 
 public: // 静的メンバ関数
 // 3Dオブジェクト生成
-	static Boss* Create(ObjModel* model = nullptr);
+	static BossParts* Create(ObjModel* model = nullptr);
 
 private: // 静的メンバ変数
 
-public:
-	// 弾の発射間隔
-	static const int32_t ShotInterval = 60;
-
-	static const int32_t RushInterval = 10;
 
 public: // メンバ関数
 // 初期化
@@ -27,17 +22,14 @@ public: // メンバ関数
 	void Update() override;
 
 private: // メンバ変数
-	
+
 
 public:
-	// 発射タイマー
-	int32_t shotTimer = 0;
-
-	// ボスの最大HP
-	float maxHp = 600.0f;
-	// ボスのHP
+	// ボスパーツの最大HP
+	float maxHp = 10.0f;
+	// ボスパーツのHP
 	float nowHp = maxHp;
-	// ボスの最大HPから現HPを割った値
+	// ボスパーツの最大HPから現HPを割った値
 	float ratioHp = {};
 
 	// 撃破フラグ

@@ -24,6 +24,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Boss.h"
+#include "BossParts.h"
 #include "TargetBullet.h"
 
 #include "SmallRock.h"
@@ -54,6 +55,7 @@ class Player;
 class Bullet;
 class PlayerSpecialBullet;
 class Boss;
+class BossParts;
 class BossBullet;
 class TargetBullet;
 class SmallRock;
@@ -352,10 +354,10 @@ private: // メンバ変数
 	Boss* bossBody = nullptr;
 	Boss* bossUpperBody = nullptr;
 	Boss* bossLowerBody = nullptr;
-	Boss* bossLeg1 = nullptr;
-	Boss* bossLeg2 = nullptr;
-	Boss* bossLeg3 = nullptr;
-	Boss* bossLeg4 = nullptr;
+	BossParts* bossLeg1 = nullptr;
+	BossParts* bossLeg2 = nullptr;
+	BossParts* bossLeg3 = nullptr;
+	BossParts* bossLeg4 = nullptr;
 
 	Planet* objMars = nullptr;
 	Planet* objJupiter = nullptr;
@@ -583,8 +585,6 @@ private: // メンバ変数
 	XMFLOAT2 gameGTXT_GOSize = {};
 	XMFLOAT4 gameGTXT_GOColor = {1.0f, 1.0f, 1.0f, 0.0f};
 
-	
-
 #pragma region カメラ関連
 	// カメラの方向パターン
 	enum CAMERADIRECTION
@@ -709,48 +709,6 @@ private: // メンバ変数
 
 	XMFLOAT4 bossLeg4Color;
 	float bossLeg4ColorTimer = 0.0f;
-
-	// ボス部位1のHP
-	float bossLeg1Hp;
-	// ボス部位2のHP
-	float bossLeg2Hp;
-	// ボス部位3のHP
-	float bossLeg3Hp;
-	// ボス部位4のHP
-	float bossLeg4Hp;
-
-	// ボスの撃破フラグ
-	bool bossBreak = false;
-	// ボス部位1の撃破フラグ
-	bool bossLeg1Break = false;
-	// ボス部位2の撃破フラグ
-	bool bossLeg2Break = false;
-	// ボス部位3の撃破フラグ
-	bool bossLeg3Break = false;
-	// ボス部位4の撃破フラグ
-	bool bossLeg4Break = false;
-
-	// ボスの生存フラグ
-	bool bossFlag = true;
-	// ボス部位1の生存フラグ
-	bool bossLeg1Flag = true;
-	// ボス部位2の生存フラグ
-	bool bossLeg2Flag = true;
-	// ボス部位3の生存フラグ
-	bool bossLeg3Flag = true;
-	// ボス部位4の生存フラグ
-	bool bossLeg4Flag = true;
-
-	// ボスのデスフラグ
-	bool bossDeathFlag = false;
-	// ボス部位1のデスフラグ
-	bool bossLeg1DeathFlag = false;
-	// ボス部位2のデスフラグ
-	bool bossLeg2DeathFlag = false;
-	// ボス部位3のデスフラグ
-	bool bossLeg3DeathFlag = false;
-	// ボス部位4のデスフラグ
-	bool bossLeg4DeathFlag = false;
 
 	// ボスの行動パターン
 	enum BOSSPATTERN

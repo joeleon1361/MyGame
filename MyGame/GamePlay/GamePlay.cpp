@@ -159,10 +159,10 @@ void GamePlay::Initialize()
 	bossBody = Boss::Create();
 	bossUpperBody = Boss::Create();
 	bossLowerBody = Boss::Create();
-	bossLeg1 = Boss::Create();
-	bossLeg2 = Boss::Create();
-	bossLeg3 = Boss::Create();
-	bossLeg4 = Boss::Create();
+	bossLeg1 = BossParts::Create();
+	bossLeg2 = BossParts::Create();
+	bossLeg3 = BossParts::Create();
+	bossLeg4 = BossParts::Create();
 
 	objMars = Planet::Create();
 	objJupiter = Planet::Create();
@@ -232,8 +232,6 @@ void GamePlay::Initialize()
 	bossLeg3->SetParent(bossLowerBody);
 	bossLeg4->SetParent(bossLowerBody);
 
-
-
 	// FBXモデルのロード
 	testmodel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 
@@ -269,7 +267,7 @@ void GamePlay::Update()
 
 
 	// ボスが撃破されたら遷移
-	if (bossFlag == false)
+	if (bossBody->isAlive == false)
 	{
 		changeColorFlag = true;
 	}
@@ -303,11 +301,11 @@ void GamePlay::Update()
 	SkydomPosition = objSkydome->GetPosition();
 	SkydomRotation = objSkydome->GetRotation();
 
-	if (bossBreak == false)
+	if (bossBody->isBreak == false)
 	{
 		bossLocalPosition = Spline::SplineFloat3(bossCheckPoint, startIndex, timeRate);
 	}
-	else if (bossBreak == true)
+	else if (bossBody->isBreak == true)
 	{
 		bossLocalPosition = bossBody->GetPosition();
 	}
@@ -690,7 +688,7 @@ void GamePlay::Update()
 
 #pragma region 当たり判定
 	// ボス本体の当たり判定
-	if (bossFlag == true)
+	if (bossBody->isAlive == true)
 	{
 		for (std::unique_ptr<Bullet>& bullet : playerBullets)
 		{
@@ -712,10 +710,10 @@ void GamePlay::Update()
 
 	if (bossBody->nowHp <= 0.0f)
 	{
-		bossBreak = true;
+		bossBody->isBreak = true;
 	}
 
-	if (bossBreak == true)
+	if (bossBody->isBreak == true)
 	{
 		bossLocalPosition.y -= 0.3f;
 		CreateBossParticles(bossWorldPosition);
@@ -725,15 +723,15 @@ void GamePlay::Update()
 	{
 		// bossBreak == false;
 
-		bossFlag = false;
-		bossLeg1Flag = false;
-		bossLeg2Flag = false;
-		bossLeg3Flag = false;
-		bossLeg4Flag = false;
+		bossBody->isAlive = false;
+		bossLeg1->isAlive = false;
+		bossLeg2->isAlive = false;
+		bossLeg3->isAlive = false;
+		bossLeg4->isAlive = false;
 	}
 
 	// ボス部位1の当たり判定
-	if (bossLeg1Flag == true)
+	if (bossLeg1->isAlive == true)
 	{
 		for (std::unique_ptr<Bullet>& bullet : playerBullets)
 		{
@@ -748,7 +746,7 @@ void GamePlay::Update()
 				scoreRateCount++;
 				if (rushFlag == false)
 				{
-					bossLeg1Hp -= 1.0f;
+					bossLeg1->nowHp -= 1.0f;
 				}
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -757,17 +755,17 @@ void GamePlay::Update()
 		}
 	}
 
-	if (bossLeg1Hp <= 0.0f)
+	if (bossLeg1->nowHp <= 0.0f)
 	{
-		bossLeg1Break = true;
-		bossLeg1DeathFlag = true;
+		bossLeg1->isBreak = true;
+		bossLeg1->isDeath = true;
 	}
 
 
-	if (bossLeg1Break == true)
+	if (bossLeg1->isBreak == true)
 	{
 		bossLeg1LocalPosition.y -= 0.2f;
-		if (bossLeg1Flag == true)
+		if (bossLeg1->isAlive == true)
 		{
 			CreateBossParticles(bossLeg1WorldPosition);
 		}
@@ -775,12 +773,12 @@ void GamePlay::Update()
 
 	if (bossLeg1LocalPosition.y <= -20.0f)
 	{
-		bossLeg1Break = false;
-		bossLeg1Flag = false;
+		bossLeg1->isBreak = false;
+		bossLeg1->isAlive = false;
 	}
 
 	// ボス部位2の当たり判定
-	if (bossLeg2Flag == true)
+	if (bossLeg2->isAlive == true)
 	{
 		for (std::unique_ptr<Bullet>& bullet : playerBullets)
 		{
@@ -795,7 +793,7 @@ void GamePlay::Update()
 				scoreRateCount++;
 				if (rushFlag == false)
 				{
-					bossLeg2Hp -= 1.0f;
+					bossLeg2->nowHp -= 1.0f;
 				}
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -804,17 +802,17 @@ void GamePlay::Update()
 		}
 	}
 
-	if (bossLeg2Hp <= 0.0f)
+	if (bossLeg2->nowHp <= 0.0f)
 	{
-		bossLeg2Break = true;
-		bossLeg2DeathFlag = true;
+		bossLeg2->isBreak = true;
+		bossLeg2->isDeath = true;
 	}
 
 
-	if (bossLeg2Break == true)
+	if (bossLeg2->isBreak == true)
 	{
 		bossLeg2LocalPosition.y -= 0.2f;
-		if (bossLeg2Flag == true)
+		if (bossLeg2->isAlive == true)
 		{
 			CreateBossParticles(bossLeg2WorldPosition);
 		}
@@ -822,12 +820,12 @@ void GamePlay::Update()
 
 	if (bossLeg2LocalPosition.y <= -20.0f)
 	{
-		bossLeg2Break = false;
-		bossLeg2Flag = false;
+		bossLeg2->isBreak = false;
+		bossLeg2->isAlive = false;
 	}
 
 	// ボス部位3の当たり判定
-	if (bossLeg3Flag == true)
+	if (bossLeg3->isAlive == true)
 	{
 		for (std::unique_ptr<Bullet>& bullet : playerBullets)
 		{
@@ -842,7 +840,7 @@ void GamePlay::Update()
 				scoreRateCount++;
 				if (rushFlag == false)
 				{
-					bossLeg3Hp -= 1.0f;
+					bossLeg3->nowHp -= 1.0f;
 				}
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -851,17 +849,17 @@ void GamePlay::Update()
 		}
 	}
 
-	if (bossLeg3Hp <= 0.0f)
+	if (bossLeg3->nowHp <= 0.0f)
 	{
-		bossLeg3Break = true;
-		bossLeg3DeathFlag = true;
+		bossLeg3->isBreak = true;
+		bossLeg3->isDeath = true;
 	}
 
 
-	if (bossLeg3Break == true)
+	if (bossLeg3->isBreak == true)
 	{
 		bossLeg3LocalPosition.y -= 0.2f;
-		if (bossLeg3Flag == true)
+		if (bossLeg3->isAlive == true)
 		{
 			CreateBossParticles(bossLeg3WorldPosition);
 		}
@@ -870,12 +868,12 @@ void GamePlay::Update()
 
 	if (bossLeg3LocalPosition.y <= -20.0f)
 	{
-		bossLeg3Break = false;
-		bossLeg3Flag = false;
+		bossLeg3->isBreak = false;
+		bossLeg3->isAlive = false;
 	}
 
 	// ボス部位4の当たり判定
-	if (bossLeg4Flag == true)
+	if (bossLeg4->isAlive == true)
 	{
 		for (std::unique_ptr<Bullet>& bullet : playerBullets)
 		{
@@ -890,7 +888,7 @@ void GamePlay::Update()
 				scoreRateCount++;
 				if (rushFlag == false)
 				{
-					bossLeg4Hp -= 1.0f;
+					bossLeg4->nowHp -= 1.0f;
 				}
 				bullet->deathFlag = true;
 				// パーティクル生成
@@ -899,16 +897,16 @@ void GamePlay::Update()
 		}
 	}
 
-	if (bossLeg4Hp <= 0.0f)
+	if (bossLeg4->nowHp <= 0.0f)
 	{
-		bossLeg4Break = true;
-		bossLeg4DeathFlag = true;
+		bossLeg4->isBreak = true;
+		bossLeg4->isDeath = true;
 	}
 
-	if (bossLeg4Break == true)
+	if (bossLeg4->isBreak == true)
 	{
 		bossLeg4LocalPosition.y -= 0.2f;
-		if (bossLeg4Flag == true)
+		if (bossLeg4->isAlive == true)
 		{
 			CreateBossParticles(bossLeg4WorldPosition);
 		}
@@ -916,11 +914,11 @@ void GamePlay::Update()
 
 	if (bossLeg4LocalPosition.y <= -20.0f)
 	{
-		bossLeg4Break = false;
-		bossLeg4Flag = false;
+		bossLeg4->isBreak = false;
+		bossLeg4->isAlive = false;
 	}
 
-	if ((bossLeg1DeathFlag == true) && (bossLeg2DeathFlag == true) && (bossLeg3DeathFlag == true) && (bossLeg4DeathFlag == true))
+	if ((bossLeg1->isDeath == true) && (bossLeg2->isDeath == true) && (bossLeg3->isDeath == true) && (bossLeg4->isDeath == true))
 	{
 		allLegBreakFlag = true;
 	}
@@ -1350,28 +1348,28 @@ void GamePlay::Draw()
 		box->Draw();
 	}
 
-	if (bossFlag == true)
+	if (bossBody->isAlive == true)
 	{
 		bossBody->Draw();
 		bossUpperBody->Draw();
 		bossLowerBody->Draw();
 
-		if (bossLeg1Flag == true)
+		if (bossLeg1->isAlive == true)
 		{
 			bossLeg1->Draw();
 		}
 
-		if (bossLeg2Flag == true)
+		if (bossLeg2->isAlive == true)
 		{
 			bossLeg2->Draw();
 		}
 
-		if (bossLeg3Flag == true)
+		if (bossLeg3->isAlive == true)
 		{
 			bossLeg3->Draw();
 		}
 
-		if (bossLeg4Flag == true)
+		if (bossLeg4->isAlive == true)
 		{
 			bossLeg4->Draw();
 		}
@@ -1710,32 +1708,7 @@ void GamePlay::GameInitialize()
 	gameGTXT_GO->SetAnchorPoint({ 0.5f, 0.5f });
 	gameGTXT_GO->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 
-	// ボス関連
-	bossLeg1Hp = 10.0f;
-	bossLeg2Hp = 10.0f;
-	bossLeg3Hp = 10.0f;
-	bossLeg4Hp = 10.0f;
-
-	bossBreak = false;
-	bossLeg1Break = false;
-	bossLeg2Break = false;
-	bossLeg3Break = false;
-	bossLeg4Break = false;
-
-	bossFlag = true;
-	bossLeg1Flag = true;
-	bossLeg2Flag = true;
-	bossLeg3Flag = true;
-	bossLeg4Flag = true;
-
 	rushFlag = false;
-
-	// デスフラグ
-	bossDeathFlag = false;
-	bossLeg1DeathFlag = false;
-	bossLeg2DeathFlag = false;
-	bossLeg3DeathFlag = false;
-	bossLeg4DeathFlag = false;
 
 	cameraMode = 0;
 
@@ -1979,36 +1952,6 @@ void GamePlay::GameDebugText()
 		<< std::fixed << std::setprecision(2)
 		<< playerHomingNow << ")";
 	debugText.Print(BossHp.str(), 50, 230, 1.0f);
-
-	std::ostringstream BossLeg1Hp;
-	BossLeg1Hp << "BossLeg1Hp:("
-		<< std::fixed << std::setprecision(2)
-		<< bossLeg1Hp << ")";
-	debugText.Print(BossLeg1Hp.str(), 50, 250, 1.0f);
-
-	std::ostringstream BossLeg2Hp;
-	BossLeg2Hp << "BossLeg2Hp:("
-		<< std::fixed << std::setprecision(2)
-		<< bossLeg2Hp << ")";
-	debugText.Print(BossLeg2Hp.str(), 50, 270, 1.0f);
-
-	std::ostringstream BossLeg3Hp;
-	BossLeg3Hp << "BossLeg3Hp:("
-		<< std::fixed << std::setprecision(2)
-		<< bossLeg3Hp << ")";
-	debugText.Print(BossLeg3Hp.str(), 50, 290, 1.0f);
-
-	std::ostringstream BossLeg4Hp;
-	BossLeg4Hp << "BossLeg4Hp:("
-		<< std::fixed << std::setprecision(2)
-		<< bossLeg4Hp << ")";
-	debugText.Print(BossLeg4Hp.str(), 50, 310, 1.0f);
-
-	/*std::ostringstream PlayerHp;
-	PlayerHp << "PlayerHp:("
-		<< std::fixed << std::setprecision(2)
-		<< playerHpRatio << ")";
-	debugText.Print(PlayerHp.str(), 50, 330, 1.0f);*/
 }
 
 // カメラ方向の切り替え
@@ -2384,7 +2327,7 @@ void GamePlay::BossAttack()
 
 void GamePlay::BossLeg1Attack()
 {
-	if ((player->nowHp >= 0.0f) && (bossLeg1Flag == true))
+	if ((player->nowHp >= 0.0f) && (bossLeg1->isAlive == true))
 	{
 		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
 		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
@@ -2396,7 +2339,7 @@ void GamePlay::BossLeg1Attack()
 
 void GamePlay::BossLeg2Attack()
 {
-	if ((player->nowHp >= 0.0f) && (bossLeg2Flag == true))
+	if ((player->nowHp >= 0.0f) && (bossLeg2->isAlive == true))
 	{
 		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
 		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
@@ -2408,7 +2351,7 @@ void GamePlay::BossLeg2Attack()
 
 void GamePlay::BossLeg3Attack()
 {
-	if ((player->nowHp >= 0.0f) && (bossLeg3Flag == true))
+	if ((player->nowHp >= 0.0f) && (bossLeg3->isAlive == true))
 	{
 		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
 		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
@@ -2420,7 +2363,7 @@ void GamePlay::BossLeg3Attack()
 
 void GamePlay::BossLeg4Attack()
 {
-	if ((player->nowHp >= 0.0f) && (bossLeg4Flag == true))
+	if ((player->nowHp >= 0.0f) && (bossLeg4->isAlive == true))
 	{
 		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
 		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
