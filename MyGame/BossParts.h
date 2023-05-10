@@ -1,10 +1,13 @@
 #pragma once
 #include "ObjObject.h"
+#include "Lerp.h"
+
 class BossParts :
 	public ObjObject
 {
 private:
 	using XMFLOAT3 = DirectX::XMFLOAT3;
+	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
 public: // 静的メンバ関数
@@ -21,8 +24,15 @@ public: // メンバ関数
 	// 毎フレーム処理
 	void Update() override;
 
-private: // メンバ変数
+	// ヒット時のカラー変更
+	void HitChangeColor();
 
+private: // メンバ変数
+	// 通常の色
+	XMFLOAT4 baseColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+	// ヒット時の色
+	XMFLOAT4 hitColor = { 1.0f, 0.0f, 0.0f, 1.0f };
 
 public:
 	// ボスパーツの最大HP
@@ -40,5 +50,8 @@ public:
 
 	// デスフラグ
 	bool isDeath = false;
+
+	// カラー変更タイムレート
+	float colorTimeRate = 1.0f;
 };
 

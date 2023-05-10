@@ -325,38 +325,6 @@ void GamePlay::Update()
 	}
 	bossBodyColor = Lerp::LerpFloat4({ 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, bossBodyColorTimer);
 
-	// ボスの部位1
-	bossLeg1ColorTimer += 0.1;
-	if (bossLeg1ColorTimer > 1.0f)
-	{
-		bossLeg1ColorTimer = 1.0f;
-	}
-	bossLeg1Color = Lerp::LerpFloat4({ 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, bossLeg1ColorTimer);
-
-	// ボスの部位2
-	bossLeg2ColorTimer += 0.1;
-	if (bossLeg2ColorTimer > 1.0f)
-	{
-		bossLeg2ColorTimer = 1.0f;
-	}
-	bossLeg2Color = Lerp::LerpFloat4({ 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, bossLeg2ColorTimer);
-
-	// ボスの部位3
-	bossLeg3ColorTimer += 0.1;
-	if (bossLeg3ColorTimer > 1.0f)
-	{
-		bossLeg3ColorTimer = 1.0f;
-	}
-	bossLeg3Color = Lerp::LerpFloat4({ 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, bossLeg3ColorTimer);
-
-	// ボスの部位4
-	bossLeg4ColorTimer += 0.1;
-	if (bossLeg4ColorTimer > 1.0f)
-	{
-		bossLeg4ColorTimer = 1.0f;
-	}
-	bossLeg4Color = Lerp::LerpFloat4({ 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, bossLeg4ColorTimer);
-
 	loadingColor = LoadingBG->GetColor();
 
 	playerHpGageSize = playerHpGage->GetSize();
@@ -560,23 +528,23 @@ void GamePlay::Update()
 
 #pragma region 座標変換
 	// カメラの座標変換
-	cameraWorldPosition = TransformWorldPosition(objCamera->GetPosition(), objCenter->GetMatWorld());
+	cameraWorldPosition = Transform::TransformWorldPosition(objCamera->GetPosition(), objCenter->GetMatWorld());
 
 	// プレイヤーの座標変換
-	playerWorldPosition = TransformWorldPosition(playerLocalPosition, objCenter->GetMatWorld());
+	playerWorldPosition = Transform::TransformWorldPosition(playerLocalPosition, objCenter->GetMatWorld());
 
 	// プレイヤー飛行機雲(右)の座標変換
-	playerContrailRightWorldPosition = TransformWorldPosition(objPlayerContrailRight->GetPosition(), player->GetMatWorld());
+	playerContrailRightWorldPosition = Transform::TransformWorldPosition(objPlayerContrailRight->GetPosition(), player->GetMatWorld());
 
 	// プレイヤー飛行機雲(左)の座標変換
-	playerContrailLeftWorldPosition = TransformWorldPosition(objPlayerContrailLeft->GetPosition(), player->GetMatWorld());
+	playerContrailLeftWorldPosition = Transform::TransformWorldPosition(objPlayerContrailLeft->GetPosition(), player->GetMatWorld());
 
 	// ボスの座標変換
-	bossWorldPosition = TransformWorldPosition(bossLocalPosition, objCenter->GetMatWorld());
-	bossLeg1WorldPosition = TransformWorldPosition(bossLeg1LocalPosition, bossLowerBody->GetMatWorld());
-	bossLeg2WorldPosition = TransformWorldPosition(bossLeg2LocalPosition, bossLowerBody->GetMatWorld());
-	bossLeg3WorldPosition = TransformWorldPosition(bossLeg3LocalPosition, bossLowerBody->GetMatWorld());
-	bossLeg4WorldPosition = TransformWorldPosition(bossLeg4LocalPosition, bossLowerBody->GetMatWorld());
+	bossWorldPosition = Transform::TransformWorldPosition(bossLocalPosition, objCenter->GetMatWorld());
+	bossLeg1WorldPosition = Transform::TransformWorldPosition(bossLeg1LocalPosition, bossLowerBody->GetMatWorld());
+	bossLeg2WorldPosition = Transform::TransformWorldPosition(bossLeg2LocalPosition, bossLowerBody->GetMatWorld());
+	bossLeg3WorldPosition = Transform::TransformWorldPosition(bossLeg3LocalPosition, bossLowerBody->GetMatWorld());
+	bossLeg4WorldPosition = Transform::TransformWorldPosition(bossLeg4LocalPosition, bossLowerBody->GetMatWorld());
 #pragma endregion
 
 #pragma region ボス関連
@@ -738,7 +706,7 @@ void GamePlay::Update()
 			if (OnCollision(bullet->GetPosition(), bossLeg1WorldPosition, 0.6f, 0.8f) == true)
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
-				bossLeg1ColorTimer = 0.0f;
+				bossLeg1->colorTimeRate = 0.0f;
 				bossBody->nowHp -= 5.0f;
 				L2startCount = GetTickCount();
 				gameScore += 250.0f * scoreRate;
@@ -785,7 +753,7 @@ void GamePlay::Update()
 			if (OnCollision(bullet->GetPosition(), bossLeg2WorldPosition, 0.6f, 0.8f) == true)
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
-				bossLeg2ColorTimer = 0.0f;
+				bossLeg2->colorTimeRate = 0.0f;
 				bossBody->nowHp -= 5.0f;
 				L2startCount = GetTickCount();
 				gameScore += 250.0f * scoreRate;
@@ -832,7 +800,7 @@ void GamePlay::Update()
 			if (OnCollision(bullet->GetPosition(), bossLeg3WorldPosition, 0.6f, 0.8f) == true)
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
-				bossLeg3ColorTimer = 0.0f;
+				bossLeg3->colorTimeRate = 0.0f;
 				bossBody->nowHp -= 5.0f;
 				L2startCount = GetTickCount();
 				gameScore += 250.0f * scoreRate;
@@ -880,7 +848,7 @@ void GamePlay::Update()
 			if (OnCollision(bullet->GetPosition(), bossLeg4WorldPosition, 0.6f, 0.8f) == true)
 			{
 				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
-				bossLeg4ColorTimer = 0.0f;
+				bossLeg4->colorTimeRate = 0.0f;
 				bossBody->nowHp -= 5.0f;
 				L2startCount = GetTickCount();
 				gameScore += 250.0f * scoreRate;
@@ -1090,16 +1058,12 @@ void GamePlay::Update()
 	bossLowerBody->SetColor(bossBodyColor);
 
 	bossLeg1->SetPosition(bossLeg1LocalPosition);
-	bossLeg1->SetColor(bossLeg1Color);
 
 	bossLeg2->SetPosition(bossLeg2LocalPosition);
-	bossLeg2->SetColor(bossLeg2Color);
 
 	bossLeg3->SetPosition(bossLeg3LocalPosition);
-	bossLeg3->SetColor(bossLeg3Color);
 
 	bossLeg4->SetPosition(bossLeg4LocalPosition);
-	bossLeg4->SetColor(bossLeg4Color);
 
 	objMars->SetPosition({ centerPosition.x + marsPosition.x, centerPosition.y + marsPosition.y, centerPosition.z + marsPosition.z });
 	objJupiter->SetPosition({ centerPosition.x + jupiterPosition.x, centerPosition.y + jupiterPosition.y, centerPosition.z + jupiterPosition.z });
@@ -3080,15 +3044,4 @@ void GamePlay::CreateSmallRockRight()
 
 		creatSmallRockRightTimer = 0;
 	}
-}
-
-XMFLOAT3 GamePlay::TransformWorldPosition(XMFLOAT3 localPosition, XMMATRIX matWorld)
-{
-	XMVECTOR positionV;
-	XMFLOAT3 worldPosition;
-	positionV = DirectX::XMLoadFloat3(&localPosition);
-	positionV.m128_f32[3] = 1.0f;
-	positionV = DirectX::XMVector3Transform(positionV, matWorld);
-	DirectX::XMStoreFloat3(&worldPosition, positionV);
-	return worldPosition;
 }

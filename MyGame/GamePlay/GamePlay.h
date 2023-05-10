@@ -50,6 +50,8 @@
 
 #include "ScoreManager.h"
 
+#include "Transform.h"
+
 class CollisionManager;
 class Player;
 class Bullet;
@@ -249,8 +251,6 @@ public: // メンバ関数
 	void CreateSmallRockLeft();
 
 	void CreateSmallRockRight();
-
-	XMFLOAT3 TransformWorldPosition(XMFLOAT3 localPosition, XMMATRIX matWorld );
 
 private: // メンバ変数
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
@@ -698,17 +698,6 @@ private: // メンバ変数
 	XMFLOAT4 bossBodyColor;
 	float bossBodyColorTimer = 0.0f;
 
-	XMFLOAT4 bossLeg1Color;
-	float bossLeg1ColorTimer = 0.0f;
-
-	XMFLOAT4 bossLeg2Color;
-	float bossLeg2ColorTimer = 0.0f;
-
-	XMFLOAT4 bossLeg3Color;
-	float bossLeg3ColorTimer = 0.0f;
-
-	XMFLOAT4 bossLeg4Color;
-	float bossLeg4ColorTimer = 0.0f;
 
 	// ボスの行動パターン
 	enum BOSSPATTERN

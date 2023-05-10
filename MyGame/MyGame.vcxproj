@@ -199,6 +199,7 @@
     <ClCompile Include="Sprite\Sprite.cpp" />
     <ClCompile Include="StageObject\SmallRock.cpp" />
     <ClCompile Include="Title\Title.cpp" />
+    <ClCompile Include="Transform.cpp" />
     <ClCompile Include="VolumeManager\VolumeManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -325,6 +326,7 @@
     <ClInclude Include="Sprite\Sprite.h" />
     <ClInclude Include="StageObject\SmallRock.h" />
     <ClInclude Include="Title\Title.h" />
+    <ClInclude Include="Transform.h" />
     <ClInclude Include="VolumeManager\VolumeManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
