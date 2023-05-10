@@ -1,29 +1,5 @@
 #include "Result.h"
 
-extern float gameScore;
-extern float gameScoreMax;
-
-// ノーダメージフラグ
-extern bool noDamageFlag;
-// 目標スコアに達しているかフラグ
-extern bool targetScoreFlag;
-// 全ての部位を破壊したか
-extern bool allLegBreakFlag;
-
-//オーディオのボリューム
-extern float masterVolumeNow;
-extern float masterVolume;
-
-extern float bgmVolumeMax;
-extern float bgmVolumeNow;
-extern float bgmVolumeRatio;
-extern float bgmVolume;
-
-extern float seVolumeMax;
-extern float seVolumeNow;
-extern float seVolumeRatio;
-extern float seVolume;
-
 Result::Result()
 {
 }
@@ -281,12 +257,12 @@ void Result::Update()
 	}*/
 
 	// 合計スコアの計算
-	if (noDamageFlag == false)
+	if (scoreManager->noDamageFlag == false)
 	{
 		noDamageBonus = 0;
 	}
 
-	totalScore = gameScore + noDamageBonus;
+	totalScore = scoreManager->score + noDamageBonus;
 
 	// サイズ値の計算
 	resultMoveVelX_1 -= resultMoveAccX_1;
@@ -581,7 +557,7 @@ void Result::Update()
 	{
 		// 値の設定
 		resultMoveVel_9 = -4.0f;
-		if (noDamageFlag == true)
+		if (scoreManager->noDamageFlag == true)
 		{
 			resultChangeAlpha_9 = 0.05f;
 		}
@@ -602,13 +578,13 @@ void Result::Update()
 	{
 		// 値の設定
 		resultMoveVel_10 = -4.0f;
-		if (allLegBreakFlag == true)
+		if (scoreManager->allLegBreakFlag == true)
 		{
 			resultChangeAlpha_10 = 0.05f;
 		}
-		if (noDamageFlag == true)
+		if (scoreManager->noDamageFlag == true)
 		{
-			Sound::GetInstance()->PlayWav("SE/Result/result_mission.wav", seVolume);
+			Sound::GetInstance()->PlayWav("SE/Result/result_mission.wav", volumeManager->seVolume);
 		}
 
 		// 値の初期化
@@ -630,14 +606,14 @@ void Result::Update()
 	{
 		// 値の設定
 		resultMoveVel_11 = -4.0f;
-		if (targetScoreFlag == true)
+		if (scoreManager->targetScoreFlag == true)
 		{
 			resultChangeAlpha_11 = 0.05f;
 		}
 
-		if (allLegBreakFlag == true)
+		if (scoreManager->allLegBreakFlag == true)
 		{
-			Sound::GetInstance()->PlayWav("SE/Result/result_mission.wav", seVolume);
+			Sound::GetInstance()->PlayWav("SE/Result/result_mission.wav", volumeManager->seVolume);
 
 		}
 
@@ -658,9 +634,9 @@ void Result::Update()
 	// 星3のサイズ制御
 	if (missionStar3Size.x < 28.0f)
 	{
-		if (targetScoreFlag == true)
+		if (scoreManager->targetScoreFlag == true)
 		{
-			Sound::GetInstance()->PlayWav("SE/Result/result_mission.wav", seVolume);
+			Sound::GetInstance()->PlayWav("SE/Result/result_mission.wav", volumeManager->seVolume);
 		}
 
 		// 値の初期化
@@ -760,7 +736,7 @@ void Result::Update()
 
 	// スコアの描画
 	std::ostringstream GameScore;
-	GameScore << std::fixed << std::setprecision(0) << std::setw(7) << gameScore;
+	GameScore << std::fixed << std::setprecision(0) << std::setw(7) << scoreManager->score;
 	scoreText.Print(GameScore.str(), scorePosition, { 0.760f, 0.929f, 1.0f, scoreColor.w }, 0.5f);
 
 	std::ostringstream NoDamageBonus;
@@ -830,17 +806,17 @@ void Result::Draw()
 	resultGTXT_15->Draw();
 
 
-	if (gameScore > 99999)
+	if (scoreManager->score > 99999)
 	{
 		// S
 		resultGTXT_6->Draw();
 	}
-	else if (gameScore > 49999)
+	else if (scoreManager->score > 49999)
 	{
 		// A
 		resultGTXT_7->Draw();
 	}
-	else if (gameScore > 24999)
+	else if (scoreManager->score > 24999)
 	{
 		// B
 		resultGTXT_8->Draw();

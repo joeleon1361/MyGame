@@ -18,6 +18,8 @@
 #include "Sound.h"
 #include "Camera.h"
 #include "ScoreText.h"
+#include "ScoreManager.h"
+#include "VolumeManager.h"
 
 class Result : public BaseScene
 {
@@ -92,6 +94,8 @@ private: // ƒƒ“ƒo•Ï”
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 	Input* input = Input::GetInstance();
 	Sound* sound = Sound::GetInstance();
+	ScoreManager* scoreManager = ScoreManager::GetInstance();
+	VolumeManager* volumeManager = VolumeManager::GetInstance();
 
 	ScoreText scoreText;
 

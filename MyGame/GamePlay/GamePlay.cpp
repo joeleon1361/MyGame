@@ -2,30 +2,6 @@
 
 extern int cameraMode = 0;
 
-extern float gameScore = 0.0f;
-extern float gameScoreMax = 9999999.0f;
-
-// ノーダメージフラグ
-extern bool noDamageFlag = true;
-// 目標スコアに達しているかフラグ
-extern bool targetScoreFlag = false;
-// 全ての部位を破壊したか
-extern bool allLegBreakFlag = false;
-
-//オーディオのボリューム
-extern float masterVolumeNow = 7.0f;
-extern float masterVolume = 0.0f;
-
-extern float bgmVolumeMax = 10.0f;
-extern float bgmVolumeNow = 10.0f;
-extern float bgmVolumeRatio = 0.0f;
-extern float bgmVolume = 0.0f;
-
-extern float seVolumeMax = 10.0f;
-extern float seVolumeNow = 10.0f;
-extern float seVolumeRatio = 0.0f;
-extern float seVolume = 0.0f;
-
 using namespace DirectX;
 
 GamePlay::GamePlay()
@@ -240,9 +216,6 @@ void GamePlay::Initialize()
 	testobject->Initialize();
 	testobject->SetModel(testmodel);
 
-	// 各音量初期化
-	VolumeCalc();
-
 	GameInitialize();
 }
 
@@ -262,10 +235,6 @@ void GamePlay::Finalize()
 
 void GamePlay::Update()
 {
-	// 音量の計算
-	VolumeCalc();
-
-
 	// ボスが撃破されたら遷移
 	if (bossBody->isAlive == false)
 	{
@@ -281,9 +250,9 @@ void GamePlay::Update()
 		changeColorFlag = true;
 	}
 
-	if (gameScore > 49999.0f)
+	if (scoreManager->score > 49999.0f)
 	{
-		targetScoreFlag = true;
+		scoreManager->targetScoreFlag = true;
 	}
 
 #pragma region 情報を取得
@@ -665,10 +634,10 @@ void GamePlay::Update()
 				bossBodyColorTimer = 0.0f;
 				bossBody->nowHp -= 10.0f;
 				L2startCount = GetTickCount();
-				gameScore += 1000.0f * scoreRate;
+				scoreManager->score += 1000.0f * scoreRate;
 				scoreUIMotion();
 				scoreRateCount++;
-				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
+				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", volumeManager->seVolume);
 				bullet->deathFlag = true;
 				// パーティクル生成
 				CreateHitParticles(bossWorldPosition);
@@ -705,11 +674,11 @@ void GamePlay::Update()
 		{
 			if (OnCollision(bullet->GetPosition(), bossLeg1WorldPosition, 0.6f, 0.8f) == true)
 			{
-				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
+				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", volumeManager->seVolume);
 				bossLeg1->colorTimeRate = 0.0f;
 				bossBody->nowHp -= 5.0f;
 				L2startCount = GetTickCount();
-				gameScore += 250.0f * scoreRate;
+				scoreManager->score += 250.0f * scoreRate;
 				scoreUIMotion();
 				scoreRateCount++;
 				if (rushFlag == false)
@@ -752,11 +721,11 @@ void GamePlay::Update()
 		{
 			if (OnCollision(bullet->GetPosition(), bossLeg2WorldPosition, 0.6f, 0.8f) == true)
 			{
-				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
+				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", volumeManager->seVolume);
 				bossLeg2->colorTimeRate = 0.0f;
 				bossBody->nowHp -= 5.0f;
 				L2startCount = GetTickCount();
-				gameScore += 250.0f * scoreRate;
+				scoreManager->score += 250.0f * scoreRate;
 				scoreUIMotion();
 				scoreRateCount++;
 				if (rushFlag == false)
@@ -799,11 +768,11 @@ void GamePlay::Update()
 		{
 			if (OnCollision(bullet->GetPosition(), bossLeg3WorldPosition, 0.6f, 0.8f) == true)
 			{
-				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
+				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", volumeManager->seVolume);
 				bossLeg3->colorTimeRate = 0.0f;
 				bossBody->nowHp -= 5.0f;
 				L2startCount = GetTickCount();
-				gameScore += 250.0f * scoreRate;
+				scoreManager->score += 250.0f * scoreRate;
 				scoreUIMotion();
 				scoreRateCount++;
 				if (rushFlag == false)
@@ -847,11 +816,11 @@ void GamePlay::Update()
 		{
 			if (OnCollision(bullet->GetPosition(), bossLeg4WorldPosition, 0.6f, 0.8f) == true)
 			{
-				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", seVolume);
+				Sound::GetInstance()->PlayWav("SE/Game/game_boss_damage.wav", volumeManager->seVolume);
 				bossLeg4->colorTimeRate = 0.0f;
 				bossBody->nowHp -= 5.0f;
 				L2startCount = GetTickCount();
-				gameScore += 250.0f * scoreRate;
+				scoreManager->score += 250.0f * scoreRate;
 				scoreUIMotion();
 				scoreRateCount++;
 				if (rushFlag == false)
@@ -888,7 +857,7 @@ void GamePlay::Update()
 
 	if ((bossLeg1->isDeath == true) && (bossLeg2->isDeath == true) && (bossLeg3->isDeath == true) && (bossLeg4->isDeath == true))
 	{
-		allLegBreakFlag = true;
+		scoreManager->allLegBreakFlag = true;
 	}
 
 	// プレイヤーの当たり判定
@@ -910,8 +879,8 @@ void GamePlay::Update()
 				scoreRateCount = 20;
 			}
 			L1startCount = GetTickCount();
-			noDamageFlag = false;
-			Sound::GetInstance()->PlayWav("SE/Game/game_player_damage.wav", seVolume);
+			scoreManager->noDamageFlag = false;
+			Sound::GetInstance()->PlayWav("SE/Game/game_player_damage.wav", volumeManager->seVolume);
 			bullet->deathFlag = true;
 			// パーティクル生成
 			CreateHitParticles(playerWorldPosition);
@@ -1252,7 +1221,7 @@ void GamePlay::Update()
 
 	// スコアの描画
 	std::ostringstream StartIndex;
-	StartIndex << std::fixed << std::setprecision(0) << std::setw(7) << gameScore;
+	StartIndex << std::fixed << std::setprecision(0) << std::setw(7) << scoreManager->score;
 	scoreText.Print(StartIndex.str(), { 300.0f , scoreUIPosition.y + -7.0f + scoreBasePosition.y }, { 0.760f, 0.929f, 1.0f, scoreUIAlpha }, 0.8f);
 
 	std::ostringstream ScoreRate;
@@ -1428,42 +1397,42 @@ void GamePlay::Draw()
 	// スコアテキストの描画
 	scoreText.DrawAll(cmdList);
 
-	if (gameScore < 10.0f)
+	if (scoreManager->score < 10.0f)
 	{
 		scoreNull_1->Draw();
 	}
-	if (gameScore < 100.0f)
+	if (scoreManager->score < 100.0f)
 	{
 		scoreNull_2->Draw();
 	}
-	if (gameScore < 1000.0f)
+	if (scoreManager->score < 1000.0f)
 	{
 		scoreNull_3->Draw();
 	}
-	if (gameScore < 10000.0f)
+	if (scoreManager->score < 10000.0f)
 	{
 		scoreNull_4->Draw();
 	}
-	if (gameScore < 100000.0f)
+	if (scoreManager->score < 100000.0f)
 	{
 		scoreNull_5->Draw();
 	}
-	if (gameScore < 1000000.0f)
+	if (scoreManager->score < 1000000.0f)
 	{
 		scoreNull_6->Draw();
 	}
 
-	if (gameScore > 99999)
+	if (scoreManager->score > 99999)
 	{
 		// S
 		gameGTXT_1->Draw();
 	}
-	else if (gameScore > 49999)
+	else if (scoreManager->score > 49999)
 	{
 		// A
 		gameGTXT_2->Draw();
 	}
-	else if (gameScore > 24999)
+	else if (scoreManager->score > 24999)
 	{
 		// B
 		gameGTXT_3->Draw();
@@ -1696,15 +1665,13 @@ void GamePlay::GameInitialize()
 	changeSceneFlag = false;
 	changeSceneTimer = 100.0f;
 
-	gameScore = 0;
-
-	gameScoreMax = 9999999.0f;
+	scoreManager->score = 0;
 
 	scoreRateCount = 0;
 
-	noDamageFlag = true;
-	targetScoreFlag = false;
-	allLegBreakFlag = false;
+	scoreManager->noDamageFlag = true;
+	scoreManager->targetScoreFlag = false;
+	scoreManager->allLegBreakFlag = false;
 
 	damageEffectAlpha = 0.0f;
 	damageEffectAlphaVel = 0.0f;
@@ -1737,7 +1704,7 @@ void GamePlay::GameInitialize()
 
 	//railCountFlag = false;
 
-	Sound::GetInstance()->PlayWav("BGM/Game/game_bgm.wav", bgmVolume, true);
+	Sound::GetInstance()->PlayWav("BGM/Game/game_bgm.wav", volumeManager->bgmVolume, true);
 
 	startCount = GetTickCount();
 }
@@ -2091,7 +2058,7 @@ void GamePlay::Attack()
 
 			if (shotFlag == true)
 			{
-				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
+				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", volumeManager->seVolume);
 
 				std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
 				newBullet = Bullet::Create(modelBullet, { playerWorldPosition.x, playerWorldPosition.y + 0.3f, playerWorldPosition.z }, bulletScale, playerBulletSpeed);
@@ -2139,7 +2106,7 @@ void GamePlay::chargeAttack()
 		}
 		else
 		{
-			Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
+			Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", volumeManager->seVolume);
 
 			std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
 			newBullet = Bullet::Create(modelBullet, playerWorldPosition, bulletScale, playerBulletSpeed);
@@ -2211,7 +2178,7 @@ void GamePlay::homingAttack()
 
 			if (playerHomingNow == 180.0f)
 			{
-				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
+				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", volumeManager->seVolume);
 
 				std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
 				newBullet = TargetBullet::Create(modelBullet, { playerWorldPosition.x - 0.8f, playerWorldPosition.y + 0.5f, playerWorldPosition.z }, bulletScale, bossWorldPosition, playerBulletSpeed);
@@ -2220,7 +2187,7 @@ void GamePlay::homingAttack()
 			}
 			if (playerHomingNow == 150.0f)
 			{
-				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
+				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", volumeManager->seVolume);
 
 				std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
 				newBullet = TargetBullet::Create(modelBullet, { playerWorldPosition.x - 0.8f, playerWorldPosition.y - 0.5f, playerWorldPosition.z }, bulletScale, bossWorldPosition, playerBulletSpeed);
@@ -2229,7 +2196,7 @@ void GamePlay::homingAttack()
 			}
 			if (playerHomingNow == 120.0f)
 			{
-				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
+				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", volumeManager->seVolume);
 
 				std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
 				newBullet = TargetBullet::Create(modelBullet, { playerWorldPosition.x, playerWorldPosition.y - 1.0f, playerWorldPosition.z }, bulletScale, bossWorldPosition, playerBulletSpeed);
@@ -2238,7 +2205,7 @@ void GamePlay::homingAttack()
 			}
 			if (playerHomingNow == 90.0f)
 			{
-				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
+				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", volumeManager->seVolume);
 
 				std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
 				newBullet = TargetBullet::Create(modelBullet, { playerWorldPosition.x + 0.8f, playerWorldPosition.y - 0.5f, playerWorldPosition.z }, bulletScale, bossWorldPosition, playerBulletSpeed);
@@ -2247,7 +2214,7 @@ void GamePlay::homingAttack()
 			}
 			if (playerHomingNow == 60.0f)
 			{
-				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
+				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", volumeManager->seVolume);
 
 				std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
 				newBullet = TargetBullet::Create(modelBullet, { playerWorldPosition.x + 0.8f, playerWorldPosition.y + 0.5f, playerWorldPosition.z }, bulletScale, bossWorldPosition, playerBulletSpeed);
@@ -2256,7 +2223,7 @@ void GamePlay::homingAttack()
 			}
 			if (playerHomingNow == 30.0f)
 			{
-				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", seVolume);
+				Sound::GetInstance()->PlayWav("SE/Game/game_player_shot.wav", volumeManager->seVolume);
 
 				std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
 				newBullet = TargetBullet::Create(modelBullet, { playerWorldPosition.x, playerWorldPosition.y + 1.0f, playerWorldPosition.z }, bulletScale, bossWorldPosition, playerBulletSpeed);
@@ -2281,7 +2248,7 @@ void GamePlay::BossAttack()
 {
 	if (player->nowHp >= 0.0f)
 	{
-		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
+		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", volumeManager->seVolume);
 		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
 		newBullet = TargetBullet::Create(modelBullet, bossWorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
 
@@ -2293,7 +2260,7 @@ void GamePlay::BossLeg1Attack()
 {
 	if ((player->nowHp >= 0.0f) && (bossLeg1->isAlive == true))
 	{
-		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
+		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", volumeManager->seVolume);
 		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
 		newBullet = TargetBullet::Create(modelBullet, bossLeg1WorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
 
@@ -2305,7 +2272,7 @@ void GamePlay::BossLeg2Attack()
 {
 	if ((player->nowHp >= 0.0f) && (bossLeg2->isAlive == true))
 	{
-		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
+		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", volumeManager->seVolume);
 		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
 		newBullet = TargetBullet::Create(modelBullet, bossLeg2WorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
 
@@ -2317,7 +2284,7 @@ void GamePlay::BossLeg3Attack()
 {
 	if ((player->nowHp >= 0.0f) && (bossLeg3->isAlive == true))
 	{
-		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
+		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", volumeManager->seVolume);
 		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
 		newBullet = TargetBullet::Create(modelBullet, bossLeg3WorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
 
@@ -2329,7 +2296,7 @@ void GamePlay::BossLeg4Attack()
 {
 	if ((player->nowHp >= 0.0f) && (bossLeg4->isAlive == true))
 	{
-		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", seVolume);
+		Sound::GetInstance()->PlayWav("SE/Game/game_boss_shot.wav", volumeManager->seVolume);
 		std::unique_ptr<TargetBullet> newBullet = std::make_unique<TargetBullet>();
 		newBullet = TargetBullet::Create(modelBullet, bossLeg4WorldPosition, bulletScale, playerWorldPosition, bossBulletSpeed);
 
@@ -2444,7 +2411,7 @@ void GamePlay::RankTimer()
 	const float rankTimeRate = rankTimer / rankTime;
 
 
-	if (gameScore > 99999)
+	if (scoreManager->score > 99999)
 	{
 		// S
 		if (rankSOneTimeFlag)
@@ -2453,7 +2420,7 @@ void GamePlay::RankTimer()
 			rankSOneTimeFlag = false;
 		}
 	}
-	else if (gameScore > 49999)
+	else if (scoreManager->score > 49999)
 	{
 		// A
 		if (rankAOneTimeFlag)
@@ -2462,7 +2429,7 @@ void GamePlay::RankTimer()
 			rankAOneTimeFlag = false;
 		}
 	}
-	else if (gameScore > 24999)
+	else if (scoreManager->score > 24999)
 	{
 		// B
 		if (rankBOneTimeFlag)
@@ -2922,23 +2889,6 @@ void GamePlay::bossHpCalc()
 	// ボスのHP計算
 	bossBody->ratioHp = bossBody->nowHp / bossBody->maxHp;
 	bossHpGageSize.x = bossBody->ratioHp * 530.0f;
-}
-
-// 各音量の計算
-void GamePlay::VolumeCalc()
-{
-	//　マスター音量 = 現在のマスター音量 / 100
-	masterVolume = masterVolumeNow / 100.0f;
-
-	//　割合 = 現在のbgm音量 / bgm音量の最大
-	bgmVolumeRatio = bgmVolumeNow / bgmVolumeMax;
-	//　bgm音量 = (割合 * マスター音量) / 100
-	bgmVolume = (bgmVolumeRatio * masterVolumeNow) / 100.0f;
-
-	//　割合 = 現在のse音量 / se音量の最大
-	seVolumeRatio = seVolumeNow / seVolumeMax;
-	//　se音量 = (割合 * マスター音量) / 100
-	seVolume = (seVolumeRatio * masterVolumeNow) / 100.0f;
 }
 
 bool GamePlay::OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB)

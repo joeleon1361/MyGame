@@ -49,7 +49,7 @@
 #include <array>
 
 #include "ScoreManager.h"
-
+#include "VolumeManager.h"
 #include "Transform.h"
 
 class CollisionManager;
@@ -238,9 +238,6 @@ public: // メンバ関数
 	// ボスHPの計算
 	void bossHpCalc();
 
-	// 各音量の計算
-	void VolumeCalc();
-
 	// 当たり判定
 	bool OnCollision(XMFLOAT3 sphereA, XMFLOAT3 sphereB, float radiusA, float radiusB);
 
@@ -258,6 +255,8 @@ private: // メンバ変数
 	ScoreText scoreText;
 	CollisionManager* collisionManager = nullptr;
 	ScoreManager* scoreManager = ScoreManager::GetInstance();
+	VolumeManager* volumeManager = VolumeManager::GetInstance();
+	
 
 	// ゲームシーン用
 	Camera* camera = nullptr;

@@ -14,6 +14,7 @@
 #include "ObjObject.h"
 #include "Sound.h"
 #include "ParticleManager.h"
+#include "VolumeManager.h"
 #include "Camera.h"
 
 class Title : public BaseScene
@@ -68,6 +69,7 @@ private: // メンバ変数
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 	Input* input = Input::GetInstance();
 	Sound* sound = Sound::GetInstance();
+	VolumeManager* volumeManager = VolumeManager::GetInstance();
 
 	// ゲームシーン用
 	Camera* camera = nullptr;
