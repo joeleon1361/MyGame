@@ -390,7 +390,7 @@ void GamePlay::Update()
 		bossLeg4Hp = 0.0f;
 	}*/
 
-	//volumeManager->VolumeControl();
+	volumeManager->VolumeControl();
 
 	playerHpCalc();
 
@@ -1861,20 +1861,56 @@ void GamePlay::GameDebugText()
 		<< bossWorldPosition.x << "," // x
 		<< bossRotation.y << "," // y
 		<< bossWorldPosition.z << ")"; // z
-	debugText.Print(bossPos.str(), 50, 350, 1.0f);
+	debugText.Print(bossPos.str(), 50, 110, 1.0f);
 
 	std::ostringstream StartIndex;
 	StartIndex << "StartIndex:("
 		<< std::fixed << std::setprecision(2)
 		<< playerChargeFlag << ")";
-	debugText.Print(StartIndex.str(), 50, 210, 1.0f);
+	debugText.Print(StartIndex.str(), 50, 150, 1.0f);
 
 	// ボスのHP関連
 	std::ostringstream BossHp;
 	BossHp << "playerChargeNow:("
 		<< std::fixed << std::setprecision(2)
 		<< playerHomingNow << ")";
-	debugText.Print(BossHp.str(), 50, 230, 1.0f);
+	debugText.Print(BossHp.str(), 50, 90, 1.0f);
+
+	std::ostringstream MasterVolume;
+	MasterVolume << "MasterVolume:("
+		<< std::fixed << std::setprecision(2)
+		<< volumeManager->masterVolume << ")";
+	debugText.Print(MasterVolume.str(), 50, 190, 1.0f);
+
+	std::ostringstream MasterVolumeNow;
+	MasterVolumeNow << "MasterVolumeNow:("
+		<< std::fixed << std::setprecision(2)
+		<< volumeManager->masterVolumeNow << ")";
+	debugText.Print(MasterVolumeNow.str(), 50, 210, 1.0f);
+
+	std::ostringstream BgmVolume;
+	BgmVolume << "BgmVolume:("
+		<< std::fixed << std::setprecision(2)
+		<< volumeManager->bgmVolume << ")";
+	debugText.Print(BgmVolume.str(), 50, 230, 1.0f);
+
+	std::ostringstream BgmVolumeNow;
+	BgmVolumeNow << "BgmVolumeNow:("
+		<< std::fixed << std::setprecision(2)
+		<< volumeManager->bgmVolumeNow << ")";
+	debugText.Print(BgmVolumeNow.str(), 50, 250, 1.0f);
+
+	std::ostringstream SeVolume;
+	SeVolume << "SeVolume:("
+		<< std::fixed << std::setprecision(2)
+		<< volumeManager->seVolume << ")";
+	debugText.Print(SeVolume.str(), 50, 270, 1.0f);
+
+	std::ostringstream SeVolumeNow;
+	SeVolumeNow << "SeVolumeNow:("
+		<< std::fixed << std::setprecision(2)
+		<< volumeManager->seVolumeNow << ")";
+	debugText.Print(SeVolumeNow.str(), 50, 290, 1.0f);
 }
 
 // カメラ方向の切り替え

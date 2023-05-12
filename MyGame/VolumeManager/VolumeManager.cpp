@@ -34,4 +34,6 @@ void VolumeManager::VolumeControl()
 	{
 		masterVolumeNow -= 1.0f;
 	}
+
+	Initialize();
 }
