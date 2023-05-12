@@ -351,8 +351,8 @@ private: // メンバ変数
 
 	// ボス関連
 	Boss* bossBody = nullptr;
-	Boss* bossUpperBody = nullptr;
-	Boss* bossLowerBody = nullptr;
+	BossParts* bossUpperBody = nullptr;
+	BossParts* bossLowerBody = nullptr;
 	BossParts* bossLeg1 = nullptr;
 	BossParts* bossLeg2 = nullptr;
 	BossParts* bossLeg3 = nullptr;
@@ -693,10 +693,6 @@ private: // メンバ変数
 	XMFLOAT3 bossLeg3WorldPosition;
 	// ボス部位4のローカル座標
 	XMFLOAT3 bossLeg4WorldPosition;
-
-	XMFLOAT4 bossBodyColor;
-	float bossBodyColorTimer = 0.0f;
-
 
 	// ボスの行動パターン
 	enum BOSSPATTERN

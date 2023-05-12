@@ -1,11 +1,20 @@
 #pragma once
+
+#include "Input.h"
+
 class VolumeManager
 {
 public: // 静的メンバ関数
 	static VolumeManager* GetInstance();
 
 public: // メンバ関数
+	// 初期化
 	void Initialize();
+	// 音量調整
+	void VolumeControl();
+
+private: // メンバ変数
+	Input* input = Input::GetInstance();
 
 public: // メンバ変数
 	float masterVolumeNow = 7.0f;

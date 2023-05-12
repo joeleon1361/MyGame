@@ -22,3 +22,16 @@ void VolumeManager::Initialize()
 	//　se音量 = (割合 * マスター音量) / 100
 	seVolume = (seVolumeRatio * masterVolumeNow) / 100.0f;
 }
+
+// 音量調整
+void VolumeManager::VolumeControl()
+{
+	if (input->TriggerKey(DIK_P))
+	{
+		masterVolumeNow += 1.0f;
+	}
+	if (input->TriggerKey(DIK_O))
+	{
+		masterVolumeNow -= 1.0f;
+	}
+}

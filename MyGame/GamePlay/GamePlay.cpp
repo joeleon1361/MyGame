@@ -133,8 +133,8 @@ void GamePlay::Initialize()
 	objCamera = ObjObject::Create();
 
 	bossBody = Boss::Create();
-	bossUpperBody = Boss::Create();
-	bossLowerBody = Boss::Create();
+	bossUpperBody = BossParts::Create();
+	bossLowerBody = BossParts::Create();
 	bossLeg1 = BossParts::Create();
 	bossLeg2 = BossParts::Create();
 	bossLeg3 = BossParts::Create();
@@ -286,14 +286,6 @@ void GamePlay::Update()
 	bossLeg3LocalPosition = bossLeg3->GetPosition();
 	bossLeg4LocalPosition = bossLeg4->GetPosition();
 
-	// ボスの本体
-	bossBodyColorTimer += 0.1;
-	if (bossBodyColorTimer > 1.0f)
-	{
-		bossBodyColorTimer = 1.0f;
-	}
-	bossBodyColor = Lerp::LerpFloat4({ 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, bossBodyColorTimer);
-
 	loadingColor = LoadingBG->GetColor();
 
 	playerHpGageSize = playerHpGage->GetSize();
@@ -397,6 +389,8 @@ void GamePlay::Update()
 		bossLeg3Hp = 0.0f;
 		bossLeg4Hp = 0.0f;
 	}*/
+
+	//volumeManager->VolumeControl();
 
 	playerHpCalc();
 
@@ -631,7 +625,8 @@ void GamePlay::Update()
 		{
 			if (OnCollision(bullet->GetPosition(), bossWorldPosition, 0.6f, 1.5f) == true)
 			{
-				bossBodyColorTimer = 0.0f;
+				bossUpperBody->colorTimeRate = 0.0f;
+				bossLowerBody->colorTimeRate = 0.0f;
 				bossBody->nowHp -= 10.0f;
 				L2startCount = GetTickCount();
 				scoreManager->score += 1000.0f * scoreRate;
@@ -1022,9 +1017,6 @@ void GamePlay::Update()
 	// ボス関連座標のセット
 	bossBody->SetPosition(bossLocalPosition);
 	bossBody->SetRotation(bossRotation);
-
-	bossUpperBody->SetColor(bossBodyColor);
-	bossLowerBody->SetColor(bossBodyColor);
 
 	bossLeg1->SetPosition(bossLeg1LocalPosition);
 
