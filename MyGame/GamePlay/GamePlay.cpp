@@ -209,12 +209,12 @@ void GamePlay::Initialize()
 	bossLeg4->SetParent(bossLowerBody);
 
 	// FBXモデルのロード
-	testmodel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
+	//testmodel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 
 	// FBX3Dオブジェクト生成とモデルとセット
 	testobject = new FbxObject3d;
-	testobject->Initialize();
-	testobject->SetModel(testmodel);
+	/*testobject->Initialize();
+	testobject->SetModel(testmodel);*/
 
 	GameInitialize();
 }
@@ -1188,7 +1188,7 @@ void GamePlay::Update()
 	objHaumea->Update();
 
 	// FBXの更新
-	testobject->Update();
+	//testobject->Update();
 
 	if (Input::GetInstance()->TriggerKey(DIK_I) && helpMenuFlag == false)
 	{
@@ -1203,7 +1203,7 @@ void GamePlay::Update()
 	{
 
 	}
-
+	
 #pragma endregion
 
 	collisionManager->CheckAllCollisions();
@@ -1307,7 +1307,7 @@ void GamePlay::Draw()
 	objMakemake->Draw();
 	objHaumea->Draw();
 
-	// testobject->Draw(cmdList);
+	//testobject->Draw(cmdList);
 
 	// objCenter->Draw();
 
@@ -1764,7 +1764,7 @@ void GamePlay::CreatePlayerJetParticles(XMFLOAT3 position)
 
 		XMFLOAT3 acc{};
 		const float rnd_acc = -0.1f;
-		acc.z = -0.1f;
+		acc.z = -0.0f;
 
 		// 追加
 		playerJetParticle->Add(5, pos, vel, acc, { 0.874f,0.443f, 0.149f, 1.000f }, { 0.874f,0.443f, 0.149f, 1.000f }, 0.3f, 0.0f);
